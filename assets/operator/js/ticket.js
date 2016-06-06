@@ -1004,6 +1004,11 @@ $(document).ready(function() {
         }
     });
 
+    $(document).on('click', '.show-original', function() {
+        // Stop message collapsing
+        $(this).parents('.header').click();
+    });
+
     $(document).on('click', '.quoteMessage', function() {
         // Stop message collapsing
         $(this).parents('.header').click();
@@ -1395,6 +1400,23 @@ function pollReplies(allMessages) {
             pollTimeout = setTimeout(function() {
                 pollReplies();
             }, 15000);
+        }
+    });
+
+    // Tooltip on status and user groups
+    $(document).tooltip({
+        selector: '.statusIcon, .userGroup',
+        position: {
+            my: "center bottom-12",
+            at: "center top",
+            using: function( position, feedback ) {
+                $( this ).css( position );
+                $( "<div>" )
+                    .addClass( "arrow" )
+                    .addClass( feedback.vertical )
+                    .addClass( feedback.horizontal )
+                    .appendTo( this );
+            }
         }
     });
 }

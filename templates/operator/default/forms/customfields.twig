@@ -6,14 +6,20 @@
         {{ form_label('customfield[' ~ customfield['id'] ~ ']', customfield['name']) }}
         <div class="input-container">
             {% if customfield['type'] == 0 %}
-                {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 1,
-                    (customfield['value']) ? true : false,
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
-                }} {{ Lang.get('general.yes') }} &nbsp;&nbsp;
-                {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 0,
-                    (customfield['value'] == '0') ? true : false,
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
-                }} {{ Lang.get('general.no') }}
+                <div class="input-group">
+                    <label>
+                        {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 1,
+                            (customfield['value']) ? true : false,
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                        }} {{ Lang.get('general.yes') }}
+                    </label> &nbsp;
+                    <label>
+                        {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 0,
+                            (customfield['value'] == '0') ? true : false,
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                        }} {{ Lang.get('general.no') }}
+                    </label>
+                </div>
 
             {% elseif customfield['type'] == 1 %}
                 {{ form_checkbox('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
@@ -22,9 +28,12 @@
             {% elseif customfield['type'] == 2 %}
                 <div class="input-group">
                 {% for key, option in customfield['options'] %}
-                    {{ form_checkbox('customfield[' ~ customfield['id'] ~ '][]', key,
-                        customfield['value']|default is not empty and in_array(key, customfield['value']) ? true : false,
-                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}<br />
+                    <label>
+                        {{ form_checkbox('customfield[' ~ customfield['id'] ~ '][]', key,
+                            customfield['value']|default is not empty and in_array(key, customfield['value']) ? true : false,
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}
+                    </label>
+                    <br />
                 {% endfor %}
                 </div>
 
@@ -55,9 +64,12 @@
             {% elseif customfield['type'] == 7 %}
                 <div class="input-group">
                 {% for key, option in customfield['options'] %}
-                    {{ form_radio('customfield[' ~ customfield['id'] ~ ']', key,
-                        (customfield['value'] == key) ? true : false,
-                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}<br />
+                    <label>
+                        {{ form_radio('customfield[' ~ customfield['id'] ~ ']', key,
+                            (customfield['value'] == key) ? true : false,
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}
+                    </label>
+                    <br />
                 {% endfor %}
                 </div>
 

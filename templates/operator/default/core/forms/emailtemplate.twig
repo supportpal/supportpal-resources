@@ -93,15 +93,11 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('textarea').redactor({
-                focus: true,
-                linebreaks: true,
-                plugins: ['syntax']
-            });
+            $('textarea').redactor($.extend($.Redactor.default_opts, {imageUpload: null, plugins: ['syntax']}));
 
             // Insert merge field in visible editor
             $('button.as-link').on('click', function() {
-                $('.tabContent:visible textarea').redactor('insert.text', $(this).text());
+                $('.tabContent:visible textarea[name^="data"]').redactor('insert.text', $(this).text());
             });
         });
     </script>

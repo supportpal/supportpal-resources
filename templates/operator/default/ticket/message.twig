@@ -33,6 +33,11 @@
                     {{ Lang.choice('user.user', 1) }}
                 {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
                 &nbsp;&middot;&nbsp; {{ Lang.get('general.via') }} {{ message.channel.name }}
+                {% if message.emaillog %}
+                    <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="show-original description">
+                        ({{ Lang.get('core.show_original') }})
+                    </a>
+                {% endif %}
             </span>
     	</div>
 

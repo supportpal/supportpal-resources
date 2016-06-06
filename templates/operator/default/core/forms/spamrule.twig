@@ -47,7 +47,7 @@
             <div class="form-row">
                 {{ form_label('type', Lang.get('general.type')) }}
                 <div class="input-container">
-                    {{ form_select('type', { 0: Lang.get('general.content'), 1: Lang.get('general.sender'), 2: Lang.get('general.content_sender') }) }}
+                    {{ form_select('type', { 0: Lang.get('general.content'), 1: Lang.get('general.sender'), 2: Lang.get('general.content_sender')|raw }) }}
                 </div>
             </div>
 

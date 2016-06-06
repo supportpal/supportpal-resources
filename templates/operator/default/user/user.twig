@@ -128,6 +128,23 @@
                 // Reset the dropdown to its initial state
                 $('#' + this.id)[0].selectedIndex = 0;
             });
+
+            // Tooltip on user groups
+            $(document).tooltip({
+                selector: '.userGroup',
+                position: {
+                    my: "center bottom-12",
+                    at: "center top",
+                    using: function( position, feedback ) {
+                        $( this ).css( position );
+                        $( "<div>" )
+                            .addClass( "arrow" )
+                            .addClass( feedback.vertical )
+                            .addClass( feedback.horizontal )
+                            .appendTo( this );
+                    }
+                }
+            });
         });
 
         function deleteUser(data) {

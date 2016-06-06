@@ -107,6 +107,17 @@ hr {
     vertical-align: middle;
 }
 
+.userGroup {
+    background: #fff;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    height: 12px;
+    margin: 2px 0 -2px 4px;
+    width: 12px;
+}
+
 .avatar {
     -moz-border-radius: 99px;
     -webkit-border-radius: 99px;
@@ -947,6 +958,10 @@ ul.dropdown ul li:hover > ul {
     text-decoration: underline;
 }
 
+#sidebar .details ul.recent-tickets {
+    white-space: nowrap;
+}
+
 #sidebar ul {
     list-style: none;
     margin: 15px 0 0;
@@ -1019,6 +1034,13 @@ ul.dropdown ul li:hover > ul {
     font-weight: normal;
     text-transform: uppercase;
     width: auto;
+}
+
+#sidebar .form-row .input-group label {
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1.7em;
+    text-transform: none;
 }
 
 #sidebar .form-row .input-container {
@@ -1511,6 +1533,12 @@ table.dataTable > tbody > tr.child span.dtr-title {
     line-height: 25px !important;
 }
 
+.sweet-alert .description {
+    color: #999;
+    font-size: 85%;
+    margin-top: 15px;
+}
+
 .sweet-alert .icon {
     border-width: 3px !important;
     margin: 20px auto 0 !important;
@@ -1790,6 +1818,58 @@ ul#attached-files .deleteAttachment:hover {
 
 .ldap_operator .selectize-input input {
     width: 100% !important;
+}
+
+/* jQuery UI Tooltip */
+
+.ui-tooltip, .ui-tooltip .arrow:after {
+    background: #454545;
+}
+
+.ui-tooltip {
+    border: 0;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border-radius: 20px;
+    color: #fff;
+    font: 10px "Open Sans", Sans-Serif;
+    padding: 4px 10px;
+    text-transform: uppercase;
+}
+
+.ui-tooltip .arrow {
+    bottom: -16px;
+    height: 16px;
+    left: 50%;
+    margin-left: -25px;
+    overflow: hidden;
+    position: absolute;
+    width: 50px;
+}
+.ui-tooltip .arrow.top {
+    bottom: auto;
+    top: -16px;
+}
+.ui-tooltip .arrow.left {
+    left: 20%;
+}
+
+.ui-tooltip .arrow:after {
+    content: "";
+    left: 20px;
+    height: 12px;
+    position: absolute;
+    top: -9px;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    width: 10px;
+}
+.ui-tooltip .arrow.top:after {
+    bottom: -9px;
+    top: auto;
 }
 
 /* jQuery validation */

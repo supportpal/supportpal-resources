@@ -40,7 +40,7 @@
     {% if feedback|default is not empty and feedback.rating|default is not empty %}
         <div class="{% if feedback.rating %}success{% else %}fail{% endif %} box">
             <i class="fa {% if feedback.rating %}fa-smile-o{% else %}fa-frown-o{% endif %}"></i>&nbsp;
-            {{ Lang.get('ticket.feedback_rating_desc', { 'rating': feedback.rating ? strtolower(Lang.get('general.good')) : strtolower(Lang.get('general.bad')) })|raw }}
+            {{ Lang.get('ticket.feedback_rating_desc', { 'rating': feedback.rating ? mb_strtolower(Lang.get('general.good'), 'UTF-8') : mb_strtolower(Lang.get('general.bad'), 'UTF-8') })|raw }}
             {% if feedback.fields_answered %}
                 <a href="#" onclick="window.open('{{ route('ticket.operator.feedback.show', { id: feedback.id }) }}','width=800,height=600,scrollbars=yes');">
                     {{ Lang.get('ticket.view_feedback') }}

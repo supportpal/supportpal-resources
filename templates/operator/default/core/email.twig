@@ -84,10 +84,14 @@
             <h2>{{ Lang.get('general.content') }}</h2>
 
             <div class="desk_content_padding" style="padding: 25px;">
-
                 {{ Purifier.clean(record.contents) }}
-
             </div>
+
+            {% if record.raw is not empty %}
+            <a href="{{ route('core.operator.email.log.raw', [ record.id ]) }}" class="button">
+                {{ Lang.get('core.show_original') }}
+            </a>
+            {% endif %}
 
         </div>
 

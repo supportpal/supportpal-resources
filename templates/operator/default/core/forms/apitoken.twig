@@ -43,7 +43,7 @@
             <div class="form-row">
                 {{ form_label('access', Lang.get('core.access_level')) }}
                 <div class="input-container">
-                    {{ form_radio('access', rw_access, true) }} {{ Lang.get('core.read_write') }}<br />
+                    {{ form_radio('access', rw_access, true) }} {{ Lang.get('core.read_write')|raw }}<br />
                     {{ form_radio('access', r_access) }} {{ Lang.get('core.read_only') }}
                 </div>
             </div>

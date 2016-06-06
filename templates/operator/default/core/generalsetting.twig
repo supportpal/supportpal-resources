@@ -268,18 +268,18 @@
             {{ form_label('date_format', Lang.get('core.date_format')) }}
             <div class="input-container">
                 {{ form_select('date_format', {
-                    'd/m/Y': 'DD/MM/YYYY - ' ~ "now"|date('d/m/Y'),
-                    'd-m-Y': 'DD-MM-YYYY - ' ~ "now"|date('d-m-Y'),
-                    'd.m.Y': 'DD.MM.YYYY - ' ~ "now"|date('d.m.Y'),
-                    'm/d/Y': 'MM/DD/YYYY - ' ~ "now"|date('m/d/Y'),
-                    'm-d-Y': 'MM-DD-YYYY - ' ~ "now"|date('m-d-Y'),
-                    'm.d.Y': 'MM.DD.YYYY - ' ~ "now"|date('m.d.Y'),
-                    'Y/m/d': 'YYYY/MM/DD - ' ~ "now"|date('Y/m/d'),
-                    'Y-m-d': 'YYYY-MM-DD - ' ~ "now"|date('Y-m-d'),
-                    'Y.m.d': 'YYYY.MM.DD - ' ~ "now"|date('Y.m.d'),
-                    'j F Y': 'DD ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('j F Y'),
-                    'jS F Y': 'DDth ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('jS F Y'),
-                    'l jS F Y': Lang.choice('general.day', 1) ~ ' DDth ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('l jS F Y')
+                    'd/m/Y': 'DD/MM/YYYY - ' ~ "now"|date('d/m/Y', fields.default_timezone),
+                    'd-m-Y': 'DD-MM-YYYY - ' ~ "now"|date('d-m-Y', fields.default_timezone),
+                    'd.m.Y': 'DD.MM.YYYY - ' ~ "now"|date('d.m.Y', fields.default_timezone),
+                    'm/d/Y': 'MM/DD/YYYY - ' ~ "now"|date('m/d/Y', fields.default_timezone),
+                    'm-d-Y': 'MM-DD-YYYY - ' ~ "now"|date('m-d-Y', fields.default_timezone),
+                    'm.d.Y': 'MM.DD.YYYY - ' ~ "now"|date('m.d.Y', fields.default_timezone),
+                    'Y/m/d': 'YYYY/MM/DD - ' ~ "now"|date('Y/m/d', fields.default_timezone),
+                    'Y-m-d': 'YYYY-MM-DD - ' ~ "now"|date('Y-m-d', fields.default_timezone),
+                    'Y.m.d': 'YYYY.MM.DD - ' ~ "now"|date('Y.m.d', fields.default_timezone),
+                    'j F Y': 'DD ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('j F Y', fields.default_timezone),
+                    'jS F Y': 'DDth ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('jS F Y', fields.default_timezone),
+                    'l jS F Y': Lang.choice('general.day', 1) ~ ' DDth ' ~ Lang.choice('general.month', 1) ~ ' YYYY - ' ~ "now"|date('l jS F Y', fields.default_timezone)
                 }) }}
                 <br />
                 <span class="description">{{ Lang.get('core.date_format_desc') }}</span>
@@ -290,12 +290,12 @@
             {{ form_label('time_format', Lang.get('core.time_format')) }}
             <div class="input-container">
                 {{ form_select('time_format', {
-                    'g:i A': 'H:MM AM/PM - ' ~ "now"|date('g:i A'),
-                    'g.i A': 'H.MM AM/PM - ' ~ "now"|date('g.i A'),
-                    'g:i a': 'H:MM am/pm - ' ~ "now"|date('g:i a'),
-                    'g.i a': 'H.MM am/pm - ' ~ "now"|date('g.i a'),
-                    'H:i': 'HH:MM - ' ~ "now"|date('H:i'),
-                    'H.i': 'HH.MM - ' ~ "now"|date('H.i'),
+                    'g:i A': 'H:MM AM/PM - ' ~ "now"|date('g:i A', fields.default_timezone),
+                    'g.i A': 'H.MM AM/PM - ' ~ "now"|date('g.i A', fields.default_timezone),
+                    'g:i a': 'H:MM am/pm - ' ~ "now"|date('g:i a', fields.default_timezone),
+                    'g.i a': 'H.MM am/pm - ' ~ "now"|date('g.i a', fields.default_timezone),
+                    'H:i': 'HH:MM - ' ~ "now"|date('H:i', fields.default_timezone),
+                    'H.i': 'HH.MM - ' ~ "now"|date('H.i', fields.default_timezone),
                 }) }}
                 <br />
                 <span class="description">{{ Lang.get('core.time_format_desc') }}</span>

@@ -2,6 +2,10 @@
 
 @media print {
 
+    @page {
+        size: A4;
+    }
+
     body {
         background: #fff;
     }
@@ -18,12 +22,17 @@
         border: 0;
         float: right;
         margin-left: 25px;
-        width: 220px;
+        position: static;
+        width: 220px !important;
     }
 
     #sidebar .sidebox {
         border-bottom: 1px solid #eee;
         padding: 25px 0;
+    }
+
+    #sidebar .arrow {
+        display: none;
     }
 
     #sidebar + #main {
@@ -39,21 +48,28 @@
         padding: 25px 0;
     }
 
+    #main .desk_content_padding, .message {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
     .message:first-of-type {
         border-top: 1px solid #eee;
     }
 
-    .collapsed {
+    div.collapsed {
         background: 0;
         color: #333;
         opacity: 1.0
     }
 
-    .collapsed .original {
+    div.collapsed .original {
         display: block !important;
     }
 
-    .buttons, ul.tabs, .split-ticket, .reply-header, .message-form, .message .header .right, .collapsed .trimmed {
+    .buttons, ul.tabs, .split-ticket, .reply-header, .quick-actions, .reply-type, .message-form, .message .header .right, .collapsed .trimmed {
         display: none !important;
     }
 

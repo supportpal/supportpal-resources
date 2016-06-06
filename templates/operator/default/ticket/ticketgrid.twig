@@ -409,6 +409,23 @@
                     $('.dataTable').dataTable()._fnAjaxUpdate();
                 });
             });
+
+            // Tooltip on priority, status and user groups
+            $(document).tooltip({
+                selector: '.flag, .statusIcon, .userGroup',
+                position: {
+                    my: "center bottom-12",
+                    at: "center top",
+                    using: function( position, feedback ) {
+                        $( this ).css( position );
+                        $( "<div>" )
+                            .addClass( "arrow" )
+                            .addClass( feedback.vertical )
+                            .addClass( feedback.horizontal )
+                            .appendTo( this );
+                    }
+                }
+            });
         });
 
         function updateTicket(data) {

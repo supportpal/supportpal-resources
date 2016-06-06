@@ -2,15 +2,15 @@
     <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
 
     <div class="success box ticket-update hide">
-        {{ Lang.get('messages.success_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+        {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box ticket-update hide">
-        {{ Lang.get('messages.error_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+        {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
     </div>
 
     <div class="warning box ticket-viewing {% if viewing is empty %}hide{% endif %}">
         {% if viewing is not empty %}
-            {{ Lang.get('ticket.also_viewing', { 'name': viewing|join(', ')|e }) }}
+            {{ Lang.get('ticket.also_viewing', { 'name': viewing|join(', ')|e })|raw }}
         {% endif %}
     </div>
 
@@ -163,10 +163,17 @@
                     <i class="fa fa-chevron-down"></i>
                 </div>
             </h3>
-            <div>
+            <div style="white-space: normal;">
                 <img src="data:image/png;base64,{{ ticket.user.avatar }}"
-                    width="{% if ticket.user.organisation is not empty %}48{% else %}28{% endif %}" class="avatar left" />
-                &nbsp; <strong>{{ ticket.user.formatted_name }}</strong><br />
+                    width="{% if ticket.user.organisation is not empty %}44{% else %}24{% endif %}"
+                    class="avatar left" style="margin-top: 0" />
+                &nbsp; <strong>{{ ticket.user.formatted_name }}</strong>
+                {% if ticket.user.groups is not empty %}
+                    {% for group in ticket.user.groups %}
+                    <span class="userGroup" style="background: {{ group.colour }};" title="{{ group.name }}"></span>
+                    {% endfor %}
+                {% endif %}
+                <br />
                 {% if ticket.user.organisation is not empty %}
                     &nbsp; <i class="fa fa-building-o"></i> &nbsp;
                     <a href="{{ ticket.user.organisation.url|raw }}">{{ ticket.user.organisation.name }}</a><br />
@@ -202,7 +209,8 @@
                 <ul class="recent-tickets">
                     {% for userTicket in userTickets %}
                     <li>
-                        <span class="statusIcon" style="background: {{ userTicket.status.colour }};"></span> &nbsp;
+                        <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
+                            title="{{ userTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}">
                             {{ Purifier.clean(str_limit(userTicket.subject, 28, '...')) }}
                         </a>
@@ -222,7 +230,8 @@
                 <ul class="recent-tickets">
                     {% for organisationTicket in organisationTickets %}
                     <li>
-                        <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"></span> &nbsp;
+                        <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
+                            title="{{ organisationTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}">
                             {{ Purifier.clean(str_limit(organisationTicket.subject, 28, '...')) }}
                         </a>

@@ -44,6 +44,9 @@
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
+            {% if record.exists and not operator %}
+                <button class="delete-user" type="button">{{ Lang.get('general.delete') ~ ' ' ~ Lang.choice('user.user', 1) }}</button>
+            {% endif %}
         </div>
 
     {{ form_close() }}
@@ -65,6 +68,9 @@
 
     <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -170,6 +176,33 @@
                     $('.action.fail').show(500).delay(5000).hide(500);
                 });
             });
+
+            {% if record.exists and not operator %}
+                // Delete user button
+                $('.delete-user').on('click', function() {
+                    // Show the alert
+                    swal({
+                        title: Lang.get('messages.are_you_sure'),
+                        text: Lang.get('messages.warn_delete'),
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#e74c3c",
+                        confirmButtonText: Lang.get('messages.yes_im_sure'),
+                        closeOnConfirm: false
+                    }, function(isConfirm) {
+                        if (isConfirm) {
+                            // Disable submit button
+                            swal.disableButtons();
+                            // Go to user list
+                            $('body').append($('<form class="delete" action="' + laroute.route('user.operator.user.destroy_redirect', { id: {{ record.id }} }) + '" method="POST">'
+                                + '<input name="_method" type="hidden" value="DELETE" />'
+                                + '<input name="_token" type="hidden" value="' + $('meta[name=csrf_token]').prop('content') + '">'
+                            + '</form>'));
+                            $('form.delete').submit();
+                        }
+                    });
+                });
+            {% endif %}
         });
     </script>
 {% endblock %}

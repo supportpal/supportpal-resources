@@ -53,13 +53,13 @@
                             {{ form_check('email_notifications[ticket]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.choice('ticket.ticket', 2) }}
                         </label><br />
                         <label>
-                            {{ form_check('email_notifications[login]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.get('notification.failed_logins') }}
+                            {{ form_check('email_notifications[login]', 1, opsetting|default is not empty ? opsetting.email_notifications['login'] : true) }} {{ Lang.get('notification.failed_logins') }}
                         </label><br />
                         <label>
-                            {{ form_check('email_notifications[comment]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.get('notification.new_comments') }}
+                            {{ form_check('email_notifications[comment]', 1, opsetting|default is not empty ? opsetting.email_notifications['comment'] : true) }} {{ Lang.get('notification.new_comments') }}
                         </label><br />
                         <label>
-                            {{ form_check('email_notifications[message]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
+                            {{ form_check('email_notifications[message]', 1, opsetting|default is not empty ? opsetting.email_notifications['message'] : true) }} {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
                         </label>
                     </div>
                     <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
