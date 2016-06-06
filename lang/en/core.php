@@ -257,4 +257,11 @@ return [
     "pretty_urls_desc"          => "Enabling will remove index.php from URLs, only enable if you are able to access the operator panel without index.php. Disable if you do not have mod_rewrite installed, .htaccess files are not allowed or haven't converted the Apache .htaccess rewrite rules to work with your alternative web server.",
     "send_diagnostic"           => "Send Diagnostic Data",
     "send_diagnostic_desc"      => "To help SupportPal improve its products, your installation can send diagnostic data when something goes wrong.",
+    
+    /*
+     * v2.0.1
+     */
+    "incoming_rejected"         => "Incoming (Rejected)",
+    "show_original"             => "Show Original",
+
 ];

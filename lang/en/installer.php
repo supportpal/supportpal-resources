@@ -19,7 +19,7 @@ return [
     "upgrade_step_1"            => "Step 1 of 3: System Requirements",
     "upgrade_step_2"            => "Step 2 of 3: Update Database",
     "upgrade_step_3"            => "Step 3 of 3: Upgrade Complete",
-    "upgrade_step_3_support"    => "Should you find any problems or need any help in configuring/using the new features in SupportPal, you can check our documentation, post on our forums or open a ticket with us.",
+    "upgrade_step_3_support"    => "Should you find any problems or need any help using the new features in SupportPal, please read our documentation or open a ticket with us.",
     "upgrade_step_3_continue"   => "To continue using SupportPal, log in to the operator panel here",
     "successfully_updated"      => "Congratulations, SupportPal has been successfully upgraded.",
 
@@ -69,8 +69,12 @@ return [
     "step_7"                    => "Step 7 of 7: Installed!",
     "successfully_installed"    => "Congratulations, SupportPal has been successfully installed.",
     "operator_panel"            => "Operator Panel",
-    "post_install"              => "We recommend carrying out the detailed <a href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-PostInstallationSteps'>post installation steps</a> for better functionality and security.",
     "help_desc"                 => "Should you need any help in configuring or using SupportPal, we have three main sources of information:",
     "submit_a_ticket"           => "Submit a Ticket",
+
+    /*
+     * 2.0.1
+     */
+    "post_install"              => "For the system to function properly, a cron job must be set-up. Please read our <a href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-PostInstallationSteps'>post installation steps</a> for details on this and other recommend actions to improve functionality and security.",
 
 ];

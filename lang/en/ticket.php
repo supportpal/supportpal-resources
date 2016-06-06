@@ -206,7 +206,6 @@ return [
     "cc_desc"                   => "You can CC other people on to this ticket by entering email addresses above.",
 
     "allowed_files"             => "Allowed Attachment File Types",
-    "allowed_files_desc"        => "The file types that are allowed as attachments to tickets. Other file types will be rejected.",
 
     // Drafts
     "also_viewing"              => "<strong>:name</strong> also viewing ticket.",
@@ -368,5 +367,11 @@ return [
     "channel_deactivated"       => "The ticket channel is currently deactivated, a reply cannot be posted.",
 
 	"type_in_tags"				=> "Type in tags",
+
+    /*
+     * v2.0.1
+     */
+    "not_assigned_department"   => "Cannot view ticket as you are not assigned to the department it belongs to.",
+	"allowed_files_desc"        => "A list of file extensions, separated by the pipe | character, that are permitted as attachments. For example: txt|png|jpg. To allow all attachments, input: ?.*",
 
 ];

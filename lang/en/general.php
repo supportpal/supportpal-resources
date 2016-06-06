@@ -199,4 +199,10 @@ return [
     
     "editor"                    => "Editor",
 
+    /*
+     * v2.0.1
+     */
+    "download"                  => "Download",
+    "acknowledge"               => "Acknowledge",
+
 ];
