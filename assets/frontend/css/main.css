@@ -230,6 +230,14 @@ a.button, a.button:hover, .desk_wrapper .button .fa {
     margin-bottom: 5px;
 }
 
+.form-row .input-container label {
+    display: inline-block;
+    font-size: 100%;
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-right: 5px;
+}
+
 .form-button {
     margin-top: 25px;
 }

@@ -43,7 +43,7 @@ $(document).ready(function() {
         // Hide current div
         $('div.desk-tab').hide();
         // Show new div
-        $('#tab' + name).show();
+        $('[id="tab'+name+'"]').show();
 
         // Remove active from old tab
         $('ul.desk-tabs li.active').removeClass('active');

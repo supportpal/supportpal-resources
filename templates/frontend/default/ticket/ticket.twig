@@ -48,10 +48,10 @@
     {% endif %}
 
     <div class="success box ticket-update hide">
-        {{ Lang.get('messages.success_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+        {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box ticket-update hide">
-        {{ Lang.get('messages.error_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+        {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
     </div>
 
     <div class="success box ticket-custom hide"></div>

@@ -209,6 +209,7 @@ html {
         margin-left: 0;
         margin-top: 7px;
         position: static;
+        white-space: normal;
     }
 
     .has-error .field-error:before {

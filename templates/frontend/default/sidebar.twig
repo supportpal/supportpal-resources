@@ -87,7 +87,7 @@
                 <h2>{{ Lang.get('user.login') }}</h2>
                 {{ form_open({ 'url': 'login', 'method': 'post' }) }}
 
-                {{ form_hidden('back', Request.url()) }}
+                {{ form_hidden('back', intended_url|default is not empty ? intended_url : Request.url()) }}
 
                 {{ form_text('email', null, {'placeholder' : Lang.get('general.email')}) }}
                 {{ form_password('password', {'placeholder' : Lang.get('general.password')}) }}
