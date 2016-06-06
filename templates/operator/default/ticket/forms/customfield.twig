@@ -1,0 +1,150 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.customfield", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.customfield", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.customfield.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.customfield.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container first open">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('type', Lang.get('general.type')) }}
+                <div class="input-container">
+                    {{ form_select('type', {
+                        '0': Lang.get('customfield.boolean'),
+                        '1': Lang.get('customfield.checkbox'),
+                        '2': Lang.get('customfield.checklist'),
+                        '3': Lang.get('customfield.date'),
+                        '4': Lang.get('customfield.multiple'),
+                        '5': Lang.get('customfield.options'),
+                        '6': Lang.get('customfield.password'),
+                        '7': Lang.get('customfield.radio'),
+                        '8': Lang.get('customfield.text'),
+                        '9': Lang.get('customfield.textarea')
+                    }, null, typeLocked is defined and typeLocked ? {'disabled': 'disabled'} : {}) }}
+                    {% if typeLocked %}
+                        {{ form_hidden('type') }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="customfield-options {% if record.type != 2 and record.type != 4 and record.type != 5 and record.type != 7 %}hide{% endif %}">
+
+                {% include 'operator.' ~ template ~ '.forms.customfield_option' with { 'hide': true } %}
+
+                {% for key, option in record.options %}
+                    {% include 'operator.' ~ template ~ '.forms.customfield_option' %}
+                {% endfor %}
+
+                <div class="form-row">
+                    <div class="input-container">
+                        {{ form_button(Lang.get("general.add") ~ ' ' ~ Lang.get("general.option"), { 'class': 'add-option' }) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+                {{ form_label('depts[]', Lang.choice("ticket.department", 2)) }}
+                <div class="input-container">
+                    <div class="input-group">
+                    {% for department in departments %}
+                        <label>
+                        {{ form_checkbox('depts[]', department.id, in_array(department.id, recordDepartments, true)) }}
+                        {{ Purifier.clean(department.name) }}
+                        </label><br />
+                    {% endfor %}
+                    </div>
+                    <span class="description">{{ Lang.get('customfield.department_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row required-field {% if record.type == 1 or record.type == 2 or record.type == 4 %}hide{% endif %}">
+                {{ form_label('required', Lang.get('general.required')) }}
+                <div class="input-container">
+                    {{ form_check('required', 1, record.exists ? record.required : 0, { 'class': 'toggle', 'id': 'toggle_required' }) }}
+                    <label for="toggle_required"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('customfield.required_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('public', Lang.get('customfield.public')) }}
+                <div class="input-container">
+                    {{ form_check('public', 1, record.exists ? record.public : 1, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                    <label for="toggle_public"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('customfield.public_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row encrypt-field {% if record.type != 6 and record.type != 8 and record.type != 9 %}hide{% endif %}">
+                {{ form_label('encrypted', Lang.get('customfield.encrypted')) }}
+                <div class="input-container">
+                    {{ form_check('encrypted', 1, record.encrypted, { 'class': 'toggle', 'id': 'toggle_encrypted' }) }}
+                    <label for="toggle_encrypted"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('customfield.encrypted_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('purge', Lang.get('customfield.purge')) }}
+                <div class="input-container">
+                    {{ form_check('purge', 1, record.purge, { 'class': 'toggle', 'id': 'toggle_purge' }) }}
+                    <label for="toggle_purge"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('customfield.purge_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('locked', Lang.get('customfield.locked')) }}
+                <div class="input-container">
+                    {{ form_check('locked', 1, record.locked, { 'class': 'toggle', 'id': 'toggle_locked' }) }}
+                    <label for="toggle_locked"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('customfield.locked_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/customfield.js') }}"></script>
+{% endblock %}

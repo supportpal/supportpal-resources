@@ -1,0 +1,74 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+	{% if record|default is not empty %}
+    	{{ record.formatted_name }} - {{ Lang.get('user.activity_log') }}
+    {% else %}
+    	{{ Lang.get('user.system_activity_log') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+	
+	{% if record|default is not empty %}
+        {% include 'operator.' ~ template ~ '.user.forms.user_tabs' %}
+    {% endif %}
+
+    <div class="grid-options options box">
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
+
+        <div class="filters hide">
+            <div>
+                <label>{{ Lang.get('general.date') }}:</label>
+                <div>
+                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start') ~ ' ' ~ Lang.get('general.date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    &nbsp;{{ Lang.get('general.to') }}&nbsp;
+                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end') ~ ' ' ~ Lang.get('general.date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            {% if record is not defined %}
+            <div>
+                <label>{{ Lang.choice('user.role', 1) }}:</label>
+                <div>
+                    {{ form_select('sSearch_1', { '-1': Lang.get('general.select_value'), 0: Lang.get('general.system'), '1': Lang.choice('general.operator', 1), 2: Lang.choice('user.user', 1) }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            <div>
+                <label>{{ Lang.get('general.name') }}:</label>
+                <div>
+                    {{ form_text('sSearch_2', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            {% endif %}
+            <div>
+                <label>{{ Lang.get('general.ip_address') }}:</label>
+                <div>
+                    {{ form_text('sSearch_3', null, { 'placeholder': Lang.get('general.enter_exact_ip') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+	{{ table.render()|raw }}
+	{{ table.script()|raw }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/queryfiltering.js') }}"></script>
+{% endblock %}

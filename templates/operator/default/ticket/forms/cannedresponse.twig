@@ -1,0 +1,133 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.cannedresponse", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.cannedresponse", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.cannedresponse.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.cannedresponse.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container first open">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('text', Lang.get('ticket.response')) }}
+                <div class="input-container">
+                    {{ form_redactor_mf('text') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('public', Lang.get('general.public')) }}
+                <div class="input-container">
+                    {{ form_check('public', 1, record.user_id|default is empty, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                    <label for="toggle_public"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.canned_public_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full usergroups">
+                {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+                <div class="input-container">
+                    {{ form_select('groups[]', groups, userGroups, { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.canned_group_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+        {% include 'operator.' ~ template ~ '.core.forms.mergefields' with { 'tickets': true } %}
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+
+    <!-- Code Editor -->
+    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/operator/js/selectize/no_results.js') }}"></script>
+
+    <script type="text/javascript">
+        var $select, $editor;
+
+        $(document).ready(function() {
+            $select = $('select[name="groups[]"]').selectize({
+                delimiter: ',',
+                persist: false,
+                dropdownParent: 'body'
+            })[0].selectize;
+
+            $editor = $('textarea').redactor($.extend($.Redactor.default_opts, {plugins: ['syntax']}));
+
+            // Insert merge field in visible editor
+            $('button.as-link').on('click', function(e) {
+                $editor.redactor('insert.text', $(this).text());
+                e.preventDefault();
+            });
+
+            $('select[name="tags[]"]').selectize({
+                plugins: ['no_results'],
+                delimiter: ',',
+                persist: false,
+                dropdownParent: 'body'
+            });
+
+            // On page load, toggle the user groups box depending on whether public is set/not
+            var $public = $('input[name="public"]');
+            $('.usergroups').toggle($public.is(":checked"));
+
+            // Toggle user groups, as we update the checkbox
+            $public.change(function() {
+                if (this.checked) {
+                    $('.usergroups').show();
+                    $('select[name="groups[]"]').prop("disabled", false);
+                    $select.enable();
+                } else {
+                    $('.usergroups').hide();
+                    $('select[name="groups[]"]').prop("disabled", true);
+                    $select.clear();
+                    $select.disable();
+                }
+            });
+        });
+    </script>
+{% endblock %}

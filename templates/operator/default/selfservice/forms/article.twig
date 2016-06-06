@@ -1,0 +1,195 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ type.name }}: {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.article', 1) }}
+    {% else %}
+        {{ type.name }}: {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.article', 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'selfservice.operator.article.update', type.slug, record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': [ 'selfservice.operator.article.store', type.slug ], 'class': 'validate' }) }}
+    {% endif %}
+
+        {{ form_hidden('type_id', type.id) }}
+
+        <div class="form-container first open">
+
+            <div class="form-row form-full">
+                {{ form_label('text', Lang.get('selfservice.title')) }}
+                <div class="input-container">
+                    {{ form_text('title') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('text', Lang.choice('selfservice.keyword', 2)) }}
+                <div class="input-container">
+                    {{ form_text('keywords') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('textarea', Lang.get('selfservice.excerpt')) }}
+                <div class="input-container">
+                    {{ form_textarea('excerpt', null, { 'style': 'resize: none;', 'rows': 2, 'cols': 40 }) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('textarea', Lang.choice('selfservice.article', 1)) }}
+                <div class="input-container">
+                    {{ form_redactor('text') }}
+
+                    {% include 'operator.' ~ template ~ '.core.forms.attachments' with {
+                            'route': 'selfservice.operator.attachment',
+                            'downloadRoute': 'selfservice.operator.attachment.download',
+                            'attachments': record.attachments is not empty ? record.attachments : []
+                        }
+                    %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('select', Lang.choice('selfservice.category', 2)) }}
+                <div class="input-container">
+                    <select name="category[]" multiple="multiple">
+                        {% for category in categories %}
+                            <option data-data='{{ category|json_encode(constant('JSON_FORCE_OBJECT')) }}'
+                                {% if record|default is not empty and record.categories.contains('id', category.id) %}selected="selected"{% endif %}
+                                value='{{ category.id }}'>
+                                {{ category.name }} {{ category.hierarchy }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('select', Lang.choice('selfservice.tag', 2)) }}
+                <div class="input-container">
+                    <select name="tag[]" multiple="multiple">
+                        {% for tag in tags %}
+                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.name }}'>
+                                {{ tag.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('published', Lang.get('selfservice.published')) }}
+                <div class="input-container">
+                    {{ form_check('published', 1, record|default is not empty and record.exists ? record.published : true,
+                        { 'class': 'toggle', 'id': 'toggle_published' }) }}
+                    <label for="toggle_published"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.published_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row" id="toggle_protected_container">
+                {{ form_label('protected', Lang.get('selfservice.registered_users')) }}
+                <div class="input-container">
+                    {{ form_check('protected', 1, null, { 'class': 'toggle', 'id': 'toggle_protected' }) }}
+                    <label for="toggle_protected"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.registered_users_desc') }}</span>
+                </div>
+            </div>
+
+            {% if record.views > 0 %}
+            <div class="form-row">
+                <label>{{ Lang.get('general.views')|capitalize }}</label>
+                <div class="input-container">
+                    {{ record.views }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if record.exists %}
+            <div class="form-row">
+                <label>{{ Lang.get('general.url') }}</label>
+                <div class="input-container">
+                    <a href="{{ record.frontend_url }}" target="_blank">{{ record.frontend_url }}</a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('textarea[name=text]').redactor($.Redactor.default_opts);
+
+            var $categorySelectize = $('select[name="category[]"]').selectize({
+                plugins: ['remove_button'],
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                create: false,
+                maxItems: null,
+                placeholder: Lang.get("selfservice.associate_category"),
+                render: {
+                    option: function(item, escape) {
+                        return '<div>' + escape(item.name) +
+                                    '<span class="description">' + escape(item.hierarchy) + '</span>' +
+                                '</div>';
+                    }
+                }
+            });
+
+            // If there's a category specified in the URL, set a sefault selectize value
+            if ('{{ Input.get('category', '') }}' !== '') {
+                // Set the category from the URL
+                $categorySelectize[0].selectize.setValue('{{ Input.get('category', '') }}');
+            }
+
+            $('select[name="tag[]"]').selectize({
+                plugins: ['remove_button'],
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                create: true,
+                maxItems: null,
+                placeholder: Lang.get("selfservice.associate_tag")
+            });
+
+            /**
+             * Only show the toggle_protected row if the article is published
+             */
+            $('#toggle_public').on('change', function() {
+                var $container = $('#toggle_protected_container');
+                this.checked ? $container.show() : $container.hide();
+            });
+
+        });
+    </script>
+{% endblock %}

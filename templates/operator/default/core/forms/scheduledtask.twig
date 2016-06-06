@@ -1,0 +1,59 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('general.edit') }} {{ Lang.choice('core.scheduled_task', 1) }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'route': [ 'core.operator.scheduledtask.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ record.name }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ record.description }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('interval', Lang.get('general.interval')) }}
+                <div class="input-container">
+                    <div class="duration">
+                        {{ form_text('interval_days', interval|default is not empty and interval['days'] != 0 ? interval['days'] : null, { 'size': 3 }) }}<div class="description">{{ Lang.choice('general.day', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('interval_hours', interval|default is not empty and interval['hours'] != 0 ? interval['hours'] : null, { 'size': 3, 'style': 'border-left: 0; border-right: 0;' }) }}<div class="description">{{ Lang.choice('general.hour', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('interval_minutes', interval|default is not empty and interval['minutes'] != 0 ? interval['minutes'] : null, { 'size': 3 }) }}<div class="description">{{ Lang.choice('general.minute', 2) }}</div>
+                    </div><br />
+                    <span class="description">{{ Lang.get('core.interval_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice("general.submit", 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

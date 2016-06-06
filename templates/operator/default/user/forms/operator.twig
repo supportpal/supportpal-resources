@@ -1,0 +1,120 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("general.operator", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'user.operator.operator.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'user.operator.operator.store', 'files': true, 'class': 'validate' }) }}
+    {% endif %}
+
+        <h2>{{ Lang.get('user.user_details') }}</h2>
+        <div class="form-container first">
+            {% include 'operator.' ~ template ~ '.user.forms.profile' with { 'operator': true, 'managing': true } %}
+        </div>
+
+        <h2>{{ Lang.get('user.operator_settings') }}</h2>
+        <div class="form-container first">
+            <div class="form-row">
+                {{ form_label('depts[]', Lang.choice("ticket.department", 2)) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        {% for department in departments %}
+                            <label>
+                                {{ form_checkbox('depts[]', department.id, in_array(department.id, assignedDepartments, true)) }}
+                                {{ Purifier.clean(department.name) }}
+                            </label><br />
+                        {% endfor %}
+                    </div>
+                    <span class="description">{{ Lang.get('user.op_settings_dept_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('ticket_signature', Lang.get('ticket.ticket_signature')) }}
+                <div class="input-container">
+                    {{ form_redactor('ticket_signature', opsetting|default is not empty ? opsetting.ticket_signature : null, { 'size': '50x3' }) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('email_notifications', Lang.get('user.email_notifications')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>
+                            {{ form_check('email_notifications[ticket]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.choice('ticket.ticket', 2) }}
+                        </label><br />
+                        <label>
+                            {{ form_check('email_notifications[login]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.get('notification.failed_logins') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('email_notifications[comment]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.get('notification.new_comments') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('email_notifications[message]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
+                        </label>
+                    </div>
+                    <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/operator/js/randomPassword.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Generate a new random password
+            $('a#generatePassword').click(function() {
+                var password = randomPassword(8);
+
+                if (document.getElementById('password').type == 'text') {
+                    document.getElementById('password').value=password;
+                } else {
+                    document.getElementById('password').type='text';
+                    document.getElementById('password').value=password;
+                    document.getElementById('password').type='password';
+                }
+            });
+
+            $('select[name="groups[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ',',
+                placeholder: Lang.get('user.select_group')
+            });
+
+            $('textarea').redactor($.Redactor.default_opts);
+        });
+    </script>
+{% endblock %}

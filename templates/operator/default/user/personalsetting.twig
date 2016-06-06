@@ -1,0 +1,294 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('user.personal_settings') }}
+{% endblock %}
+
+{% block description %}
+    {{ Lang.get('user.personal_settings_desc') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'method': 'PUT', 'route': [ 'user.operator.personalsetting.update' ], 'files': true, 'class': 'validate' }) }}
+
+        <ul class="tabs">
+          <li id="Profile" class="active">{{ Lang.get('user.profile') }}</li>
+          <li id="TwoFA">{{ Lang.get('user.two_fa') }}</li>
+          <li id="Ticket">{{ Lang.get('user.ticket_settings') }}</li>
+          <li id="Notifications">{{ Lang.get('user.notifications') }}</li>
+        </ul>
+
+        <div id="tabProfile" class="tabContent">
+
+            {% include 'operator.' ~ template ~ '.user.forms.profile' %}
+
+            <div class="form-row">
+                {{ form_label('opsettings[template]', Lang.get('user.operator_template')) }}
+                <div class="input-container">
+                    {{ form_select('opsettings[template]', templates, record.opsettings.template|default is not empty
+                        ? record.opsettings.template : Config.get('settings.operator_template')) }}
+                </div>
+            </div>
+
+        </div>
+
+        <div id="tabTwoFA" class="tabContent hide">
+
+            <div class="success box twofa-status hide">
+                {% if record.twofa_enabled %}
+                    {{ Lang.get('user.two_fa_success_disabled') }}
+                {% else %}
+                    {{ Lang.get('user.two_fa_success_enabled') }}
+                {% endif %}
+            </div>
+
+            <div class="fail box twofa-status hide">
+                {{ Lang.get('user.two_fa_incorrect') }}
+            </div>
+
+
+            <div class="form-row">
+                {{ form_label('twofa_enabled', Lang.get('user.two_fa_enabled')) }}
+                <div class="input-container">
+                    <span class="twofa-enabled{% if not record.twofa_enabled %} hide{% endif %}" style="color: #27ae60; font-weight: bold;">
+                        {{ Lang.get('general.yes') }}
+                    </span>
+                    <span class="twofa-enabled{% if record.twofa_enabled %} hide{% endif %}" style="color: #c0392b; font-weight: bold;">
+                        {{ Lang.get('general.no') }}
+                    </span>
+                    <br />
+                    <span class="description">
+                        {% if record.twofa_enabled %}
+                            {{ Lang.get('user.two_fa_disable') }}
+                        {% else %}
+                            {{ Lang.get('user.two_fa_enable') }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if record.twofa_enabled %}
+
+                <div class="form-row">
+                    {{ form_label('twofa_verify', Lang.get('user.verify_code')) }}
+                    <div class="input-container">
+                        {{ form_text('twofa_verify') }}
+                        &nbsp;{{ form_button(Lang.get('user.verify_and_disable'), { 'class': 'twofa-verify' }) }}<br />
+                        <span class="description">{{ Lang.get('user.verify_code_desc') }}</span>
+                    </div>
+                </div>
+
+            {% else %}
+
+                <div class="form-row">
+                    {{ form_label('twofa_qrcode', Lang.get('user.qr_code')) }}
+                    <div class="input-container">
+                        {{ Html.image(Google2FA.getQRCodeGoogleUrl(
+                            Lang.get('core.product_name'),
+                            record.email,
+                            twofa_secret), null, { "style": 'border: 1px solid #ddd;' })
+                        }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    {{ form_label('wofa_secret', Lang.get('user.two_fa_secret')) }}
+                    <div class="input-container">
+                        {{ twofa_secret }}<br />
+                        <span class="description">{{ Lang.get('user.two_fa_secret_desc') }}</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    {{ form_label('twofa_verify', Lang.get('user.verify_code')) }}
+                    <div class="input-container">
+                        <div class="input-with-button">
+                            {{ form_text('twofa_verify') }}
+                            {{ form_button(Lang.get('user.verify_and_enable'), { 'class': 'twofa-verify' }) }}
+                        </div>
+                        <span class="description">{{ Lang.get('user.two_fa_verify_desc') }}</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="input-container" style="line-height: 30px;">
+                        <i class="fa fa-apple" style="font-size: 150%; color: #666;"></i>&nbsp;&nbsp;
+                        <a href="https://itunes.apple.com/gb/app/authy/id494168017">Authy</a> (iOS),
+                        <a href="https://itunes.apple.com/gb/app/google-authenticator/id388497605">Google Authenticator</a> (iOS).<br />
+
+                        <i class="fa fa-android" style="font-size: 150%; color: #A2C437;"></i>&nbsp;&nbsp;
+                        <a href="https://play.google.com/store/apps/details?id=com.authy.authy">Authy</a> (Android),
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator</a> (Android).<br />
+
+                        <i class="fa fa-windows" style="font-size: 130%; color: #00ADEF;"></i>&nbsp;&nbsp;
+                        <a href="https://www.microsoft.com/en-us/store/apps/authenticator/9nblggh09llf">Authenticator</a> (Windows Phone),
+                        <a href="https://www.authy.com/apps/two-factor-authentication-for-pc">Authy</a> (Windows PC).<br />
+                    </div>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div id="tabTicket" class="tabContent hide">
+
+            <div class="form-row form-full">
+                {{ form_label('opsettings[ticket_signature]', Lang.get('ticket.ticket_signature')) }}
+                <div class="input-container">
+                    {{ form_redactor('opsettings[ticket_signature]', null, { 'size': '50x3' }) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+            	{{ form_label('opsettings[ticket_reply_order]', Lang.get('ticket.ticket_reply_order')) }}
+                <div class="input-container">
+                    {{ form_select('opsettings[ticket_reply_order]', {
+                            0: Lang.get('general.system_default'),
+                            1: Lang.get('general.ascending'),
+                            2: Lang.get('general.descending')
+                        }) }}
+                </div>
+            </div>
+
+        </div>
+
+        <div id="tabNotifications" class="tabContent hide">
+
+            <div class="form-row">
+                {{ form_label('opsettings[email_notifications]', Lang.get('user.email_notifications')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>
+                            {{ form_check('opsettings[email_notifications][ticket]', 1, record.opsettings['email_notifications']['ticket']) }}
+                            {{ Lang.choice('ticket.ticket', 2) }}
+                        </label><br />
+                        <label>
+                            {{ form_check('opsettings[email_notifications][login]', 1, record.opsettings['email_notifications']['login']) }}
+                            {{ Lang.get('notification.failed_logins') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('opsettings[email_notifications][comment]', 1, record.opsettings['email_notifications']['comment']) }}
+                            {{ Lang.get('notification.new_comments') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('opsettings[email_notifications][message]', 1, record.opsettings['email_notifications']['message']) }}
+                            {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
+                        </label>
+                    </div>
+                    <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('opsettings[display_notifications]', Lang.get('user.display_notifications')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('opsettings[display_notifications]', 1) }} {{ Lang.get('user.browser_notifications') }}
+                            <a class="preview-browser">({{ Lang.get('general.preview') }})</a>
+                        </label><br />
+                        <label>
+                            {{ form_radio('opsettings[display_notifications]', 2) }} {{ Lang.get('user.desktop_notifications') }}
+                            <a class="preview-desktop">({{ Lang.get('general.preview') }})</a>
+                        </label><br />
+                        <label>
+                            {{ form_radio('opsettings[display_notifications]', 0) }} {{ Lang.get('general.none') }}
+                        </label>
+                    </div>
+                    <span class="description">{{ Lang.get('user.display_notifications_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.save')) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('textarea').redactor($.Redactor.default_opts);
+
+            $('button.twofa-verify').click(function() {
+                var code = $('input[name="twofa_verify"]').val();
+                var enable = {{ record.twofa_enabled }};
+                $.ajax({
+                    url: laroute.route('user.operator.personalsetting.verify2fa'),
+                    type: 'POST',
+                    data: {
+                        enable: 1-enable,
+                        secret: "{{ twofa_secret }}",
+                        code: code
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            $('.twofa-enabled').toggle();
+                            $('.twofa-status.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.twofa-status.fail').show(500).delay(5000).hide(500);
+                        }
+                    },
+                    error: function() {
+                        $('.twofa-status.fail').show(500).delay(5000).hide(500);
+                    }
+                });
+            });
+
+            $('input[name="opsettings[display_notifications]"]').on('change', function() {
+                if ($(this).val() == 2) {
+                    // Get permission
+                    PNotify.desktop.permission();
+                }
+            });
+
+            var stack = {"dir1": "up", "dir2": "left"};
+
+            // Show example browser notification
+            $('.preview-browser').on('click', function() {
+                new PNotify({
+                    title: Lang.get('notification.new_ticket'),
+                    text: Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' }),
+                    addclass: 'stack-bottomright warning',
+                    stack: stack,
+                    icon: "fa fa-bell",
+                    styling: "fontawesome",
+                    buttons: {
+                        closer: true,
+                        closer_hover: false,
+                        sticker: false
+                    }
+                });
+            });
+
+            // Show example desktop notification
+            $('.preview-desktop').on('click', function() {
+                PNotify.desktop.permission();
+                new PNotify({
+                    title: Lang.get('notification.new_ticket'),
+                    text: Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' }),
+                    desktop: {
+                        desktop: true,
+                        icon: notificationIcon
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

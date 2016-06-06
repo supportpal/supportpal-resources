@@ -1,0 +1,14 @@
+<div class="ticket-draft {% if otherDraft is empty %}hide{% endif %}">
+	{% if otherDraft is not empty %}
+		<div class='warning box' style='border: 1px solid #f7df7a; margin: 0;'>
+            <img src='data:image/png;base64,{{ otherDraft.user.avatar }}' class='avatar' width='21' />&nbsp;
+            {{ Lang.get('ticket.drafting_reply', {
+                'name': otherDraft.user.formatted_name|e,
+                'time': prettyDate(otherDraft.created_at)
+            })|raw }}
+        </div>
+        <div class='draft-message box'>
+            {{ Purifier.clean(otherDraft.text) }}
+        </div>
+	{% endif %}
+</div>

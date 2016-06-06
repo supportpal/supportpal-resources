@@ -1,0 +1,91 @@
+{% for customfield in customfields %}
+    {# If we don't wish to lock fields on new forms #}
+    {% if new is defined and new %}
+        {% set customfield = customfield|merge({'locked': 0}) %}
+    {% elseif ticket|default is not empty and ticket.locked == 1 %}
+        {% set customfield = customfield|merge({'locked': 1}) %}
+    {% endif %}
+
+    <div class="form-row" data-field="{{ customfield['id'] }}">
+        {{ form_label('customfield[' ~ customfield['id'] ~ ']', customfield['name']) }}
+        <div class="input-container">
+            {% if customfield['type'] == 0 %}
+                {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 1,
+                    (customfield['value']) ? true : false,
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                }} {{ Lang.get('general.yes') }} &nbsp;&nbsp;
+                {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 0,
+                    (customfield['value'] == '0') ? true : false,
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                }} {{ Lang.get('general.no') }}
+
+            {% elseif customfield['type'] == 1 %}
+                {{ form_checkbox('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
+                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+
+            {% elseif customfield['type'] == 2 %}
+                {% for key, option in customfield['options'] %}
+                    {{ form_checkbox('customfield[' ~ customfield['id'] ~ '][]', key,
+                        customfield['value']|default is not empty and in_array(key, customfield['value']) ? true : false,
+                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}<br />
+                {% endfor %}
+
+            {% elseif customfield['type'] == 3 %}
+                {{ form_text('customfield[' ~ customfield['id'] ~ ']',
+                    customfield['value']|default is not empty ? timeWithOffset(customfield['value'], false)|date(Config.get('settings.date_format')) : null,
+                    {'class': 'datepicker', 'placeholder': '&#xf073;', 'disabled': (customfield['value'] is not empty and customfield['locked'] ? 'disabled' : null)}) }}
+
+            {% elseif customfield['type'] == 4 %}
+                {{ form_select('customfield[' ~ customfield['id'] ~ '][]', customfield['options'],
+                    customfield['value'],
+                    {'multiple': 'multiple', 'disabled': (customfield['value'] is not empty and customfield['locked'] ? 'disabled' : null)}) }}
+
+            {% elseif customfield['type'] == 5 %}
+                {{ form_select('customfield[' ~ customfield['id'] ~ ']', customfield['options'],
+                    customfield['value'], (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+
+            {% elseif customfield['type'] == 6 %}
+                {{ form_password('customfield[' ~ customfield['id'] ~ ']',
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                }} &nbsp; {% if customfield['value'] is not empty %}<span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
+
+            {% elseif customfield['type'] == 7 %}
+                {% for key, option in customfield['options'] %}
+                    {{ form_radio('customfield[' ~ customfield['id'] ~ ']', key,
+                        (customfield['value'] == key) ? true : false,
+                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}<br />
+                {% endfor %}
+
+            {% elseif customfield['type'] == 8 %}
+                {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+
+            {% elseif customfield['type'] == 9 %}
+                {{ form_textarea('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                    (customfield['value'] is not empty and customfield['locked'] ? {'rows': 5, 'style': 'width:100%', 'disabled': 'disabled'} : {'rows': 5, 'style': 'width:100%'})) }}
+
+            {% elseif customfield['type'] == 10 %}
+                <div class="table">
+                    <div class="table-row">
+                        <div class="table-cell first-cell"></div>
+                        {% for i in 1..5 %}
+                            <div class="table-cell"><strong>{{ i }}</strong></div>
+                        {% endfor %}
+                    </div>
+                    {% for key, option in customfield['options'] %}
+                    <div class="table-row">
+                        <div class="table-cell first-cell">{{ option }}</div>
+                        {% for i in 1..5 %}
+                        <div class="table-cell">
+                        {{ form_radio('customfield[' ~ customfield['id'] ~ '][' ~ key ~ ']', i,
+                            (customfield['value'] is not empty and array_key_exists(key, customfield['value']) and customfield['value'][key] == i) ? true : false,
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

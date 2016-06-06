@@ -1,0 +1,102 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("general.operator", 1) }} {{ Lang.choice("user.role", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }} {{ Lang.choice("user.role", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'user.operator.role.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'user.operator.role.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-row">
+            {{ form_label('name', Lang.get('general.name')) }}
+            <div class="input-container">
+                {{ form_text('name') }}
+            </div>
+        </div>
+
+        <div class="form-row form-full">
+            {{ form_label('description', Lang.get('general.description')) }}
+            <div class="input-container">
+                {{ form_text('description') }}
+            </div>
+        </div>
+
+        <div class="form-row form-full">
+            {{ form_label('group', Lang.choice('user.operator_group', 2)) }}
+            <div class="input-container">
+                {{ form_select('group[]', groups, roleGroups, { 'multiple': 'multiple' }) }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('operator', Lang.get('general.permissions')) }}
+            <div class="input-container role-options">
+                {% if record.exists and record.id != 1 %}
+                    {{ form_check('check-all', true) }} {{ Lang.get('general.check_uncheck_all') }}
+                {% endif %}
+                
+                {% for id, name in modules %}
+                    {% if permissions[id] is not empty %}
+                        <h3>{{ name }}</h3>
+                        <div class="input-group row">
+                            {% for key,permission in permissions[id] %}
+                                <div  class="item item25">
+                                    <label>
+                                        {{ form_check('permission[' ~ key ~ ']', true, in_array(key, rolePermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                        {{ Lang.get('permission.' ~ permission) }}
+                                    </label>
+                                </div>
+                            {% else %}
+                                {{ Lang.get('general.no_permissions_found') }}
+                            {% endfor %}
+                        </div>
+                        <div class="clear"></div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Check/Uncheck all checkboxes
+            $('input[name="check-all"]').click(function () {
+                $(this).parent().find('input:checkbox').prop('checked', this.checked);
+            });
+
+            // Groups
+            $('select[name="group[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ','
+            });
+        });
+    </script>
+{% endblock %}

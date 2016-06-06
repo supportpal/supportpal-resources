@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf_token" content="{{ csrf_token() }}" />
+    <meta name="date_format" content="{{ convertMomentFormat(Config.get('settings.date_format')) }}" />
+    {{ block('meta') }}
+
+    <title>{{ company }} - {% block title %}{{ Lang.get('general.support_portal') }}{% endblock %}</title>
+
+    <script src="{{ asset('resources/assets/frontend/js/jquery.min.js') }}" type="text/javascript"></script>
+
+    {{ block('scripts_header') }}
+
+    <link href="{{ asset('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/frontend/css/mobile.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+
+    {% set route = Route.currentRouteName() %}
+</head>
+
+<body>
+
+<div id="desk_header">
+    <div class="desk_wrapper">
+
+        <div class="mobile_nav_button">
+            <i class="fa fa-bars"></i>
+            <div class="clear"></div>
+
+        </div>
+
+        {% if isModuleEnabled('Selfservice') and not selfserviceTypes.isEmpty() %}
+            <div class="searchbox">
+                <form name="search" action="{{ route('core.frontend.search') }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                    <input type="text" name="query" placeholder="{{ Lang.get('core.search_placeholder') }}" />
+                </form>
+            </div>
+        {% endif %}
+
+        <a href="{{ route('core.frontend.home') }}">
+            <img src="{{ get_logo() }}" alt="{{ company }}" class="logo" />
+        </a>
+
+        {% block header %}{% endblock %}
+    </div>
+</div>
+
+<div class="mobile_nav">
+    <ul class="ad_nav">
+        {% if isModuleEnabled('Selfservice') %}
+            <li class="search">
+                <div class="searchbox">
+                    <form name="search" action="{{ route('core.frontend.search') }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                        <input type="text" name="query" placeholder="{{ Lang.get('core.search_placeholder') }}" />
+                    </form>
+                </div>
+            </li>
+        {% endif %}
+        <li>
+            <a href="{{ route('core.frontend.home') }}" {% if route starts with 'core.frontend.home' %}class="current"{% endif %}>
+                {{ Lang.get('general.home') }}
+            </a>
+        </li>
+        {% if Auth.guard('frontend').check() %}
+            <li>
+                <a href="{{ route('user.profile') }}">
+                    {{ Lang.choice('general.account', 1) }}
+                </a>
+            </li>
+            <ul>
+                <li>
+                    <a href="{{ route('user.profile') }}" {% if route starts with 'user.profile' %}class="current"{% endif %}>
+                        {{ Lang.get('user.profile') }}
+                    </a>
+                </li>
+                {% if auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
+                    <li>
+                        <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
+                            {{ Lang.choice('user.organisation', 1) }}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if isModuleEnabled('Ticket') %}
+                    <li>
+                        <a href="{{ route('ticket.frontend.ticket.index') }}" {% if route starts with 'ticket.frontend.ticket.index' or route starts with 'ticket.frontend.ticket.show' %}class="current"{% endif %}>
+                            {{ Lang.choice('ticket.ticket', 2) }}
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{{ route('user.logout') }}">
+                        {{ Lang.get('user.logout') }}
+                    </a>
+                </li>
+            </ul>
+        {% else %}
+            <li>
+                <a href="{{ route('user.login') }}" {% if route starts with 'user.login' %}class="current"{% endif %}>
+                    {{ Lang.get('user.login') }}
+                </a>
+            </li>
+            {% if Config.get('settings.registration_enabled') == 1 %}
+                <li>
+                    <a href="{{ route('user.register') }}" {% if route starts with 'user.register' %}class="current"{% endif %}>
+                        {{ Lang.get('user.register') }}
+                    </a>
+                </li>
+            {% endif %}
+            {% if isModuleEnabled('Ticket') and Config.get('channel.web.unauthenticated_users') %}
+                <li>
+                    <a href="{{ route('ticket.frontend.track') }}" {% if route starts with 'ticket.frontend.track' %}class="current"{% endif %}>
+                        {{ Lang.get('core.track_ticket') }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endif %}
+        {% if isModuleEnabled('Ticket') %}
+            <li>
+                <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep1' %}class="current"{% endif %}>
+                    {{ Lang.get('core.submit_ticket') }}
+                </a>
+            </li>
+        {% endif %}
+        {% if isModuleEnabled('Selfservice') %}
+            {% for type in selfserviceTypes %}
+                <li>
+                    <a href="{{ route('selfservice.index', { 'type': type.slug }) }}" {% if route starts with 'selfservice' and Request.segment(1) == type.slug %}class="current"{% endif %}>
+                        {{ type.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+
+<div class="desk_wrapper">
+
+    <div id="desk_content" class="left">
+
+        <h1>
+            {{ block('title') }}
+        </h1>
+
+        <div class="breadcrumb">
+            <a href="{{ route('core.frontend.home') }}">{{ Lang.get('general.support_portal') }}</a> &nbsp;&raquo;&nbsp;
+            {{ block('breadcrumb') }}
+        </div>
+
+        <div class="desk_content_padding">
+
+            {{ block('subtitle') }}
+
+            <!-- Box to display success/error messages generated by JavaScript -->
+            <div class="box" id="js-message-box" style="display: none"></div>
+
+            {% if Session.has('success') %}
+                <div class="success box">{{ Session.get('success')|raw }}</div>
+            {% elseif Session.has('error') %}
+                <div class="fail box">{{ Session.get('error')|raw }}</div>
+            {% elseif Session.has('warning') %}
+                <div class="warning box">{{ Session.get('warning')|raw }}</div>
+            {% endif %}
+
+            {% if errors|default is not empty and errors.has() %}
+                <div class="fail box">
+                    <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+                    {% for error in errors.all() %}
+                        {{ error }}<br />
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </div>

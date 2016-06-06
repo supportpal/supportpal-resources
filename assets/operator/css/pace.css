@@ -1,0 +1,23 @@
+@charset "utf-8";
+
+.pace {
+    -webkit-pointer-events: none;
+    pointer-events: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.pace-inactive {
+    display: none;
+}
+
+.pace .pace-progress {
+    background: #3480B6;
+    height: 2px;
+    position: fixed;
+    right: 100%;
+    top: 50px;
+    width: 100%;
+    z-index: 2000;
+}

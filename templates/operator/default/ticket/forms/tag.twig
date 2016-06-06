@@ -1,0 +1,46 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.tag", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.tag", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.tag.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.tag.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('text', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

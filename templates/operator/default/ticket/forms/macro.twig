@@ -1,0 +1,146 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.macro", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.macro", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.macro.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.macro.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('run_type', Lang.get('ticket.macro_type')) }}
+                <div class="input-container">
+                    {{ form_select('run_type', {
+                            0: Lang.get('ticket.manual'),
+                            1: Lang.get('ticket.macro_type_auto1'),
+                            2: Lang.get('ticket.macro_type_auto2')
+                    }) }}<br />
+                    <span class="description">{{ Lang.get('ticket.macro_type_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.macro_condition') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.macro_condition_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' with { 'hide': true } %}
+
+            {% if oldGroups|default is not empty and oldGroups is not empty %}
+                {# In case there was an error and we're trying to show what they attempted to save #}
+                {% for groupId, group in oldGroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% else %}
+                {% for groupId, group in record.conditiongroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% endif %}
+
+            <div class="form-row">
+                <span class="plan-conditiongroup-type" style="margin-right: 13px;">
+                    {{ form_select('condition_group_type', { 0: Lang.get('ticket.all_groups'), 1: Lang.get('ticket.any_group') },
+                        record.condition_group_type|default is not empty ? record.condition_group_type : 0)
+                    }}
+                </span>
+                {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition_group'), { 'class': 'add-conditiongroup' }) }}
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.macro_action') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.macro_action_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            <table class="rule-table settings">
+                <thead>
+                    <tr>
+                        <th width="220">{{ Lang.choice('general.action', 1) }}</th>
+                        <th>{{ Lang.get('general.value') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with { 'hide': true } %}
+
+                    {% if oldActions|default is not empty and oldActions is not empty %}
+                        {# In case there was an error and we're trying to show what they attempted to save #}
+                        {% for count, rule in oldActions %}
+                            {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' %}
+                        {% endfor %}
+                    {% else %}
+                        {% for count, rule in record.actions %}
+                            {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' %}
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="form-row">
+                {{ form_button(Lang.get('ticket.add_action'), { 'class': 'add-rule' }) }}
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        var embedImageRoute = laroute.route('core.embed.image');
+    </script>
+
+    <script src="{{ asset('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset('resources/assets/operator/js/escalationrule.js') }}"></script>
+
+    <!-- Date picker -->
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

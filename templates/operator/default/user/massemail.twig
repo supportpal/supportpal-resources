@@ -1,0 +1,225 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty %}
+        {{ record.formatted_name }} - {{ Lang.get('user.send_email') }}
+    {% else %}
+        {{ Lang.get('user.mass_email') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty %}
+        {% include 'operator.' ~ template ~ '.user.forms.user_tabs' %}
+
+        {{ form_open({ 'route': [ 'user.operator.user.sendemail', record.id ], 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'user.operator.massemail.queue', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container first">
+
+            <div class="form-row form-full">
+                {{ form_label('to[]', Lang.get('general.to')|capitalize) }}
+                <div class="input-container">
+                    {% if record|default is not empty %}
+                        {{ record.formatted_name }} {{ '<' ~ record.email ~ '>' }}
+                    {% else %}
+                        <select name="to[]" multiple="multiple">
+                            <optgroup label="{{ Lang.choice("user.operator_group", 2) }}">
+                                {% for group in operator_groups %}
+                                    <option data-data='{{ group|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ group.id }}'>
+                                        {{ group.name }}
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="{{ Lang.choice("user.group", 2) }}">
+                                {% for group in user_groups %}
+                                    <option data-data='{{ group|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ group.id }}'>
+                                        {{ group.name }}
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('from_name', Lang.get('general.from')) }}
+                <div class="input-container">
+                    {{ form_text('from_name', companyName, { 'size': '25' }) }} &nbsp;
+                    {{ form_text('from_email', Config.get('settings.default_email'), { 'size': '35' }) }}
+                </div>
+            </div>
+
+            {% if not templates.isEmpty() %}
+            <div class="form-row">
+                {{ form_label('load_template', Lang.get('user.load_template')) }}
+                <div class="input-container">
+                    <div class="input-with-button">
+                        {{ form_select('load_template', templates) }}
+                        {{ form_button(Lang.get('user.clear_template'), { 'class': 'clear-form' }) }}
+                    </div>
+                    <span class="description">{{ Lang.get('user.load_template_desc') }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-row form-full">
+                {{ form_label('subject', Lang.get('general.subject')) }}
+                <div class="input-container">
+                    {{ form_text('subject') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('contents', Lang.choice('general.message', 1)) }}
+                <div class="input-container">
+                    {{ form_redactor_mf('contents') }}
+                </div>
+            </div>
+
+            {% if record is not defined %}
+                <div class="form-row">
+                    {{ form_label('batch_number', Lang.get('user.email_per_batch')) }}
+                    <div class="input-container">
+                        {{ form_text('batch_number', 25, { 'size': 3 }) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    {{ form_label('batch_interval', Lang.get('user.batch_interval')) }}
+                    <div class="input-container">
+                        {{ form_text('batch_interval', 1, { 'size': 2 }) }} &nbsp; <span class="description">({{ Lang.choice('general.minute', 2) }})</span>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+    <hr />
+
+    {% include 'operator.' ~ template ~ '.core.forms.mergefields' %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+
+    <!-- Code Editor -->
+    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var REGEX_EMAIL = '([a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@' +
+                      '(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)';
+
+            {% if record is not defined %}
+                $('select[name="to[]"]').selectize({
+                    persist: false,
+                    maxItems: null,
+                    valueField: 'email',
+                    labelField: 'name',
+                    searchField: ['name', 'email'],
+                    plugins: ['remove_button'],
+                    delimiter: ',',
+                    placeholder: Lang.get('user.select_user_groups'),
+                    render: {
+                        item: function(item, escape) {
+                            // validate e-mail address - we need this otherwise an unknown value gets added for user group
+                            // items i.e. item.email is "1" for admin-default
+                            var regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'),
+                                match = item.email.match(regex);
+
+                            return '<div>' +
+                                    (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
+                                    (match ? '<span class="email">' + escape(item.email) + '</span>' : '') +
+                                    '</div>';
+                        }
+                    },
+                    createFilter: function(input) {
+                        var match, regex;
+
+                        // email@address.com
+                        regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
+                        match = input.match(regex);
+                        if (match) return !this.options.hasOwnProperty(match[0]);
+
+                        // name <email@address.com>
+                        regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
+                        match = input.match(regex);
+                        if (match) return !this.options.hasOwnProperty(match[2]);
+
+                        return false;
+                    },
+                    create: function(input) {
+                        if ((new RegExp('^' + REGEX_EMAIL + '$', 'i')).test(input)) {
+                            return {email: input};
+                        }
+                        var match = input.match(new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'));
+                        if (match) {
+                            return {
+                                email : match[2],
+                                name  : $.trim(match[1])
+                            };
+                        }
+                        return false;
+                    }
+                });
+            {% endif %}
+
+            var $editor = $('textarea').redactor($.extend($.Redactor.default_opts, {plugins: ['syntax']}));
+
+            // Load email template
+            $('select[name="load_template"]').change(function() {
+                if ($(this).val() != '0') {
+                    // Fetch email template
+                    $.ajax({
+                        url: laroute.route('core.operator.emailtemplate.show', { id: $(this).val() }),
+                        type: 'GET',
+                        data: {},
+                        dataType: 'json'
+                    }).done(function(response) {
+                        if (response.status == 'success') {
+                            // Set subject and body
+                            $('input[name="subject"]').val(response.data.subject);
+                            $editor.redactor('code.set', response.data.contents);
+                        }
+                    });
+                }
+            });
+
+            // Clear email template
+            $('.clear-form').on('click', function() {
+                $('input[name=subject]').val('');
+                $editor.redactor('code.set', '');
+            });
+
+            // Insert merge field in editor
+            $('button.as-link').on('click', function() {
+                $editor.redactor('insert.text', $(this).text());
+            });
+        });
+    </script>
+{% endblock %}

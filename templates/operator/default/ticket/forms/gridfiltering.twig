@@ -1,0 +1,22 @@
+<form class="conditiongroup hide">
+
+    <div class="conditiongroup-inner">
+        <table class="settings hide">
+            {# Brand new group with one condition #}
+            {% include 'operator.' ~ template ~ '.ticket.forms.condition' with { 'hide': true } %}
+
+            {% if currentConditions|default is not empty %}
+                {% for condition in currentConditions %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition' %}
+                {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+
+    <div class="conditiongroup-buttons">
+        {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition'), { 'class': 'add-condition' }) }}
+        &nbsp;
+        {{ form_button(Lang.get('general.update'), { 'class': 'update-filtering' }) }}
+    </div>
+
+</form>

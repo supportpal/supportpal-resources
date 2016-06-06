@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+/* Overwrite Redactor CSS */
+
+.redactor-box, .redactor-editor {
+    border: 1px solid #e0e0e0;
+    margin: 0;
+    min-height: 200px;
+    text-align: left;
+}
+
+.redactor-box {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.redactor-editor, .redactor-textarea {
+    background: #fff;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    -moz-border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px;
+    padding: 15px;
+}
+
+.redactor-toolbar {
+    background: #fafafa;
+    -moz-border-radius: 3px 3px 0 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    box-shadow: none;
+    z-index: 50;
+}
+
+.redactor-toolbar:after {
+    clear: none;
+}
+
+.redactor-toolbar li a:hover {
+    color: #fff;
+}
+
+.redactor-toolbar li:first-child a:hover {
+    -moz-border-radius: 3px 0 0 0;
+    -webkit-border-radius: 3px 0 0 0;
+    border-radius: 3px 0 0 0;
+    color: #fff;
+}
+
+.redactor-toolbar-tooltip {
+    background: #454545;
+}

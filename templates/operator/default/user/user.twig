@@ -1,0 +1,171 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {% if operator|default is not empty and operator %}
+        {{ Lang.choice("general.operator", 2) }}
+    {% else %}
+        {{ Lang.choice("user.user", 2) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+	<div class="success box delete hide">
+        {% if operator|default is not empty and operator %}
+            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+        {% else %}
+            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {% endif %}
+    </div>
+    <div class="fail box delete hide">
+        {% if operator|default is not empty and operator %}
+            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+        {% else %}
+            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {% endif %}
+    </div>
+
+    <div class="success box update hide">
+        {% if operator|default is not empty and operator %}
+            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+        {% else %}
+            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {% endif %}
+    </div>
+    <div class="fail box update hide">
+        {% if operator|default is not empty and operator %}
+            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+        {% else %}
+            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {% endif %}
+    </div>
+
+	<div class="grid-options options box">
+        {% if Auth.guard('operator').user().hasPermission('create.user') %}
+            {% if operator|default is not empty and operator %}
+                <a href="{{ route('user.operator.operator.create') }}">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
+                </a>
+            {% else %}
+                <a href="{{ route('user.operator.user.create') }}" id="createUser">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
+                </a>
+            {% endif %} &nbsp;&nbsp;&nbsp;
+        {% endif %}
+        <a class="toggle-filtering">
+            <i class="fa fa-filter"></i>&nbsp;
+            {{ Lang.get('general.filter_results') }}
+        </a>
+
+        {% include 'operator.' ~ template ~ '.ticket.forms.gridfiltering' %}
+	</div>
+
+	{{ table.render('operator.' ~ template ~ '.datatables')|raw }}
+	{{ table.script()|raw }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/filtering.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/filtering.css') }}">
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/datatable/selectall.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Filtering
+            $('.update-filtering').click(function() {
+                $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
+                    // Add conditions to parameters
+                    var conditions = $(".conditiongroup").serializeArray();
+                    $.each(conditions, function(index, value) {
+                        data[value.name] = value.value;
+                    });
+                }).dataTable().api().ajax.reload();
+            });
+
+            // Process delete button
+            $(document).on('click', '.dataTable tfoot .delete-user', function() {
+                deleteUser(getSelectedRows());
+            });
+
+            $(document).on('change', '.dataTable tfoot #btnChangeGroup', function() {
+                // Get the group id
+                var groupId = $(this).val();
+
+                // Update group membership
+                $.ajax({
+                    url: laroute.route("user.operator.group.members.update", { id: groupId }),
+                    type: 'PUT',
+                    data: { "user": getSelectedRows() }
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.update.success').show(500).delay(5000).hide(500);
+                    } else {
+                        $('.update.fail').show(500).delay(5000).hide(500);
+                    }
+                }).fail(function() {
+                    $('.update.fail').show(500).delay(5000).hide(500);
+                }).always(function() {
+                    // Reload table
+                    $('.dataTable').dataTable()._fnAjaxUpdate();
+                });
+
+                // Reset the dropdown to its initial state
+                $('#' + this.id)[0].selectedIndex = 0;
+            });
+        });
+
+        function deleteUser(data) {
+            // Show the alert
+            swal({
+                title: Lang.get('messages.are_you_sure'),
+                text: Lang.get('messages.warn_delete'),
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e74c3c",
+                confirmButtonText: Lang.get('messages.yes_im_sure'),
+                closeOnConfirm: false
+            }, function(isConfirm) {
+                if (isConfirm) {
+                    // Disable submit button
+                    swal.disableButtons();
+                    // Delete record and reload table if successful
+                    $.ajax({
+                        url: laroute.route('user.operator.user.destroymultiple'),
+                        type: 'DELETE',
+                        data: { 'user': data },
+                        dataType: 'json'
+                    }).done(function(response) {
+                        if (response.status == 'success') {
+                            $('.delete.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.delete.fail').show(500).delay(5000).hide(500);
+                        }
+                    }).fail(function() {
+                        $('.delete.fail').show(500).delay(5000).hide(500);
+                    }).always(function() {
+                        // Close alert
+                        swal.closeModal();
+                        // Reload table
+                        $('.dataTable').dataTable()._fnAjaxUpdate();
+                    });
+                }
+            });
+        }
+    </script>
+{% endblock %}

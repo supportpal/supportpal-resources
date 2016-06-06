@@ -1,0 +1,334 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.report.sidebar' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('report.report', 2) }} - {{ report.title }}
+{% endblock %}
+
+{% block description %}
+    {{ report.description }}
+{% endblock %}
+
+{% block content %}
+
+    {% if report.timeframe|default is not empty and report.timeframe != 'none' %}
+    <div class="options box">
+        <div class="timeframe-options">
+            {{ form_button(Lang.get('general.update'), { 'class': 'updateReport right' }) }}
+            {% if report.timeframe == 'custom' %}
+                <div class="report-date">
+                    <label>
+                        {{ form_radio('timeframe', 0, report.startDate == 0 ? true : false) }} <strong>{{ Lang.get('report.all_time') }}</strong>
+                    </label>
+                </div> &nbsp;&nbsp;
+                <div class="report-date">
+                    <label>
+                        {{ form_radio('timeframe', 1, report.startDate != 0 ? true : false) }} <strong>{{ Lang.get('report.specific_range') }}</strong>
+                    </label>
+                </div> &nbsp;&nbsp;
+                <span class="report-date timeframeOptions {% if report.startDate == 0 %}hide{% endif %}">
+                    <div class="report-date">
+                        {{ Lang.get('general.start') }}: &nbsp;{{ form_text('startDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
+                    </div> &nbsp;&nbsp;
+                    <div class="report-date">
+                        {{ Lang.get('general.end') }}: &nbsp;{{ form_text('endDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
+                    </div>
+                </span>
+            {% else %}
+                {{ Lang.get('general.current') }}: &nbsp;
+                {% if report.timeframe == 'monthly' %}
+                    {{ form_selectMonth('month') }}
+                {% endif %}
+
+                {{ form_select('year', year) }}
+            {% endif %}
+        </div>
+
+        {% include 'operator.' ~ template ~ '.report.condition_group' %}
+    </div>
+    {% else %}
+    {% include 'operator.' ~ template ~ '.report.condition_group' %}
+    {% endif %}
+
+    <div class="loading box hide">{{ Lang.get('general.loading') }}<i class="ellipsis"><i>.</i><i>.</i><i>.</i></i></div>
+
+    <div class="reportContent">
+
+        {% if in_array('table', report.charts) and report.charts|length != 1 %}
+        <ul class="tabs">
+          <li class="{% if report.charts[0] != 'table' %}type-active active{% endif %}">{{ Lang.get('report.chart') }}</li>
+          <li class="{% if report.charts[0] == 'table' %}type-active active{% endif %}">{{ Lang.get('report.table') }}</li>
+        </ul>
+        {% endif %}
+
+        <div id="chartWrapper" {% if report.charts[0] == 'table' %}class="hide"{% endif %}>
+            <div style="text-align: center;" {% if (in_array('table', report.charts) and report.charts|length <= 2) or (not in_array('table', report.charts) and report.charts|length == 1) %}class="hide"{% endif %}>
+                <strong>Type:</strong> &nbsp;
+                <select name="chartType">
+                    {% if in_array('pie', report.charts) %}<option value="pie">{{ Lang.get('report.pie') }}</option>{% endif %}
+                    {% if in_array('bar', report.charts) %}<option value="bar">{{ Lang.get('report.bar') }}</option>{% endif %}
+                    {% if in_array('column', report.charts) %}<option value="column">{{ Lang.get('report.column') }}</option>{% endif %}
+                    {% if in_array('histogram', report.charts) %}<option value="histogram">{{ Lang.get('report.histogram') }}</option>{% endif %}
+                    {% if in_array('line', report.charts) %}<option value="line">{{ Lang.get('report.line') }}</option>{% endif %}
+                    {% if in_array('area', report.charts) %}<option value="area">{{ Lang.get('report.area') }}</option>{% endif %}
+                    {% if in_array('stacked', report.charts) %}<option value="stacked">{{ Lang.get('report.stacked') }}</option>{% endif %}
+                    {% if in_array('stepped', report.charts) %}<option value="stepped">{{ Lang.get('report.stepped') }}</option>{% endif %}
+                    {% if in_array('geo', report.charts) %}<option value="geo">{{ Lang.get('report.geo') }}</option>{% endif %}
+                </select>
+            </div>
+          <div id="chartView" style="width: 100%; height:500px;"></div>
+        </div>
+
+        {% if in_array('table', report.charts) %}
+            <div id="tableView" style="width: 100%;" {% if report.charts|length != 1 and report.charts != 'table' %}class="hide"{% endif %}></div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/report.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/filtering.css') }}">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/operator/js/filtering.js') }}"></script>
+    
+    <script type="text/javascript">
+        var chartData, startTimestamp, endTimestamp;
+
+        // Load charts
+        google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+
+        $(document).ready(function() {
+
+            // Expand the filtering box on click
+            $(document).on('click', '.conditiongroup-header', function () {
+                $('.filter-conditions').toggle();
+            });
+
+            // Date pickers
+            var startPicker = new Pikaday({
+                field: $('input[name="startDate"]')[0],
+                format: $('meta[name=date_format]').prop('content'),
+                onSelect: function() {
+                    startTimestamp = this.getMoment().format('X');
+                }
+            });
+            var endPicker = new Pikaday({
+                field: $('input[name="endDate"]')[0],
+                format: $('meta[name=date_format]').prop('content'),
+                onSelect: function() {
+                    endTimestamp = this.getMoment().format('X');
+                }
+            });
+
+            // Set chart type dropdown to first item
+            {% if report.charts|length != 1 or report.charts|length == 1 and report.charts[0] != 'table' %}
+                var defaultChart = '{{ report.charts[0] }}';
+                {% if report.charts|length > 1 %}
+                if (defaultChart == 'table') {
+                    var defaultChart = '{{ report.charts[1] }}';
+                }
+                {% endif %}
+                $('select[name="chartType"]').val(defaultChart);
+            {% endif %}
+
+            // Initial data loading
+            loadChart($.parseJSON('{{ report.data|escape('js') }}'));
+
+            var timeframe = '{{ report.timeframe }}';
+
+            // Set the current period
+            var startDate = new Date('{{ report.startDate }}' * 1000);
+            if (timeframe == 'yearly' || timeframe == 'monthly') {
+                // Monthly/Yearly
+                $('select[name="year"]').val(startDate.getFullYear());
+                if (timeframe == 'monthly') {
+                    $('select[name="month"]').val(startDate.getMonth() + 1);
+                }
+            } else {
+                // Custom timeframe
+                {% if report.startDate != 0 %}
+                    startTimestamp = {{ report.startDate }};
+                    startPicker.setMoment(moment('{{ formatDate(report.startDate, true) }}', $('meta[name=date_format]').prop('content')));
+                {% endif %}
+                endTimestamp = {{ report.endDate }};
+                endPicker.setMoment(moment('{{ formatDate(report.endDate, true) }}', $('meta[name=date_format]').prop('content')));
+            }
+
+            $(document.body).on('click', '.updateReport', function() {
+                var startDate = 0, endDate = 0;
+                // Depending on timeframe
+                if (timeframe == 'yearly' || timeframe == 'monthly') {
+                    if (timeframe == 'monthly') {
+                        // Monthly - Get new start and end date
+                        var date = new Date($('select[name="year"]').val(), parseInt($('select[name="month"]').val() - 1), 1, 0, 0, 0, 0);
+                        startDate = date.getTime() / 1000;
+                        date = new Date($('select[name="year"]').val(), $('select[name="month"]').val(), 0, 23, 59, 59, 0);
+                        endDate = date.getTime() / 1000;
+                    } else {
+                        // Yearly - Get new start and end date
+                        var date = new Date($('select[name="year"]').val(), 0, 1, 0, 0, 0, 0);
+                        startDate = date.getTime() / 1000;
+                        date = new Date($('select[name="year"]').val(), 11, 31, 23, 59, 59, 0);
+                        endDate = date.getTime() / 1000;
+                    }
+                } else {
+                    // Specific range
+                    if ($('input[name="timeframe"]:checked').val() == 1) {
+                        startDate = startTimestamp;
+                        endDate = endTimestamp;
+                    }
+                }
+
+                // Fetch new data and update
+                getData(startDate, endDate);
+            });
+
+            // Changing options on custom timeframe
+            $('input[name="timeframe"]').change(function() {
+                if ($(this).val() == 1) {
+                    $('.timeframeOptions').show();
+                } else {
+                    $('.timeframeOptions').hide();
+                }
+            });
+
+            // For switching between chart and table
+            $('.tabs').on('click', 'li:not(.type-active)', function() {
+                $('#chartWrapper, #tableView').toggle();
+                $('.tabs li').removeClass('type-active');
+                $(this).addClass('type-active');
+                if ($('#chartWrapper').is(':visible')) {
+                    drawChart(chartData, $('select[name="chartType"]').val());
+                }
+            });
+
+            // Changing chart type
+            $('select[name="chartType"]').on('change', function() {
+                drawChart(chartData, $(this).val());
+            });
+        });
+
+        // Fetches new data based on time parameters
+        function getData(startDate, endDate) {
+            $('.loading').show();
+            $('.reportContent').hide();
+
+            var data = $(".conditiongroup").serializeArray();
+            data.push({ name: 'startDate', value: startDate });
+            data.push({ name: 'endDate', value: endDate });
+
+            $.post(
+                laroute.route("report.operator.getData", { 'category': "{{ report.category }}", 'name': "{{ report.slug }}" }),
+                data,
+                function(response) {
+                    // Remove loading from view
+                    $('.loading').hide();
+                    // Remove the existing table if it exists
+                    $('.dataTables_wrapper').remove();
+                    $('.reportContent').show();
+                    // Parse data and load chart
+                    loadChart($.parseJSON(response.data));
+                },
+                "json"
+            );
+        }
+
+        // Takes the data and converts it to a chart friendly format
+        function loadChart(data) {
+            // Draw the chart
+            chartData = google.visualization.arrayToDataTable(data);
+            drawChart(chartData, $('select[name="chartType"]').val());
+
+            var head = [];
+
+            // Create table heading
+            $.each(data[0], function(key, val) {
+                var obj = {};
+                obj["title"] = val;
+                head.push(obj);
+            });
+
+            // Remove heading from data
+            data.splice(0,1);
+
+            $('#tableView').append('<table class="data-table settings"></table>');
+
+            // Set data table
+            $('.data-table').dataTable({
+                "columns": head,
+                "data": data,
+                "order": [],
+                "bProcessing": true,
+                "dom": 'Blfrtip'
+            });
+        }
+
+        // Draws the chart from the data and type of chart
+        function drawChart(data, type) {
+            try {
+                if (type === 'pie') {
+                    // Configure chart
+                    var chart = new google.visualization.PieChart(document.getElementById('chartView'));
+                    var options = {
+                        'pieSliceText': 'value',
+                        'legend': 'right',
+                        'sliceVisibilityThreshold': 0
+                    };
+                } else if (type === 'bar') {
+                    var chart = new google.visualization.BarChart(document.getElementById('chartView'));
+                    var options = {};
+                } else if (type === 'column') {
+                    var chart = new google.visualization.ColumnChart(document.getElementById('chartView'));
+                    var options = {};
+                } else if (type === 'histogram') {
+                    var chart = new google.visualization.Histogram(document.getElementById('chartView'));
+                    var options = {
+                        legend: { position: 'none' }
+                    };
+                } else if (type === 'line') {
+                    var chart = new google.visualization.LineChart(document.getElementById('chartView'));
+                    var options = {};
+                } else if (type === 'area') {
+                    var chart = new google.visualization.AreaChart(document.getElementById('chartView'));
+                    var options = {};
+                } else if (type === 'stacked') {
+                    var chart = new google.visualization.AreaChart(document.getElementById('chartView'));
+                    var options = {
+                        isStacked: true
+                    };
+                } else if (type === 'stepped') {
+                    var chart = new google.visualization.SteppedAreaChart(document.getElementById('chartView'));
+                    var options = {
+                        isStacked: true
+                    };
+                } else if (type === 'geo') {
+                    var chart = new google.visualization.GeoChart(document.getElementById('chartView'));
+                    var options = {};
+                }
+                // Draw chart
+                chart.draw(data, options);
+            } catch(err) {
+                // Nothing to do here...
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {% if operator|default is not empty and operator %}
+        {% if record|default is not empty and record.exists %}
+            {{ Lang.get("general.edit") }} {{ Lang.choice("user.operator_group", 1) }}
+        {% else %}
+            {{ Lang.get("general.add") }} {{ Lang.choice("user.operator_group", 1) }}
+        {% endif %}
+    {% else %}
+        {% if record|default is not empty and record.exists %}
+            {{ Lang.get("general.edit") }} {{ Lang.choice("user.group", 1) }}
+        {% else %}
+            {{ Lang.get("general.add") }} {{ Lang.choice("user.group", 1) }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if operator|default is not empty and operator %}
+        {% if record|default is not empty and record.exists %}
+            {{ form_model(record, { 'route': [ 'user.operator.operatorgroup.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {% else %}
+            {{ form_open({ 'route': 'user.operator.operatorgroup.store', 'class': 'validate' }) }}
+        {% endif %}
+    {% else %}
+        {% if record|default is not empty and record.exists %}
+            {{ form_model(record, { 'route': [ 'user.operator.usergroup.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {% else %}
+            {{ form_open({ 'route': 'user.operator.usergroup.store', 'class': 'validate' }) }}
+        {% endif %}
+    {% endif %}
+        <div class="form-row">
+            {{ form_label('name', Lang.get('general.name')) }}
+            <div class="input-container">
+                {{ form_text('name') }}
+            </div>
+        </div>
+
+        <div class="form-row form-full">
+            {{ form_label('description', Lang.get('general.description')) }}
+            <div class="input-container">
+                {{ form_text('description') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('colour', Lang.get('general.colour')) }}
+            <div class="input-container">
+                {{ form_text('colour') }}
+            </div>
+        </div>
+
+        {{ form_hidden('administrator', operator|default is not empty and operator ? 1 : 0) }}
+        {% if operator|default is not empty and operator %}
+        <div class="form-row form-full">
+            {{ form_label('roles', Lang.choice('user.role', 2)) }}
+            <div class="input-container">
+                {{ form_select('roles[]', roles, groupRoles, { 'multiple': 'multiple' }) }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+    {% if table|default is not empty %}
+        <hr />
+
+        <h2>{{ Lang.get('user.group_members') }}</h2>
+
+        <div class="success box member-update hide">
+            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('user.group', 1)|lower }) }}
+        </div>
+        <div class="fail box member-update hide">
+            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('user.group', 1)|lower }) }}
+        </div>
+
+        {{ table.render('operator.' ~ template ~ '.datatables')|raw }}
+        {{ table.script()|raw }}
+    {% else %}
+        <!-- Have to extend page so the colour picker is visible -->
+        <br /><br /><br /><br />
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($('input[name="colour"]').val() === '') {
+                $('input[name="colour"]').val('#FFFFFF');
+            }
+            $('input[name="colour"]').minicolors();
+
+            $('select[name="roles[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ','
+            });
+        });
+    </script>
+
+    {% if record.exists %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // We need to register certain actions once DataTables has completely initialised, otherwise
+            // the table footer does not exist...
+            $('.dataTable').on('init.dt draw.dt', function () {
+
+                /**
+                 * Search for user
+                 */
+                $('select[name="add-user"]').selectize({
+                    valueField: 'id',
+                    labelField: 'formatted_name',
+                    searchField: [ 'formatted_name', 'email' ],
+                    create: false,
+                    placeholder: Lang.get('user.search_for_user'),
+                    render: {
+                        option: function(item, escape) {
+                            return '<div>' +
+                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
+                                    '<span class="title">' +
+                                    '<span class="name">' + escape(item.formatted_name) + '</span> ' +
+                                    '</span>' +
+                                    '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
+                                    '</div>';
+                        }
+                    },
+                    load: function(query, callback) {
+                        if (!query.length) return callback();
+                        $.ajax({
+                            url: laroute.route('user.operator.search'),
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {
+                                q: query,
+                                operator: {% if operator|default is not empty and operator %}1{% else %}0{% endif %}
+                            },
+                            error: function() {
+                                callback();
+                            },
+                            success: function(res) {
+                                callback(res.data);
+                            }
+                        });
+                    }
+                });
+
+                $('.add-user').click(function() {
+                    // Update group membership
+                    $.ajax({
+                        url: laroute.route("user.operator.group.members.update", { id: {{ record.id }} }),
+                        type: 'PUT',
+                        data: { "user": $('select[name="add-user"]').val() }
+                    }).done(function(response) {
+                        if (response.status == 'success') {
+                            $('.member-update.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.member-update.fail').show(500).delay(5000).hide(500);
+                        }
+                    }).fail(function() {
+                        $('.member-update.fail').show(500).delay(5000).hide(500);
+                    }).always(function() {
+                        // Reload table
+                        $('.dataTable').dataTable()._fnAjaxUpdate();
+                    });
+                });
+
+            });
+            
+        });
+    </script>
+    {% endif %}
+{% endblock %}

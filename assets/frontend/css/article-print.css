@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+@media print {
+
+    body {
+        background: #fff;
+    }
+
+    .desk_wrapper {
+        font-size: 18px;
+        line-height: 1.8em;
+    }
+
+    #desk_header, .breadcrumb, #desk_sidebar, .print, .desk-tabs, .desk-tabs-content,
+    .comments-order, .share-via, .rate-article, .article-rating {
+        display: none;
+    }
+
+    h1 {
+        line-height: 1.2em;
+    }
+
+    #desk_content {
+        margin-top: 30px;
+        width: 100%;
+    }
+
+    .desk_content_padding {
+        border: 0;
+        padding: 0;
+    }
+
+    hr {
+        background: #fff;
+        margin: 13px 0;
+    }
+
+    ul.attachments a {
+        padding: 0;
+    }
+
+}

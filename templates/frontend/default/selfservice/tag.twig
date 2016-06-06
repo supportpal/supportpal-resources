@@ -1,0 +1,23 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.choice('selfservice.tag', 1) }}: {{ tag.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('selfservice.index', [ type.slug ]) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {{ tag.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'frontend.' ~ template ~ '.selfservice.sidebar' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+    {# Show all articles with tag in this type #}
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'articles': articles } %}
+
+{% endblock %}

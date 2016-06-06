@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+/* Filtering */
+
+.conditiongroup {
+    background: #fff;
+    margin: 25px 0;
+}
+
+.options .conditiongroup {
+    margin: 12px 0 0;
+}
+
+.conditiongroup .conditiongroup-header {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.conditiongroup .conditiongroup-header .arrow {
+    margin: 1px;
+}
+
+.conditiongroup .conditiongroup-inner {
+    border-top: 0;
+    padding: 0;
+}
+
+.conditiongroup .conditiongroup-inner .settings {
+	margin-bottom: 10px;
+}

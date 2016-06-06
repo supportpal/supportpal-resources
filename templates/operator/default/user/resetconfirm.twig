@@ -1,0 +1,67 @@
+{% extends 'operator.' ~ template ~ '.user.login-master' %}
+
+{% block content %}
+
+	<h2>{{ Lang.get('user.reset_password') }}</h2>
+
+    {% if reset_error|default is not empty and reset_error %}
+
+		<div class="error">{{ Lang.get('user.confirmation_unsuccessful') }}</div>
+		{{ reset_error }}
+
+		<a href="{{ route('operator.login') }}">
+			<button>{{ Lang.get('user.return_to_login') }}</button>
+		</a>
+
+	{% else %}
+
+		{% if errors|default is not empty and errors.has() %}
+            <div class="error">
+                <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+                {% for error in errors.all() %}
+                    {{ error }}<br />
+                {% endfor %}
+            </div>
+        {% elseif error is not defined %}
+			<div class="success">{{ Lang.get('user.please_set_password') }}</div>
+		{% else %}
+			<div class="error">{{ error }}</div>
+		{% endif %}
+
+		<div class="loginBox">
+
+			{{ form_open({ 'route': [ 'operator.resetconfirm' ], 'method': 'post', 'class': 'validate' }) }}
+
+				{{ form_hidden('email', Input.get('email')) }}
+				{{ form_hidden('token', Input.get('token')) }}
+
+				<div class="form-row">
+					{{ form_password('password', { 'placeholder': Lang.get('general.password') }) }}
+				</div>
+				<div class="form-row">
+					{{ form_password('password_confirmation', { 'placeholder': Lang.get('user.confirm_password') }) }}
+				</div>
+
+				{{ form_submit(Lang.get('general.save')) }}
+
+			{{ form_close() }}
+
+		</div>
+
+	{% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+	{% if jsValidator|default is not empty %}
+		{{ jsValidator|raw }}
+	{% endif %}
+
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+        });
+    </script>
+{% endblock %}

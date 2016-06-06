@@ -1,0 +1,188 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('core.license_info') }}
+{% endblock %}
+
+{% block content %}
+
+    {% if licenseInformation.devLicense|default is not empty %}
+        <div class="warning box">
+            <strong>{{ Lang.get('core.development_license') }}</strong>
+            {{ Lang.get('core.development_license_desc') }}
+        </div>
+    {% endif %}
+
+    <h2>{{ Lang.get('core.license_status') }}</h2>
+
+    <div class="form-container first">
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_code') }}</label>
+            <div class="input-container">
+                <span id="spanLicenseText">
+                    {{ license_key }} &nbsp;&nbsp;&nbsp;
+                    <button id="spanLicenseUpdate">{{ Lang.get('core.change_license') }}</button>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_status') }}</label>
+            <div class="input-container">
+                <strong style="color:#090;">{{ Lang.get('general.active') }}</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <h2>{{ Lang.get('core.license_info') }}</h2>
+
+    <div class="form-container first">
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_type') }}</label>
+            <div class="input-container">
+                {{ licenseInformation.productName }} -
+                {% if licenseInformation.noBranding|default is not empty and licenseInformation.noBranding == 1 %}
+                    {{ Lang.get('core.no_branding') }}
+                {% else %}
+                    {{ Lang.get('core.branding') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_owner') }}</label>
+            <div class="input-container">
+                {{ licenseInformation.ownedBy }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_created') }}</label>
+            <div class="input-container">
+                {{ licenseInformation.registered }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_expires') }} {% if monthlyProduct %}*{% endif %}</label>
+            <div class="input-container">
+                {{ licenseInformation.expires }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_valid_ip') }}</label>
+            <div class="input-container">
+                {{ licenseIPs }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.license_valid_domain') }}</label>
+            <div class="input-container">
+                {{ licenseInformation.licenseHost }}
+            </div>
+        </div>
+
+    </div>
+
+    <h2>{{ Lang.get('core.support_status') }}</h2>
+
+    <div class="form-container first">
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.support_status') }}</label>
+            <div class="input-container">
+                {% if licenseInformation.supportStatus == 'Active' %}
+                    <strong style="color:#090;">{{ licenseInformation.supportStatus }}</strong>
+                {% else %}
+                    <strong style="color:red;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc') }}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.support_expires') }} {% if monthlyProduct %}*{% endif %}</label>
+            <div class="input-container">
+                {{ licenseInformation.supportExpires }}
+            </div>
+        </div>
+
+    </div>
+
+    <h2>{{ Lang.get('core.version_info') }}</h2>
+
+    <div class="form-container first">
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.installed_version') }}</label>
+            <div class="input-container">
+                {{ ADVER['installed'] }}
+                {% if ADVER['update'] %}
+                    &nbsp; <strong style="color:#900;">{{ ADVER['update'] }}!</strong>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.available_version') }}</label>
+            <div class="input-container">
+                {{ ADVER['current'] }}
+            </div>
+        </div>
+
+        {% if monthlyProduct %}
+        <br />
+        {{ Lang.get('core.monthly_product') }}
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
+    <script type="text/javascript">
+        $(function () {
+            $('#spanLicenseUpdate').click(function () {
+
+                swal({
+                    title: Lang.get('core.change_license'),
+                    html: '<p><input type="text" id="textLicenseForm" size="30" />',
+                    showCancelButton: true,
+                    confirmButtonText: Lang.choice('general.submit', 1),
+                    closeOnConfirm: false
+                }, function () {
+
+                    swal.disableButtons();
+
+                    $.post(laroute.route('core.operator.about.update'),
+                            {licenseCode: $("#textLicenseForm").val()})
+
+                            .success(function (data) {
+                                swal(
+                                    Lang.get('messages.success'),
+                                    Lang.get('messages.success_updated', { 'item': Lang.get('core.license_code') }),
+                                    'success'
+                                );
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 1000);
+                            })
+                            .fail(function (data) {
+                                swal(
+                                    Lang.get('messages.error'),
+                                    Lang.get('messages.error_updated', { 'item': Lang.get('core.license_code') }),
+                                    'error'
+                                );
+                            });
+                });
+            });
+        });
+    </script>
+{% endblock %}

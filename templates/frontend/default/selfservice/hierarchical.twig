@@ -1,0 +1,43 @@
+{% extends parent_template %}
+
+{% block title %}{{ type.name }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ type.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'frontend.' ~ template ~ '.selfservice.sidebar' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+	{# Show all the parent categories #}
+
+    {% include 'frontend.' ~ template ~ '.selfservice.category_list' %}
+
+	{# Latest / Most Popular articles #}
+
+	<ul class="desk-tabs">
+	    <li id="Popular" class="active">
+            {{ Lang.get('selfservice.popular_items') }}
+        </li>
+	    <li id="Latest">
+            {{ Lang.get('selfservice.latest_items') }}
+        </li>
+	</ul>
+
+	<div class="desk-tabs-content">
+	    <div id="tabPopular" class="desk-tab">
+	        <h2 class="tab-title">{{ Lang.get('selfservice.popular_items') }}</h2>
+            {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'articles': popular } %}
+	    </div>
+	    <div id="tabLatest" class="desk-tab hide">
+	        <h2 class="tab-title">{{ Lang.get('selfservice.latest_items') }}</h2>
+            {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'articles': latest } %}
+	    </div>
+	</div>
+
+{% endblock %}

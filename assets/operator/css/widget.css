@@ -1,0 +1,59 @@
+@charset "utf-8";
+
+/* Widgets */
+
+#widgets {
+	margin-right: -2%;
+	overflow: hidden;
+}
+
+.column {
+	float: left;
+	margin-right: 2%;
+	min-height: 100px;
+	padding-bottom: 0;
+	width: 48%;
+}
+
+.ui-widget {
+	border-radius: 0;
+	border: 1px solid #C4DEF0;
+	font: 13px "Open Sans", Arial, Helvetica, sans-serif;
+	padding: 0;
+}
+
+.ui-widget-header {
+	background: #C4DEF0;
+	border: 0;
+	border-radius: 0;
+	color: #333;
+	font-size: 120%;
+	font-weight: 500;
+	margin: 0;
+	padding: 8px 10px;
+	text-transform: uppercase;
+}
+
+.portlet {
+	margin: 0 0 25px;
+}
+
+.portlet:last-child {
+	margin: 0;
+}
+
+.portlet-content {
+	padding: 10px;
+}
+
+.portlet-toggle {
+	cursor: pointer;
+	margin: 2px 0;
+}
+
+.portlet-placeholder.ui-corner-all {
+	background: #F3F5F5;
+	border: 3px dashed #ccc;
+	height: 37px;
+	margin-bottom: 25px;
+}

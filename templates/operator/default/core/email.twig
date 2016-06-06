@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{ record.subject }}</title>
+    
+    <link href="{{ asset('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/operator/css/email.css') }}" rel="stylesheet" type="text/css" />
+</head>
+
+<body style="margin: 25px;">
+
+    <div class="desk_wrapper" style="width: auto;">
+
+        <div id="desk_content" style="width: auto;">
+
+            <h2>{{ Lang.choice('general.detail', 2) }}</h2>
+
+            <div class="desk_content_padding" style="padding: 25px 25px 0; margin-bottom: 25px;">
+
+                <div class="form-row">
+                    <label>{{ Lang.get('ticket.subject') }}</label>
+                    <div class="input-container">
+                        {{ record.subject }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>{{ Lang.get('general.date') }}</label>
+                    <div class="input-container">
+                        {{ formatDate(record.created_at) }}
+                    </div>
+                </div>
+
+                {% if record.type|default is not empty %}
+                <div class="form-row">
+                    <label>{{ Lang.get('general.type') }}</label>
+                    <div class="input-container">
+                        {% if record.type == 0 %}
+                            {{ Lang.get('core.outgoing') }}
+                        {% elseif record.type == 1 %}
+                            {{ Lang.get('core.incoming') }}
+                        {% elseif record.type == 2 %}
+                            {{ Lang.get('core.incoming_spam') }}
+                        {% elseif record.type == 3 %}
+                            {{ Lang.get('core.incoming_throttled') }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if record.to is not empty %}
+                <div class="form-row">
+                    <label>{{ Lang.get('ticket.to') }}</label>
+                    <div class="input-container">
+                        {{ implode(", ", record.to) }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if record.from_address is not empty %}
+                <div class="form-row">
+                    <label>{{ Lang.get('ticket.from') }}</label>
+                    <div class="input-container">
+                        {{ record.from_address }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if record.cc is not empty %}
+                <div class="form-row">
+                    <label>{{ Lang.get('ticket.cc') }}</label>
+                    <div class="input-container">
+                        {{ implode(", ", record.cc) }}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <h2>{{ Lang.get('general.content') }}</h2>
+
+            <div class="desk_content_padding" style="padding: 25px;">
+
+                {{ Purifier.clean(record.contents) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

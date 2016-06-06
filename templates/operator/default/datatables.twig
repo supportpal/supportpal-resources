@@ -1,0 +1,32 @@
+<table id="{{ id }}" class="{{ class }}">
+    <colgroup>
+        {% for column in columns %}
+            <col class="con{{ loop.index }}" />
+        {% endfor %}
+    </colgroup>
+    <thead>
+    <tr>
+        {% for i, c in columns %}
+            <th align="center" valign="middle" class="head{{ i }}">{{ c }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for d in data %}
+        <tr>
+            {% for dd in d %}
+                <td>{{ dd }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot id="gridFooter">
+        <tr style="display: none">
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+{% if not noScript %}
+    {% include 'datatable::javascript' with { 'id': id, 'options': options, 'callbacks': callbacks } %}
+{% endif %}

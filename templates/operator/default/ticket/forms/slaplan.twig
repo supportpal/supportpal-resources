@@ -1,0 +1,225 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.sla_plan", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.sla_plan", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.slaplan.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.slaplan.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('all_hours', Lang.choice('ticket.schedule', 2)) }}
+                <div class="input-container">
+                    {{ form_radio('all_hours', 1, (record is not defined or not record.exists) ? true : false) }} {{ Lang.get('ticket.calendar_hours_24') }} &nbsp;
+                    {{ form_radio('all_hours', 0) }} {{ Lang.get('ticket.specific_schedule') }}
+                    <div class="schedules form-full">
+                        {{ form_select('schedules[]', schedules, planSchedules, { 'multiple': 'multiple' }) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.resolution_time') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.resolution_time_desc') }}</h2>
+
+        <table class="resolution-table settings">
+            <thead>
+                <tr>
+                    <th>{{ Lang.choice('ticket.priority', 1) }}</th>
+                    <th>{{ Lang.get('ticket.reply_within') }}</th>
+                    <th>{{ Lang.get('ticket.resolve_within') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for id, name in priorities %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>
+                        <div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][reply_time_days]',
+                                planPriorities[id]|default is not empty
+                                        and planPriorities[id]['reply_time_days'] != 0
+                                    ? planPriorities[id]['reply_time_days']
+                                    : null,
+                                { 'size': 3 })
+                            }}<div class="description">{{ Lang.choice('general.day', 2) }}</div>
+                        </div><div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][reply_time_hours]',
+                                planPriorities[id]|default is not empty
+                                    ? (planPriorities[id]['reply_time_days'] == 0
+                                            and planPriorities[id]['reply_time_hours'] == 0
+                                        ? null
+                                        : planPriorities[id]['reply_time_hours'])
+                                    : 8,
+                                { 'size': 3, 'style': 'border-left: 0; border-right: 0;' })
+                            }}<div class="description">{{ Lang.choice('general.hour', 2) }}</div>
+                        </div><div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][reply_time_minutes]',
+                                planPriorities[id]|default is not empty
+                                    ? planPriorities[id]['reply_time_minutes']
+                                    : 0,
+                                { 'size': 3 })
+                            }}<div class="description">{{ Lang.choice('general.minute', 2) }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][resolve_time_days]',
+                                planPriorities[id]|default is not empty
+                                        and planPriorities[id]['resolve_time_days'] != 0
+                                    ? planPriorities[id]['resolve_time_days']
+                                    : null,
+                                { 'size': 3 })
+                            }}<div class="description">{{ Lang.choice('general.day', 2) }}</div>
+                        </div><div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][resolve_time_hours]',
+                                planPriorities[id]|default is not empty
+                                    ? (planPriorities[id]['resolve_time_days'] == 0
+                                            and planPriorities[id]['resolve_time_hours'] == 0
+                                        ? null
+                                        : planPriorities[id]['resolve_time_hours'])
+                                    : 16,
+                                { 'size': 3, 'style': 'border-left: 0; border-right: 0;' })
+                            }}<div class="description">{{ Lang.choice('general.hour', 2) }}</div>
+                        </div><div class="duration">
+                            {{ form_text('priorities[' ~ id ~ '][resolve_time_minutes]',
+                                planPriorities[id]|default is not empty
+                                    ? planPriorities[id]['resolve_time_minutes']
+                                    : 0,
+                                { 'size': 3 })
+                            }}<div class="description">{{ Lang.choice('general.minute', 2) }}</div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>{{ Lang.get('ticket.sla_condition') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.sla_condition_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' with { 'hide': true } %}
+
+            {% if oldGroups|default is not empty and oldGroups is not empty %}
+                {# In case there was an error and we're trying to show what they attempted to save #}
+                {% for groupId, group in oldGroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% else %}
+                {% for groupId, group in record.conditiongroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% endif %}
+
+            <div class="form-row">
+                <span class="plan-conditiongroup-type" style="margin-right: 13px;">
+                    {{ form_select('condition_group_type', { 0: Lang.get('ticket.all_groups'), 1: Lang.get('ticket.any_group') },
+                        record.condition_group_type|default is not empty ? record.condition_group_type : 0) }}
+                </span>
+                {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition_group'), { 'class': 'add-conditiongroup' }) }}
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.escalation_rule') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.escalation_rule_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            <table class="rule-table settings">
+                <thead>
+                    <tr>
+                        <th>{{ Lang.choice('general.action', 1) }}</th>
+                        <th>{{ Lang.get('general.when') }}</th>
+                        <th>{{ Lang.get('general.value') }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with { 'hide': true, 'when': true } %}
+
+                    {% if oldRules|default is not empty and oldRules is not empty %}
+                        {# In case there was an error and we're trying to show what they attempted to save #}
+                        {% for count, rule in oldRules %}
+                            {% include 'operator.' ~ template ~ '.ticket.form.escalation_rule' with { 'when': true } %}
+                        {% endfor %}
+                    {% else %}
+                        {% for count, rule in record.rules %}
+                            {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with { 'when': true } %}
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+            <div class="form-row">
+                {{ form_button(Lang.get('general.add_rule'), { 'class': 'add-rule' }) }}
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.save')) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        var embedImageRoute = laroute.route('core.embed.image');
+    </script>
+
+    <script src="{{ asset('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset('resources/assets/operator/js/escalationrule.js') }}"></script>
+    <script src="{{ asset('resources/assets/operator/js/slaplan.js') }}"></script>
+
+    <!-- Date picker -->
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

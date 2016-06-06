@@ -1,0 +1,430 @@
+@charset "utf-8";
+
+/* Ticket Grid */
+
+.ticket-options {
+    line-height: 41px;
+    position: relative;
+}
+
+.ticket-options .processing {
+    background: rgba(255, 255, 255, 0.5);
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.ticket-options .processing div {
+    font-size: 120%;
+    position: relative;
+    text-align: center;
+    -ms-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    top: 50%;
+}
+
+table.dataTable tbody tr.ticket-viewed {
+    background: #f5f5f5;
+    opacity: 0.8;
+}
+
+table.dataTable tbody tr.ticket-viewed.selected {
+    background: #fdf6ea;
+    opacity: 1;
+}
+
+/* Ticket View */
+
+#main h1.ticket-subject {
+    line-height: 34px;
+}
+
+span.subject:hover {
+    border: 1px solid #ddd;
+    cursor: pointer;
+    margin-bottom: -12px;
+    padding: 2px 9px;
+}
+
+span.subject:hover:after {
+    background: #F6F8F8;
+    border: 1px solid #ddd;
+    border-left-color: #eee;
+    content: "\f040";
+    display: inline-block;
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    padding: 1px 6px 2px;
+    margin-left: 9px;
+    margin-top: -3px;
+    position: absolute;
+}
+
+.message {
+    border-bottom: 1px solid #eee;
+    margin: 0 -25px;
+    padding: 20px 25px 0;
+}
+
+.message:first-child {
+    padding-top: 0;
+}
+
+.message .header {
+    line-height: 24px;
+}
+
+.message .avatar {
+    height: 48px;
+    margin-right: 20px;
+    width: 48px;
+}
+
+.message .header .name {
+    font-size: 1.3em;
+}
+.message .header .staff {
+    color: #c0392b;
+}
+.message .header .user {
+    color: #27ae60;
+}
+
+.message .text,
+.message .edit-message {
+    margin-top: 15px;
+    padding: 0 0 20px 68px;
+    word-wrap: break-word;
+}
+
+.message .edit-message {
+    display: none;
+}
+
+.message .text table {
+    border: none;
+    border-collapse: collapse;
+    font-size: 1em;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.message .text table td,
+.message .text table th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    vertical-align: top;
+}
+
+div.collapsed {
+    background: #f5f5f5;
+    color: #999;
+    opacity: 0.6;
+}
+
+div.collapsed, div.collapsible .header {
+    cursor: pointer;
+}
+
+div.collapsed-messages {
+    background: linear-gradient(to bottom, #fff, #fff 90%, #f0f0f0 10%, #f0f0f0);
+    background-size: 100% 10px;
+    border-bottom: 1px solid #eee;
+    color: #777;
+    cursor: pointer;
+    opacity: 0.6;
+    margin: 0 -25px;
+    padding: 3px;
+    text-align: center;
+}
+
+div.collapsed .attachments {
+    display: none;
+}
+
+div.collapsed .header .attachment {
+    color: #454545;
+    display: inline;
+}
+
+div.collapsed-messages span {
+    background: #fff;
+    line-height: 0;
+    padding: 5px 10px;
+}
+
+.expandable {
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    color: #777;
+    font-weight: bold;
+    height: 10px;
+    letter-spacing: 1px;
+    line-height: 0;
+    margin: 5px 0;
+    text-align: center;
+    width: 24px;
+}
+.expandable:hover {
+    background-color: #d8d8d8;
+    cursor: pointer;
+}
+
+.quoted-text {
+    color: #8e44ad;
+}
+
+.reply-type {
+    margin-bottom: 15px;
+}
+
+.reply-type .option {
+    border: 1px solid #eee;
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 12px;
+    position: relative;
+}
+
+.reply-type .option.active {
+    background: #3B91CE;
+    border: 1px solid #3B91CE;
+    color: #fff;
+}
+
+.reply-type .option.active:after {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid black;
+    border-top-color: inherit;
+    content: "";
+    left: 12px;
+    margin-top: 5px;
+    top: 28px;
+    position: absolute;
+}
+
+.reply-type .option:hover {
+    border: 1px solid #3B91CE;
+}
+
+.recipients {
+    padding: 0;
+}
+
+.recipients.form-row {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    line-height: 30px;
+    margin: 0;
+}
+
+.recipients.form-row label {
+    color: #777;
+    font-weight: normal;
+    padding-left: 10px;
+    text-align: left;
+    width: 52px;
+}
+
+.recipients.form-row .input-container {
+    margin-left: 55px;
+}
+
+.recipients > div {
+    border-top: 1px solid #eee;
+}
+
+.recipients > div:first-child {
+    border-top: 0;
+}
+
+.recipients .add-cc {
+    color: #777;
+    margin-right: 10px;
+}
+
+.recipients .selectize-control .selectize-input, .recipients .selectize-control .selectize-input.has-items {
+    border: 0 !important;
+    padding: 1px 0 !important;
+}
+
+.recipients .single .selectize-input.has-items {
+    padding: 2px 0 !important;
+}
+
+.attachments {
+    margin: 0 0 20px 68px;
+}
+
+.attachments h4 {
+    color: #aaa;
+    font-size: 105%;
+    font-weight: 600;
+    margin: 0 0 9px;
+    text-transform: uppercase;
+}
+
+.attachments ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.attachments ul li {
+    background: #E9F3F9;
+    margin-top: 1px;
+    padding: 4px 12px;
+}
+
+button.split-ticket {
+    position: relative;
+    z-index: 50;
+}
+
+.ticket-update {
+    position: fixed;
+    width: 269px;
+    z-index: 500;
+}
+
+.reply-form {
+    padding-right: 268px;
+    width: 100%;
+}
+
+.ticket-draft .warning {
+    border: 1px solid #f7df7a;
+    margin: 0;
+}
+
+.ticket-draft .draft-message {
+    background: #fcf9e5;
+    border: 1px solid #f7df7a;
+    border-top: 0;
+}
+
+/*
+ * Reply options
+ */
+.reply-box {
+    float: right;
+    border: 1px solid #ddd;
+    width: 250px;
+}
+
+.option_header {
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 5px 12px;
+}
+
+.option_header .arrow {
+    margin-top: 4px;
+}
+
+.option_content {
+    padding: 12px;
+}
+.option_content .option {
+    margin-bottom: 7px;
+}
+.option_content .option:last-child {
+    margin-bottom: 0;
+}
+
+#cannedTr {
+    line-height: 32px;
+    margin-top: 10px;
+    padding: 0 8px;
+}
+
+/* Sidebar - ticket details */
+
+table.ticket-details {
+    overflow: hidden;
+    margin-top: 10px;
+    width: 100%;
+}
+
+table.ticket-details th,
+table.ticket-details td {
+    padding: 3px 0;
+}
+
+table.ticket-details th {
+    font-size: 0.9em;
+    font-weight: normal;
+    padding-right: 10px;
+    text-align: left;
+    text-transform: uppercase;
+    width: 80px;
+}
+
+table.ticket-details td {
+    font-weight: bold;
+    max-width: 133px;
+    padding-top: 5px;
+}
+
+table.ticket-details select {
+    font-size: 0.9em;
+    max-width: 100%;
+    width: 100%;
+}
+
+table.ticket-details .link {
+    border-bottom: 1px dotted #c0392b;
+    cursor: pointer;
+}
+table.ticket-details .link:hover {
+    border-bottom: 1px solid #c0392b;
+}
+
+/* New ticket form */
+
+.user-ticket {
+    background: #f9f9f9;
+    margin: 5px 0;
+    padding: 11px 15px 13px;
+}
+
+.existing-user {
+    width: 300px;
+}
+
+.existing-user, .new-user {
+    margin-top: 7px;
+}
+
+.new-user .label {
+    display: inline-block;
+    font-weight: bold;
+    line-height: 32px;
+    margin: 2px 0;
+    width: 100px;
+}
+
+.new-user input {
+    min-width: 230px;
+}
+
+/* Private Messages */
+
+.message-block {
+    padding: 0 25px;
+}
+
+.message-block .message {
+    padding: 20px 0 0;
+}
+
+.message-block .message:first-child {
+    padding: 0;
+}

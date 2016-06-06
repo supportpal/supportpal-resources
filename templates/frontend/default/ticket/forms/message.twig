@@ -1,0 +1,56 @@
+<form class="message-form validate">
+
+    {{ form_hidden('ticket_number', ticket.number) }}
+    {% if Input.has('token') %}
+        {{ form_hidden('token', Input.get('token')) }}
+    {% endif %}
+
+    <div class="form-row form-full recipients">
+        <div class="cc-emails">
+            {{ form_label('cc[]', Lang.get('ticket.cc')) }}
+            <div class="input-container">
+                {{ form_select('cc[]', ticket.cc, ticket.cc, { 'multiple': 'multiple' }) }}
+            </div>
+        </div>
+    </div>
+    <div class="form-row form-full">
+        {{ form_redactor('text', '', { 'size': '50x3' }) }}
+
+        <div class="attachment-details">
+            <input type="hidden" name="attachment[]" disabled="disabled" />
+        </div>
+
+        <ul id="attached-files">
+            <li class="hide">
+                <i class="fa fa-file"></i>
+                &nbsp;
+                <span class="information">
+                    <span class="filename ellipsis"></span>
+                    &nbsp;
+                    <span class="filesize"></span>
+                </span>
+                <i class="fa fa-times deleteAttachment right hide"></i>
+                <div class="progress">
+                    <div class="bar"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <label for="fileupload" class="button">
+        <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+    </label>
+    <input id="fileupload" type="file" name="files[]" data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
+
+    <div class="form-button">
+        {{ form_submit(Lang.choice('general.post', 1)) }}
+
+        {% if ticket.status_id != Config.get('settings.default_resolved_status') %}
+        &nbsp;&nbsp;
+            <a href="{{ route('ticket.frontend.ticket.close', [ ticket.number ]) }}{% if Input.get('token') is not empty %}?token={{ Input.get('token') }}{% endif %}" class="button">
+                {{ Lang.get('ticket.mark_resolved') }}
+            </a>
+        {% endif %}
+    </div>
+
+</form>

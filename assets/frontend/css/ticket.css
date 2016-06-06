@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/* Ticket View */
+
+.message-block, hr {
+    margin-left: -25px;
+    margin-right: -25px;
+}
+
+.message {
+    border-bottom: 1px solid #eee;
+    padding: 25px;
+}
+
+.message:first-child {
+    padding-top: 0;
+}
+
+.message .header {
+    line-height: 24px;
+}
+
+.message .avatar {
+    height: 48px;
+    margin-right: 20px;
+    width: 48px;
+}
+
+.message .header .name {
+    font-size: 1.4em;
+}
+
+.message .header .staff {
+    color: #c0392b;
+}
+.message .header .user {
+    color: #27ae60;
+}
+
+.message .header .date {
+    color: #777;
+    text-transform: uppercase;
+}
+
+.message .text {
+    margin-top: 15px;
+    padding: 0 0 0 68px;
+    word-wrap: break-word;
+}
+
+.message .text table {
+    border: none;
+    border-collapse: collapse;
+    font-size: 1em;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.message .text table td,
+.message .text table th {
+    border: 1px solid #ddd;
+    padding: 5px;
+    vertical-align: top;
+}
+
+.feedback {
+    text-align:center;
+    padding: 18px;
+}
+
+.feedback p {
+    margin-bottom: 12px;
+}
+
+.feedback a.good-button {
+    background: #3ed37d;
+    border-color: #27ae60;
+}
+
+.feedback a.good-button:hover {
+    background: #27ae60;
+}
+
+.feedback a.bad-button {
+    background: #e74c3c;
+    border-color: #c0392b;
+}
+
+.feedback a.bad-button:hover {
+    background: #c0392b;
+}
+
+
+
+@media only screen and (max-width: 480px) {
+
+    .message-block, hr {
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+
+    .message  {
+        padding: 25px 20px;
+    }
+
+    .message .text {
+        padding: 0;
+    }
+
+}

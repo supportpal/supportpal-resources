@@ -1,0 +1,34 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('core.search_results') }} - '{{ Input.get('query') }}'
+{% endblock %}
+
+{% block content %}
+
+    <ul class="tabs">
+      <li id="Users" class="active">{{ Lang.choice('user.user', 2) }}</li>
+      <li id="Tickets">{{ Lang.choice('ticket.ticket', 2) }}</li>
+    </ul>
+
+    <div id="tabUsers" class="tabContent">
+        {{ userTable.render()|raw }}
+        {{ userTable.script()|raw }}
+    </div>
+
+    <div id="tabTickets" class="tabContent hide">
+        {{ ticketTable.render()|raw }}
+        {{ ticketTable.script()|raw }}
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+{% endblock %}

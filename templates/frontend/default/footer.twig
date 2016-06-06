@@ -1,0 +1,37 @@
+    {% if Config.get('settings.language_frontend_toggle') == 1 %}
+        <div class="language-footer hide">
+            {{ Lang.choice('general.language', 1) }}&nbsp;
+            {{ form_select('language', languages,
+            Auth.guard('frontend').check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+        </div>
+    {% endif %}
+
+</div>
+
+<script src="{{ asset('resources/assets/frontend/js/main.js')}}" type="text/javascript"></script>
+
+<!-- Laravel Javascript Validation -->
+<script type="text/javascript" src="{{ asset('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+
+<!-- Laravel Localisation -->
+<script type="text/javascript" src="{{ asset('resources/assets/general/js/lang.min.js') }}"></script>
+<script type="text/javascript">
+    Lang.addMessages({{ translationStrings|raw }});
+    // Add the messages before setting the locale...
+    Lang.setLocale("{{ App.getLocale() }}");
+</script>
+
+<!-- Laravel Routes -->
+<script type="text/javascript" src="{{ asset('resources/assets/general/js/routes.min.js') }}"></script>
+<script type="text/javascript">
+    laroute.set_absolute({{ Config.get('laroute.absolute', false) }});
+    laroute.set_root_url("{{ url('/') }}");
+    laroute.set_routes({{ routeCollection|raw }});
+    laroute.set_prefix('{{ Config.get('laroute.prefix', '') }}');
+</script>
+
+{{ block('scripts_footer') }}
+
+</body>
+
+</html>

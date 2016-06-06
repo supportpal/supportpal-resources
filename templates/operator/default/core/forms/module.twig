@@ -1,0 +1,42 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('core.edit_module') }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'route': [ 'core.operator.module.update', record.id ], 'method': 'PUT' }) }}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name', record.name, { 'disabled': 'disabled' }) }}
+                </div>
+            </div>
+
+            <div class="form-row parentToggle">
+                {{ form_label('enabled', Lang.get('general.enabled')) }}
+                <div class="input-container">
+                    {{ form_check('enabled', 1, record|default is not empty ? record.enabled : true, { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
+                    <label for="toggle_enabled"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('core.module_disable') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice("general.submit", 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}

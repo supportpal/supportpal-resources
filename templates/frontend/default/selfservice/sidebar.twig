@@ -1,0 +1,32 @@
+{% if categories is not empty and not categories.isEmpty() %}
+    <div class="desk_box">
+        <h2>{{ Lang.choice('selfservice.category', 2) }}</h2>
+        <ul class="ad_nav">
+            {% for category in categories %}
+            <li>
+                <a href="{{ category.frontend_url }}">
+                    {{ Purifier.clean(category.name) }}
+                    {% if category.count is not empty %}
+                        <span class="badge">{{ category.count }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if tags is not empty and not tags.isEmpty() %}
+    <div class="desk_box">
+        <h2>{{ Lang.choice('selfservice.tag', 2) }}</h2>
+        <ul class="tags">
+            {% for tag in tags %}
+                <li>
+                    <a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">
+                        {{ tag.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

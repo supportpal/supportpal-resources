@@ -1,0 +1,19 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('general.maintenance') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('general.maintenance') }}
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ Lang.get('core.maintenance') }}</h2>
+
+    <div class="maintenance warning box">
+    	<i class="fa fa-exclamation-triangle left"></i>
+    	{{ Lang.get('core.maintenance_desc') }}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('selfservice.type', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="options box">
+        <a href="{{ route('selfservice.operator.type.create') }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('selfservice.add_type') }}
+        </a>
+        &nbsp;&nbsp;
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
+
+        <div class="filters hide">
+            <div>
+                <label>{{ Lang.get('general.name') }}:</label>
+                <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('general.view', 1) }}:</label>
+                <div id="filter_view"></div>
+            </div>
+        </div>
+    </div>
+
+    {{ table.render()|raw }}
+    {{ table.script()|raw }}
+
+    <div class="note box bottombox">
+        <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('selfservice.type_order') }}
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <!-- Deleting records from the table -->
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <!-- Ordering -->
+    <script type="text/javascript" src="{{ asset('resources/assets/libs/TableDnD/js/jquery.tablednd.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/ordering.js') }}"></script>
+
+    <!-- Filter the table -->
+    <script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * Initialise the filters
+             */
+            oTable.yadcf([
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
+                {column_number : 2, filter_container_id: "filter_view"}
+            ]);
+        });
+    </script>
+{% endblock %}

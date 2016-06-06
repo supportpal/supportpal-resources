@@ -1,0 +1,136 @@
+<div class="departmentEmail form-container open first {% if hide|default is not empty %} hide {% endif %}">
+
+    <div class="form-row">
+        {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][address]', Lang.get('general.address')) }}
+        <div class="input-container">
+            {{ form_hidden('emails[' ~ (i is defined ? i : '') ~ '][id]', email|default is not empty ? email.id : '') }}
+            {{ form_email('emails[' ~ (i is defined ? i : '') ~ '][address]', email|default is not empty ? email.address : '') }} &nbsp;
+            {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][type]', Lang.get('general.type')) }}
+        <div class="input-container">
+            {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][type]', [
+                    Lang.get('general.none'),
+                    Lang.get('ticket.email_download'),
+                    Lang.get('ticket.email_piping'),
+                    Lang.get('ticket.remote_email_piping')
+                ],
+                email|default is not empty ? email.type : '', { 'class': 'email-support' }) }}
+
+            <div class="email-piping {% if i is not defined or (email is defined and email.type == 2) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
+                {{ Lang.get('ticket.email_piping_desc') }}<br />
+                <input type="text" value="| php -q {{ base_path('pipe') }}" style="width: 100%;" />
+            </div>
+
+            <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
+                {{ Lang.get('ticket.remote_email_piping_desc')|raw }} {{ Lang.get('ticket.email_piping_desc') }}<br />
+                <input type="text" value="| php -q {{ base_path('remote_pipe') }}" style="width: 100%;" />
+            </div>
+        </div>
+    </div>
+
+    <div class="email-download {% if i is not defined or (email is defined and email.type == 1) %}hide{% endif %}">
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][protocol]', Lang.get('ticket.protocol')) }}
+            <div class="input-container">
+                {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][protocol]', [ 'IMAP', 'POP3' ],
+                    email|default is not empty ? email.protocol : '') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][server]', Lang.get('ticket.server')) }}
+            <div class="input-container">
+                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][server]',
+                    email|default is not empty ? email.server : '') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][username]', Lang.get('ticket.username')) }}
+            <div class="input-container">
+                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][username]',
+                    email|default is not empty ? email.username : '') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][password]',  Lang.get('ticket.password')) }}
+            <div class="input-container">
+                {{ form_password('emails[' ~ (i is defined ? i : '') ~ '][password]') }}
+                {% if i|default is not empty %}
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_password') }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="input-container">
+                {{ form_button(Lang.get('general.validate_auth'), { 'class': 'validate-email' }) }} &nbsp;
+                <span class="validate text-progress hide">
+                    <i class='fa fa-spinner fa-spin'></i> {{ Lang.get('messages.in_progress') }}...
+                </span>
+                <span class="validate text-success hide">{{ Lang.get('messages.success') }}!</span>
+                <span class="validate text-fail hide">
+                    {{ Lang.get('messages.error') }}!
+                    <span class="error-message"></span>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][port]', Lang.get('ticket.port')) }}
+            <div class="input-container">
+                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][port]',
+                    email|default is not empty ? email.port : '', { 'size': 5 }) }}<br />
+                <span class="description">{{ Lang.get('ticket.department_port') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][encryption]', Lang.get('ticket.encryption')) }}
+            <div class="input-container">
+                {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][encryption]', [ Lang.get('general.none'), 'SSL', 'TLS' ],
+                    email|default is not empty ? email.encryption : '') }}<br />
+                <span class="description">{{ Lang.get('ticket.department_encryption') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]', Lang.get('ticket.delete_downloaded')) }}
+            <div class="input-container">
+                {{ form_check(
+                        'emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]',
+                        1,
+                        email|default is not empty and email.delete_downloaded == "1" ? true : null,
+                        { 'class': 'toggle', 'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]' }
+                ) }}
+                <label for="toggle_emails{{ '[' ~ (i is defined ? i : '') ~ '][delete_downloaded]' }}"></label>
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_delete_mail') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][consume_all]', Lang.get('ticket.consume_all')) }}
+            <div class="input-container">
+                {{ form_check(
+                        'emails[' ~ (i is defined ? i : '') ~ '][consume_all]',
+                        1,
+                        email|default is not empty and email.consume_all == "1" ? true : null,
+                        { 'class': 'toggle', 'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][consume_all]' }
+                ) }}
+                <label for="toggle_emails{{ '[' ~ (i is defined ? i : '') ~ '][consume_all]' }}"></label>
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_consume_all') }}</span>
+            </div>
+        </div>
+
+    </div>
+
+</div>

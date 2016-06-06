@@ -1,0 +1,74 @@
+{% if comments is not empty %}
+<ul class="comments">
+    {% for comment in comments %}
+        <li data-id="{{ comment['id'] }}">
+            <a name="_comment-{{ comment['id'] }}"></a>
+
+            <img class="avatar" src="data:image/jpeg;base64, {{ comment.author.avatar }}" />
+
+            <div class="comment">
+                <span class="author">
+                    {{ comment['author']['formatted_name'] }}
+                </span> &nbsp;
+                {% if comment['author']['isOperator'] %}
+                    <span class="badge">{{ Lang.get('general.staff') }}</span> &nbsp;
+                {% endif %}
+                <span class="date">{{ prettyDate(comment['created_at']) }}</span>
+                <br />
+
+                {% if comment['rating']|default is not empty and comment['rating'] < Config.get('settings.comment_threshold') %}
+                    <a class="commentHidden">{{ Lang.get('selfservice.comment_below_threshold') }}</a>
+                    <div class="commentContents hide">
+                {% else %}
+                    <div class="commentContents">
+                {% endif %}
+
+                    <p class="commentText">{{ Purifier.clean(comment['text']) }}</p>
+
+                    <div class="commentOptions">
+                        {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}
+                            <a class="commentReply" data-id="{{ comment['id'] }}">{{ Lang.get('general.reply') }}</a>
+                        {% endif %}
+
+                        {% if Config.get('settings.comment_ratings') %}
+                            {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}&nbsp;&middot;&nbsp;{% endif %}
+                            {% if comment['rating'] is not empty %}
+                                <span class="score">{{ comment['rating'] }}</span>
+                            {% else %}
+                                <span class="score hide"></span>
+                            {% endif %}
+                            <a class="commentRating thumbs thumbsup {{ (comment['ratings'][0] is defined and comment['ratings'][0]['score'] == '1') ? 'clicked' : '' }}" data-comment="{{ comment['id'] }}" data-score="1">
+                                <i class="fa fa-thumbs-up"></i>
+                            </a>
+                            &nbsp;
+                            <a class="commentRating thumbs thumbsdown {{ (comment['ratings'][0] is defined and comment['ratings'][0]['score'] == '-1') ? 'clicked' : '' }}" data-comment="{{ comment['id'] }}" data-score="-1">
+                                <i class="fa fa-thumbs-down"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="commentReplyContainer"></div>
+
+                    {% if comment['children'] is not empty %}
+                        {% if comment['more']|default is not empty and comment_ordering == 1 %}
+                            <button class="show-children" data-parent="{{ comment['id'] }}">
+                                {{ Lang.get('selfservice.view_all_replies') }} &raquo;
+                            </button>
+                        {% endif %}
+
+                        {% include 'frontend.' ~ template ~ '.selfservice.comment' with { 'comments': (comment_ordering == 1 ? comment['children']|reverse(true) : comment['children']) } %}
+
+                        {% if comment['more']|default is not empty and comment_ordering != 1 %}
+                            <button class="show-children" data-parent="{{ comment['id'] }}">
+                                {{ Lang.get('selfservice.view_all_replies') }} &raquo;
+                            </button>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

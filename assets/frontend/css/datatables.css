@@ -1,0 +1,84 @@
+@charset "utf-8";
+
+/* Overwrite dataTables CSS */
+
+.desk_content_padding .dataTables_length,
+.desk_content_padding .dataTables_filter {
+    padding: 0 0 20px;
+}
+
+.desk_content_padding .dataTables_length {
+    line-height: 25px;
+}
+
+.desk_content_padding .dataTables_info,
+.desk_content_padding .dataTables_paginate {
+    padding: 20px 0 0;
+}
+
+.desk_content_padding .dataTables_info {
+    line-height: 32px;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border: 1px solid #e0e0e0;
+    margin-left: 0;
+    padding: 4px 12px;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    border: 1px solid #bbb;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    border: 1px solid #e0e0e0;
+    color: #aaa;
+    filter: alpha(opacity=70);
+    opacity: 0.7;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.first,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.first:hover,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover {
+    border-right: 0;
+}
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.last,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.next,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.last:hover,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+    border-left: 0;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.first {
+    border-radius: 99px 0 0 99px;
+    padding-left: 16px;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.last {
+    border-radius: 0 99px 99px 0;
+    padding-right: 16px;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 0;
+}
+
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.desk_content_padding .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #f4f4f4;
+    font-weight: bold;
+}
+
+table.dataTable tfoot th, table.dataTable tfoot td {
+    background: #fafafa;
+    border-top: 2px solid #eee;
+    border-bottom: 0;
+    padding: 5px 15px;
+}
+
+.dataTable i {
+    padding: 4px;
+}

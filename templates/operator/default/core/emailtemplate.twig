@@ -1,0 +1,139 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('core.email_template', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="success box delete hide">
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('core.email_template', 1)|lower }) }}
+    </div>
+    <div class="fail box delete hide">
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('core.email_template', 1)|lower }) }}
+    </div>
+
+    <div class="grid-options options box">
+        <a href="{{ route('core.operator.emailtemplate.create') }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add') }} {{ Lang.choice('core.email_template', 1) }}
+        </a>
+    </div>
+
+    <ul class="tabs">
+        <li id="User" class="active">{{ Lang.choice('user.user', 1) }}</li>
+        <li id="Operator">{{ Lang.choice('general.operator', 1) }}</li>
+        <li id="Custom">{{ Lang.get('general.custom') }}</li>
+    </ul>
+
+    <div id="tabUser" class="tabContent">
+
+        <div class="grid-options options box">
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_name_user"></div>
+                </div>
+            </div>
+        </div>
+
+        {{ userTable.render()|raw }}
+        {{ userTable.script()|raw }}
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                /**
+                 * Initialise the filters
+                 */
+                oTable.yadcf([
+                    {column_number : 0, column_data_type: "text", filter_container_id: "filter_name_user", filter_type: "text"}
+                ]);
+            });
+        </script>
+
+    </div>
+
+    <div id="tabOperator" class="tabContent hide">
+
+        <div class="grid-options options box">
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_name_operator"></div>
+                </div>
+            </div>
+        </div>
+
+        {{ operatorTable.render()|raw }}
+        {{ operatorTable.script()|raw }}
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                /**
+                 * Initialise the filters
+                 */
+                oTable.yadcf([
+                    {column_number : 0, column_data_type: "text", filter_container_id: "filter_name_operator", filter_type: "text"}
+                ]);
+            });
+        </script>
+
+    </div>
+
+    <div id="tabCustom" class="tabContent hide">
+
+        <div class="grid-options options box">
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_name_custom"></div>
+                </div>
+            </div>
+        </div>
+
+        {{ customTable.render()|raw }}
+        {{ customTable.script()|raw }}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <!-- Filter the table -->
+    <script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * Initialise the filters
+             */
+            oTable.yadcf([
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name_custom", filter_type: "text"}
+            ]);
+        });
+    </script>
+{% endblock %}

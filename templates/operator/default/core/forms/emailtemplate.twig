@@ -1,0 +1,108 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get('general.edit') }} {{ Lang.choice('core.email_template', 1) }}
+    {% else %}
+        {{ Lang.get('general.add') }} {{ Lang.choice('core.email_template', 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'core.operator.emailtemplate.update', record.id ], 'method': 'PUT', 'class': 'validate', 'data-template-id': record.id }) }}
+    {% else %}
+        {{ form_open({ 'route': 'core.operator.emailtemplate.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name', null, {'size': 45}) }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-container">
+
+            <h2>{{ Lang.get('core.email_content') }}</h2>
+            <h2 class="description">{{ Lang.get('core.email_content_desc') }}</h2>
+
+            <ul class="tabs" style="margin: 10px 0;">
+                <li id="Default" class="active">{{ Lang.get('general.default') }}</li>
+                {% for language in languages %}
+                    <li id="{{ language }}">{{ language }}</li>
+                {% endfor %}
+            </ul>
+
+            <div id="tabDefault" class="tabContent">
+                {% include 'operator.' ~ template ~ '.core.forms.emailtemplatedata' with { 'code': 0 } %}
+            </div>
+            {% for code, language in languages %}
+                <div id="tab{{ language }}" class="tabContent hide">
+                    {% include 'operator.' ~ template ~ '.core.forms.emailtemplatedata' %}
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="form-container">
+
+            <div class="form-button" style="margin-bottom: 20px;">
+                {{ form_submit(Lang.choice("general.submit", 1)) }}
+            </div>
+
+        </div>
+
+    {{ form_close() }}
+
+    {% include 'operator.' ~ template ~ '.core.forms.mergefields' with { 'tickets': true } %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+
+    <!-- Code Editor -->
+    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('textarea').redactor({
+                focus: true,
+                linebreaks: true,
+                plugins: ['syntax']
+            });
+
+            // Insert merge field in visible editor
+            $('button.as-link').on('click', function() {
+                $('.tabContent:visible textarea').redactor('insert.text', $(this).text());
+            });
+        });
+    </script>
+{% endblock %}

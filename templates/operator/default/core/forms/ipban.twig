@@ -1,0 +1,116 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice('user.ban', 1) }} {{ Lang.get('general.ip') }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice('user.ban', 1) }} {{ Lang.get('general.ip') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'core.operator.ipban.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'core.operator.ipban.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('event', Lang.get('general.event')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>
+                            {{ form_check('event_user', 1, record|default is not empty ? record.event_user : true) }} {{ Lang.get('core.filter_user_login') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('event_operator', 1, record|default is not empty ? record.event_operator : true) }} {{ Lang.get('core.filter_operator_login') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('event_api', 1, record|default is not empty ? record.event_api : true) }} {{ Lang.get('core.filter_api_access') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ip', Lang.get('general.ip')) }}
+                <div class="input-container">
+                    {{ form_text('ip') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('reason', Lang.get('general.reason')) }}
+                <div class="input-container">
+                    {{ form_text('reason') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('type', Lang.get('general.permanent')) }}
+                <div class="input-container">
+                    {{ form_check('type', 1, record.type, { 'class': 'toggle', 'id': 'toggle_type' }) }}
+                    <label for="toggle_type"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('core.ip_ban_time_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row expiry {% if record.type is not defined or record.type %}hide{% endif %}">
+                {{ form_label('expiry', Lang.get('core.expiry_time')) }}
+                <div class="input-container">
+                    {{ form_text('expiry_date', expiryDate, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }}
+                    {{ form_select('expiry_hour', hours(), expiryHour) }}
+                    {{ form_select('expiry_minute', { 0: '00', '15': '15', '30': '30', '45': '45' }, expiryMinute) }}
+                    <br />
+                    <span class="description">{{ Lang.get('core.expiry_time_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Date picker
+            callPikaday();
+
+            // Handle hiding the expiry if the ban is permanent on page load
+            if ($('input[name="type"]').is(':checked')) {
+                $('.expiry').hide();
+            }
+
+            $('input[name="type"]').change(function() {
+                if (this.checked) {
+                    $('.expiry').hide();
+                } else {
+                    $('.expiry').show();
+                }
+            });
+        });
+    </script>
+{% endblock %}

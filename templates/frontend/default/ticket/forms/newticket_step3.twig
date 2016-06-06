@@ -1,0 +1,185 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('ticket.open_new') }}{% endblock %}
+
+{% block scripts_header %}
+    <script src="{{ asset('resources/assets/frontend/js/recaptcha.js') }}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('ticket.open_new') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_open({ 'route': [ 'ticket.frontend.ticket.storeStep3' ], 'class': 'validate' }) }}
+
+        {% if not Auth.guard('frontend').check() %}
+            {{ form_hidden('email', email) }}
+        {% endif %}
+
+        <h2>{{ Lang.get('ticket.enter_ticket_details') }}</h2>
+
+        <div class="form-container first">
+
+            <div class="form-row">
+                {{ form_label('department', Lang.choice('ticket.department', 1)) }}
+                <div class="input-container">
+                    {{ form_hidden('department', department.id) }}
+                    <span class="department-name">{{ Purifier.clean(department.name) }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('priority', Lang.choice('ticket.priority', 1)) }}
+                <div class="input-container">
+                    {{ form_select('priority', department_priorities) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('cc[]', Lang.get('ticket.cc')) }}
+                <div class="input-container">
+                    {{ form_select('cc[]', [], [], { 'multiple': 'multiple' }) }}
+                    <span class="light">{{ Lang.get('ticket.cc_desc') }}</span>
+                </div>
+            </div>
+
+            {% include 'frontend.' ~ template ~ '.forms.customfields' with {'new': true} %}
+
+        </div>
+
+        <hr />
+
+        <h2>{{ Lang.get('ticket.enter_subject_message') }}</h2>
+
+        <div class="fail attachment box hide"></div>
+
+        <div class="form-container first">
+
+            <div class="form-row form-full">
+                {{ form_label('subject', Lang.get('ticket.subject')) }}
+                <div class="input-container">
+                    {{ form_text('subject') }}
+                </div>
+            </div>
+
+            <div class="suggested-articles hide" style="background: #f0f0f0; border-radius: 5px; margin-bottom: 25px; padding: 25px;">
+                <h3 class="margin0">{{ Lang.get('selfservice.related_articles') }}</h3>
+                <div class="articles-list"></div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('text', Lang.choice('general.message', 1)) }}
+                <div class="input-container">
+                    {{ form_redactor('text', null, { 'size': '50x3' }) }}
+
+                    <div class="attachment-details">
+                        <input type="hidden" name="attachment[]" disabled="disabled" />
+                        {% if Input.old() is not empty and Input.old()['attachment'] is not empty %}
+                            {% for hash, file in Input.old()['attachment'] %}
+                                <input type="hidden" name="attachment[{{ hash }}]" id="attachment[{{ hash }}]" value="{{ file }}" />
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <ul id="attached-files">
+                        <li class="hide">
+                            <i class="fa fa-file"></i>
+                            &nbsp;
+                            <span class="information">
+                                <span class="filename ellipsis"></span>
+                                &nbsp;
+                                <span class="filesize"></span>
+                            </span>
+                            <i class="fa fa-times deleteAttachment right hide"></i>
+                            <div class="progress">
+                                <div class="bar"></div>
+                            </div>
+                        </li>
+                        {% if Input.old() is not empty and Input.old()['attachment'] is not empty %}
+                            {% for hash, file in Input.old()['attachment'] %}
+                                <li>
+                                    <i class="fa fa-file"></i>
+                                    &nbsp;
+                                    <span class="information">
+                                        <span class="filename ellipsis">{{ file }}</span>
+                                    </span>
+                                    <i class="fa fa-times deleteAttachment right"
+                                        data-url="{{ route("ticket.frontend.attachment.destroy") }}"
+                                        data-hash="{{ hash }}"></i>
+                                    <div class="progress">
+                                        <div class="bar"></div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+
+                    <label for="fileupload" class="button">
+                        <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+                    </label>
+                    <input id="fileupload" type="file" name="files[]"
+                           data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
+                </div>
+            </div>
+
+        </div>
+
+        {% if Config.get('channel.web.show_captcha') == 2 or (not Auth.guard('frontend').check() and Config.get('channel.web.show_captcha') == 1) %}
+            <hr />
+
+            <h2>{{ Lang.get('core.captcha') }}</h2>
+
+            {{ Captcha.getHtml() }}
+        {% endif %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script type="text/javascript">
+        // If we should attempt to fetch related articles
+        var relatedArticlesEnabled;
+        {% if isModuleEnabled('Selfservice') and Config.get('channel.web.show_related_articles') %}
+            relatedArticlesEnabled = true;
+        {% else %}
+            relatedArticlesEnabled = false;
+        {% endif %}
+    </script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/frontend/js/newticket.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/redactor.css') }}">
+
+    <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+
+    <!-- Custom fields -->
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'errors.error' %}
+
+{% block title %}
+    403 - {{ Lang.get('messages.forbidden') }}
+{% endblock %}
+
+{% block header %}
+    {{ Lang.get('messages.error') }} (403)
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ Lang.get('messages.forbidden') }}.<br/> {{ Lang.get('messages.please_report') }}</p>
+
+    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ URL.previous() ~ '">' ~ strtolower(Lang.get('general.previous_page')) ~ '</a>'})|raw }}</p>
+
+{% endblock %}

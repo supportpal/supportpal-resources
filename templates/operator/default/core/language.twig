@@ -1,0 +1,55 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('general.language', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="grid-options options box">
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
+
+        <div class="filters hide">
+            <div>
+                <label>{{ Lang.get('general.name') }}:</label>
+                <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.get('general.enabled') }}:</label>
+                <div id="filter_enabled"></div>
+            </div>
+        </div>
+    </div>
+
+    {{ table.render()|raw }}
+    {{ table.script()|raw }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+
+    <!-- Filter the table -->
+    <script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * Initialise the filters
+             */
+            oTable.yadcf([
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
+                {column_number : 1, filter_container_id: "filter_enabled"}
+            ]);
+        });
+    </script>
+{% endblock %}

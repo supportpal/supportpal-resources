@@ -1,0 +1,74 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("general.status", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("general.status", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': ['ticket.operator.status.update', record.id], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.status.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('colour', Lang.get('general.colour')) }}
+                <div class="input-container">
+                    {{ form_text('colour') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('auto_close', Lang.get('ticket.close_inactive_tickets')) }}
+                <div class="input-container">
+                    {{ form_check('auto_close', 1, record|default is not empty ? record.auto_close : true, { 'class': 'toggle', 'id': 'toggle_auto_close' }) }}
+                    <label for="toggle_auto_close"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.close_inactive_status_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($('input[name="colour"]').val() === '') {
+                $('input[name="colour"]').val('#FFFFFF');
+            }
+            $('input[name="colour"]').minicolors();
+        });
+    </script>
+{% endblock %}

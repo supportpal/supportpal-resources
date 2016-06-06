@@ -1,0 +1,288 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.department", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.department", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.department.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.department.store', 'class': 'validate' }) }}
+    {% endif %}
+
+    <div class="form-container open first">
+        <div class="form-row">
+            {{ form_label('name', Lang.get('general.name')) }}
+            <div class="input-container">
+                {{ form_text('name') }}
+            </div>
+        </div>
+
+        <div class="form-row form-full">
+            {{ form_label('description', Lang.get('general.description')) }}
+            <div class="input-container">
+                {{ form_text('description') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('parent', Lang.get('general.parent')) }}
+            <div class="input-container">
+                {{ form_select('parent', parentDepartments, record|default is not empty and record.exists ? record.parent_id : null, { 'id': 'parent' }) }}
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_parent_desc') }}</span>
+            </div>
+        </div>
+
+        {% if record.parent_id != 0 %}
+            <div class="form-row parentToggle hide">
+        {% else %}
+            <div class="form-row parentToggle">
+        {% endif %}
+            {{ form_label('public', Lang.get('general.public')) }}
+            <div class="input-container">
+                {{ form_check('public', 1, record|default is not empty ? record.public : true, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                <label for="toggle_public"></label>
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_public_desc') }}</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-container collapsed">
+        <div class="arrow">
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="form-row" id="departmentSettings">
+            {{ form_label('dept_priorities', Lang.get('ticket.department_priority')) }}
+            <div class="input-container">
+                <div class="hide">
+                    <div class="input-group">
+                        {% for priority in priorities %}
+                            {{ form_checkbox('dept_priorities[]', priority.id, in_array(priority.id, recordPriorities, true)) }}
+                            {{ priority.name }}<br />
+                        {% endfor %}
+                    </div>
+                </div>
+                <span class="description">{{ Lang.get('ticket.department_priority_desc') }}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-container collapsed parentToggle {% if record.parent_id != 0 %} hide {% endif %}">
+        <div class="arrow">
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="form-row">
+            {{ form_label('ticket_number_format', Lang.get('ticket.ticket_format')) }}
+            <div class="input-container">
+                <div class="hide">
+                    {{ form_text('ticket_number_format') }}<br />
+                </div>
+                <span class="description">{{ Lang.get('ticket.department_no_format') }}
+                    <span class="hide"><br />{{ Lang.get('ticket.ticket_format_desc')|raw }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <h2>{{ Lang.get('ticket.assigned_operator') }}</h2>
+
+    <div class="form-container open first">
+
+        <div class="form-row">
+            {{ form_label('dept_operators', Lang.get('ticket.department_operator')) }}
+            <div class="input-container">
+                <div class="input-group">
+                    {% for id, name in operators %}
+                        {{ form_checkbox('dept_operators[]', id, in_array(id, recordOperators)) }}
+                        {{ name }}<br />
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row form-full">
+            {{ form_label('default_assignedto', Lang.get('ticket.department_default_assign')) }}
+            <div class="input-container">
+                {{ form_select('default_assignedto[]', operators, record.default_assignedto, { 'multiple': 'multiple' }) }}
+                <span class="description">{{ Lang.get('ticket.dept_default_assign_desc') }}</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="parentToggle {% if record.parent_id != 0 %}hide{% endif %}" id="emailAccounts">
+
+        <h2>{{ Lang.get('general.email') ~ ' ' ~ Lang.choice('general.account', 2) }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.email_accounts_desc') }}</h2>
+
+        {% if not extension_loaded('imap') %}
+            <div class="warning box">
+                <strong>{{ Lang.get('messages.missing_extension') }}</strong><br />
+                <span>{{ Lang.get('messages.php_imap_missing') }}</span>
+            </div>
+        {% endif %}
+
+        {# Add an empty item, we use this for DOM cloning when adding new emails #}
+        {% include 'operator.' ~ template ~ '.ticket.forms.department_email' with { 'hide': true } %}
+
+        {# Add existing emails, if there aren't any then show an empty box... #}
+        {% for i, email in record.emails %}
+            {% include 'operator.' ~ template ~ '.ticket.forms.department_email' %}
+        {% else %}
+            {% include 'operator.' ~ template ~ '.ticket.forms.department_email' with { 'i': 0 } %}
+        {% endfor %}
+
+        <div class="form-container open">
+            <div class="form-row">
+                <div class="input-container">
+                    {{ form_button(Lang.get('ticket.another_email'), { 'class': 'add-email' }) }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="parentToggle" id="emailOptions">
+
+        <h2>{{ Lang.get('ticket.email_options') }}</h2>
+
+        <div class="form-container open first">
+            <div class="form-row">
+                {{ form_label('notify_ticket_autoclose', Lang.get('ticket.email_auto_close')) }}
+                <div class="input-container">
+                    <input name="notify_ticket_autoclose" value="0" id="notify_ticket_autoclose" type="hidden">
+                    {{ form_check('notify_ticket_autoclose', 1, record|default is not empty ? record.notify_ticket_autoclose : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_autoclose' }) }}
+                    <label for="toggle_notify_ticket_autoclose"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.email_auto_close_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('notify_ticket_closed', Lang.get('ticket.email_closed_by_operator')) }}
+                <div class="input-container">
+                    <input name="notify_ticket_closed" value="0" id="notify_ticket_closed" type="hidden">
+                    {{ form_check('notify_ticket_closed', 1, record|default is not empty ? record.notify_ticket_closed : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_closed' }) }}
+                    <label for="toggle_notify_ticket_closed"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.email_closed_by_op_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('notify_email_ticket', Lang.get('ticket.email_user_on_email')) }}
+                <div class="input-container">
+                    <input name="notify_email_ticket" value="0" id="notify_email_ticket" type="hidden">
+                    {{ form_check('notify_email_ticket', 1, record|default is not empty ? record.notify_email_ticket : true, { 'class': 'toggle', 'id': 'toggle_notify_email_ticket' }) }}
+                    <label for="toggle_notify_email_ticket"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.email_user_on_email_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('notify_operators', Lang.get('ticket.email_operators')) }}
+                <div class="input-container">
+                    {{ form_check('notify_operators', 1, null, { 'class': 'toggle', 'id': 'toggle_notify_operators' }) }}
+                    <label for="toggle_notify_operators"></label><br />
+                    <span class="description">{{ Lang.get('ticket.email_operators_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>{{ Lang.choice('core.email_template', 2) }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.email_template_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('ticket_opened', Lang.get('ticket.new_ticket_opened')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_opened', ticketOpenedTemplate, record.email_templates['ticket_opened']) }}
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('ticket_reply', Lang.get('ticket.new_ticket_reply')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_reply', ticketReplyTemplate, record.email_templates['ticket_reply']) }}
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('ticket_locked', Lang.get('ticket.reply_to_locked')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_locked', ticketLockedTemplate, record.email_templates['ticket_locked']) }}
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('ticket_waitingresponse', Lang.get('ticket.waiting_for_response')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_waitingresponse', ticketWaitingResponseTemplate, record.email_templates['ticket_waitingresponse']) }}
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('ticket_autoclose', Lang.get('ticket.ticket_auto_closed')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_autoclose', ticketAutoCloseTemplate, record.email_templates['ticket_autoclose']) }}
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('ticket_operatorclose', Lang.get('ticket.closed_by_operator')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_operatorclose', ticketOperatorCloseTemplate, record.email_templates['ticket_operatorclose']) }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="form-button">
+        {{ form_submit(Lang.choice('general.submit', 1)) }}
+    </div>
+
+{{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/department.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // If there was an error and they had selected that this department
+            // is a child of another then we need to toggle the field to hide
+            // all the necessary DOM elements
+            if ($('select[name=parent]').val() != '0') {
+                $('.parentToggle').hide();
+            }
+
+            $('select[name="default_assignedto[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ',',
+                persist: false,
+                dropdownParent: 'body'
+            });
+        });
+    </script>
+{% endblock %}

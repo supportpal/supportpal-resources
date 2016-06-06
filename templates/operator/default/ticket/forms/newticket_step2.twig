@@ -1,0 +1,191 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('ticket.open_new') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_open({ 'route': [ 'ticket.operator.ticket.storeStep2' ], 'class': 'validate' }) }}
+
+        <h2>{{ Lang.get('ticket.enter_ticket_details') }}</h2>
+
+        <div class="form-container first">
+
+            <div class="form-row">
+                {{ form_label('department', Lang.choice('ticket.department', 1)) }}
+                <div class="input-container">
+                    {{ department.name }}
+                    {{ form_hidden('department', department.id) }}
+                </div>
+            </div>
+
+            {{ form_hidden('user', user) }}
+            {{ form_hidden('internal', internal) }}
+            {{ form_hidden('company', company) }}
+
+            <div class="form-row">
+                {{ form_label('status', Lang.choice('general.status', 1)) }}
+                <div class="input-container">
+                    {{ form_select('status', statuses, Config.get('settings.default_open_status')) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('priority', Lang.choice('ticket.priority', 1)) }}
+                <div class="input-container">
+                    {{ form_select('priority', priorities) }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('assignedto[]', Lang.get('ticket.assigned_to')) }}
+                <div class="input-container">
+                    {{ form_select('assignedto[]', departmentOperators, department.default_assignedto, { 'multiple': 'multiple' }) }}
+                </div>
+            </div>
+
+            {% include 'operator.' ~ template ~ '.forms.customfields' %}
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.enter_subject_message') }}</h2>
+
+        <div class="form-container first">
+
+            <div class="form-row form-full">
+                {{ form_label('subject', Lang.get('ticket.subject')) }}
+                <div class="input-container">
+                    {{ form_text('subject', null, { 'style': 'width: 300px' }) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('text', Lang.choice('general.message', 1)) }}
+                <div class="input-container">
+
+                    <div class="form-row form-full recipients" style="padding: 0;">
+                        <div>
+                            {{ form_label('from', Lang.get('ticket.from')) }}
+                            <div class="input-container" id="fromAddress">
+                                {{ form_select('department_email', fromEmails) }}
+                            </div>
+                        </div>
+                        <div>
+                            {{ form_label('to', Lang.get('ticket.to')) }}
+                            <div class="input-container">
+                                <span id="toAddress">{{ Purifier.clean(toEmails) }}</span>
+                                <a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>
+                            </div>
+                        </div>
+                        <div class="cc-emails hide">
+                            {{ form_label('cc[]', Lang.get('ticket.cc')) }}
+                            <div class="input-container">
+                                {{ form_select('cc[]', [], [], { 'multiple': 'multiple' }) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="padding: 0;">
+                        {% if operator.ticket_signature is not empty %}
+                            {{ form_redactor('text', '<br /><br />' ~ operator.ticket_signature, { 'size': '50x3' }) }}
+                        {% else %}
+                            {{ form_redactor('text', null, { 'size': '50x3' }) }}
+                        {% endif %}
+                    </div>
+
+                    {% include 'operator.' ~ template ~ '.core.forms.attachments' with {
+                            'route': 'ticket.operator.attachment',
+                            'downloadRoute': 'ticket.operator.attachment.download',
+                            'attachments': []
+                        }
+                    %}
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <span class="input-group">
+                        <span class="send-user-email">
+                            <label style="font-weight: normal">
+                                {{ form_check('send_user_email', 1, true) }} {{ Lang.get('ticket.send_email_to_user') }}
+                            </label>
+                            &nbsp;&nbsp;
+                        </span>
+                        <span class="send-operators-email">
+                            <label style="font-weight: normal">
+                                {{ form_check('send_operators_email', 1) }} {{ Lang.get('ticket.send_email_to_operator') }}
+                            </label>
+                        </span>
+                    </span>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1), { 'id': 'submitNewTicket' }) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript">
+        // Routes
+        var embedImageRoute = laroute.route('core.embed.image');
+
+        // Global variables for redactor plugins
+        var ticketId = null,
+            userId = {{ user }},
+            operatorId = '{{ Auth.guard('operator').user().id }}',
+            internal = {{ internal }};
+    </script>
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/newticket.js') }}"></script>
+    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/replyoptions.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/general/js/done_typing.js') }}"></script>
+
+    <script type="text/javascript">
+        // Initialise redactor.
+        var redactor_plugins = {
+            plugins: [
+                'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize',
+                {% if isModuleEnabled('Selfservice') %}'ssLink'{% endif %}
+            ]
+        };
+
+        $(document).ready(function() {
+            $('textarea[name="text"]').redactor($.extend($.Redactor.default_opts, redactor_plugins));
+        });
+    </script>
+
+    <!-- Custom fields -->
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Date picker
+            callPikaday();
+        });
+    </script>
+{% endblock %}

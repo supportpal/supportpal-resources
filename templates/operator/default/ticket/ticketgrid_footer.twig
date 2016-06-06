@@ -1,0 +1,69 @@
+<tr>
+    {% if (Auth.guard('operator').user().hasPermission('update.ticket|delete.ticket')) %}
+    <td id="toolbar" class="ticket-options" colspan="{{ totalColumns }}">
+        <div class="processing hide">
+            <div>{{ Lang.get('general.processing') }}...</div>
+        </div>
+        {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+            <span class="button-group">
+                <button class="reply-ticket" disabled="disabled"><i class="fa fa-reply"></i> {{ Lang.get('general.reply') }}</button><!--
+                --><button class="take-ticket" disabled="disabled"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
+                --><button class="close-ticket" disabled="disabled"><i class="fa fa-check"></i> {{ Lang.get('general.close') }}</button><!--
+                --><button class="lock-ticket" disabled="disabled"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
+                --><button class="unlock-ticket" disabled="disabled"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
+            </span>
+            &nbsp;
+            <span class="button-group">
+                <button class="merge-ticket" disabled="disabled"><i class="fa fa-link"></i> {{ Lang.get('ticket.merge') }}</button><!--
+                --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-unlink"></i> {{ Lang.get('ticket.unmerge') }}</button>
+            </span>
+        {% endif %}
+        {% if (Auth.guard('operator').user().hasPermission('delete.ticket')) %}
+            &nbsp;
+            <span class="button-group">
+                <button class="delete-ticket" disabled="disabled"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
+                --><button class="block-ticket" disabled="disabled"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
+            </span>
+        {% endif %}
+        {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+        <br />
+            <select name="operator" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.assign_operator') }}...</option>
+                {% for operator in operators %}
+                    <option value="{{ operator.id }}">{{ operator.formatted_name }}</option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="department" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.change_department') }}...</option>
+                {% for department in departments %}
+                    <option value="{{ department.id }}">{{ Purifier.clean(department.name) }}</option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="status" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.change_status') }}...</option>
+                {% for status in statuses %}
+                    <option value="{{ status.id }}" style="color: {{ status.colour }}">
+                        {{ status['name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="priority" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.change_priority') }}...</option>
+                {% for priority in priorities %}
+                    <option value="{{ priority.id }}">{{ priority.name }}</option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="tag" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.add_tag') }}...</option>
+                {% for tag in tags %}
+                    <option value="{{ tag.id }}">{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+    </td>
+    {% endif %}
+</tr>

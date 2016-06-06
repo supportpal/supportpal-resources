@@ -1,0 +1,137 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('core.system_cleanup') }}
+{% endblock %}
+
+{% block description %}
+    {{ Lang.get('core.system_cleanup_desc') }}
+{% endblock %}
+
+{% block content %}
+
+	<div class="success box hide">
+		{{ Lang.get('messages.success_action') }}
+	</div>
+	<div class="fail box hide">
+		{{ Lang.get('messages.error_action') }}
+	</div>
+
+	<hr />
+
+	<h2>{{ Lang.get('core.files') }}</h2>
+	<h2 class="description">{{ Lang.get('core.files_desc') }}</h2>
+
+	<div class="row">
+		<div class="item item33">
+			<div class="cleanup-box empty">
+				<h3>{{ Lang.get('core.system_cache') }}</h3>
+				<p>{{ Lang.get('core.system_cache_desc') }}</p>
+				{{ form_button(Lang.get('core.empty'), { 'class': 'system-cache' }) }}
+			</div>
+		</div>
+		<div class="item item33">
+			<div class="cleanup-box empty">
+				<h3>{{ Lang.get('core.template_cache') }}</h3>
+				<p>{{ Lang.get('core.template_cache_desc') }}</p>
+				{{ form_button(Lang.get('core.empty'), { 'class': 'template-cache' }) }}
+			</div>
+		</div>
+		<div class="item item33">
+			<div class="cleanup-box purge">
+				<h3>{{ Lang.choice('general.attachment', 2) }}</h3>
+				<p>{{ Lang.get('core.attachments_desc') }}</p>
+				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="attachments count">{{ attachmentCount }}</span></p>
+				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'attachments' }) }}
+			</div>
+		</div>
+	</div>
+
+	<hr />
+
+	<h2>{{ Lang.get('core.logs') }}</h2>
+	<h2 class="description">{{ Lang.get('core.logs_desc') }}</h2>
+
+	<div class="row">
+		<div class="item item33">
+			<div class="cleanup-box purge">
+				<h3>{{ Lang.get('user.system_activity_log') }}</h3>
+				<p>{{ Lang.get('core.system_activity_log_desc') }}</p>
+				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="activity-log count">{{ activityCount }}</span></p>
+				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'activity-log' }) }}
+			</div>
+		</div>
+		<div class="item item33">
+			<div class="cleanup-box purge">
+				<h3>{{ Lang.get('core.email_log') }}</h3>
+				<p>{{ Lang.get('core.email_log_desc') }}</p>
+				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="email-log count">{{ emailCount }}</span></p>
+				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'email-log' }) }}
+			</div>
+		</div>
+		<div class="item item33">
+			<div class="cleanup-box purge">
+				<h3>{{ Lang.get('user.operator_login_log') }}</h3>
+				<p>{{ Lang.get('core.operator_login_log_desc') }}</p>
+				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="login-log count">{{ loginCount }}</span></p>
+				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'login-log' }) }}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+	<script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$('.cleanup-box button').on('click', function() {
+    			// Determine which route to use
+    			var route;
+    			if ($(this).parent().hasClass('purge')) {
+    				route = laroute.route('core.operator.systemcleanup.purge');
+    			} else {
+    				route = laroute.route('core.operator.systemcleanup.empty');
+    			}
+
+    			// Get name and date if needed
+    			var name = $(this).attr('class');
+    			var date = null;
+    			if ($(this).prev().hasClass('datepicker')) {
+    				date = $(this).prev().val();
+    			}
+
+    			// Make AJAX call
+    			$.ajax({
+		            url: route,
+		            type: 'POST',
+		            data: {
+		            	name: name,
+		            	date: date
+		            },
+		            dataType: 'json'
+		        }).done(function(response) {
+		            if (response.status == 'success') {
+		                $('.success').show(500).delay(5000).hide(500);
+		                if (response.data != 'undefined') {
+		                	// Update count
+		                	$('.' + name + '.count').text(response.data);
+		                }
+		            } else {
+		                $('.fail').show(500).delay(5000).hide(500);
+		            }
+		        }).fail(function() {
+		            $('.fail').show(500).delay(5000).hide(500);
+		        });
+
+    		});
+
+			// Date picker
+            callPikaday();
+    	});
+	</script>
+{% endblock %}

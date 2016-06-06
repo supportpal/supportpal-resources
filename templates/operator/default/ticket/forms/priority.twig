@@ -1,0 +1,79 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.priority", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.priority", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.priority.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.priority.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('colour', Lang.get('general.colour')) }}
+                <div class="input-container">
+                    {{ form_text('colour') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('depts', Lang.get('ticket.department_applicable')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                    {% for department in departments %}
+                        {{ form_checkbox('depts[]', department['id'], in_array(department['id'], recordDepts, true)) }}
+                        {{ Purifier.clean(department['name']) }}<br />
+                    {% endfor %}
+                    </div>
+                    <span class="description">{{ Lang.get('ticket.department_applicable_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+        <br />
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($('input[name="colour"]').val() === '') {
+                $('input[name="colour"]').val('#FFFFFF');
+            }
+            $('input[name="colour"]').minicolors();
+        });
+    </script>
+{% endblock %}

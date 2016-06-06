@@ -1,0 +1,113 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.type', 1) }}
+    {% else %}
+        {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.type', 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'selfservice.operator.type.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'selfservice.operator.type.store', 'method': 'POST', 'files': true, 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container first open">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('enabled', Lang.get('general.enabled')) }}
+                <div class="input-container">
+                    {{ form_check('enabled', 1, not record.exists or record.enabled ? true : null,
+                        { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
+                    <label for="toggle_enabled"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.type_enabled_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('view', Lang.choice('general.view', 1)) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label style="display: inline-block; text-align: center; position: static;">
+                            <img src="{{ asset('resources/assets/operator/images/view_hierarchical.png') }}" alt="{{ Lang.get('selfservice.hierarchical') }}" /><br />
+                            {{ form_radio('view', 0, true) }} {{ Lang.get('selfservice.hierarchical') }}
+                        </label>
+                        &nbsp;&nbsp;
+                        <label style="display: inline-block; text-align: center;">
+                            <img src="{{ asset('resources/assets/operator/images/view_list.png') }}" alt="{{ Lang.get('selfservice.list') }}" /><br />
+                            {{ form_radio('view', 1) }} {{ Lang.get('selfservice.list') }}
+                        </label>
+                    </div>
+                    <span class="description">{{ Lang.get('selfservice.type_view_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('icon', Lang.get('selfservice.frontend_icon')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        {% for k, icon in icons %}
+                            <label style="display: inline-block; text-align:center">
+                                <img src="{{ asset(icon['location']) }}" /><br />
+                                {{ form_radio('default_icon', k) }} {{ icon['name'] }}
+                            </label>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        {% endfor %}
+                        </div>
+
+                    <span class="description">{{ Lang.get('selfservice.frontend_icon_desc') }}</span>
+                    <br />
+
+                    {% if record.icon is not empty %}
+                        {{ form_hidden('existing_icon', 1) }}
+                        <img src="data:image/jpeg;base64, {{ record.icon }}" />
+                    {% endif %}
+                    {{ form_file('icon') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('show_on_dashboard', Lang.get('selfservice.show_on_dashboard')|raw) }}
+                <div class="input-container">
+                    {{ form_check('show_on_dashboard', 1, not record.exists or record.show_on_dashboard ? true : null,
+                        { 'class': 'toggle', 'id': 'toggle_show_on_dashboard' }) }}
+                    <label for="toggle_show_on_dashboard"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.show_on_dashboard_desc')|raw }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,127 @@
+    <div class="form-row">
+        {{ form_label('firstname', Lang.get('user.firstname')) }}
+        <div class="input-container">
+            {{ form_text('firstname') }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('lastname', Lang.get('user.lastname')) }}
+        <div class="input-container">
+            {{ form_text('lastname') }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('email', Lang.get('general.email')) }}
+        <div class="input-container">
+            {{ form_email('email') }}
+        </div>
+    </div>
+
+    {% if not record.exists and managing|default is not empty and managing and (operator is not defined or not operator) %}
+    <div class="form-row">
+        <div class="input-container">
+            {{ form_checkbox('send_email', 1, true) }} {{ Lang.get('user.send_confirmation_email') }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
+        {{ form_label('password', Lang.get('general.password')) }}
+        <div class="input-container">
+            {{ form_password('password') }}
+            {% if record.password|default is not empty %}
+                &nbsp; <span class="description">({{ Lang.get('general.only_enter_to_change') }})</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
+        {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
+        <div class="input-container">
+            {{ form_password('password_confirmation') }}
+        </div>
+    </div>
+
+    {% if record.exists and record.confirmed and managing|default is not empty and managing and (operator is not defined or not operator) %}
+    <div class="form-row">
+        <div class="input-container">
+            {{ form_button('<i class="fa fa-paper-plane"></i>&nbsp; ' ~ Lang.get('user.send_password_reset'), { 'class': 'reset-password' }) }}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-row">
+        {{ form_label('country', Lang.get('user.country')) }}
+        <div class="input-container">
+            {{ form_select('country', countries(), record.country|default is not empty ? record.country : Config.get('settings.default_country')) }}
+        </div>
+    </div>
+
+    {# Check whether we should allow users to change their default language #}
+    {% if operator|default is not empty and operator and Config.get('settings.language_operator_toggle') %}
+
+    <div class="form-row">
+        {{ form_label('language_code', Lang.choice('general.language', 1)) }}
+        <div class="input-container">
+            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+        </div>
+    </div>
+
+    {% elseif (Config.get('settings.language_frontend_toggle')) %}
+
+    <div class="form-row">
+        {{ form_label('language_code', Lang.choice('general.language', 1)) }}
+        <div class="input-container">
+            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+        </div>
+    </div>
+
+    {% endif %}
+
+    <div class="form-row">
+        {{ form_label('timezone', Lang.get('general.timezone')) }}
+        <div class="input-container">
+            {{ form_select('timezone', timezones(), record|default is not empty and record.timezone|default is not empty ? record.timezone : Config.get('settings.default_timezone')) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('avatar', Lang.get('user.avatar')) }}
+        <div class="input-container">
+            {% if record.avatar|default is not empty %}
+                <img class="avatar" src="data:image/jpeg;base64, {{ record.avatar }}" />
+            {% endif %}
+            {{ form_file('avatar') }}
+        </div>
+    </div>
+
+    {% if groups|default is not empty and groups %}
+        <div class="form-row form-full">
+            {% if operator|default is not empty and operator %}
+                {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+            {% else %}
+                {{ form_label('groups', Lang.choice('user.group', 2)) }}
+            {% endif %}
+            <div class="input-container">
+                {{ form_select('groups[]', groups, (userGroups is defined ? userGroups : []), { 'multiple': 'multiple' }) }}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if managing|default is not empty and managing and ((operator is defined and operator) or record.exists) %}
+    <div class="form-row">
+        {{ form_label('confirmed', Lang.get('user.account_active')) }}
+        <div class="input-container">
+            {{ form_check('confirmed', 1, record.confirmed|default is not empty ? record.confirmed : 1, { 'class': 'toggle', 'id': 'toggle_confirmed' }) }}
+            <label for="toggle_confirmed"></label>
+            <br />
+            <span class="description">{{ Lang.get('user.account_active_desc') }}</span>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if operator|default is not empty and operator %}
+        {{ form_hidden('operator', true) }}
+    {% endif %}

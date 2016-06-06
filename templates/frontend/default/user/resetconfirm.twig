@@ -1,0 +1,71 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.password_reset_complete') }}{% endblock %}
+
+{% block breadcrumb %}
+	{{ parent() }}
+	{{ Lang.get('user.password_reset_complete') }}
+{% endblock %}
+
+{% block content %}
+
+    {% if reset_error|default is not empty and reset_error %}
+
+		<div class="fail box">{{ Lang.get('user.confirmation_unsuccessful') }}</div>
+		{{ reset_error }}
+
+	{% else %}
+
+        {% if error is not defined %}
+			<div class="success box">{{ Lang.get('user.confirmation_success') }}</div>
+		{% else %}
+			<div class="fail box">{{ error }}</div>
+		{% endif %}
+
+		<div class="login-container">
+
+			{{ Lang.get('user.please_set_password') }}
+			<br /><br />
+
+			{{ form_open({ 'route': [ 'user.resetconfirm' ], 'method': 'post', 'class': 'validate' }) }}
+
+				{{ form_hidden('email', Input.get('email')) }}
+				{{ form_hidden('token', Input.get('token')) }}
+
+				<div class="form-row form-full">
+			        {{ form_label('password', Lang.get('general.password')) }}
+			        <div class="input-container">
+			            {{ form_password('password') }}
+			        </div>
+			    </div>
+			    <div class="form-row form-full">
+			        {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
+			        <div class="input-container">
+			            {{ form_password('password_confirmation') }}
+			        </div>
+			    </div>
+				<div class="form-button form-center">
+					{{ form_submit(Lang.get('general.save')) }}
+				</div>
+
+			{{ form_close() }}
+
+		</div>
+
+	{% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+        });
+    </script>
+
+    {% if jsValidator|default is not empty %}
+	    {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

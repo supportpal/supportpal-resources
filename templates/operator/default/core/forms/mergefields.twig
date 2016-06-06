@@ -1,0 +1,174 @@
+<h3>{{ Lang.get('operator.merge_fields') }}</h3>
+<h3 class="description">{{ Lang.get('operator.merge_fields_desc') }}</h3>
+
+<div class="merge-fields row">
+    {% if tickets|default is not empty and tickets %}
+    <div class="item item50">
+        <strong class="title">{{ Lang.choice('ticket.ticket', 2) }}</strong>
+        <table>
+            <tr>
+                <td colspan="2"><strong>{{ Lang.get('operator.strings') }}</strong></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('general.id') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.id }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.get('ticket.ticket_number') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.number }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.subject') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.subject }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.department', 1) }} {{ Lang.get('general.id') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.department.id }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.department', 1) }} {{ Lang.get('general.name') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.department.name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('general.status', 1) }} {{ Lang.get('general.id') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.status.id }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('general.status', 1) }} {{ Lang.get('general.name') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.status.name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.priority', 1) }} {{ Lang.get('general.id') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.priority.id }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.priority', 1) }} {{ Lang.get('general.name') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.priority.name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.sla_plan', 1) }} ({{ Lang.get('general.if_exists') }})</td>
+                <td><button class="as-link">{{ '{{ ticket.slaplan.name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.due_time') }}</td>
+                <td><button class="as-link">{{ '{{ formatDate(ticket.due_time) }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.created_time') }}</td>
+                <td><button class="as-link">{{ '{{ formatDate(ticket.created_at) }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.last_action') }}</td>
+                <td><button class="as-link">{{ '{{ formatDate(ticket.updated_at) }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.last_message_text') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.latestMessage.text }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('operator.frontend_url') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.frontend_url }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('operator.operator_url') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.operator_url }}' }}</button></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>{{ Lang.get('operator.collections') }}</strong></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.choice('ticket.tag', 2) }}</td>
+                <td><button class="as-link">{{ '{{ ticket.tags }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('ticket.assigned_operator') }}</td>
+                <td><button class="as-link">{{ '{{ ticket.assigned }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('ticket.customfield', 2) }}</td>
+                <td><button class="as-link">{{ '{{ ticket.customfields }}' }}</button></td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
+    <div class="item item50">
+        <strong class="title">{{ Lang.choice('user.user', 2) }}</strong>
+        <table>
+            <tr>
+                <td colspan="2"><strong>{{ Lang.get('operator.strings') }}</strong></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('general.id') }}</td>
+                <td><button class="as-link">{{ '{{ user.id }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('user.formatted_name') }}</td>
+                <td><button class="as-link">{{ '{{ user.formatted_name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('user.firstname') }}</td>
+                <td><button class="as-link">{{ '{{ user.firstname }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('user.lastname') }}</td>
+                <td><button class="as-link">{{ '{{ user.lastname }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('general.email') }}</td>
+                <td><button class="as-link">{{ '{{ user.email }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.choice('user.organisation', 1) }} {{ Lang.get('general.name') }}</td>
+                <td><button class="as-link">{{ '{{ user.organisation.name }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('user.confirmed') }}</td>
+                <td><button class="as-link">{{ '{{ user.confirmed }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('user.country') }} {{ Lang.get('general.code') }}</td>
+                <td><button class="as-link">{{ '{{ user.country }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.choice('general.language', 1) }} {{ Lang.get('general.code') }}</td>
+                <td><button class="as-link">{{ '{{ user.language_code }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.user', 1) }} {{ Lang.get('ticket.created_time') }}</td>
+                <td><button class="as-link">{{ '{{ formatDate(user.created_at) }}' }}</button></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>{{ Lang.get('operator.collections') }}</strong></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.group', 2) }}</td>
+                <td><button class="as-link">{{ '{{ user.groups }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.choice('user.customfield', 2) }}</td>
+                <td><button class="as-link">{{ '{{ user.customfields }}' }}</button></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <br />
+                    <strong class="title">{{ Lang.get('general.general') }}</strong>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>{{ Lang.get('operator.strings') }}</strong></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.get('general.default') }} {{ Lang.get('core.company_name') }}</td>
+                <td><button class="as-link">{{ '{{ system.company }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.get('general.default') }} {{ Lang.get('general.email_address') }}</td>
+                <td><button class="as-link">{{ '{{ system.email }}' }}</button></td>
+            </tr>
+            <tr>
+                <td>{{ Lang.get('operator.frontend_url') }}</td>
+                <td><button class="as-link">{{ '{{ system.url }}' }}</button></td>
+            </tr>
+        </table>
+    </div>
+</div>

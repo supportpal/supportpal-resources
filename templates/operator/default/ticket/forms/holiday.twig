@@ -1,0 +1,116 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.holiday", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.holiday", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.holiday.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.holiday.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-row">
+            {{ form_label('name', Lang.get('general.name')) }}
+            <div class="input-container">
+                {{ form_text('name') }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('month', Lang.choice('general.month', 1) ~ '/' ~ Lang.choice('general.year', 1)) }}
+            <div class="input-container">
+                {{ form_selectMonth('month') }} &nbsp;
+                {{ form_select('year',
+                    {
+                        '': '', '2016': '2016', '2017': '2017', '2018': '2018',
+                        '2019': '2019', '2020': '2020', '2021': '2021'
+                    })
+                }}<br />
+                <span class="description">{{ Lang.get('ticket.holiday_month_year_desc') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('day', Lang.choice('general.day', 1)) }}
+            <div class="input-container">
+                {{ form_select('day') }}&nbsp; {{ Lang.get('ticket.holiday_or_on_the') }} &nbsp;
+                {{ form_select('order',
+                    {
+                        '': '',
+                        '1': Lang.get('general.first'),
+                        '2': Lang.get('general.second'),
+                        '3': Lang.get('general.third'),
+                        '4': Lang.get('general.forth'),
+                        '5': Lang.get('general.last')
+                    })
+                }} &nbsp;
+                {{ form_select('weekday', {'': ''} + weekdays()) }}
+            </div>
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript">
+        function fillDays(start) {
+            var currentDay = typeof start !== 'undefined' ? start : $('select[name="day"]').val();
+
+            var year = $('select[name="year"]').val();
+            var month = $('select[name="month"]').val() - 1;
+            var days;
+
+            if (!year && month == 2) {
+                days = 29;
+            } else {
+                // http://snippets.dzone.com/posts/show/2099
+                if (year) {
+                    days = 32 - new Date(year, month, 32).getDate();
+                } else {
+                    year = new Date().getFullYear(); // if year not given then default to current year
+                    days = 32 - new Date(year, month, 32).getDate();
+                }
+            }
+
+            $('select[name="day"]').empty();
+            for (i = 1; i <= days; i++) {
+                $('select[name="day"]').append('<option value="' + i + '">' + i + '</option>');
+            }
+
+            if (currentDay) {
+                $('select[name="day"]').val(currentDay);
+            }
+        }
+
+        $(function() {
+            {% if record|default is not empty and record.exists and record.day|default is not empty %}
+                fillDays({{ record.day }});
+            {% else %}
+                fillDays();
+            {% endif %}
+            $('select[name="month"], select[name="year"]').change(function() {
+                fillDays();
+            });
+        });
+    </script>
+{% endblock %}

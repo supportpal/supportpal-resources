@@ -1,0 +1,257 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/operator/css/report.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/operator/css/widget.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+    <h1 id="dashboardTitle">
+        {{ Lang.get('core.dashboard') }}
+        <button id="showModal" class="right">{{ Lang.get('core.add_remove_widget') }}</button>
+    </h1>
+
+    <div class="loading box">{{ Lang.get('general.loading') }}<i class="ellipsis"><i>.</i><i>.</i><i>.</i></i></div>
+
+    <div class="widget-container" style="overflow: hidden">
+        <div id="widgets">
+            <!-- Columns are populated with widgets via AJAX -->
+            <div class="column" id="1"></div>
+            <div class="column" id="2"></div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <!-- Sweet alerts -->
+    <link href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            {% set enabled = Config.get('settings.product_tour_enabled', null) %}
+
+            {% if enabled == "1" or enabled is null %}
+
+            var firstRun = hopscotch.getState() === null || hopscotch.getState().match(/:0$/) !== null;
+
+            // We only want this to run if they've not started the tour...
+            if (firstRun) {
+                swal({
+                    allowOutsideClick: false,
+                    confirmButtonText: Lang.get('general.start'),
+                    showCancelButton: true,
+                    cancelButtonClass: 'faded-cancel',
+                    cancelButtonText: Lang.get('general.dismiss'),
+                    html: '<img class="logo" src="{{ asset('resources/assets/operator/images/favicon/favicon-96x96.png') }}" width="96" />' +
+                    '<h1>' + Lang.get('core.welcome') + '</h1>' +
+                    '<p>' + Lang.get('core.welcome_desc') + '</p>'
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        // Start the tour!
+                        hopscotch.startTour(tour);
+                    } else {
+                        // Dismiss the product tour
+                        $.post('{{ route('core.operator.product_tour.toggle') }}');
+                    }
+                });
+            }
+
+            {% endif %}
+
+            // Fetch all the widgets
+            var jhqxr = $.get(laroute.route('core.operator.widgets'));
+            jhqxr.done(function(widgets) {
+
+                if (!widgets instanceof Array) return;
+
+                var arrayLength = widgets.length,
+                        $widgets = $('#widgets'),
+                        column1Widgets = [], column2Widgets = [];
+
+                // Loop over all the widgets and sort them into 2 columns
+                for (var i = 0; i < arrayLength; i++) {
+                    // Widget object
+                    var widget = widgets[i];
+
+                    // Check the object contains a name and content
+                    if (!widget.hasOwnProperty('name') || !widget.hasOwnProperty('content')) {
+                        console.log("Widget index " + i + " missing name/content property -- skipping.");
+                        continue;
+                    }
+
+                    if (widget.model.user.column == 1) {
+                        column1Widgets.push(widget);
+                    } else if (widget.model.user.column == 2) {
+                        column2Widgets.push(widget);
+                    } else {
+                        // Distribute it to the least full column
+                        if (column1Widgets.length < column2Widgets.length)
+                            column1Widgets.push(widget);
+                        else
+                            column2Widgets.push(widget);
+                    }
+                }
+
+                // Write the widgets to column 1
+                writeWidgetsToColumn($widgets.find('.column:eq(0)'), column1Widgets);
+
+                // Write the widgets to column 2
+                writeWidgetsToColumn($widgets.find('.column:eq(1)'), column2Widgets);
+
+                // Remove the loading bar
+                $('.loading').hide();
+
+                // Fire the widgetsLoaded event
+                $widgets.trigger( "widgetsLoaded" );
+            });
+
+            // Ability to move widgets around
+            $( ".column" ).sortable({
+                connectWith: ".column",
+                handle: ".portlet-header",
+                cancel: ".portlet-toggle",
+                placeholder: "portlet-placeholder ui-corner-all",
+                update: function (event, ui) {
+                    $.post(laroute.route('core.operator.widgets.sort'), {
+                        column: $(this).attr('id'),
+                        order:  $(this).sortable('toArray')
+                    })
+                        .fail(function(data) {
+                            console.log(data);
+                            swal(
+                                Lang.get('messages.error'),
+                                Lang.get('messages.error_updated', { 'item': Lang.get('core.dashboard') }),
+                                'error'
+                            );
+                        });
+                }
+            });
+
+            // Ability to collapse/minimise widgets
+            $('#widgets').on('click', '.ui-icon-carat-1-s, .ui-icon-carat-1-n', function() {
+                $(this).toggleClass('ui-icon-carat-1-s').toggleClass('ui-icon-carat-1-n');
+
+                // Toggle the content
+                var $widget = $(this).parents('.ui-widget');
+                $widget.find('.portlet-content').slideToggle();
+
+                // Update the DB
+                $.post('{{ route('core.operator.widgets.toggle') }}', {
+                    widget_id: $widget.attr('id'),
+                    minimised: $widget.find('.ui-icon-carat-1-s').length
+                });
+            });
+
+            // Ability to show/hide widgets
+            $('#showModal').on('click', function() {
+                swal({
+                    title: Lang.get('core.add_remove_widget'),
+                    html:  '<form id="showHideWidgets" action="" method="post" style="text-align: left">' +
+                                '{{ csrf_field() }}' +
+                                {% for widget in widgets %}
+                                '<label>' +
+                                    '<input type="checkbox" name="widgets[{{ widget.id }}]" value="1" ' +
+                                            {% if widget.user|default is not empty and widget.user.enabled %}'checked' + {% endif %} ' />' +
+                                    '{{ widget.name }}' +
+                                '</label><br />' +
+                                {% else %}
+                                    Lang.get('messages.no_results') +
+                                {% endfor %}
+                            '</form>',
+                    showCancelButton: true,
+                    confirmButtonText: Lang.get('general.save'),
+                    closeOnConfirm: false
+                }, function() {
+
+                    swal.disableButtons();
+
+                    var formData = $('#showHideWidgets').serialize();
+
+                    // include unchecked checkboxes. use filter to only include unchecked boxes.
+                    $.each($('form input[type=checkbox]')
+                        .filter(function(idx){
+                            return $(this).prop('checked') === false
+                        }),
+                        function(idx, el){
+                            // attach matched element names to the formData with a chosen value.
+                            var emptyVal = 0;
+                            formData += '&' + $(el).attr('name') + '=' + emptyVal;
+                        }
+                    );
+
+                    $.post(laroute.route('core.operator.widgets.enable'), formData)
+                        .success(function(data) {
+                            // Reload after 3 seconds
+                            setTimeout("window.location.reload(true);", 1000);
+
+                            swal(
+                                Lang.get('messages.success'),
+                                Lang.get('messages.success_updated', { 'item': Lang.get('core.dashboard') }),
+                                'success'
+                            );
+                        })
+                        .fail(function(data) {
+                            swal(
+                                Lang.get('messages.error'),
+                                Lang.get('messages.error_updated', { 'item': Lang.get('core.dashboard') }),
+                                'error'
+                            );
+                        });
+                });
+            });
+        });
+
+        /**
+         * Write an array of widgets to a particular column
+         *
+         * @param columnSelector  jQuery selector
+         * @param widgets         Array of widgets from AJAX call
+         */
+        function writeWidgetsToColumn(columnSelector, widgets)
+        {
+            if (!widgets instanceof Array) return;
+
+            // Sort the widgets based on their order
+            widgets.sort(function(widget1, widget2){
+                var a = widget1.model.user.order, b = widget2.model.user.order;
+                return (a===null)-(b===null) || +(a>b)||-(a<b);
+            });
+
+            for (var i = 0; i < widgets.length; i++) {
+                createWidget(columnSelector, widgets[i]);
+            }
+        }
+
+        /**
+         * Write a widget to a particular column
+         *
+         * @param columnSelector jQuery selector
+         * @param widget         Widget from AJAX call
+         */
+        function createWidget(columnSelector, widget)
+        {
+            // Check whether widget is minimised
+            var icon = 'ui-icon-carat-1-n', style = '';
+            if (widget.hasOwnProperty('model') && widget.model.user.minimised == 1) {
+                icon = 'ui-icon-carat-1-s';
+                style = ' style="display: none"'
+            }
+
+            // Add the widget to the appropriate column
+            columnSelector.append(
+                '<div id="'+ widget.id +'" class="portlet ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">' +
+                    '<div class="portlet-header ui-widget-header ui-corner-all">' +
+                        '<span class="ui-icon '+ icon +' portlet-toggle right"></span>'+
+                        widget.name +
+                    '</div>' +
+                    '<div class="portlet-content"' + style + '>'+ widget.content +'</div>' +
+                '</div>'
+            );
+        }
+    </script>
+
+{% endblock %}

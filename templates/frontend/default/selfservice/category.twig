@@ -1,0 +1,29 @@
+{% extends parent_template %}
+
+{% block title %}{{ categoryName }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('selfservice.index', [ type.slug ]) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {{ categoryName }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'frontend.' ~ template ~ '.selfservice.sidebar' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+    {% if type.view == 0 and not categories.isEmpty() %}
+        {# Show any subcategories if they exist #}
+        {% include 'frontend.' ~ template ~ '.selfservice.category_list' with { 'none': false } %}
+
+        <hr />
+    {% endif %}
+
+    {# Show all articles in category #}
+    <h2>{{ Lang.choice('selfservice.article', 2) }}</h2>
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'category': false } %}
+
+{% endblock %}

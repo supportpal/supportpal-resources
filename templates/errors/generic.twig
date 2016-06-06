@@ -1,0 +1,17 @@
+{% extends 'errors.error' %}
+
+{% block title %}
+    {{ status }} - {{ Lang.get('messages.error') }}
+{% endblock %}
+
+{% block header %}
+    {{ Lang.get('messages.error') }} ({{ status }})
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ Lang.get('messages.not_logged_exception')|raw }}</p>
+
+    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ strtolower(Lang.get('general.support_portal')) ~ '</a>'})|raw }}</p>
+
+{% endblock %}

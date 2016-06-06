@@ -1,0 +1,147 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.choice('user.organisation', 1) }}: {{ auth_user().organisation.name }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.choice('user.organisation', 1) }}
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ Lang.get('user.manage_organisation') }}</h2>
+
+    <div class="success box delete hide">
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+    </div>
+    <div class="fail box delete hide">
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+    </div>
+
+    <ul class="desk-tabs">
+        <li id="Profile" class="active">
+            {{ Lang.get('user.profile') }}
+        </li>
+        <li id="Users">
+            {{ Lang.choice('user.user', 2) }}
+        </li>
+    </ul>
+
+    <div class="desk-tabs-content">
+        <div id="tabProfile" class="desk-tab">
+            <h2 class="tab-title">{{ Lang.get('selfservice.popular_items') }}</h2>
+
+            {{ form_model(record, {'route': 'user.organisation.updateProfile', 'method': 'POST'}) }}
+
+                {% include 'frontend.' ~ template ~ '.user.forms.organisation_profile' %}
+
+                <div class="form-button">
+                    {{ form_submit(Lang.get('general.save')) }}
+                </div>
+
+            {{ form_close() }}
+        </div>
+        <div id="tabUsers" class="desk-tab hide">
+            <h2 class="tab-title">{{ Lang.choice('user.user', 2) }}</h2>
+
+            <h3 class="margin0">{{ Lang.get('user.user_membership') }}</h3>
+
+            <p class="light">
+                {{ Lang.get('user.organisation_desc')|raw }}
+            </p>
+
+            {{ form_model(record, {'route': 'user.organisation.updateUsers', 'method': 'POST'}) }}
+
+                <table class="settings">
+                    <thead>
+                        <tr>
+                            <th>{{ Lang.get('general.name') }}</th>
+                            <th>{{ Lang.get('user.access_level')|raw }}</th>
+                            <th width="16"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in record.users %}
+                        <tr class="existing-row">
+                            <td>
+                                <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
+                                &nbsp;
+                                {{ user.formattedname }} <span class="light">{{ '<' ~ user.email ~ '>' }}</span>
+                                {% if record.isOwner(user.id) %}
+                                    &nbsp; <span class="badge">{{ Lang.get('user.owner') }}</span>
+                                {% endif %}
+                                {% if user.confirmed == 0 %}
+                                    &nbsp; <span class="badge" style="background: #999;">{{ Lang.get('user.unconfirmed') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ form_select('access_level[' ~ user.id ~ ']', {
+                                        0: Lang.get('user.manager'),
+                                        1: Lang.choice('user.user', 1)
+                                    },
+                                    user.organisation_access_level, record.isOwner(user.id) or user.id == auth_user().id ?
+                                        {'class': 'access-level', 'disabled': 'disabled'} : {'class': 'access-level'}) }}
+                            </td>
+                            <td>
+                                {% if not (auth_user().id == user.id or record.isOwner(user.id)) %}
+                                    <a data-user="{{ user.id }}" class="remove-button">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="form-button">
+                    {{ form_submit(Lang.get('general.save')) }}
+                    &nbsp;&nbsp;
+                    <a href="{{ route('user.organisation.addUser') }}">
+                        {{ form_button(Lang.get('user.add_user')) }}
+                    </a>
+                </div>
+
+            {{ form_close() }}
+
+            {% if record.owner_id == auth_user().id and ownerOptions is not empty %}
+
+                <hr />
+
+                {{ form_model(record, {'route': 'user.organisation.transferOwnership', 'method': 'POST'}) }}
+
+                    <h3>{{ Lang.get('user.transfer_ownership') }}</h3>
+
+                    <span class="light">{{ Lang.get('user.transfer_ownership_desc') }}</span>
+
+                    <br /><br />
+
+                    <div class="form-row">
+                        {{ form_label('owner', Lang.get('general.new') ~ ' ' ~ Lang.get('user.owner')) }}
+                        <div class="input-container">
+                            {{ form_select('owner', ownerOptions, null,
+                                {'placeholder': Lang.get('user.start_typing_name')}) }}
+                        </div>
+                    </div>
+
+                    <div class="form-button">
+                        {{ form_submit(Lang.get('general.transfer')) }}
+                    </div>
+
+                {{ form_close() }}
+
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/frontend/js/organisation.js') }}"></script>
+{% endblock %}

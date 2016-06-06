@@ -1,0 +1,205 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("user.ldap_account", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("user.ldap_account", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if not extension_loaded('ldap') %}
+        <div class="warning box">
+            <strong>{{ Lang.get('messages.missing_extension') }}</strong><br />
+            <span>{{ Lang.get('messages.php_ldap_missing') }}</span>
+        </div>
+    {% endif %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, {'route': [ 'user.operator.ldapaccount.update', record.id ], 'method': 'PUT', 'class': 'validate'}) }}
+    {% else %}
+        {{ form_open({ 'route': 'user.operator.ldapaccount.store' }) }}
+    {% endif %}
+
+        <h2>{{ Lang.get('user.ldap_details') }}</h2>
+        <div class="form-container first">
+            <div class="form-row">
+                {{ form_label('ldap_server', Lang.get('user.ldap_server')) }}
+                <div class="input-container">
+                    {{ form_text('ldap_server') }}<br />
+                    <span class="description">{{ Lang.get('user.ldap_server_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ldap_username', Lang.get('user.ldap_username')) }}
+                <div class="input-container">
+                    {{ form_text('ldap_username') }}<br />
+                    <span class="description">{{ Lang.get('user.ldap_username_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ldap_rdn', Lang.get('user.ldap_rdn')) }}
+                <div class="input-container">
+                    {{ form_text('ldap_rdn') }}<br />
+                    <span class="description">{{ Lang.get('user.ldap_rdn_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>{{ Lang.get('user.operator_details') }}</h2>
+        <div class="form-container first" id="operator_details">
+            {% if record is not defined or not record.exists %}
+            <div class="form-row">
+                <div class="input-container">
+                    <span class="description">{{ Lang.get('user.ldap_operator_desc') }}</span><br />
+                    <select name="operator" class="ldap_operator">
+                        <option></option>
+                        {% for operator in operators %}
+                        <option data-data='{{ operator|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ operator.id }}'>
+                            {{ operator.formatted_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="button" class="button" id="btnClear" style="margin-top: -3px" value="{{ Lang.get('general.clear') }}" />
+                </div>
+            </div>
+            {% endif %}
+
+            {{ form_hidden('id', id) }}
+
+            <div class="form-row">
+                {{ form_label('firstname', Lang.get('user.firstname')) }}
+                <div class="input-container">
+                    {{ form_text('firstname', user.firstname, record is defined and record.exists ? { 'disabled': 'disabled'} : {}) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('lastname', Lang.get('user.lastname')) }}
+                <div class="input-container">
+                    {{ form_text('lastname', user.lastname, record is defined and record.exists ? { 'disabled': 'disabled'} : {}) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('email', Lang.get('general.email')) }}
+                <div class="input-container">
+                    {{ form_email('email', user.email, record is defined and record.exists ? { 'disabled': 'disabled'} : {}) }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+                <div class="input-container">
+                    {{ form_select('groups[]', groups, userGroups is defined ? userGroups : {}, record is defined and record.exists ? {'multiple': 'multiple','disabled': 'disabled'} : {'multiple': 'multiple'}) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Search for an existing operator
+            var $select = $('select[name="operator"]').selectize({
+                valueField: 'id',
+                labelField: 'formatted_name',
+                searchField: 'formatted_name',
+                options: [],
+                copyClassesToDropdown: true,
+                create: false,
+                placeholder: Lang.get('user.select_operator'),
+                render: {
+                    option: function(item, escape) {
+                        return '<div data-data="' + escape(item) + '">' +
+                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
+                                '<span class="title">' +
+                                '<span class="name">' + escape(item.formatted_name) + '</span> ' +
+                                '</span>' +
+                                '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
+                                '</div>';
+                    },
+                    item: function(item, escape) {
+                        return '<div class="item" data-data="' + escape(JSON.stringify(item)) + '">' +
+                                '<span class="name">' + escape(item.formatted_name) + '</span>' +
+                                '</div>';
+                    }
+                },
+                onItemAdd: function(value, $item) {
+                    // Load the operator details into the form
+                    var operator = $item.data('data');
+
+                    for (var key in operator) {
+                        if (operator.hasOwnProperty(key)) {
+                            var obj = operator[key],
+                                    selector = ':input[name="' + key + '"]:not([type="file"])';
+
+                            // If we can find the selector and the value is not empty
+                            if ($(selector).length !== 0 && typeof obj !== 'undefined' && obj !== null) {
+                                $(selector).val(obj);
+                            }
+                        }
+                    }
+
+                    // Set the operator groups
+                    if (typeof operator.groups !== 'undefined') {
+                        // Clear the existing input
+                        var $selector = $(':input[name="groups[]"]')[0].selectize;
+                        $selector.clear(true);
+
+                        // Set operator groups
+                        $.each(operator.groups, function () {
+                            if (this.hasOwnProperty('id')) {
+                                $selector.setValue(this.id);
+                            }
+                        });
+
+                        // Disable selectize
+                        $selector.disable();
+                    }
+
+                    // Disable all the inputs in the form
+                    $('#operator_details').find(':input:not(input[name=id], #btnClear)').prop('disabled', true);
+                }
+            });
+
+            // Groups select box
+            $('select[name="groups[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ',',
+                placeholder: Lang.get('user.select_group')
+            });
+
+            $("#btnClear").on("click", function () {
+                var selectize = $select[0].selectize;
+                selectize.clear();
+
+                $('#operator_details').find('input[name=id]').val(0);
+                $('#operator_details').find('input:not(input[name=id], #btnClear)').val('').prop('disabled', false);
+
+                var $selector = $(':input[name="groups[]"]')[0].selectize;
+                $selector.clear(true);
+                $selector.enable();
+            });
+        });
+    </script>
+{% endblock %}

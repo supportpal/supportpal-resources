@@ -1,0 +1,167 @@
+<tr class="condition {% if hide|default is not empty %}hide{% endif %}">
+    <td width="35%" class="condition-item">
+        {{ form_hidden('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][id]',
+                condition|default is not empty ? condition.id : null) }}
+
+        {{ form_hidden('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][group_id]',
+                groupId|default is not empty ? groupId : '', { 'class': 'condition-group-id' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][item]',
+                conditions, condition|default is not empty ? condition.item : null) }}
+    </td>
+    <td width="20%" class="condition-operator">
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][operator]',
+                { '0': Lang.get('general.is'), '1': Lang.get('general.is_not') },
+                condition|default is not empty ? condition.operator : null, { 'class': 'operator0' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][operator]',
+                {
+                    '2': Lang.get('general.equals'),
+                    '3': Lang.get('general.contains'),
+                    '4': Lang.get('general.begins_with'),
+                    '5': Lang.get('general.ends_with')
+                },
+                condition|default is not empty ? condition.operator : null, { 'class': 'operator1 hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][operator]',
+                {
+                    '6': Lang.get('general.before'),
+                    '7': Lang.get('general.after')
+                },
+                condition|default is not empty ? condition.operator : null, { 'class': 'operator2 hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][operator]',
+                {
+                    '8': Lang.get('general.greater_than'),
+                    '9': Lang.get('general.less_than')
+                },
+                condition|default is not empty ? condition.operator : null, { 'class': 'operator3 hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][operator]',
+                {
+                    '3': Lang.get('general.contains'),
+                    '10': Lang.get('general.does_not_contain'),
+                    '4': Lang.get('general.begins_with'),
+                    '5': Lang.get('general.ends_with')
+                },
+                condition|default is not empty ? condition.operator : null, { 'class': 'operator4 hide' }) }}
+    </td>
+    <td width="45%" class="condition-value">
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                '.filter.' in Route.currentRouteName()
+                    ? { '-1': Lang.get('general.none'), 0: Lang.get('general.viewing_operator') }
+                    : operators|default is not empty and condition_operators is not null ? condition_operators : [ ],
+                condition|default is not empty and condition.item == 0 ? condition.value : null,
+                { 'data-item': 0, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                operatorGroups|default is not empty and operatorGroups is not null ? operatorGroups : [ ],
+                condition|default is not empty and condition.item == 1 ? condition.value : null,
+                { 'data-item': 1, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                operators|default is not empty and operators is not null ? operators : [ ],
+                condition|default is not empty and condition.item == 2 ? condition.value : null,
+                { 'data-item': 2, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                { 0: Lang.choice('general.operator', 1), 1: Lang.choice('user.user', 1) },
+                condition|default is not empty and condition.item == 3 ? condition.value : null,
+                { 'data-item': 3, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                channels|default is not empty and channels is not null ? channels : [ ],
+                condition|default is not empty and condition.item == 4 ? condition.value : null,
+                { 'data-item': 4, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                companies|default is not empty and companies is not null ? companies : [ ],
+                condition|default is not empty and condition.item == 5 ? condition.value : null,
+                { 'data-item': 5, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 6 ? condition.value : null,
+                { 'data-item': 6, 'data-operator': 2, 'class': 'datepicker hide', 'placeholder': '&#xf073;' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                departments|default is not empty and departments is not null ? departments : [ ],
+                condition|default is not empty and condition.item == 7 ? condition.value : null,
+                { 'data-item': 7, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 8 ? condition.value : null,
+                { 'data-item': 8, 'data-operator': 2, 'class': 'datepicker hide', 'placeholder': '&#xf073;' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 9 ? condition.value : null,
+                { 'data-item': 9, 'data-operator': 4, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 10 ? condition.value : null,
+                { 'data-item': 10, 'data-operator': 3, 'class': 'hide', 'size': 4 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                priorities|default is not empty and priorities is not null ? priorities : [ ],
+                condition|default is not empty and condition.item == 11 ? condition.value : null,
+                { 'data-item': 11, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                slaplans|default is not empty and slaplans is not null ? slaplans : [ ],
+                condition|default is not empty and condition.item == 12 ? condition.value : null,
+                { 'data-item': 12, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                statuses|default is not empty ? statuses : [ ],
+                condition|default is not empty and condition.item == 13 ? condition.value : null,
+                { 'data-item': 13, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 14 ? condition.value : null,
+                { 'data-item': 14, 'data-operator': 1, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 15 ? condition.value : null,
+                { 'data-item': 15, 'data-operator': 2, 'class': 'datepicker hide', 'placeholder': '&#xf073;' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 16 ? condition.value : null,
+                { 'data-item': 16, 'data-operator': 1, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 17 ? condition.value : null,
+                { 'data-item': 17, 'data-operator': 1, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                userGroups|default is not empty and userGroups is not null ? userGroups : [ ],
+                condition|default is not empty and condition.item == 18 ? condition.value : null,
+                { 'data-item': 18, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 19 ? condition.value : null,
+                { 'data-item': 19, 'data-operator': 1, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                tags|default is not empty and tags is not null ? tags : [ ],
+                condition|default is not empty and condition.item == 20 ? condition.value : null,
+                { 'data-item': 20, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 21 ? condition.value : null,
+                { 'data-item': 21, 'data-operator': 3, 'class': 'hide', 'size': 4 }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 22 ? condition.value : null,
+                { 'data-item': 22, 'data-operator': 3, 'class': 'hide', 'size': 4 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {
+                    0: Lang.get('general.no'),
+                    1: Lang.get('general.yes')
+                },
+                condition|default is not empty and condition.item == 23 ? condition.value : null,
+                { 'data-item': 23, 'data-operator': 0 }) }}
+    </td>
+    <td width="16">
+        <i class="fa fa-times right remove-button"></i>
+    </td>
+</tr>

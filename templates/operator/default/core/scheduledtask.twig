@@ -1,0 +1,105 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('core.scheduled_task', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="{% if runRecently %}success{% else %}fail{% endif %} box">
+        <strong>{{ Lang.choice('general.status', 1) }}:</strong>
+        {% if runRecently %}
+            {{ Lang.get('core.cron_running') }}
+        {% else %}
+            {{ Lang.get('core.cron_not_running') }}
+        {% endif %}
+    </div>
+
+    <div class="success task-run box hide">
+        {{ Lang.get('core.task_ran') }}
+    </div>
+    <div class="fail task-run box hide">
+        {{ Lang.get('core.task_failed') }}
+    </div>
+
+	<div class="grid-options options box">
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
+
+        <div class="filters hide">
+            <div>
+                <label>{{ Lang.get('general.name') }}:</label>
+                <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.get('general.description') }}:</label>
+                <div id="filter_description"></div>
+            </div>
+        </div>
+    </div>
+
+    {{ table.render()|raw }}
+    {{ table.script()|raw }}
+
+    <br />
+
+    <div id="scheduledTaskCron" class="warning box">
+        <strong>{{ Lang.get('core.cron_settings') }}</strong> &nbsp;-&nbsp; {{ Lang.get('core.cron_makesure') }} <br />
+        * * * * * php -q {{ base_path('cron') }} >> /dev/null 2>&1
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+	<script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+		    $(document.body).on('click', '.run-task', function() {
+                $(this).find('.fa').addClass('fa-spin');
+		        runTask($(this).data('route'), this);
+		    });
+
+		    /**
+             * Initialise the filters
+             */
+            oTable.yadcf([
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
+                {column_number : 1, filter_container_id: "filter_description", filter_type: "text"}
+            ]);
+        });
+
+        function runTask(route, icon) {
+		    // Post email data
+		    $.post(route)
+                .success(function(response) {
+                    if (response.status == 'success') {
+                        $('.task-run.success').show(500).delay(5000).hide(500);
+                    } else {
+                        $('.task-run.fail').show(500).delay(5000).hide(500);
+                    }
+                })
+                .fail(function() {
+		            $('.task-run.fail').show(500).delay(5000).hide(500);
+		        })
+                .always(function() {
+                    $(icon).find('.fa').removeClass('fa-spin');
+                    // Reload table
+                    $('.dataTable').dataTable()._fnAjaxUpdate();
+                });
+		}
+    </script>
+{% endblock %}

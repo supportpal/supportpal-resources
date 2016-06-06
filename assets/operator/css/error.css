@@ -1,0 +1,74 @@
+@charset "utf-8";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+/* General */
+
+body {
+	background: #F3F5F5;
+	color: #666;
+	font-size: 14px;
+	line-height: 1.55em;
+	margin: 0;
+}
+
+* {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+a {
+	color: #3B91CE;
+}
+
+/* Fonts and Headings */
+
+body, h1 {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	color: #333;
+	font-size: 2.25em;
+	font-weight: 400;
+	margin: 45px 0;
+}
+
+p {
+	margin: 25px 0 0;
+}
+
+.fa {
+	color: #3B91CE;
+	font-size: 128px;
+}
+
+/* Containers */
+
+.wrapper {
+	margin: auto;
+	max-width: 500px;
+	min-width: 300px;
+	padding: 50px 25px;
+}
+
+.container {
+	display: inline-flex;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+}
+
+/* Mobile Support */
+
+@media (max-width: 360px) {
+
+	.wrapper {
+		margin: auto;
+		max-width: 500px;
+		min-width: 300px;
+		padding: 50px 25px;
+	}
+
+}

@@ -1,0 +1,119 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.schedule", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.schedule", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.schedule.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.schedule.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.business_hour') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.business_hour_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('timezone', Lang.get('general.timezone')) }}
+                <div class="input-container">
+                    {{ form_select('timezone', {'': Lang.get('general.system_default')} + timezones()) }}
+                </div>
+            </div>
+
+            {% for key, day in weekdays() %}
+            <div class="form-row">
+                {{ form_label('description', day) }}
+                <div class="input-container">
+                    {{ form_radio('business_hours[' ~ key ~ '][type]', 2,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 2 ? true : false))
+                    }} {{ Lang.get('general.custom_hours') }} &nbsp;
+
+                    {{ form_radio('business_hours[' ~ key ~ '][type]', 1,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 1
+                                ? true
+                                : (recordHours[key] is defined ? false : true)))
+                    }} 24 {{ Lang.choice('general.hour', 2) }} &nbsp;
+
+                    {{ form_radio('business_hours[' ~ key ~ '][type]', 0,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 0 ? true : false))
+                    }} {{ Lang.get('general.closed') }}<br />
+
+                    <div class="custom hide">
+                        {{ form_select('business_hours[' ~ key ~ '][start_hour]', hours,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 2 ? recordHours[key]['start_hour'] : 9)) }}
+                        {{ form_select('business_hours[' ~ key ~ '][start_minute]', minutes,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 2 ? recordHours[key]['start_minute'] : 0)) }} &nbsp;
+                        {{ Lang.get('general.to') }} &nbsp;
+                        {{ form_select('business_hours[' ~ key ~ '][end_hour]', hours,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 2 ? recordHours[key]['end_hour'] : 17)) }}
+                        {{ form_select('business_hours[' ~ key ~ '][end_minute]', minutes,
+                            (recordHours[key] is defined and recordHours[key]['type'] == 2 ? recordHours[key]['end_minute'] : 0)) }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript">
+        var $select;
+        $(function() {
+            for (i = 1; i <= 7; i++) {
+                var $input = $('input[name="business_hours[' + i + '][type]"]:checked');
+                if ($input.val() == 2) {
+                    $input.parent().find('.custom').show();
+                }
+                $('input[name="business_hours[' + i + '][type]"]').change(function() {
+                    if ($(this).val() == 2) {
+                        $(this).parent().find('.custom').show();
+                    } else {
+                        $(this).parent().find('.custom').hide();
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('ticket.open_new') }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="invalid-user fail box hide">
+        {{ Lang.get('ticket.invalid_user') }}
+    </div>
+
+    {{ form_open({'route': [ 'ticket.operator.ticket.storeStep1' ], 'class': 'step1 validate'}) }}
+
+        <h2>{{ Lang.get('ticket.department_user_details') }}</h2>
+
+        <div class="form-container first">
+            <div class="form-row">
+                {{ form_label('department', Lang.choice('ticket.department', 1)) }}
+                <div class="input-container">
+                    {{ form_select('department', departments) }}
+                </div>
+            </div>
+        </div>
+        <div class="form-container">
+            <div class="form-row">
+                {{ form_label('internal', Lang.get('ticket.ticket_type')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>{{ form_radio('internal', 0, true) }} {{ Lang.get('ticket.user_ticket') }}</label> -
+                        <span class="description">{{ Lang.get('ticket.user_ticket_desc') }}</span><br />
+
+                        <div class="user-ticket">
+                            <label>{{ form_radio('user_type', 0, true) }} {{ Lang.get('ticket.existing_user') }}</label>
+                            &nbsp;&nbsp;
+                            <label>{{ form_radio('user_type', 1) }} {{ Lang.get('ticket.new_user') }}</label>
+
+                            <div class="existing-user" id="existing-user">{{ form_select('user') }}</div>
+
+                            <div class="new-user hide">
+                                <label>
+                                    <span class="label">{{ Lang.get('user.firstname') }}</span>
+                                    {{ form_text('user_firstname') }}
+                                </label><br />
+                                <label>
+                                    <span class="label">{{ Lang.get('user.lastname') }}</span>
+                                    {{ form_text('user_lastname') }}
+                                </label><br />
+                                <label>
+                                    <span class="label">{{ Lang.get('general.email') }}</span>
+                                    {{ form_text('user_email') }}
+                                </label><br />
+                                <label>
+                                    <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
+                                    {{ form_text('user_organisation') }}
+                                </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
+
+                            </div>
+                        </div>
+
+                        <label>{{ form_radio('internal', 1) }} {{ Lang.get('ticket.internal_ticket') }}</label> -
+                        <span class="description">{{ Lang.get('ticket.internal_ticket_desc') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.continue')) }}
+        </div>
+
+    {{ form_close() }}
+
+    <br /><br /><br />
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/newticket.js') }}"></script>
+    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+{% endblock %}

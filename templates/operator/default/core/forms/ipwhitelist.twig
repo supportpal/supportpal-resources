@@ -1,0 +1,70 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.get('user.whitelisted') }} {{ Lang.get('general.ip') }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.get('user.whitelisted') }} {{ Lang.get('general.ip') }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'core.operator.ipwhitelist.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'core.operator.ipwhitelist.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('event', Lang.get('general.event')) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        <label>
+                            {{ form_check('event_user', 1, record|default is not empty ? record.event_user : true) }} {{ Lang.get('core.filter_user_login') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('event_operator', 1, record|default is not empty ? record.event_operator : true) }} {{ Lang.get('core.filter_operator_login') }}
+                        </label><br />
+                        <label>
+                            {{ form_check('event_api', 1, record|default is not empty ? record.event_api : true) }} {{ Lang.get('core.filter_api_access') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ip', Lang.get('general.ip')) }}
+                <div class="input-container">
+                    {{ form_text('ip') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('description', Lang.get('general.description')) }}
+                <div class="input-container">
+                    {{ form_text('description') }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

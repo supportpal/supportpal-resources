@@ -1,0 +1,24 @@
+/* Custom fields */
+
+.table {
+    display: table;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+    padding: 0 7px;
+    text-align: center;
+}
+
+.first-cell {
+    padding: 0 10px 0 0;
+    text-align: left;
+}
+
+textarea {
+    width: 100%;
+}

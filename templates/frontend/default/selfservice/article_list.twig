@@ -1,0 +1,54 @@
+{% if not articles.isEmpty() %}
+    <ul class="article-list">
+    {% for article in articles %}
+        {% if type is not defined %}
+            {% set type = article.type %}
+        {% endif %}
+        <li>
+            <a href='{{ article.frontend_url }}'>
+                <h4>{{ article.title }}</h4>
+                <p>{{ article.excerpt }}</p>
+            </a>
+            <ul class="details light">
+                <li>
+                    <i class="fa fa-calendar-o"></i> {{ formatDate(article.created_at) }}
+                </li>
+                {% if not article.categories.isEmpty() %}
+                <li>
+                    <i class="fa fa-folder-o"></i>
+                    <ul class="item-list">
+                        {% for category in article.categories %}
+                        <li><a href="{{ category.frontend_url }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if not article.tags.isEmpty() %}
+                <li>
+                    <i class="fa fa-tag"></i>
+                    <ul class="item-list">
+                        {% for tag in article.tags %}
+                        <li><a href="{{ route('selfservice.tag', { 'type': article.type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+
+    {{ articles.render()|raw }}
+
+    {% if (type.view == 1 and noRssFeed is not defined) %}
+        <div class="rss-feed">
+            <a href="{{ rssFeedLink }}">
+                <i class="fa fa-rss-square"></i>&nbsp;
+                {{ Lang.get('selfservice.rssfeed') }}
+            </a>
+        </div>
+    {% endif %}
+
+{% else %}
+    {{ Lang.get('selfservice.no_articles') }}
+{% endif %}

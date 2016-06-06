@@ -1,0 +1,232 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ record.name }} - {{ Lang.choice('user.user', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    {% include 'operator.' ~ template ~ '.user.forms.organisation_tabs' %}
+
+    <h2>{{ Lang.get('user.user_membership') }}</h2>
+
+    <h2 class="description">
+        {{ Lang.get('user.organisation_desc')|raw }} {{ Lang.get('user.organisation_operator_desc') }}
+    </h2>
+
+    {{ form_model(record, { 'route': [ 'user.operator.organisation.updateUsers', record.id ], 'method': 'POST', 'class': 'validate' }) }}
+
+        <table class="settings">
+            <thead>
+                <tr>
+                    <th>{{ Lang.get('general.name') }}</th>
+                    <th>{{ Lang.get('user.access_level')|raw }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in record.users %}
+                <tr class="existing-row">
+                    <td>
+                        <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
+                        &nbsp;
+                        {{ user.formattedname }} <span class="description">{{ '<' ~ user.email ~ '>' }}</span>
+                        {% if record.owner_id == user.id %}
+                            <span class="tag">{{ Lang.get('user.owner') }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ form_select('access_level[' ~ user.id ~ ']', { 0: Lang.get('user.manager'), 1: Lang.choice('user.user', 1) },
+                        user.organisation_access_level, record.owner_id == user.id ? {'disabled': 'disabled', 'class': 'access-level'} : {'class': 'access-level'}) }}</td>
+                    <td>
+                        {% if record.owner_id != user.id %}
+                            <a data-user="{{ user.id }}" class="remove-button right">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="new-row hide">
+                    <td>{{ form_select('user', [], null, {'placeholder': Lang.get('user.start_typing_name')}) }}</td>
+                    <td>{{ form_select('access_level_new[]', { 0: Lang.get('user.manager'), 1: Lang.choice('user.user', 1) }, 1, {'class': 'access-level'}) }}</td>
+                    <td>
+                        <a class="remove-button right">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if record.users is not empty %}
+
+        {% endif %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.save', 1)) }}
+            {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.choice('user.user', 1), { 'class': 'add-user' }) }}
+        </div>
+
+    {{ form_close() }}
+
+    {% if ownerOptions is not empty %}
+
+        <hr />
+
+        <h2>{{ Lang.get('user.transfer_ownership') }}</h2>
+
+        <h2 class="description">
+            {{ Lang.get('user.transfer_ownership_operator') }}
+        </h2>
+
+        {{ form_model(record, {'route': [ 'user.operator.organisation.transferOwnership', record.id ], 'method': 'POST'}) }}
+
+            <div class="form-row">
+                {{ form_label('owner', Lang.get('general.new') ~ ' ' ~ Lang.get('user.owner')) }}
+                <div class="input-container">
+                    {{ form_select('owner', ownerOptions, null,
+                        {'placeholder': Lang.get('user.start_typing_name')}) }}
+                </div>
+            </div>
+
+            <div class="form-button">
+                {{ form_submit(Lang.get('general.transfer')) }}
+            </div>
+
+        {{ form_close() }}
+
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.add-user').on('click', function() {
+                // Copy hidden row and insert it at the end
+                $('.new-row:last').clone().insertBefore('.new-row:last').show();
+                // Run selectize
+                selectize();
+            });
+
+            $(document.body).on('click', '.new-row .remove-button', function() {
+                // Removing new rows
+                $(this).parents('tr').remove();
+            });
+
+            $(document.body).on('click', '.existing-row .remove-button', function() {
+                // Removing existing rows, need to make an AJAX call
+                var row = $(this).parents('tr'),
+                    $this = $(this);
+
+                // Show the alert
+                swal({
+                    title: Lang.get('messages.are_you_sure'),
+                    text: Lang.get('user.organisation_no_longer'),
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#e74c3c",
+                    confirmButtonText: Lang.get('messages.yes_im_sure'),
+                    closeOnConfirm: false
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        // Disable the submit button
+                        swal.disableButtons();
+                        // Make the request
+                        $.ajax({
+                            url: laroute.route('user.operator.organisation.removeUser', { id: record.id }),
+                            type: 'DELETE',
+                            data: {  user: $this.data('user') },
+                            success: function(response) {
+                                if (response.status == 'success') {
+                                    swal(
+                                        Lang.get('messages.deleted'),
+                                        Lang.get('messages.success_deleted', { 'item': Lang.choice('user.user', 1) }),
+                                        'success'
+                                    );
+                                    row.remove();
+                                } else {
+                                    swal(
+                                        Lang.get('messages.error'),
+                                        Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1) }),
+                                        'error'
+                                    );
+                                }
+                            }
+                        }).fail(function() {
+                            swal(
+                                Lang.get('messages.error'),
+                                Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1) }),
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+
+            // Change owner
+            $('select[name="owner"]').selectize({
+                sortField: 'text'
+            });
+
+        });
+
+        function selectize() {
+            $('select[name="user"]:visible').selectize({
+                valueField: 'id',
+                labelField: 'formatted_name',
+                searchField: 'formatted_name',
+                options: [],
+                create: false,
+                render: {
+                    option: function(item, escape) {
+                        return '<div>' +
+                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
+                            '<span class="title">' +
+                                '<span class="name">' + escape(item.formatted_name) + '</span> ' +
+                            '</span>' +
+                            '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
+                        '</div>';
+                    }
+                },
+                load: function(query, callback) {
+                    if (!query.length) return callback();
+                    $.ajax({
+                        url: laroute.route('user.operator.organisation.search'),
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {
+                            q: query,
+                            org_id: '{{ record.id }}'
+                        },
+                        error: function() {
+                            callback();
+                        },
+                        success: function(res) {
+                            callback(res.data);
+                        }
+                    });
+                },
+                onChange: function(value) {
+                    console.log(value);
+                    $('select[name="user"]').each(function() {
+                        if ($(this).val() == value) {
+                            $(this).parents('tr').find('.access-level').attr('name', 'access_level[' + value + ']');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+{% endblock %}

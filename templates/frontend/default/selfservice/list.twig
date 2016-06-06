@@ -1,0 +1,20 @@
+{% extends parent_template %}
+
+{% block title %}{{ type.name }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ type.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'frontend.' ~ template ~ '.selfservice.sidebar' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+    {# Show all the articles (paginated), starting with most recent #}
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' %}
+
+{% endblock %}

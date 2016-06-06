@@ -1,0 +1,18 @@
+    <div class="form-row">
+        {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
+        <div class="input-container">
+            {{ form_select('organisation', organisations, userOrganisation|default is not empty ? userOrganisation.id : null) }}
+        </div>
+    </div>
+    <div class="form-row access-level">
+        {{ form_label('organisation_access_level', Lang.get('user.access_level')|raw) }}
+        <div class="input-container">
+            {{ form_select('organisation_access_level', {
+                    0: Lang.get('user.manager'),
+                    1: Lang.choice('user.user', 1)
+                }, userOrganisation|default is not empty ? record.organisation_access_level : '') }}<br />
+            <span class="description">
+            {{ Lang.get('user.access_level_desc')|raw }}
+            </span>
+        </div>
+    </div>

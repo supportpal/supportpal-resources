@@ -1,0 +1,127 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.filter", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.filter", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'ticket.operator.filter.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'ticket.operator.filter.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('public', Lang.get('general.public')) }}
+                <div class="input-container">
+                    {{ form_check('public', 1, record.user_id|default is not empty ? 0 : 1, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                    <label for="toggle_public"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.filter_public_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full usergroups {% if record.user_id|default is not empty %}hide{% endif %}">
+                {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+                <div class="input-container">
+                    {{ form_select('usergroups[]', operatorGroups, recordGroups, { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.filter_group_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('ticket.filter_condition') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.filter_condition_desc') }}</h2>
+
+        <div class="form-container open first">
+
+            {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' with { 'hide': true } %}
+            {% if oldGroups|default is not empty and oldGroups is not empty %}
+                {# In case there was an error and we're trying to show what they attempted to save #}
+                {% for groupId, group in oldGroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% else %}
+                {% for groupId, group in record.conditiongroups %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.condition_group' %}
+                {% endfor %}
+            {% endif %}
+
+            <div class="form-row">
+                <span class="plan-conditiongroup-type" style="margin-right: 13px;">
+                    {{ form_select('condition_group_type', { 0: Lang.get('ticket.all_groups'), 1: Lang.get('ticket.any_group') },
+                        record.condition_group_type|default is not empty ? record.condition_group_type : 0) }}
+                </span>
+                {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition_group'), { 'class': 'add-conditiongroup' }) }}
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/operator/js/conditiongroup.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($('input[name="public"]').is(':checked')) {
+                selectize();
+            }
+
+            $('input[name="public"]').change(function() {
+                if (this.checked) {
+                    $('.usergroups').show();
+                    $('select[name="usergroups[]"]').prop("disabled", false);
+                    selectize();
+                } else {
+                    $('.usergroups').hide();
+                    $('select[name="usergroups[]"]').prop("disabled", true);
+                }
+            });
+        });
+        function selectize() {
+            $('select[name="usergroups[]"]').selectize({
+                delimiter: ',',
+                persist: false,
+                dropdownParent: 'body'
+            });
+        }
+    </script>
+
+    <!-- Date picker -->
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}

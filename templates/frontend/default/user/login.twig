@@ -1,0 +1,55 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.login') }}{% endblock %}
+
+{% block breadcrumb %}
+	{{ parent() }}
+    {{ Lang.get('user.login') }}
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+	{{ form_open({ 'route': 'user.login', 'method': 'post', 'class': 'validate' }) }}
+
+		{% if Input.get('back') is not null %}
+			{{ form_hidden('back', Input.get('back')) }}
+		{% endif %}
+
+		<div class="form-row form-full">
+			{{ form_label('email', Lang.get('general.email')) }}
+		    {{ form_text('email') }}
+		</div>
+		<div class="form-row form-full">
+			{{ form_label('password', Lang.get('general.password')) }}
+			{{ form_password('password') }}
+		</div>
+		<div class="form-checkbox form-center">
+			{{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
+		</div>
+		<div class="form-button form-center">
+			{{ form_submit(Lang.get('user.login')) }}
+		</div>
+
+		<br />
+
+		<div class="textcenter">
+			<a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a>
+			<br /><br />
+	        {% if Config.get('settings.registration_enabled') == 1 %}
+	        	<a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
+	        {% endif %}
+	    </div>
+
+	{{ form_close() }}
+
+</div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+	{% if jsValidator|default is not empty %}
+		{{ jsValidator|raw }}
+	{% endif %}
+{% endblock %}

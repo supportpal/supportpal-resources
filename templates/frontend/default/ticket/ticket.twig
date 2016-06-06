@@ -1,0 +1,188 @@
+{% extends parent_template %}
+
+{% block title %}{{ ticket.subject }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('ticket.frontend.ticket.index') }}">{{ Lang.choice('ticket.ticket', 2) }}</a> &nbsp;&raquo;&nbsp;
+    {{ Lang.choice('ticket.ticket', 1) }} #{{ ticket.number }}
+{% endblock %}
+
+{% block sidebar %}
+    <div class="desk_box ticket-details">
+        <h2>{{ Lang.choice('ticket.ticket', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}</h2>
+        <div class="form-row">
+            <label>{{ Lang.get('general.number') }}</label>
+            {{ ticket.number }}
+        </div>
+        <div class="form-row">
+            <label>{{ Lang.choice('ticket.department', 1) }}</label>
+            {{ Purifier.clean(ticket.department.name) }}
+        </div>
+        <div class="form-row">
+            <label>{{ Lang.choice('general.status', 1) }}</label>
+            <span class="ticket-status badge" style="background: {{ ticket.status.colour }}">{{ ticket.status.name }}</span>
+        </div>
+        <div class="form-row">
+            <label>{{ Lang.choice('ticket.priority', 1) }}</label>
+            <span class="badge" style="background: {{ ticket.priority.colour }}">{{ ticket.priority.name }}</span>
+        </div>
+        <div class="form-row">
+            <label>{{ Lang.get('ticket.submitted') }}</label>
+            {{ formatDate(ticket.created_at) }}
+        </div>
+        <div class="form-row">
+            <label>{{ Lang.get('ticket.last_action') }}</label>
+            {{ formatDate(ticket.updated_at) }}
+        </div>
+    </div>
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+    {% if ticket.locked == 1 %}
+        <div class="fail box">
+            {{ Lang.get('ticket.error_ticket_locked') }}
+        </div>
+    {% endif %}
+
+    <div class="success box ticket-update hide">
+        {{ Lang.get('messages.success_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+    </div>
+    <div class="fail box ticket-update hide">
+        {{ Lang.get('messages.error_updated', { 'item': strtolower(Lang.choice('ticket.ticket', 1)) }) }}
+    </div>
+
+    <div class="success box ticket-custom hide"></div>
+    <div class="fail box ticket-custom hide"></div>
+
+    <div class="fail attachment box hide"></div>
+
+    {% if feedbackToken is not null %}
+        <div class="feedback options box">
+            <p>{{ Lang.get('ticket.feedback_desc') }}</p>
+            <a class="good-button button" href="{{ route('ticket.frontend.ticket.feedback', [ ticket.number, feedbackToken ]) }}?rating=1">
+                <i class="fa fa-smile-o"></i>&nbsp; {{ Lang.get('ticket.good_satisfied') }}
+            </a>
+            &nbsp;
+            <a class="bad-button button" href="{{ route('ticket.frontend.ticket.feedback', [ ticket.number, feedbackToken ]) }}?rating=0">
+                <i class="fa fa-frown-o"></i>&nbsp; {{ Lang.get('ticket.bad_not_satisfied') }}
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="mobile-ticket-details hide">
+        <h2 class="collapsable">
+            {{ Lang.choice('ticket.ticket', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}
+            <span>
+                <i class="fa fa-chevron-up"></i>
+            </span>
+        </h2>
+        <div class="hide">
+            <div class="form-row">
+                <label>{{ Lang.get('general.number') }}</label>
+                {{ ticket.number }}
+            </div>
+            <div class="form-row">
+                <label>{{ Lang.choice('ticket.department', 1) }}</label>
+                {{ Purifier.clean(ticket.department.name) }}
+            </div>
+            <div class="form-row">
+                <label>{{ Lang.choice('general.status', 1) }}</label>
+                <span class="badge" style="background: {{ ticket.status.colour }}">{{ ticket.status.name }}</span>
+            </div>
+            <div class="form-row">
+                <label>{{ Lang.choice('ticket.priority', 1) }}</label>
+                <span class="badge" style="background: {{ ticket.priority.colour }}">{{ ticket.priority.name }}</span>
+            </div>
+            <div class="form-row">
+                <label>{{ Lang.get('ticket.submitted') }}</label>
+                {{ formatDate(ticket.created_at) }}
+            </div>
+            <div class="form-row">
+                <label>{{ Lang.get('ticket.last_action') }}</label>
+                {{ formatDate(ticket.updated_at) }}
+            </div>
+        </div>
+        <hr />
+    </div>
+
+    {% if customfields is not empty %}
+        <h2 class="collapsable">
+            {{ Lang.choice('ticket.customfield', 2) }}
+            <span>
+                <i class="fa fa-chevron-up"></i>
+            </span>
+        </h2>
+        <div class="hide">
+            <form>
+                {% include 'frontend.' ~ template ~ '.forms.customfields' %}
+
+                {% if ticket.locked == 0 %}
+                    <div class="form-button">
+                        <button class="save-fields" data-token="{{ Input.get('token', '') }}" type="button">
+                            {{ Lang.get('general.save') }}
+                        </button>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+        <hr />
+    {% endif %}
+
+    <h2>{{ Lang.choice('general.message', 2) }}</h2>
+
+    <div class="message-block">
+        {% for message in messages %}
+            {% if message.type != 1 %}
+                {% include 'frontend.' ~ template ~ '.ticket.message' %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if ticket.locked == 0 %}
+        <div class="add-reply">
+            <h3>{{ Lang.get('ticket.add_reply') }}</h3>
+            {% include 'frontend.' ~ template ~ '.ticket.forms.message' %}
+        </div>
+    {% else %}
+        <div class="fail box box-bottom">
+            {{ Lang.get('ticket.error_ticket_locked') }}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/ticket.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/ticket-print.css') }}">
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/redactor.css') }}">
+
+    <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/frontend/js/ticket.js') }}"></script>
+{% endblock %}

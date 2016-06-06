@@ -1,0 +1,262 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+
+    {% if extendedViews['scripts_header']|default is not empty %}
+        {% for view in extendedViews['scripts_header'] %}
+            {% include view %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.ticket.sidebar-ticket' %}
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="ticket-subject">
+        <span {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}class="subject"{% endif %}>{{ ticket.subject }}</span>
+        {{ form_text('subject', ticket.subject, { 'class': 'edit-subject hide', 'size': '50' }) }}
+        {% if ticket.internal %}
+            <span class="tag internal">{{ Lang.get('ticket.internal') }}</span>
+        {% endif %}
+        &nbsp;<i class="fa fa-lock {% if not ticket.locked %}hide {% endif %}"></i>
+
+    </h1>
+    <h2 class="ticketview">
+        {{ Lang.choice('general.submit', 2) ~ ' ' ~ Lang.get('general.by') }}
+        &nbsp;<a href="{{ route('user.operator.user.edit', { 'user': ticket.user.id }) }}">{{ ticket.user.formatted_name }}</a>&nbsp;
+        {{ Lang.get('general.at') ~ ' ' ~ formatDate(ticket.created_at) }}
+    </h2>
+
+    <div class="warning box followup-warning {% if ticket.followup is empty %}hide{% endif %}">
+        <i class="fa fa-clock-o"></i>&nbsp;
+        {{ Lang.get('ticket.follow_up_active')|raw }}
+    </div>
+
+    {% if feedback|default is not empty and feedback.rating|default is not empty %}
+        <div class="{% if feedback.rating %}success{% else %}fail{% endif %} box">
+            <i class="fa {% if feedback.rating %}fa-smile-o{% else %}fa-frown-o{% endif %}"></i>&nbsp;
+            {{ Lang.get('ticket.feedback_rating_desc', { 'rating': feedback.rating ? strtolower(Lang.get('general.good')) : strtolower(Lang.get('general.bad')) })|raw }}
+            {% if feedback.fields_answered %}
+                <a href="#" onclick="window.open('{{ route('ticket.operator.feedback.show', { id: feedback.id }) }}','width=800,height=600,scrollbars=yes');">
+                    {{ Lang.get('ticket.view_feedback') }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+        {{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ] }) }}
+            {{ form_button(Lang.get('ticket.split_selected_replies'), { 'disabled': 'disabled', 'class': 'split-ticket right hide' }) }}
+        {{ form_close() }}
+    {% endif %}
+
+    <ul class="tabs">
+      <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
+      <li id="Log">{{ Lang.get('general.log') }}</li>
+      <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
+    </ul>
+
+    <div id="tabMessages" class="tabContent">
+
+        {% if Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 2
+                or (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 0
+                    and Config.get('settings.ticket_reply_order') == 1)
+        %}
+            {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+
+                <h2 class="reply-header">{{ Lang.get('ticket.add_reply') }}</h2>
+                {% include 'operator.' ~ template ~ '.ticket.other_draft' %}
+
+                {% include 'operator.' ~ template ~ '.ticket.forms.message' with { 'ticketId': ticket.id } %}
+
+            {% endif %}
+
+            {% if extendedViews['ticket']|default is not empty %}
+                {% for view in extendedViews['ticket'] %}
+                    {% include view %}
+                {% endfor %}
+            {% endif %}
+
+            <div style="margin-bottom: 25px;"></div>
+        {% endif %}
+
+        {% if (Config.get('settings.ticket_notes_position') != 2 and messages.contains('type', 1)) %}
+            <h2 class="notes-header">{{ Lang.choice('general.note', 2) }}</h2>
+
+            {% for message in messages %}
+                {% if message.type == 1 %}
+                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message, 'ticketId': ticket.id } %}
+                {% endif %}
+            {% endfor %}
+
+            <h2 class="messages-header">{{ Lang.choice('general.message', 2) }}</h2>
+        {% else %}
+            <h2 class="notes-header hide">{{ Lang.choice('general.note', 2) }}</h2>
+            <h2 class="messages-header hide">{{ Lang.choice('general.message', 2) }}</h2>
+        {% endif %}
+
+        {% for message in messages %}
+            {% if (Config.get('settings.ticket_notes_position') != 1 or message.type != 1) %}
+                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message, 'ticketId': ticket.id } %}
+            {% endif %}
+        {% endfor %}
+
+
+        {% if (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 1
+            or (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 0
+                    and Config.get('settings.ticket_reply_order') == 0))
+        %}
+
+            {% if extendedViews['ticket']|default is not empty %}
+                {% for view in extendedViews['ticket'] %}
+                    {% include view %}
+                {% endfor %}
+            {% endif %}
+
+            {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+
+                <h2 class="reply-header">{{ Lang.get('ticket.add_reply') }}</h2>
+                {% include 'operator.' ~ template ~ '.ticket.other_draft' %}
+
+                {% include 'operator.' ~ template ~ '.ticket.forms.message' with { 'ticketId': ticket.id } %}
+
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+    <div id="tabLog" class="tabContent hide">
+
+        {{ log.render()|raw }}
+        {{ log.script()|raw }}
+
+    </div>
+
+    <div id="tabFollowup" class="tabContent hide">
+
+        {% include 'operator.' ~ template ~ '.ticket.forms.followup' %}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+
+    <!-- Custom fields -->
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        var ticketId = "{{ ticket.id }}",
+            userId = "{{ ticket.user_id }}",
+            internal = {{ ticket.internal }},
+            openStatusId = "{{ Config.get('settings.default_open_status') }}",
+            closedStatusId = "{{ Config.get('settings.default_resolved_status') }}";
+
+        var signature = '';
+        {% if (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') is not empty) %}
+            signature = '<br /><br />'
+                    + "{{ Purifier.clean(Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature'))|e('js') }}";
+        {% endif %}
+
+        var replyOrder;
+        {% if (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 1 or
+            (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_reply_order') == 0 and Config.get('settings.ticket_reply_order') == 0))
+        %}
+            replyOrder = 'ASC';
+        {% else %}
+            replyOrder = 'DESC';
+        {% endif %}
+        var notesPosition = {{ Config.get('settings.ticket_notes_position') }};
+
+        // Initialise redactor.
+        var redactor_plugins = {
+            plugins: [
+                'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize',
+                {% if isModuleEnabled('Selfservice') %}'ssLink', {% endif %}
+                'cannedResponses'
+            ]
+        };
+
+        /**
+         * Initialise redactor instance.
+         *
+         * @param name
+         */
+        function redactor(name) {
+            return name.redactor($.extend($.Redactor.default_opts, redactor_plugins));
+        }
+
+        $(document).ready(function() {
+            // Register redactor on edit messages.
+            redactor($('.edit-message textarea'));
+
+            // Register redactor
+            $('#newMessage, #newNote').redactor($.extend($.Redactor.default_opts, redactor_plugins, {
+                changeCallback: function() {
+                    var id = this.$textarea.prop('id');
+
+                    // Remove the error box if they've entered content.
+                    if (! this.utils.isEmpty(this.code.get())) {
+                        $('#'+id+'-error').remove();
+                    }
+                }
+            }));
+
+            $('#newNote').redactor('core.getBox').hide();
+
+            // Enable hide/show password toggle
+            callHideShowPassword();
+        });
+
+        // Date picker
+        callPikaday();
+
+        // Timepicker
+        $.each($('.timepicker'), function() {
+            $(this).timepicker({ 'timeFormat': "{{ Config.get('settings.time_format') }}", 'scrollDefault': 'now' });
+        });
+    </script>
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/operator/js/ticket.js') }}"></script>
+    <script type="text/javascript">
+        var ticket = new Ticket("");
+    </script>
+    <script src="{{ asset('resources/assets/libs/he/js/he.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/operator/css/ticket-print.css') }}" rel="stylesheet" media="print" type="text/css" />
+
+    {% if extendedViews['scripts_footer']|default is not empty %}
+        {% for view in extendedViews['scripts_footer'] %}
+            {% include view %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

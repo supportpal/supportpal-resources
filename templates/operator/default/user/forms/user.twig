@@ -1,0 +1,175 @@
+{% extends parent_template %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ record.formatted_name }} - {{ Lang.get("general.edit") }} {{ Lang.choice("user.user", 1) }}
+    {% else %}
+        {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {% include 'operator.' ~ template ~ '.user.forms.user_tabs' %}
+
+        {{ form_model(record, { 'route': [ 'user.operator.user.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'user.operator.user.store', 'files': true, 'class': 'validate' }) }}
+    {% endif %}
+
+        <div class="success box action hide">
+            {{ Lang.get('messages.success_action') }}
+        </div>
+        <div class="fail box action hide">
+            {{ Lang.get('messages.error_action') }}
+        </div>
+
+        <h2>{{ Lang.get('user.profile') }}</h2>
+        <div class="form-container first">
+            {% include 'operator.' ~ template ~ '.user.forms.profile' with { 'managing': true } %}
+        </div>
+
+        <h2>{{ Lang.choice('user.organisation', 1) }}</h2>
+        <div class="form-container first">
+            {% include 'operator.' ~ template ~ '.user.forms.organisation' %}
+        </div>
+
+        {% if customfields is not empty %}
+        <h2>{{ Lang.get('general.custom_fields') }}</h2>
+        <div class="form-container first">
+            {% include 'operator.' ~ template ~ '.forms.customfields' with { 'operator': true } %}
+        </div>
+        {% endif %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset('resources/assets/operator/js/randomPassword.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Toggle the password fields depending on whether we're sending a confirmation email
+            $('input[name="send_email"]').click(function() {
+                $('.password-field').toggle();
+                $('.password-field button.hideShowPassword-toggle').click().click();
+            });
+
+            // Toggle the password fields, depending on how the page loads (when an error occurs, the form resets to
+            // how it was before the error occured
+            if ($('input[name=send_email]').length && $('input[name=send_email]').is(':checked') == false) {
+                $('.password-field').toggle();
+            }
+
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Generate a new random password
+            $('a#generatePassword').click(function() {
+                var password = randomPassword(8);
+
+                if (document.getElementById('password').type == 'text') {
+                    document.getElementById('password').value=password;
+                } else {
+                    document.getElementById('password').type='text';
+                    document.getElementById('password').value=password;
+                    document.getElementById('password').type='password';
+                }
+            });
+
+            // Date picker
+            callPikaday();
+
+            $('select[name="groups[]"]').selectize({
+                plugins: ['remove_button'],
+                delimiter: ',',
+                placeholder: Lang.get('user.select_group')
+            });
+
+            if ($('select[name="organisation"]').val() == null) {
+                $('select[name="organisation_access"]').prop('disabled', true);
+                $('.access-level').hide();
+            }
+
+            $('select[name="organisation"]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                create: true,
+                placeholder: "Select an existing or enter a new organisation...",
+                allowEmptyOption: true,
+                load: function(query, callback) {
+                    if (!query.length) return callback();
+                    $.ajax({
+                        url: "{{ route('user.organisation.search') }}",
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {
+                            q: query
+                        },
+                        error: function() {
+                            callback();
+                        },
+                        success: function(res) {
+                            callback(res.data);
+                        }
+                    });
+                },
+                onChange: function(value) {
+                    // Check if it's a number
+                    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                        // Re-enable dropdown
+                        $('select[name="organisation_access"]').prop('disabled', false);
+                        $('.access-level').show();
+                    } else if (value == '') {
+                        $('.access-level').hide();
+                    } else {
+                        // Disable dropdown and set to owner as it's a new organisation
+                        $('select[name="organisation_access"]').val(0).prop('disabled', true);
+                        $('.access-level').show();
+                    }
+                }
+            });
+
+            // Reset password link
+            $('.reset-password').click(function() {
+                $.post(
+                    laroute.route(
+                        'user.operator.user.resetpassword',
+                        { id: {{ record|default is not empty and record.exists ? record.id : 'null' }} }
+                    ),
+                    { },
+                    function(response) {
+                        if (response.status == 'success') {
+                            $('.action.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.action.fail').show(500).delay(5000).hide(500);
+                        }
+                    },
+                    "json"
+                ).fail(function() {
+                    $('.action.fail').show(500).delay(5000).hide(500);
+                });
+            });
+        });
+    </script>
+{% endblock %}

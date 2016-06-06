@@ -1,0 +1,228 @@
+@charset "utf-8";
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+
+/* General */
+
+body {
+	background: #f3f5f5;
+	color: #666;
+	font-size: 13px;
+	line-height: 1.55em;
+	margin: 0;
+}
+
+* {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.left {
+	float: left;
+}
+.right {
+	float: right;
+}
+.clear {
+	clear: both;
+}
+
+form {
+	margin: 0;
+}
+
+a {
+	color: #666;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+/* Fonts and Headings */
+
+body, h1, input, button {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+}
+
+h1 {
+	color: #333;
+	font-size: 2.25em;
+	font-weight: 400;
+	margin: 30px 0 0;
+}
+
+h2 {
+	color: #3B91CE;
+	font-size: 1.6em;
+	font-weight: 400;
+	margin: 23px 0 0;
+}
+
+h3 {
+	color: #3B91CE;
+	font-size: 1.2em;
+	font-weight: 600;
+	margin: 30px 0 15px;
+}
+
+/* Containers */
+
+.wrapper {
+	margin: auto;
+	max-width: 300px;
+	min-width: 300px;
+	padding: 50px 0;
+	text-align: center;
+}
+
+.container {
+	display: inline-flex;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+}
+
+/* Form boxes */
+
+.forgotBox {
+	display: none;
+}
+
+.loginBox form, .forgotBox form {
+	margin-top: 40px;
+}
+
+/* Inputs */
+
+input[type="text"], input[type="password"] {
+	background: #fff;
+	border: 0;
+	border-left: 2px solid #ddd;
+	font-size: 16px;
+	margin: 0;
+	margin-bottom: 1px;
+	padding: 10px 15px;
+	width: 100%;
+}
+
+input[type="button"], input[type="submit"], button {
+	background: #3B91CE;
+	border: 0;
+	border-bottom: 2px solid #3480B6;
+	color: #fff;
+	cursor: pointer;
+	font-size: 115%;
+	font-weight: bold;
+	line-height: 23px;
+	margin: 25px 0 20px;
+	padding: 10px 15px;
+	width: 100%;
+}
+
+input[type="button"]:hover, input[type="submit"]:hover {
+	background: #3480B6;
+}
+
+input[type='checkbox'] {
+	margin: 0;
+}
+
+/* Errors */
+
+.error {
+	background: #FBEEEB;
+	border-left: 2px solid #ef8c82;
+}
+
+.success {
+	background: #f0fbeb;
+	border-left: 2px solid #8ddf79;
+}
+
+.error, .success {
+	margin: 30px 0;
+	padding: 15px 20px;
+}
+
+/* jQuery validation */
+
+.has-error label {
+    color: #c0392b;
+}
+
+.has-error input {
+    border-color: #e74c3c;
+}
+
+.has-error .field-error {
+    background: #e74c3c;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #fbeeeb;
+    font-size: 90%;
+    line-height: 1.4em;
+    margin-left: 12px;
+    margin-top: 6px;
+    padding: 7px 10px;
+    position: absolute;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.has-error .field-error:before {
+    border-bottom: 6px solid transparent;
+    border-top: 6px solid transparent;
+    border-right: 12px solid #e74c3c;
+    content: "";
+    margin-left: -17px;
+    margin-top: 2px;
+    position: absolute;
+}
+
+.has-error .field-error.field-error-below {
+    display: table;
+    margin-left: 0;
+    margin-top: 7px;
+    position: static;
+}
+
+.has-error .field-error.field-error-below:before {
+    content: none;
+}
+
+/* Show/Hide Password */
+
+.hideShowPassword-toggle {
+    background: #f0f0f0;
+    border: 0;
+    color: #777;
+    cursor: pointer;
+    font-size: 100%;
+    height: auto;
+    line-height: 24px;
+    margin-right: 5px;
+    margin-top: -10px !important;
+    min-width: 60px;
+    padding: 3px 12px;
+    width: auto;
+    top: 16px !important;
+}
+
+.hideShowPassword-toggle:hover {
+    background: #f0f0f0;
+    color: #454545;
+}
+
+/* Mobile Support */
+
+@media (max-width: 360px) {
+
+	.wrapper {
+		margin: auto 25px;
+		max-width: none;
+		min-width: auto;
+		width: auto;
+	}
+
+}

@@ -1,0 +1,16 @@
+{% set route = Route.currentRouteName() %}
+
+<ul class="tabs">
+    <a href="{{ route('user.operator.organisation.edit', [ record.id ]) }}"
+        {% if route == 'user.operator.organisation.edit' %} class="active"{% endif %}>
+        {{ Lang.get('user.profile') }}
+    </a>
+    <a href="{{ route('user.operator.organisation.user', [ record.id ]) }}"
+            {% if route == 'user.operator.organisation.user' %} class="active"{% endif %}>
+        {{ Lang.choice('user.user', 2) }}
+    </a>
+    <a href="{{ route('user.operator.organisation.ticket', [ record.id ]) }}"
+        {% if route == 'user.operator.organisation.ticket' %} class="active"{% endif %}>
+        {{ Lang.choice('ticket.ticket', 2) }}
+    </a>
+</ul>

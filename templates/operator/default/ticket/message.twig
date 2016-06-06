@@ -1,0 +1,69 @@
+{% if overriddenViews|default is not empty and overriddenViews['message']|default is not empty %}
+    {% include overriddenViews['message'] %}
+{% else %}
+    <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% endif %} clear">
+
+    	<div class="header">
+    		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
+    		<span class="name {% if message.by == 0 %}staff{% else %}user{% endif %}">
+                {{ message.user.formatted_name }}
+            </span>
+            {% if not message.attachments.isEmpty() %}
+                <span class="attachment hide">&nbsp; <i class="fa fa-paperclip"></i></span>
+            {% endif %}
+            <span class="right">
+                {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+                    {{ form_check('split', 1, false, { 'class': 'split-ticket hide', 'data-id': message.id }) }} &nbsp;
+                    <button class="as-link quoteMessage" data-id="{{ message.id }}">
+                        <i class="fa fa-quote-right"></i>
+                    </button> &nbsp;&nbsp;
+                    <button class="as-link edit-button">
+                        <i class="fa fa-pencil"></i>
+                    </button> &nbsp;&nbsp;
+                    <button class="as-link delete-confirm" data-route="{{ route('ticket.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
+                        <i class="fa fa-times"></i>
+                    </button>
+                {% endif %}
+            </span><br />
+    		<span class="description">
+                {% if message.by == 0 %}
+                    {{ Lang.get('general.staff') }}
+                    {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
+                {% else %}
+                    {{ Lang.choice('user.user', 1) }}
+                {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                &nbsp;&middot;&nbsp; {{ Lang.get('general.via') }} {{ message.channel.name }}
+            </span>
+    	</div>
+
+    	<div class="text">
+    		{{ Purifier.clean(message.text) }}
+    	</div>
+
+        <div class="edit-message">
+            {% include 'operator.' ~ template ~ '.ticket.forms.edit_message' with { 'editMessage': message, 'ticketId': ticketId } %}
+        </div>
+
+        {% if not message.attachments.isEmpty() %}
+        <div class="attachments">
+            <h4>{{ message.attachments.count() }} {{ Lang.choice('general.attachment', 2) }}</h4>
+            <ul>
+                {% for attachment in message.attachments %}
+                <li>
+                    <i class="fa fa-paperclip"></i>
+                    &nbsp;
+                    <a href='{{ route('ticket.operator.attachment.download', [ attachment.upload_hash ]) }}'>{{ attachment.original_name }}</a>
+                    &nbsp;
+                    ({{ attachment.upload.size }})
+                    &nbsp;
+                    <i class="fa fa-times deleteAttachment"
+                         data-url="{{ route('ticket.operator.attachment.destroy') }}"
+                         data-hash="{{ attachment.upload_hash }}"></i>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+    </div>
+{% endif %}

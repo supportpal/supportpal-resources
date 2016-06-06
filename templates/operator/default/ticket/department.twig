@@ -1,0 +1,178 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice("ticket.department", 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="success box delete hide">
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('ticket.department', 1)|lower }) }}
+    </div>
+    <div class="fail box delete hide">
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('ticket.department', 1)|lower }) }}
+    </div>
+
+    <div class="success box ordering hide">
+        {{ Lang.get('messages.success_ordering') }}
+    </div>
+    <div class="fail box ordering hide">
+        {{ Lang.get('messages.error_ordering') }}
+    </div>
+
+    <div class="grid-options options box">
+        <a href="{{ route('ticket.operator.department.create') }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("ticket.department", 1) }}
+        </a>
+    </div>
+
+    {{ table.render()|raw }}
+    {{ table.script()|raw }}
+
+    <div class="note box bottombox">
+        <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('ticket.change_department_order') }}
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            /**
+             * This is a temporary solution to provide group ordering in DataTables. As of
+             * 2015, DataTables is, apparently, "fundamentally" unable to support multiple
+             * <tbody> elements.
+             *
+             * The code *should* run everytime a redraw event is triggered on DataTables and
+             * wrap <tbody> elements around department groups (based on the "group-x" class)
+             */
+            $(document).on( 'draw.dt', function (e, settings) {
+                // Grab the tbody that currently holds the DataTable
+                var api = new $.fn.dataTable.Api( settings),
+                    groups = [];
+
+                // Get all the row IDs
+                var ids = api.$('tr[id]').map(function() { return this.id; }).get();
+
+                // Try and find the group classes
+                // Use the highest department ID in the for loop
+                for (var i = 1; i <= Math.max.apply(Math, ids); i++) {
+                    // Empty list 
+                    var $list = $();
+
+                    // Work through each row and see if it matches the group number, if so add to list
+                    $.each($('.dataTable tbody tr'), function(index) {
+                        if ($(this).data('group') == i) { 
+                            $list = $list.add($(this));
+                        }
+                    });
+
+                    // Add list to groups if it contains at least one row
+                    if ($list.length > 0) {
+                        groups.push($list);
+                    }
+                }
+
+                // Check if we've actually got some department groups to iterate over
+                if (groups.length > 0) {
+                    // Remove the original tbody created by DataTables
+                    // .detach() is important here, to ensure that we're still able to access
+                    //  the elements in the original tbody
+                    var tbody = $(api.table().node()).find('tbody').detach();
+
+                    // Wrap each row group in a tbody
+                    for (i = 0; i < groups.length; i++) {
+                        groups[i].wrapAll('<tbody class="group"></tbody>');
+                    }
+
+                    $(api.table().node()).append(tbody.contents());
+                }
+            } );
+
+            // Add sortable table
+            $('table').sortable({
+                // Fix the issue of cell widths collapsing
+                helper: function(e, ui) {
+                    // tbody > tr > td (set widths on tds hence 2 sets of children)
+                    ui.children().children().each(function() {
+                        $(this).width($(this).width());
+                    });
+                    return ui;
+                },
+                items: "tbody",
+                // Animate on moving rows
+                revert: true,
+                // Change the cursor to draggable
+                cursor: "move",
+                // Leave a placeholder space behind
+                start: function(e, ui) {
+                    // Add background colour to signify ordering in progress - see ordering.js
+                    ui.item.css("background-color", "#fdf6ea");
+                    setTimeout(function() { ui.item.css("background-color", ""); }, 1500);
+
+                    ui.placeholder.height(ui.item.height());
+                    ui.placeholder.width(ui.item.width());
+                    ui.placeholder.css('visibility','visible');
+                    ui.placeholder.html(
+                            "<tr style='height: inherit'><td colspan='6'></td></tr>"
+                    );
+                },
+                // Update the order in the database
+                update: function(e, ui) {
+                    // Remove the background colour set earlier
+                    ui.item.css("background-color", "");
+
+                    // Convert to a comma delimited list of IDs
+                    var newOrder = $('.group tr[id]:not(.child)').map(function(){ return this.id }).get().join(',');
+
+                    // Show the alert
+                    swal({
+                        text: Lang.get('messages.save_order'),
+                        showConfirmButton: true,
+                        showCancelButton: false,
+                        confirmButtonColor: "#e74c3c",
+                        confirmButtonText: Lang.get('general.update'),
+                        closeOnConfirm: false
+                    });
+                    swal.disableButtons();
+
+                    // Post new order and save it
+                    $.post(laroute.route('core.operator.saveOrder', { section: 'department' }), { "order": newOrder },
+                    function(response) {
+                        if (response.status == 'success') {
+                            $('.ordering.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.ordering.fail').show(500).delay(5000).hide(500);
+                            // Refresh grid so they are back in the original place
+                            $('.dataTable').dataTable()._fnAjaxUpdate();
+                        }
+                    }, "json").fail(function() {
+                        $('.ordering.fail').show(500).delay(5000).hide(500);
+                        // Refresh grid so they are back in the original place
+                        $('.dataTable').dataTable()._fnAjaxUpdate();
+                    }).always(function() {
+                        // Close the alert
+                        swal.closeModal();
+                    });
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

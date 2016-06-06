@@ -1,0 +1,16 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.password_reset_confirm') }}{% endblock %}
+
+{% block breadcrumb %}
+	{{ parent() }}
+	{{ Lang.get('user.password_reset_confirm') }}
+{% endblock %}
+
+{% block content %}
+
+    {% if reset_success|default is not empty and reset_success %}
+        {{ Lang.get('user.success_pass_reset', { 'route': route('user.login') })|raw }}
+	{% endif %}
+
+{% endblock %}

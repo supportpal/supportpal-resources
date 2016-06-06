@@ -1,0 +1,65 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('ticket.open_new') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('ticket.open_new') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_open({ 'route': [ 'ticket.frontend.ticket.storeStep2' ], 'class': 'validate' }) }}
+
+        {{ form_hidden('department', department.id) }}
+
+        <h2>{{ Lang.get('ticket.enter_your_details') }}</h2>
+
+        <p class="light">{{ Lang.get('ticket.enter_user_details') }}</p>
+
+        <div class="form-container first">
+
+            <div class="form-row">
+                {{ form_label('firstname', Lang.get('user.firstname')) }}
+                <div class="input-container">
+                    {{ form_text('firstname') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('lastname', Lang.get('user.lastname')) }}
+                <div class="input-container">
+                    {{ form_text('lastname') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('email', Lang.get('general.email')) }}
+                <div class="input-container">
+                    {{ form_email('email') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
+                <div class="input-container">
+                    {{ form_text('organisation') }} &nbsp;
+                    <span class="description">({{ Lang.get('general.optional') }})</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

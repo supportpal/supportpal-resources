@@ -1,0 +1,48 @@
+<div class="conditiongroup {% if hide|default is not empty %}hide{% endif %}">
+
+    <div class="conditiongroup-header">
+        <i class="fa fa-times right remove-button"></i>
+        <h3>{{ Lang.get('ticket.condition_group') }}</h3>
+        {{ form_hidden('conditiongroups[' ~ (groupId is defined ? groupId : '') ~ '][id]',
+                group.id|default is not empty ? group.id : null)
+        }}
+        {{ form_hidden('conditiongroups[' ~ (groupId is defined ? groupId : '') ~ '][local_id]',
+                groupId|default is not empty ? groupId : null, { 'class': 'group-id' })
+        }}
+    </div>
+
+    <div class="conditiongroup-inner">
+        <table class="settings">
+            {% if group|default is not empty %}
+                {% if oldConditions|default is not empty %}
+                    {# In case there was an error and we're trying to show what they attempted to save #}
+                    {% for key, condition in oldConditions %}
+                        {% if condition.group_id == groupId %}
+                            {% include 'operator.' ~ template ~ '.ticket.forms.condition' %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for condition in group.conditions %}
+                        {% include 'operator.' ~ template ~ '.ticket.forms.condition' %}
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                {# Brand new group with one condition #}
+                {% include 'operator.' ~ template ~ '.ticket.forms.condition' %}
+            {% endif %}
+        </table>
+    </div>
+
+    <div class="conditiongroup-buttons">
+        <span class="conditiongroup-type" style="margin-right: 8px;">
+            {{ form_select('conditiongroups[' ~ (groupId is defined ? groupId : '') ~ '][type]',
+                { '0': Lang.get('ticket.all_conditions'), '1': Lang.get('ticket.any_condition') },
+                group|default is not empty and group.type|default is not empty ? group.type : '0')
+            }}
+        </span>
+        {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition'),
+            { 'class': 'add-condition' })
+        }}
+    </div>
+
+</div>

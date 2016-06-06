@@ -1,0 +1,57 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.profile') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('user.profile') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'route': [ 'user.profile.update' ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+
+        {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with { 'operator': false } %}
+
+        {% include 'frontend.' ~ template ~ '.user.forms.organisation' %}
+
+        {% include 'frontend.' ~ template ~ '.forms.customfields' %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+    <form id="leaveOrganisation" action="{{ route('user.organisation.leaveOrganisation') }}" method="POST"></form>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Date picker
+            callPikaday();
+
+            // Leave organisation button for managers and users of an organisation
+            $('.leave-organisation').on('click', function() {
+                var input = $("<input>").attr("type", "hidden")
+                    .attr("name", "_token")
+                    .val($('meta[name=csrf_token]').prop('content'));
+                $('form#leaveOrganisation').append($(input)).submit();
+            });
+        });
+    </script>
+
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

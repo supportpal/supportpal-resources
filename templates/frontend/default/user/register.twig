@@ -1,0 +1,63 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.register') }}{% endblock %}
+
+{% block scripts_header %}
+<script src="{{ asset('resources/assets/frontend/js/recaptcha.js') }}"></script>
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('user.register_account') }}
+{% endblock %}
+
+{% block content %}
+
+    {% if register_success|default is not empty and register_success %}
+
+        <div class="success box">{{ Lang.get('user.success_register') }}</div>
+        {{ Lang.get('user.success_register_desc') }}
+
+    {% else %}
+
+        {{ form_open({ 'route': [ 'user.register' ], 'method': 'post', 'files': true, 'class': 'validate' }) }}
+
+            {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with { 'operator': false } %}
+
+            {% include 'frontend.' ~ template ~ '.user.forms.organisation' %}
+
+            {% include 'frontend.' ~ template ~ '.forms.customfields' with {'new': true} %}
+
+            {% if Config.get('settings.registration_captcha') %}
+                {{ Captcha.getHtml() }}
+                <br />
+            {% endif %}
+
+            {{ form_submit(Lang.get('user.register'), { 'class': 'btn btn-primary' }) }}
+
+        {{ form_close() }}
+
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Date picker
+            callPikaday();
+        });
+    </script>
+
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

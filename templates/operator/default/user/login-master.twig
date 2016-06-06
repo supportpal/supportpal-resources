@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{% block title %}{{ Lang.get('core.product_name') }} - {{ Lang.get('core.operator_panel') }}{% endblock %}</title>
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
+    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
+    <meta name="application-name" content="SupportPal"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="{{ asset('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
+    <meta name="msapplication-square70x70logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+
+    <link href="{{ asset('resources/assets/operator/css/login.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('resources/assets/operator/js/main.js') }}" type="text/javascript"></script>
+
+    <!-- Laravel Javascript Validation -->
+    <script type="text/javascript" src="{{ asset('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+
+    {% block scripts_header %}{% endblock %}
+</head>
+
+<body>
+
+	<div class="container">
+
+		<div class="wrapper">
+
+			<img src="{{ asset('resources/assets/operator/images/favicon/favicon-196x196.png') }}"
+                 alt="{{ Lang.get('core.product_name') }}" width="98" />
+
+			<h1>{{ Lang.get('core.operator_panel') }}</h1>
+
+			{% block content %}{% endblock %}
+
+		</div>
+
+	</div>
+
+	{% block scripts_footer %}{% endblock %}
+
+</body>
+
+</html>

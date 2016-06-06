@@ -1,0 +1,79 @@
+    <div class="form-row">
+        {{ form_label('firstname', Lang.get('user.firstname')) }}
+        <div class="input-container">
+            {{ form_text('firstname', null, { 'size': '50%' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('lastname', Lang.get('user.lastname')) }}
+        <div class="input-container">
+            {{ form_text('lastname', null, { 'size': '50%' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('email', Lang.get('general.email')) }}
+        <div class="input-container">
+            {{ form_email('email', null, { 'size': '50%' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('password', Lang.get('general.password')) }}
+        <div class="input-container">
+            {{ form_password('password', { 'size': '25' }) }}
+            {% if record.password|default is not empty %}
+                &nbsp; <span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
+        <div class="input-container">
+            {{ form_password('password_confirmation', { 'size': '25' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('country', Lang.get('user.country')) }}
+        <div class="input-container">
+            {{ form_select('country', countries(),
+                organisation_add is defined and organisation.country|default is not empty ? organisation.country : 
+                record.country|default is not empty ? record.country : Config.get('settings.default_country')) }}
+        </div>
+    </div>
+
+    {# Check whether we should allow users to change their default language #}
+    {% if Config.get('settings.language_frontend_toggle') %}
+
+    <div class="form-row">
+        {{ form_label('language_code', Lang.choice('general.language', 1)) }}
+        <div class="input-container">
+            {{ form_select('language_code', languages,
+                organisation_add is defined and organisation.language_code|default is not empty ? organisation.language_code : 
+                record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+        </div>
+    </div>
+
+    {% endif %}
+
+    <div class="form-row">
+        {{ form_label('timezone', Lang.get('general.timezone')) }}
+        <div class="input-container">
+            {{ form_select('timezone', timezones(),
+                organisation_add is defined and organisation.timezone|default is not empty ? organisation.timezone : 
+                record|default is not empty and record.timezone|default is not empty ? record.timezone : Config.get('settings.default_timezone')) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('avatar', Lang.get('user.avatar')) }}
+        <div class="input-container">
+            {% if record.avatar|default is not empty %}
+                <img class="avatar" src="data:image/jpeg;base64, {{ record.avatar }}" />
+            {% endif %}
+            {{ form_file('avatar') }}
+        </div>
+    </div>

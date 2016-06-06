@@ -1,0 +1,124 @@
+</div>
+
+<div id="desk_sidebar" class="right">
+    {% if Auth.guard('frontend').check() %}
+        <div class="desk_box account">
+            <img class="avatar left" src="data:image/jpeg;base64, {{ auth_user().avatar }}" />
+                    <span class="name">
+                        <strong>{{ auth_user().formatted_name }}</strong>
+                    </span>
+            <br />
+            <a href="{{ route('user.logout') }}">
+                <i class="fa fa-sign-out"></i>
+                {{ Lang.get('user.logout') }}
+            </a>
+        </div>
+    {% endif %}
+
+    {% block sidebar %}
+
+        <div class="desk_box">
+            <h2>{{ Lang.get('general.navigation') }}</h2>
+            <ul class="ad_nav">
+                <li>
+                    <a href="{{ route('core.frontend.home') }}" {% if route starts with 'core.frontend.home' %}class="current"{% endif %}>
+                        {{ Lang.get('general.home') }}
+                    </a>
+                </li>
+
+                {% if Auth.guard('frontend').check() %}
+                    <li>
+                        <a href="{{ route('user.profile') }}">
+                            {{ Lang.choice('general.account', 1) }}
+                        </a>
+                    </li>
+                    <ul>
+                        <li>
+                            <a href="{{ route('user.profile') }}" {% if route starts with 'user.profile' %}class="current"{% endif %}>
+                                {{ Lang.get('user.profile') }}
+                            </a>
+                        </li>
+                        {% if auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
+                            <li>
+                                <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
+                                    {{ Lang.choice('user.organisation', 1) }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if isModuleEnabled('Ticket') %}
+                            <li>
+                                <a href="{{ route('ticket.frontend.ticket.index') }}" {% if route starts with 'ticket.frontend.ticket.index' or route starts with 'ticket.frontend.ticket.show' %}class="current"{% endif %}>
+                                    {{ Lang.choice('ticket.ticket', 2) }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                {% elseif isModuleEnabled('Ticket') and Config.get('channel.web.unauthenticated_users') %}
+                    <li>
+                        <a href="{{ route('ticket.frontend.track') }}" {% if route starts with 'ticket.frontend.track' %}class="current"{% endif %}>
+                            {{ Lang.get('core.track_ticket') }}
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if isModuleEnabled('Ticket') %}
+                    <li>
+                        <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep1' %}class="current"{% endif %}>
+                            {{ Lang.get('core.submit_ticket') }}
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if isModuleEnabled('Selfservice') %}
+                    {% for type in selfserviceTypes %}
+                        <li>
+                            <a href="{{ route('selfservice.index', { 'type': type.slug }) }}" {% if route starts with 'selfservice' and Request.segment(1) == type.slug %}class="current"{% endif %}>
+                                {{ type.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+
+        {% if not Auth.guard('frontend').check() %}
+            <div class="desk_box">
+                <h2>{{ Lang.get('user.login') }}</h2>
+                {{ form_open({ 'url': 'login', 'method': 'post' }) }}
+
+                {{ form_hidden('back', Request.url()) }}
+
+                {{ form_text('email', null, {'placeholder' : Lang.get('general.email')}) }}
+                {{ form_password('password', {'placeholder' : Lang.get('general.password')}) }}
+
+                <div class="left" style="margin-top:4px;">
+                    {{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
+                </div>
+
+                {{ form_submit(Lang.get('user.login'), { 'class': 'right' }) }}
+
+                <div class="clear"></div>
+
+                <div style="line-height: 25px; text-align:center; padding-top:17px;">
+                    <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a><br />
+                    {% if Config.get('settings.registration_enabled') == 1 %}
+                        <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
+                    {% endif %}
+                </div>
+                {{ form_close() }}
+            </div>
+        {% endif %}
+
+        {% if Config.get('settings.language_frontend_toggle') == 1 %}
+            <div class="desk_box">
+                <h2 style="float: left; margin: 0 12px 0 0;">{{ Lang.choice('general.language', 1) }}</h2>
+                {{ form_select('language', languages,
+                Auth.guard('frontend').check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+            </div>
+        {% endif %}
+
+    {% endblock %}
+</div>
+
+<div class="clear"></div>

@@ -1,0 +1,141 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('user.user', 1) }} {{ Lang.get('general.generalsetting') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(fields, { 'method': 'PUT', 'route': [ 'user.operator.generalsetting.update' ] }) }}
+
+        <ul class="tabs">
+            <li id="System" class="active">{{ Lang.get('general.system') }}</li>
+            <li id="Users">{{ Lang.choice('user.user', 2) }}</li>
+            <li id="Operators">{{ Lang.choice('general.operator', 2) }}</li>
+        </ul>
+
+        <div id="tabSystem" class="tabContent">
+            <div class="form-row">
+                {{ form_label('user_name_format', Lang.get('user.user_name_format')) }}
+                <div class="input-container">
+                    {{ form_select('user_name_format', {
+                            0: Lang.get('user.first_last'),
+                            1: Lang.get('user.last_first'),
+                            2: Lang.get('user.first_l'),
+                            3: Lang.get('user.f_last'),
+                            4: Lang.get('general.first'),
+                            5: Lang.get('general.last')
+                        }) }}<br />
+                    <span class="description">{{ Lang.get('user.user_name_format_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabUsers" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('toggle_registration_enabled', Lang.get('user.user_reg_enabled')) }}
+                <div class="input-container">
+                    {{ form_check('registration_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_registration_enabled' }) }}
+                    <label for="toggle_registration_enabled"></label><br />
+                    <span class="description">{{ Lang.get('user.user_reg_enabled_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('toggle_registration_captcha', Lang.get('user.user_reg_captcha')) }}
+                <div class="input-container">
+                    {{ form_check('registration_captcha', 1, null, { 'class': 'toggle', 'id': 'toggle_registration_captcha' }) }}
+                    <label for="toggle_registration_captcha"></label><br />
+                    <span class="description">{{ Lang.get('user.user_reg_captcha_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('user_password_length', Lang.get('user.password_length')) }}
+                <div class="input-container">
+                    {{ form_text('user_password_length', null, {'size': 2}) }}<br />
+                    <span class="description">{{ Lang.get('user.password_length_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('user_password_strength', Lang.get('user.password_strength')) }}
+                <div class="input-container">
+                    {{ Lang.get('user.password_str_must_contain') }}<br />
+
+                    {{ form_check('user_password_strength[letters]', 1, array_get(user_password_strength, 'letters', 0)) }}
+                    {{ Lang.get('user.password_str_letters') }}<br/>
+
+                    {{ form_check('user_password_strength[digits]', 1, array_get(user_password_strength, 'digits', 0)) }}
+                    {{ Lang.get('user.password_str_digits') }}<br/>
+
+                    {{ form_check('user_password_strength[case]', 1, array_get(user_password_strength, 'case', 0)) }}
+                    {{ Lang.get('user.password_str_case') }}<br/>
+
+                    {{ form_check('user_password_strength[symbols]', 1, array_get(user_password_strength, 'symbols', 0)) }}
+                    {{ Lang.get('user.password_str_symbols') }}<br/>
+
+                    <span class="description">{{ Lang.get('user.password_strength_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabOperators" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('toggle_ldap_enabled', Lang.get('user.enable_ldap')) }}
+                <div class="input-container">
+                {% if extension_loaded('ldap') %}
+                    {{ form_check('ldap_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_ldap_enabled' }) }}
+                    <label for="toggle_ldap_enabled"></label><br />
+                    <span class="description">{{ Lang.get('user.enable_ldap_desc') }}</span>
+                {% else %}
+                    <div class="warning box">
+                        <strong>{{ Lang.get('messages.missing_extension') }}</strong><br />
+                        <span>{{ Lang.get('messages.php_ldap_missing') }}</span>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('operator_password_length', Lang.get('user.password_length')) }}
+                <div class="input-container">
+                    {{ form_text('operator_password_length', null, {'size': 2}) }}<br />
+                    <span class="description">{{ Lang.get('user.password_length_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('operator_password_strength', Lang.get('user.password_strength')) }}
+                <div class="input-container">
+                    {{ Lang.get('user.password_str_must_contain') }}<br />
+                    {{ form_check('operator_password_strength[letters]', 1, array_get(operator_password_strength, 'letters', 0)) }}
+                    {{ Lang.get('user.password_str_letters') }}<br/>
+
+                    {{ form_check('operator_password_strength[digits]', 1, array_get(operator_password_strength, 'digits', 0)) }}
+                    {{ Lang.get('user.password_str_digits') }}<br/>
+
+                    {{ form_check('operator_password_strength[case]', 1, array_get(operator_password_strength, 'case', 0)) }}
+                    {{ Lang.get('user.password_str_case') }}<br/>
+
+                    {{ form_check('operator_password_strength[symbols]', 1, array_get(operator_password_strength, 'symbols', 0)) }}
+                    {{ Lang.get('user.password_str_symbols') }}<br/>
+
+                    <span class="description">{{ Lang.get('user.password_strength_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.save')) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}

@@ -1,0 +1,11 @@
+<div class="form-row option {% if hide|default is not empty %} hide {% endif %}">
+    <div class="input-container input-with-button">
+        {{ form_hidden('options[' ~ (key is defined ? key : '') ~ '][id]',
+            (option is defined ? option.id : null))
+        }}
+        {{ form_text('options[' ~ (key is defined ? key : '') ~ '][value]',
+            (option is defined and option.value|default is not empty ? option.value : ''))
+        }}
+        {{ form_button(Lang.get('general.remove'), { 'class': 'remove-option' }) }}
+    </div>
+</div>

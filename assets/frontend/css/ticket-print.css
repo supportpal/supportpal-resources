@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+@media print {
+
+    body {
+        background: #fff;
+    }
+
+    .desk_wrapper {
+        font-size: 16px;
+        line-height: 1.7em;
+    }
+
+    #desk_header, .breadcrumb, #desk_content h2, .desk_box, .add-reply {
+        display: none;
+    }
+
+    .desk_box.ticket-details {
+        display: block;
+    }
+
+    h1 {
+        border-bottom: 1px solid #eee;
+        line-height: 1.2em;
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+    }
+
+    #desk_content {
+        margin-top: 30px;
+    }
+
+    .desk_content_padding {
+        border: 0;
+        padding: 0;
+    }
+
+    #desk_sidebar .ticket-details {
+        border-top: 0;
+    }
+
+}

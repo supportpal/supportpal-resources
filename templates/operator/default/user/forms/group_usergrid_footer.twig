@@ -1,0 +1,8 @@
+<tr>
+    <td class="grid-options" colspan="{{ totalColumns }}" style="line-height:41px;">
+        {{ form_select('add-user') }}
+    </td>
+    <td>
+        {{ form_button(Lang.get("general.add") ~ ' ' ~ Lang.choice("user.user", 1), { 'class': 'add-user' }) }}
+    </td>
+</tr>

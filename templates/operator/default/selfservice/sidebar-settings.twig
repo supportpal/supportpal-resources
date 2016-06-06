@@ -1,0 +1,16 @@
+<div class="sidebox">
+    <h3 class="collapsable {% if module != 'selfservice' %}closed{% endif %}">
+        <i class="fa fa-question-circle icon"></i>
+        {{ Lang.get('selfservice.selfservice') }}
+        <div class="arrow">
+        	<i class="fa {% if module == 'selfservice' %}fa-chevron-down{% else %}fa-chevron-up{% endif %}"></i>
+        </div>
+    </h3>
+    <ul {% if module != 'selfservice' %}class="hide"{% endif %}>
+        {% if Auth.guard('operator').user().hasPermission('view.selfservicesetting') %}
+        <li {% if route starts with 'selfservice.operator.generalsetting' %}class="current"{% endif %}>
+            <a href="{{ route('selfservice.operator.generalsetting') }}">{{ Lang.get("general.generalsetting") }}</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>

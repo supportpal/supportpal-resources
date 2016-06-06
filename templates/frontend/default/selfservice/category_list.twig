@@ -1,0 +1,27 @@
+<h2>{{ Lang.choice('selfservice.category', 2) }}</h2>
+
+{% if not categories.isEmpty() %}
+    <div class="catcontainer">
+        {% for category in categories %}
+            {% if not category.articles.isEmpty() %}
+            <div class="catbox">
+                <a class='cattitle' href='{{ category.frontend_url }}'>
+                    <i class="fa fa-folder-open-o"></i>&nbsp; {{ category.name }} ({{ category.count }})
+                </a>
+                <ul class="catlist">
+                    {% for article in category.articles %}
+                        <li>
+                            <a href='{{ article.frontend_url }}'>
+                               {{ article.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="clear"></div>
+{% else %}
+    {{ Lang.get('selfservice.no_categories_frontend') }}
+{% endif %}

@@ -1,0 +1,26 @@
+.merge-field_container {
+    position: relative;
+}
+
+.merge-field_container textarea {
+    border: none;
+    resize: none;
+    white-space: pre-wrap;
+}
+
+.merge-field_preview {
+    background: #fafafa;
+    overflow: auto;
+    padding: 20px;
+    position: absolute;
+    width: 100%;
+    z-index: 99; /* 1 less than the operator header */
+    top: 1px;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+.loadinggif {
+    background: url('../../installer/img/gears.gif') no-repeat center center white;
+}

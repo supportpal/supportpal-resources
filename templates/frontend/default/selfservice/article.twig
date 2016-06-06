@@ -1,0 +1,214 @@
+{% extends parent_template %}
+
+{% block scripts_header  %}
+    <script src="{{ asset('resources/assets/frontend/js/recaptcha.js') }}"></script>
+{% endblock %}
+
+{% block meta %}
+    <meta name="keywords" content="{{ article.keywords }}" />
+{% endblock %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('selfservice.index', [ type.slug ]) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {{ Lang.get('selfservice.viewing') }} {{ Lang.choice('selfservice.article', 1) }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'frontend.' ~ template ~ '.selfservice.sidebar' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block subtitle %}
+
+    <a href="javascript:window.print()" class="print right">
+        <i class="fa fa-print"></i>&nbsp;
+        {{ Lang.get('general.print') }}
+    </a>
+
+    {# Stats (date, category name, views) #}
+    <ul class="details light">
+        <li>
+            <i class="fa fa-calendar-o"></i> {{ formatDate(article.created_at) }}
+        </li>
+        {% if not article.categories.isEmpty() %}
+        <li>
+            <i class="fa fa-folder-o"></i>
+            <ul class="item-list">
+                {% for category in article.categories %}
+                <li><a href="{{ category.frontend_url }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endif %}
+        {% if not article.tags.isEmpty() %}
+        <li>
+            <i class="fa fa-tag"></i>
+            <ul class="item-list">
+                {% for tag in article.tags %}
+                <li><a href="{{ route('selfservice.tag', { 'type': article.type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+
+{% endblock %}
+
+{% block content %}
+
+    <hr />
+
+    {# Article content #}
+    <div class="article">{{ Purifier.clean(article.text) }}</div>
+
+    <!-- Attachments -->
+    {% if not article.attachments.isEmpty() %}
+        <h4>{{ Lang.choice('general.attachment', 2) }}</h4>
+        <ul class="attachments">
+            {% for attachment in article.attachments %}
+                <li>
+                    <a href='{{ attachment.download_url }}'>
+                        <i class="fa fa-paperclip"></i>
+                        &nbsp;
+                        {{ attachment.original_name }}
+                        &nbsp;<span class="light">({{ attachment.upload.size }})</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <hr />
+
+    <!-- Rate article -->
+    {% if Config.get('settings.ratings_enabled') %}
+    <div class="rating-container light right">
+        {% if not rated and (Config.get('settings.rating_post') == '0' or Auth.guard('frontend').check()) %}
+        <span class="rate-article">
+            {{ Lang.get('selfservice.article_find_useful') }} &nbsp;
+            <a class="rate-article" data-score="1">
+                <i class="fa fa-thumbs-o-up"></i>
+            </a><!--
+            --><a class="rate-article" data-score="0">
+                <i class="fa fa-thumbs-o-down"></i>
+            </a>
+        </span>
+        {% endif %}
+        {% if Config.get('settings.rating_show') == '0' or Auth.guard('frontend').check() %}
+        <span class="article-rating {% if article.total_rating == 0 or not rated %}hide{% endif %}">
+            <span class="positive-users">{{ article.positive_rating }}</span> {{ Lang.get('general.out_of') }} <span class="total-users">{{ article.total_rating }}</span> {{ Lang.get('selfservice.article_found_useful') }}
+        </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Share -->
+    <div class="share-via left">
+        <span>{{ Lang.get('general.share_via') }}</span>
+        <a class="email" href='mailto:?subject=&amp;body={{ article.title }} - {{ article.frontend_url }}'>
+            <i class="fa fa-envelope"></i>
+        </a><!--
+        --><a class="twitter" href='http://twitter.com/intent/tweet?text={{ article.title }}&amp;url={{ article.frontend_url }}'>
+            <i class="fa fa-twitter"></i>
+        </a><!--
+        --><a class="facebook" href='http://www.facebook.com/sharer.php?u={{ article.frontend_url }}'>
+            <i class="fa fa-facebook"></i>
+        </a><!--
+        --><a class="google" href='https://plus.google.com/share?url={{ article.frontend_url }}'>
+            <i class="fa fa-google-plus"></i>
+        </a>
+    </div>
+
+    <div class="clear"></div>
+
+    {% if related is defined and not related.isEmpty() %}
+        <hr />
+
+        <h3>{{ Lang.get('selfservice.related_articles') }}</h3>
+
+        {% include 'frontend.' ~ template ~ '.selfservice.article_related' %}
+    {% endif %}
+
+    {% if Config.get('settings.comments_enabled') and (article.comments is not empty or
+        Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check()) %}
+        <hr />
+
+        <a name="_comments"></a>
+
+        <!-- Comments -->
+        <ul class="desk-tabs">
+            <li class="active">{{ Lang.choice('selfservice.comment', 2) }}</li>
+        </ul>
+
+        <div class="desk-tabs-content">
+
+            {% if Session.has('comment_success') %}
+                <div class="success box">{{ Session.get('comment_success') }}</div>
+            {% elseif Session.has('comment_error') %}
+                <div class="fail box">{{ Session.get('comment_error') }}</div>
+            {% endif %}
+
+            {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}
+                <h3 class="margin0">{{ Lang.get('selfservice.add_comment') }}</h3>
+                {% include 'frontend.' ~ template ~ '.selfservice.forms.comment' with { type: type.id } %}
+            {% endif %}
+
+            {% if article.comments is not empty %}
+
+                <div class="fail box comments-loading hide">
+                    {{ Lang.get('messages.error_loading_comments') }}
+                </div>
+
+                <div class="light">
+                    {{ Lang.get('general.order_by') }}:&nbsp;
+                    <select class="commentOrdering">
+                        <option value="0" {{ (comment_ordering == '0') ? 'selected="selected"' : '' }}>{{ Lang.get('selfservice.oldest') }}</option>
+                        <option value="1" {{ (comment_ordering == '1') ? 'selected="selected"' : '' }}>{{ Lang.get('selfservice.newest') }}</option>
+                        <option value="2" {{ (comment_ordering == '2') ? 'selected="selected"' : '' }}>{{ Lang.get('selfservice.highest_rated') }}</option>
+                    </select>
+
+                    <span class="loading hide">
+                        <i class="fa fa-refresh fa-spin"></i>&nbsp; {{ Lang.get('general.loading') }}...
+                    </span>
+                </div>
+
+                {# Show all the comments #}
+                <div class="commentsBlock">
+                    {% include 'frontend.' ~ template ~ '.selfservice.comment' with { 'comments': article.comments, 'type': type.id, 'article': article.id } %}
+                </div>
+
+                {% if comment_total > article['comments']|length %}
+                    <div>
+                        <hr />
+                        <button class="more-parents" data-count="{{ article['comments']|length }}">
+                            {{ Lang.get('selfservice.show_more_comments') }}
+                        </button>
+                    </div>
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script type="text/javascript">
+        // Variables for asset files
+        var articleId = "{{ article.id }}";
+        var loggedIn = {{ Auth.guard('frontend').check() ? 'true' : 'false' }};
+        var showRatings = "{{ Config.get('settings.rating_show') }}";
+    </script>
+
+    <script type="text/javascript" src="{{ asset('resources/assets/frontend/js/article.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/article-print.css') }}">
+
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('user.ldap_account', 2) }}
+{% endblock %}
+
+{% block content %}
+
+	<div class="success box delete hide">
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.ldap_account', 1)|lower }) }}
+    </div>
+    <div class="fail box delete hide">
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.ldap_account', 1)|lower }) }}
+    </div>
+
+    {% if not extension_loaded('ldap') %}
+        <div class="warning box">
+            <strong>{{ Lang.get('messages.missing_extension') }}</strong><br />
+            <span>{{ Lang.get('messages.php_ldap_missing') }}</span>
+        </div>
+    {% endif %}
+
+	<div class="grid-options options box">
+        <a href="{{ route('user.operator.ldapaccount.create') }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.ldap_account", 1) }}
+        </a>
+        &nbsp;&nbsp;
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
+
+        <div class="filters hide">
+            <div>
+                <label>{{Lang.get('user.ldap_server') }}:</label>
+                <div id="filter_server"></div>
+            </div>
+            <div>
+                <label>{{ Lang.get('user.ldap_username') }}:</label>
+                <div id="filter_username"></div>
+            </div>
+            <div>
+                <label>{{ Lang.get('user.ldap_rdn') }}:</label>
+                <div id="filter_rdn"></div>
+            </div>
+        </div>
+	</div>
+
+	{{ table.render()|raw }}
+	{{ table.script()|raw }}
+
+    {% if not ldap_enabled %}
+        <div class="fail box bottombox">
+            <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('user.ldap_extension_missing') }}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <!-- Filter the table -->
+    <script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * Initialise the filters
+             */
+            oTable.yadcf([
+                {column_number : 0, filter_container_id: "filter_server", filter_type: "text"},
+                {column_number : 1, filter_container_id: "filter_username", filter_type: "text"},
+                {column_number : 2, filter_container_id: "filter_rdn", filter_type: "text"},
+            ]);
+        });
+    </script>
+{% endblock %}

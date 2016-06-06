@@ -1,0 +1,11 @@
+<form class="message-form edit" data-route="{{ route('ticket.operator.message.update', [ editMessage.id ]) }}">
+
+    {{ form_hidden('ticket_id', ticketId) }}
+
+    {{ form_redactor('text', editMessage.text) }}
+
+    <br />
+
+    {{ form_submit(Lang.get('general.save')) }}
+
+</form>

@@ -1,0 +1,49 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('ticket.feedback_for_ticket', { 'number': ticket.number }) }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('ticket.frontend.ticket.index') }}">{{ Lang.choice('ticket.ticket', 2) }}</a> &nbsp;&raquo;&nbsp;
+    {{ Lang.choice('ticket.ticket', 1) }} #{{ ticket.number }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="success box">{{ Lang.get('ticket.feedback_thank_you') }}</div>
+
+    {{ Lang.get('ticket.feedback_questions') }}
+
+    <br /><br />
+
+    {{ form_open({'route': [ 'ticket.frontend.ticket.feedback', ticket.number, token ] }) }}
+
+        {% include 'frontend.' ~ template ~ '.forms.customfields' %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.save')) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link href="{{ asset('resources/assets/general/css/customfield.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Date picker
+            callPikaday();
+        });
+    </script>
+{% endblock %}

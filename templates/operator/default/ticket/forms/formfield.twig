@@ -1,0 +1,45 @@
+<tr class="field {% if hide|default is not empty %} hide {% endif %}">
+    <td class="field-type" width="120">
+        {{ form_hidden('fields[' ~ (field is defined ? field.id : '') ~ '][id]',
+            (field is defined ? field.id : null))
+        }}
+        {{ form_hidden('fields[' ~ (field is defined ? field.id : '') ~ '][local_id]',
+            (field is defined ? field.id : null), { 'class': 'field-local-id' })
+        }}
+        {{ form_select('fields[' ~ (field is defined ? field.id : '') ~ '][type]', 
+            {
+                '0': Lang.get('customfield.boolean'),
+                '1': Lang.get('customfield.checkbox'),
+                '2': Lang.get('customfield.checklist'),
+                '3': Lang.get('customfield.date'),
+                '4': Lang.get('customfield.multiple'),
+                '5': Lang.get('customfield.options'),
+                '6': Lang.get('customfield.password'),
+                '7': Lang.get('customfield.radio'),
+                '10': Lang.get('customfield.rating'),
+                '8': Lang.get('customfield.text'),
+                '9': Lang.get('customfield.textarea')
+            }, (field is defined ? field.type : null)) 
+        }}
+    </td>
+    <td class="field-option">
+        {{ form_text('fields[' ~ (field is defined ? field.id : '') ~ '][name]',
+            (field is defined ? field.name : null), { 'style': 'width: 100%', 'placeholder': Lang.get('ticket.feedback_question') })
+        }}
+        <div class="field-option-container">
+            {% include 'operator.' ~ template ~ '.ticket.forms.formfield_option' with { 'field': (field is defined ? field : null), 'hide': true } %}
+            
+            {% if field|default is not empty %}
+                {% for option in field.options %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.formfield_option' %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="field-add-option {% if field is not defined or (field.type != '2' and field.type != '4' and field.type != '5' and field.type != '7' and field.type != '10') %}hide{% endif %}">
+            {{ form_button(Lang.get('ticket.add_option'), { 'class': 'add-option' }) }}
+        </div>
+    </td>
+    <td width="16">
+        <i class="fa fa-times right remove-button"></i>
+    </td>
+</tr>

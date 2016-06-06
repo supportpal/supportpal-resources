@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{{ Lang.get('ticket.view_feedback') }}</title>
+    
+    <link href="{{ asset('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('resources/assets/general/css/customfield.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
+</head>
+
+<body style="margin: 0 25px;">
+
+    <div class="desk_wrapper" style="width: auto;">
+
+        <div id="desk_content" style="width: auto;">
+
+            <div class="desk_content_padding" style="padding: 25px 25px 0;">
+
+                <h2>{{ Lang.get('ticket.ticket_feedback') }} - #{{ number }}</h2>
+
+                {% if customfields is not empty %}
+                    {% include 'operator.' ~ template ~ '.forms.customfields' %}
+                {% else %}
+                    <div class="fail box">
+                        {{ Lang.get('ticket.feedback_fields_error') }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ asset('resources/assets/operator/js/main.js') }}" type="text/javascript"></script>
+
+    <!-- Custom fields -->
+    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{% set route = Route.currentRouteName() %}
+
+<ul class="tabs">
+    <a href="{{ route('user.operator.user.edit', [ record.id ]) }}"
+        {% if route == 'user.operator.user.edit' %} class="active"{% endif %}>
+        {{ Lang.get('user.profile') }}
+    </a>
+    <a href="{{ route('user.operator.user.ticket', [ record.id ]) }}"
+        {% if route == 'user.operator.user.ticket' %} class="active"{% endif %}>
+        {{ Lang.choice('ticket.ticket', 2) }}
+    </a>
+    {% if record.email is not empty %}
+        <a href="{{ route('user.operator.user.sendemail', [ record.id ]) }}"
+            {% if route == 'user.operator.user.sendemail' %} class="active"{% endif %}>
+            {{ Lang.get('user.send_email') }}
+        </a>
+    {% endif %}
+    {% if (Auth.guard('operator').user().hasPermission('view.activitylog')) %}
+        <a href="{{ route('user.operator.user.activitylog', [ record.id ]) }}"
+            {% if route == 'user.operator.user.activitylog' %} class="active"{% endif %}>
+            {{ Lang.get('user.activity_log') }}
+        </a>
+    {% endif %}
+    {% if record.email is not empty and (Auth.guard('operator').user().hasPermission('view.emaillog')) %}
+        <a href="{{ route('user.operator.user.emaillog', [ record.id ]) }}"
+            {% if route == 'user.operator.user.emaillog' %} class="active"{% endif %}>
+            {{ Lang.get('core.email_log') }}
+        </a>
+    {% endif %}
+</ul>

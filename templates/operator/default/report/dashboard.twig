@@ -1,0 +1,80 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+	{% include 'operator.' ~ template ~ '.report.sidebar' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('report.report', 2) }} {{ Lang.get('report.dashboard') }}
+{% endblock %}
+
+{% block content %}
+
+	<hr />
+
+    <ul class="dashboardStats">
+		<li>
+			<span class="number" style="color: #c0392b;">{{ stats['tickets'] }}</span>
+			<br />
+			{{ Lang.get('report.tickets_opened') }}
+		</li>
+		<li>
+			<span class="number" style="color: #e67e22;">{{ stats['messages'] }}</span>
+			<br />
+			{{ Lang.get('report.ticket_messages') }}
+		</li>
+		<li>
+			<span class="number" style="color: #2980b9;">{{ stats['confirmed_users'] }}</span>
+			<br />
+			{{ Lang.get('report.confirmed_users') }}
+		</li>
+		<li>
+			<span class="number" style="color: #27ae60;">{{ stats['total_users'] }}</span>
+			<br />
+			{{ Lang.get('report.total_users') }}
+		</li>
+	</ul>
+
+	<hr />
+
+	<h2 class="daily-stats">{{ Lang.get('report.daily_stats') }}</h2>
+
+	<div id="chartView" style="width: 100%; height:500px;"></div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+	<link href="{{ asset('resources/assets/operator/css/report.css') }}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+	<script type="text/javascript">
+	    // Load charts
+	    google.load("visualization", "1", {packages:["corechart"]});
+	    google.setOnLoadCallback(drawChart);
+
+	    function drawChart() {
+	        try {
+	            var chartData = google.visualization.arrayToDataTable({{ dailyStats|raw }});
+	            var chart = new google.visualization.AreaChart(document.getElementById('chartView'));
+	            var options = {
+	                legend: { position: 'bottom' },
+	                chartArea:{left:"8%",top:"5%",width:"87%",height:"80%"},
+	                isStacked: true
+	            };
+	            // Draw chart
+	            chart.draw(chartData, options);
+	        } catch(err) {
+	            // Nothing to do here...
+	        }
+	    }
+
+	    $(document).ready(function() {
+	        // Draw the chart
+	        drawChart();
+
+			$(window).resize(function() {
+				drawChart();
+			});
+	    });
+	</script>
+{% endblock %}

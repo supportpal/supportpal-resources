@@ -1,0 +1,46 @@
+<div class="sidebox">
+    <h3 class="collapsable {% if module != 'user' %}closed{% endif %}">
+        <i class="fa fa-user icon"></i>
+        {{ Lang.choice('user.user', 2) }}
+        <div class="arrow">
+            <i class="fa {% if module == 'user' %}fa-chevron-down{% else %}fa-chevron-up{% endif %}"></i>
+        </div>
+    </h3>
+    <ul {% if module != 'user' %}class="hide"{% endif %}>
+        {% if Auth.guard('operator').user().hasPermission('view.usercustomfield') %}
+        <li {% if route starts with 'user.operator.customfield' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.customfield') }}">{{ Lang.choice("customfield.customfield", 2) }}</a>
+        </li>
+        {% endif %}
+
+        {% if Auth.guard('operator').user().hasPermission('view.usersetting') %}
+        <li {% if route starts with 'user.operator.generalsetting' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.generalsetting') }}">{{ Lang.get("general.generalsetting") }}</a>
+        </li>
+        {% endif %}
+
+        {% if Auth.guard('operator').user().hasPermission('view.ldapaccount') and Config.get('settings.ldap_enabled', 0) == 1 %}
+        <li {% if route starts with 'user.operator.ldapaccount' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.ldapaccount') }}">{{ Lang.choice("user.ldap_account", 2) }}</a>
+        </li>
+        {% endif %}
+
+        {% if Auth.guard('operator').user().hasPermission('view.operatorgroup') %}
+        <li {% if route starts with 'user.operator.operatorgroup' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.operatorgroup') }}">{{ Lang.choice("user.operator_group", 2) }}</a>
+        </li>
+        {% endif %}
+
+        {% if Auth.guard('operator').user().hasPermission('view.role') %}
+        <li {% if route starts with 'user.operator.role' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.role') }}">{{ Lang.choice("general.operator", 1) }} {{ Lang.choice("user.role", 2) }}</a>
+        </li>
+        {% endif %}
+
+        {% if Auth.guard('operator').user().hasPermission('view.usergroup') %}
+        <li {% if route starts with 'user.operator.usergroup' %}class="current"{% endif %}>
+            <a href="{{ route('user.operator.usergroup') }}">{{ Lang.choice("user.group", 2) }}</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>

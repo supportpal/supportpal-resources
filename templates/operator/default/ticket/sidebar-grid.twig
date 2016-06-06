@@ -1,0 +1,122 @@
+<div id="sidebar" class="sidebar-close left">
+    <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
+
+    {% if filters is not empty and not filters.isEmpty() %}
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-filter icon"></i>
+            {{ Lang.choice('ticket.filter', 2) }}
+        </h3>
+        <ul class="tickets">
+            {% for filter in filters %}
+            <li>
+                <a href="{{ route('ticket.operator.ticket') ~ '?filter=' ~ filter.id }}">
+                    {{ filter.name }}
+                    <span class="badge right">{{ filter.count }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-circle-o icon"></i>
+            {{ Lang.choice('general.status', 2) }}
+        </h3>
+        <ul>
+            {% for status in obj_statuses %}
+            <li>
+                <a href="{{ route('ticket.operator.ticket') ~ '?status=' ~ status.id }}">
+                    <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
+                    {{ status.name }}
+                    <span class="badge right">{{ status.count }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-folder icon"></i>
+            {{ Lang.choice('ticket.department', 2) }}
+        </h3>
+        <ul>
+            {% for department in obj_departments %}
+            <li>
+                <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
+                    {{ Purifier.clean(department.name) }}
+                    <span class="badge right">{{ department.count }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-flag icon"></i>
+            {{ Lang.choice('ticket.priority', 2) }}
+        </h3>
+        <ul>
+            {% for priority in obj_priorities %}
+            <li>
+                <a href="{{ route('ticket.operator.ticket') ~ '?priority=' ~ priority.id }}">
+                    <span class="flag" style="border-color: {{ priority.colour }}; border-right-color: transparent;"></span>&nbsp;
+                    {{ priority.name }}
+                    <span class="badge right">{{ priority.count }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if obj_tags is not empty and not obj_tags.isEmpty() %}
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-tags icon"></i>
+            {{ Lang.choice('ticket.tag', 2) }}
+        </h3>
+        {% for tag in obj_tags %}
+            <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}">
+                {{ tag['name'] }}
+            </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-clock-o icon"></i>
+            {{ Lang.get('ticket.recent_activity') }}
+        </h3>
+        <ul>
+            {% for activity in recentActivity %}
+            <li class="clear">
+                <img src="data:image/png;base64,{{ activity.user.avatar }}" width="21" height="21" alt="{{ activity.user.formatted_name }}"
+                    class="avatar" /><strong>{{ activity.user.formatted_name }}</strong><br />
+                {{ Purifier.clean(activity.event) }}
+                <div class="description">{{ prettyDate(activity.created_at) }}</div>
+            </li>
+            {% else %}
+                <li>{{ Lang.get('ticket.no_recent_activity') }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if not activeOperators.isEmpty() %}
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-users icon"></i>
+            {{ Lang.get('ticket.active_operators') }}
+        </h3>
+        <ul>
+            {% for operator in activeOperators %}
+            <li class="clear">
+                <img src="data:image/png;base64,{{ operator.avatar }}" width="21" height="21"
+                     alt="{{ operator.formatted_name }}" class="avatar"/>
+                {{ operator.formatted_name }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="http://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
+</div>

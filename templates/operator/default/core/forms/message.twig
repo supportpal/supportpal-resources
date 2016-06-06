@@ -1,0 +1,122 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.choice('general.message', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="success box delete hide">
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+    </div>
+    <div class="fail box delete hide">
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+    </div>
+
+    <div class="message-block">
+        {% for message in messages %}
+        <div class="message clear message-{{ message.id }}">
+            <div class="header">
+                {% if message.user_id == Auth.guard('operator').user.id %}
+                    <span class="right">
+                        <button class="as-link delete-confirm" data-route="{{ route('core.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </span>
+                {% endif %}
+
+                <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24'
+                     alt='Operator' class='avatar left' />
+                <span class="name {% if message.user_id == Auth.guard('operator').user.id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span>&nbsp;&nbsp;
+                <span class="date">{{ formatDate(message.created_at) }}</span>
+            </div>
+            <div class="text">
+                {{ Purifier.clean(message.message) }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2>{{ Lang.get('general.reply') }}</h2>
+
+    {{ form_open({ 'method': 'PUT', 'route': [ 'core.operator.message.update', conversation_id ] }) }}
+        {{ form_hidden('conversation_id', conversation_id) }}
+
+        {{ form_redactor('message', null, { 'size': '50x3' }) }}
+
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.send')) }}
+        </div>
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('textarea').redactor($.Redactor.default_opts);
+
+            // Delete ticket message
+            $(document.body).on('click', '.delete-confirm', function() {
+
+                // Save the delete route and message ID
+                var deleteRoute = $(this).data('route');
+                var messageId = $(this).data('id');
+
+                // Show the alert
+                swal({
+                    title: Lang.get('messages.are_you_sure'),
+                    text: Lang.get('messages.warn_delete'),
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#e74c3c",
+                    confirmButtonText: Lang.get('messages.yes_im_sure'),
+                    closeOnConfirm: false
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        // Disable submit button
+                        swal.disableButtons();
+                        // Delete record and reload table if successful
+                        $.ajax({
+                            url: deleteRoute,
+                            type: 'DELETE',
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.status == 'success') {
+                                    $('.success').show(500).delay(5000).hide(500);
+                                    // Close alert
+                                    swal.closeModal();
+                                    // Remove message from view
+                                    $('.message-' + messageId).remove();
+                                    if (!$('.message').length) {
+                                        // No more messages exist, redirect to grid
+                                        window.location.href = laroute.route('core.operator.message.index');
+                                    }
+                                } else {
+                                    $('.fail').show(500).delay(5000).hide(500);
+                                    // Close alert
+                                    swal.closeModal();
+                                }
+                            },
+                            error: function() {
+                                $('.fail').show(500).delay(5000).hide(500);
+                                // Close alert
+                                swal.closeModal();
+                            }
+                        });
+                    }
+                });
+
+            });
+        });
+    </script>
+{% endblock %}

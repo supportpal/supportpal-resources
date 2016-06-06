@@ -1,0 +1,140 @@
+{% if not ticket.channel.enabled %}
+    <div class="fail box">{{ Lang.get('ticket.channel_deactivated') }}</div>
+{% else %}
+    <div class="quick-actions right">
+        <span class="button-group">
+            {% if not in_array(Auth.guard('operator').user().id, ticket.assigned.pluck('id').all()) %}
+                <button class="take-ticket"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
+            {% else %}
+                <!--
+            {% endif %} 
+            --><button class="close-ticket {% if ticket.status_id == Config.get('settings.default_resolved_status') %}hide{% endif %}"><i class="fa fa-check"></i> {{ Lang.get('general.close') }}</button><!--
+            --><button class="lock-ticket {% if ticket.locked %}hide{% endif %}"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
+            --><button class="unlock-ticket {% if not ticket.locked %}hide{% endif %}"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
+        </span>
+        {% if (Auth.guard('operator').user().hasPermission('delete.ticket')) %}
+            &nbsp;&nbsp;&nbsp;
+            <span class="button-group">
+                <button class="delete-ticket" type="button"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
+                {% if not ticket.internal %}
+                    --><button class="block-ticket" type="button"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
+                {% else %}
+                    -->
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="reply-type">
+        <div class="option active" data-type="0">
+            <i class="fa fa-reply"></i> &nbsp; {{ Lang.get('ticket.ticket_reply') }}
+        </div>
+        &nbsp;
+        <div class="option" data-type="1">
+            <i class="fa fa-sticky-note"></i> &nbsp; {{ Lang.get('ticket.ticket_note') }}
+        </div>
+    </div>
+
+    <form class="message-form validate">
+
+        {{ form_hidden('reply_type', 0) }}
+
+        {% include 'operator.' ~ template ~ '.ticket.forms.reply_options' %}
+
+        <div class="reply-form">
+
+            {{ form_hidden('ticket_id', ticketId) }}
+
+            {% if ticket.department_email_id is not empty %}
+                <div class="form-row form-full recipients">
+                    <div>
+                        {{ form_label('from', Lang.get('ticket.from')) }}
+                        <div class="input-container">
+                            {{ form_select('department_email', fromEmails, ticket.department_email_id) }}
+                        </div>
+                    </div>
+                    <div>
+                        {{ form_label('to', Lang.get('ticket.to')) }}
+                        <div class="input-container">
+                            {{ toEmails }}
+                            {% if ticket.cc is empty and not ticket.internal %}<a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>{% endif %}
+                        </div>
+                    </div>
+                    {% if not ticket.internal %}
+                    <div class="cc-emails {% if ticket.cc is empty %}hide{% endif %}">
+                        {{ form_label('cc[]', Lang.get('ticket.cc')) }}
+                        <div class="input-container">
+                            {{ form_select('cc[]', ticket.cc is not empty ? array_combine(ticket.cc, ticket.cc) : {},
+                                ticket.cc is not empty ? array_combine(ticket.cc, ticket.cc) : {}, { 'multiple': 'multiple' }) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="form-row">
+                {% if draft|default is not empty %}
+                    {{ form_redactor('text', draft, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
+                {% elseif (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') is not empty) %}
+                    {{ form_redactor('text',
+                            '<br /><br />' ~ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature'),
+                            { "class": "textarea", "size": "50x3", "id": "newMessage" })
+                    }}
+                {% else %}
+                    {{ form_redactor('text', null, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
+                {% endif %}
+
+                {# Operator notes #}
+                {{ form_redactor('text', draft_note|default is not empty ? draft_note : null, { "class": "textarea", "size": "50x3", "id": "newNote" }) }}
+
+                {% if ticket.department_email_id is not empty %}
+                    <div class="attachment-details">
+                        <input type="hidden" name="attachment[]" disabled="disabled" />
+                    </div>
+                    <ul id="attached-files">
+                        <li class="hide">
+                            <i class="fa fa-file"></i>
+                            &nbsp;
+                            <span class="information">
+                                <span class="filename ellipsis"></span>
+                                &nbsp;
+                                <span class="filesize"></span>
+                            </span>
+                            <i class="fa fa-times deleteAttachment right hide"></i>
+                            <div class="progress">
+                                <div class="bar"></div>
+                            </div>
+                        </li>
+                    </ul>
+                {% endif %}
+
+            </div>
+
+            <div style="margin-top: 15px;">
+                {{ form_submit(Lang.choice('general.post', 1), { 'class': 'post-button right' }) }}
+
+                <span class="reply-buttons">
+                    {% if ticket.department_email_id is not empty %}
+                        <label for="fileupload" class="file-input button">
+                            <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+                        </label>
+                        <input id="fileupload" type="file" name="files[]" data-url="{{ route('ticket.operator.attachment.upload') }}" multiple="multiple">
+                        &nbsp;&nbsp;
+                    {% endif %}
+
+                    <span class="button-group">
+                        {{ form_button('<i class="fa fa-floppy-o"></i> &nbsp;' ~ Lang.get('ticket.save_draft'), { 'class': 'save-draft' }) }}<!--
+                        -->{{ form_button('<i class="fa fa-trash-o"></i> &nbsp;' ~ Lang.get('ticket.discard_draft'), {
+                                'class': draft|default is not empty ? 'discard-draft' : 'discard-draft hide'
+                            })
+                        }}
+                    </span>
+                    &nbsp;&nbsp;
+                </span>
+                <span class="draft-success description hide"></span>
+            </div>
+
+        </div>
+
+    </form>
+{% endif %}

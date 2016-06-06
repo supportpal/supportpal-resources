@@ -1,0 +1,41 @@
+$(document).ready(function() {
+    /**
+     * Reload datables on changing filter
+     */
+    $('.filters :input').on('change input', function(event) {
+        // Ignore if losing focus on text input
+        if ($(this).is('input:text:not(.datepicker)') && event.type == 'change') { return; }
+        // Reload table
+        $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
+            // Add conditions to parameters
+            var conditions = $(".filters :input").serializeArray();
+            $.each(conditions, function(index, value) {
+                if (value.value != '' && value.value != '-1') {
+                    data[value.name] = value.value;
+                }
+            });
+        }).dataTable().api().ajax.reload(function() { });
+    });
+
+    /**
+     * Reset filter
+     */
+    $('.reset-filter').on('click', function(event) {
+        // Get param and reset
+        var $input = $(this).prev();
+        if ($input.is('input:text')) {
+            $input.val('');
+        } else if ($input.is('select')) {
+            $input.val('-1');
+        }
+        // Trigger change to reload table
+        $input.change();
+    });
+
+    $('.datepicker').pikaday({
+        format: $('meta[name=date_format]').prop('content'),
+        onSelect: function() {
+            $('.datepicker:first').change();
+        }
+    });
+});

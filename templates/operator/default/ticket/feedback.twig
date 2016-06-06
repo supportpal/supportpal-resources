@@ -1,0 +1,201 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get("ticket.feedback") }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="grid-options options box">
+        <div class="filters">
+            <div style="border-top: 0;">
+                <label>{{ Lang.get('general.date') }}:</label>
+                <div>
+                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start') ~ ' ' ~ Lang.get('general.date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    &nbsp;{{ Lang.get('general.to') }}&nbsp;
+                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end') ~ ' ' ~ Lang.get('general.date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="satisfaction">
+        {{ Lang.get('ticket.customer_satisfaction') }}&nbsp;
+        <span class="satisfaction-percentage" style="color: {{ satisfactionColour }}">
+            {{ customerSatisfaction }}%
+        </span>
+    </div>
+
+    <hr />
+
+    <ul class="dashboardStats">
+        <li>
+            <span class="total-good number">{{ totalGood }}</span>
+            <br />
+            {{ Lang.get('ticket.good_ratings') }}
+        </li>
+        <li>
+            <span class="total-bad number">{{ totalBad }}</span>
+            <br />
+            {{ Lang.get('ticket.bad_ratings') }}
+        </li>
+        <li>
+            <span class="total-sent number">{{ totalSentForms }}</span>
+            <br />
+            {{ Lang.get('ticket.sent_forms') }}
+        </li>
+        <li>
+            <span class="response-rate number">{{ responseRate }}%</span>
+            <br />
+            {{ Lang.get('ticket.response_rate') }}
+        </li>
+    </ul>
+
+    <hr />
+
+    <ul class="tabs">
+        <li id="Received" class="active">{{ Lang.get('general.received') }}</li>
+        <li id="Sent">{{ Lang.get('general.unanswered') }}</li>
+        <li id="Queued">{{ Lang.get('general.in_queue') }}</li>
+    </ul>
+
+    <div id="tabReceived" class="tabContent">
+
+    	{{ receivedTable.render()|raw }}
+    	{{ receivedTable.script()|raw }}
+
+    </div>
+
+    <div id="tabSent" class="tabContent hide">
+
+        <div class="success box expire hide">
+            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+        <div class="fail box expire hide">
+            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+
+        {{ sentTable.render()|raw }}
+        {{ sentTable.script()|raw }}
+
+    </div>
+
+    <div id="tabQueued" class="tabContent hide">
+
+        <div class="success box send hide">
+            {{ Lang.get('messages.success_sending', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+        <div class="fail box send hide">
+            {{ Lang.get('messages.error_sending', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+
+        <div class="success box delete hide">
+            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+        <div class="fail box delete hide">
+            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+        </div>
+
+        {{ queuedTable.render()|raw }}
+        {{ queuedTable.script()|raw }}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+
+    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/queryfiltering.js') }}"></script>
+
+    <link href="{{ asset('resources/assets/operator/css/report.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        $(function() {
+            $(document.body).on('click', '.expire-button', function() {
+                // Post updated data
+                $.ajax({
+                    url: $(this).data('route'),
+                    type: 'POST',
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.expire.success').show(500).delay(5000).hide(500);
+                    } else {
+                        $('.expire.fail').show(500).delay(5000).hide(500);
+                    }
+                }, "json").fail(function() {
+                    $('.expire.fail').show(500).delay(5000).hide(500);
+                }).always(function() {
+                    $('.dataTable').each(function() {
+                        $(this).dataTable()._fnAjaxUpdate();
+                    });
+                });
+            });
+
+            $(document.body).on('click', '.send-button', function() {
+                // Post updated data
+                $.ajax({
+                    url: $(this).data('route'),
+                    type: 'POST',
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.send.success').show(500).delay(5000).hide(500);
+                    } else {
+                        $('.send.fail').show(500).delay(5000).hide(500);
+                    }
+                }, "json").fail(function() {
+                    $('.send.fail').show(500).delay(5000).hide(500);
+                }).always(function() {
+                    $('.dataTable').each(function() {
+                        $(this).dataTable()._fnAjaxUpdate();
+                    });
+                });
+            });
+
+            /**
+             * Update report on changing date
+             */
+            $('.filters :input').on('change input', function() {
+                // Ignore if losing focus on text input
+                if ($(this).is('input:text') && event.type == 'change') { return; }
+
+                // Get updated data
+                $.ajax({
+                    url: laroute.route('ticket.operator.feedback.report'),
+                    type: 'GET',
+                    data: {
+                        startDate: $('input[name="sSearch_0_start"]').val(),
+                        endDate: $('input[name="sSearch_0_end"]').val()
+                    },
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.satisfaction-percentage').text(response.data.customerSatisfaction + '%');
+                        $('.satisfaction-percentage').css('color', response.data.satisfactionColour);
+                        $('.total-good').text(response.data.totalGood);
+                        $('.total-bad').text(response.data.totalBad);
+                        $('.total-sent').text(response.data.totalSentForms);
+                        $('.response-rate').text(response.data.responseRate + '%');
+                    }
+                }, "json");
+            });
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('ticket.track_ticket') }}{% endblock %}
+
+{% block breadcrumb %}
+	{{ parent() }}
+    {{ Lang.get('ticket.track_ticket') }}
+{% endblock %}
+
+{% block content %}
+
+	<div class="login-container">
+
+		{{ form_open({ 'route': [ 'ticket.frontend.track' ], 'method': 'post', 'class': 'validate' }) }}
+
+			<div class="form-row form-full">
+				{{ form_label('email', Lang.get('general.email')) }}
+			    {{ form_text('email') }}
+			</div>
+			<div class="form-row">
+				{{ form_label('number', Lang.get('ticket.ticket_number')) }}
+			    {{ form_text('number') }}
+			</div>
+			<div class="form-button form-center">
+				{{ form_submit(Lang.get('ticket.view_ticket')) }}
+			</div>
+
+		{{ form_close() }}
+
+	</div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

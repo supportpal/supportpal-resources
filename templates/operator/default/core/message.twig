@@ -1,0 +1,72 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.choice('general.message', 2) }}
+{% endblock %}
+
+{% block content %}
+
+    <ul class="tabs">
+        <li id="Inbox" class="active">{{ Lang.get('core.inbox') }}</li>
+        <li id="Compose">{{ Lang.get('core.compose') }}</li>
+    </ul>
+
+    <div id="tabInbox" class="tabContent">
+
+        <div class="success box delete hide">
+            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+        </div>
+        <div class="fail box delete hide">
+            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+        </div>
+
+        {{ table.render()|raw }}
+        {{ table.script()|raw }}
+
+    </div>
+
+    <div id="tabCompose" class="tabContent hide">
+
+        {{ form_open({ 'method': 'POST', 'route': 'core.operator.message.store' }) }}
+
+            <div class="form-row form-full">
+                {{ form_label('to_user_id', Lang.get('core.send_to')) }}
+                <div class="input-container">
+                    {{ form_select('to_user_id', operators) }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('message', Lang.choice('general.message', 1)) }}
+                <div class="input-container">
+                    {{ form_redactor('message', null, { 'size': '50x3' }) }}
+                </div>
+            </div>
+
+            {{ form_submit(Lang.get('general.send')) }}
+            
+        {{ form_close() }}
+
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('textarea').redactor($.Redactor.default_opts);
+        });
+    </script>
+{% endblock %}

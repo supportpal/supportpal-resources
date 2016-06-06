@@ -1,0 +1,48 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('general.edit') }} {{ Lang.choice('general.language', 1) }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'route': [ 'core.operator.language.update', record.code ], 'method': 'PUT', 'class': 'validate' }) }}
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}
+                </div>
+            </div>
+
+            {% if not is_english %}
+            <div class="form-row">
+                {{ form_label('enabled', Lang.get('general.enabled')) }}
+                <div class="input-container">
+                    {{ form_check('enabled', 1, record.enabled, { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
+                    <label for="toggle_enabled"></label>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice("general.submit", 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

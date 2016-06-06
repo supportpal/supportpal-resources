@@ -1,0 +1,28 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('ticket.open_new') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('ticket.open_new') }}
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ Lang.get('ticket.select_department') }}</h2>
+    <p class="light">{{ Lang.get('ticket.select_department_desc') }}</p>
+
+    <div class="form-container open first">
+
+        {% for department in departments %}
+            <a class="department" href="{{ route('ticket.frontend.ticket.createStep2', [ department.id ]) }}">
+                <h4>{{ Purifier.clean(department.name) }}</h4>
+                <p>{{ department.description }}</p>
+            </a>
+        {% else %}
+            {{ Lang.get('ticket.no_departments') }}
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
