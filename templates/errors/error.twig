@@ -5,7 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
-    <title>{{ company }} - {% block title %}{{ Lang.get('messages.error') }}{% endblock %}</title>
+    <title>
+        {% if company is not null %}{{ company }} - {% endif %}
+        {% block title %}{{ Lang.get('messages.error') }}{% endblock %}
+    </title>
 
     <link href="{{ asset('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('resources/assets/operator/css/error.css') }}" rel="stylesheet" type="text/css" />

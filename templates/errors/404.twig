@@ -12,6 +12,6 @@
 
     <p>{{ Lang.get('messages.cant_find_page') }} {{ Lang.get('messages.please_report') }}</p>
 
-    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ strtolower(Lang.get('general.support_portal')) ~ '</a>'})|raw }}</p>
+    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ mb_strtolower(Lang.get('general.support_portal'), 'UTF-8') ~ '</a>'})|raw }}</p>
 
 {% endblock %}
