@@ -1246,6 +1246,16 @@ button.show-children {
     font-size: 14px;
 }
 
+/* Email History */
+
+.email-content {
+    margin-bottom: 0;
+}
+
+.email-content img {
+    max-width: none;
+}
+
 /* Pagination */
 
 .pager {

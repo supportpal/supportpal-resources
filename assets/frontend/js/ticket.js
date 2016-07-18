@@ -48,26 +48,30 @@ $(document).ready(function() {
 
     // Update ticket custom fields
     $('.save-fields').on('click', function() {
-        var data = $(this).parents('form').serializeArray();
-        if (typeof $(this).data('token') !== 'undefined') {
-            data.push({ name: 'token', value: $(this).data('token') });
-        }
-
-        // Post updated data
-        $.ajax({
-            url: laroute.route('ticket.frontend.ticket.saveFields', { 'number': $('input[name=ticket_number]').val() }),
-            type: 'POST',
-            data: data,
-            dataType: 'json'
-        }).done(function(response) {
-            if (response.status == 'success') {
-                $('.ticket-update.success').show(500).delay(5000).hide(500);
-            } else {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        // Make sure data is valid before submitting
+        if ($(this).parents('form').valid()) {
+            // Get form data
+            var data = $(this).parents('form').serializeArray();
+            if (typeof $(this).data('token') !== 'undefined') {
+                data.push({ name: 'token', value: $(this).data('token') });
             }
-        }).fail(function() {
-            $('.ticket-update.fail').show(500).delay(5000).hide(500);
-        });
+
+            // Post updated data
+            $.ajax({
+                url: laroute.route('ticket.frontend.ticket.saveFields', { 'number': $('input[name=ticket_number]').val() }),
+                type: 'POST',
+                data: data,
+                dataType: 'json'
+            }).done(function(response) {
+                if (response.status == 'success') {
+                    $('.ticket-update.success').show(500).delay(5000).hide(500);
+                } else {
+                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                }
+            }).fail(function() {
+                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+            });
+        }
     });
 
 });
