@@ -122,4 +122,10 @@ return [
     
     "check_email_failed"                => "Error: Failed to check e-mail download accounts. ':rel'.",
 
+    /*
+     * 2.0.2
+     */
+    "ticket_email_operator_group"       => "Sent email to operator group :new_value.",
+    "ticket_email_user_group"           => "Sent email to user group :new_value.",
+
 ];

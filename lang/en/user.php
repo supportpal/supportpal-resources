@@ -185,7 +185,6 @@ return array(
     "select_group"                  => "Select a group...",
 
     "your_ip_has_been_banned"       => "Your IP has been banned.",
-    "3_failed_logins"               => "3 failed logins within 24 hours",
     "password_reset_error"          => "User account or reset token not found, please verify details are correct or try to reset again.",
     "password_reset_not_found"      => "User not found or password cannot be reset.",
     "password_reset_expired"        => "Token has expired, please try to reset again.",
@@ -199,5 +198,19 @@ return array(
     "simpleauth_token_invalid"      => "The access token provided is invalid.",
     "simpleauth_invalid_guard"      => "Cannot login as not a valid user.",
     "simpleauth_not_allowed"        => "Operators cannot currently login with SimpleAuth.",
+    
+    /*
+     * 2.0.2
+     */
+    
+    "email_history"                 => "Email History",
+    "view_email"                    => "View Email",
+
+    "ban_after_count"               => "Ban IP after Failed Logins",
+    "ban_after_count_user"          => "The number of failed logins after which the user IP is banned, and they are no longer able to login to the frontend for the configured amount of time. Setting to 0 will disable IP bans completely.",
+    "ban_after_count_operator"      => "The number of failed logins after which the user IP is banned, and they are no longer able to login to the operator panel or API for the configured amount of time. Setting to 0 will disable IP bans completely.",
+    "ban_length"                    => "Length of IP Ban",
+    "ban_length_desc"               => "The length of the IP ban when they reach the configured number of failed logins in a single day.",
+    "n_failed_logins"               => ":count failed logins within 24 hours",
 
 );

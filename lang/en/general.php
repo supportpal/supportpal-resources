@@ -200,9 +200,16 @@ return [
     "editor"                    => "Editor",
 
     /*
-     * v2.0.1
+     * 2.0.1
      */
     "download"                  => "Download",
     "acknowledge"               => "Acknowledge",
 
+    /*
+     * 2.0.2
+     */
+    "show_details"              => "Show details",
+    "hide_details"              => "Hide details",
+    "welcome"                   => "Welcome",
+    
 ];

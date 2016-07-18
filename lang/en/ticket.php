@@ -112,7 +112,6 @@ return [
     "email_piping"              => "Email Piping",
     "email_piping_desc"         => "Set up an email forwarder like the following, the PHP executable path may be different on your server.",
     "remote_email_piping"       => "Remote Email Piping",
-    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8'>remote email piping script</a>, upload to your mail server and set the configuration URL.",
 
     // Department email options
     "email_options"             => "Email Options",
@@ -315,7 +314,6 @@ return [
     "default_priority"          => "Default Priority",
     "default_priority_desc"     => "The default priority set on all incoming tickets via this channel.",
     "verbose_email_log"         => "Verbose Email Log",
-    "verbose_email_log_desc"    => "If email collection should be logged on file. Only use for debugging purposes and remember to disable to avoid creating large log files.",
 
     "adjust_columns"            => "Adjust Columns",
     "last_reply"                => "Last Reply",
@@ -369,9 +367,18 @@ return [
 	"type_in_tags"				=> "Type in tags",
 
     /*
-     * v2.0.1
+     * 2.0.1
      */
-    "not_assigned_department"   => "Cannot view ticket as you are not assigned to the department it belongs to.",
 	"allowed_files_desc"        => "A list of file extensions, separated by the pipe | character, that are permitted as attachments. For example: txt|png|jpg. To allow all attachments, input: ?.*",
+
+	/*
+	 * 2.0.2
+	 */
+	"no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
+    "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
+    "opened_by"                 => "(Opened by :name)",
+    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
+	"not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
+	"verbose_email_log_desc"    => "If email collection should be logged on file. We recommend to keep enabled to help with debugging purposes. Five days worth of logs are stored, older log files will be purged automatically by the system.",
 
 ];

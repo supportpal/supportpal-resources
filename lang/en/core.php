@@ -259,9 +259,15 @@ return [
     "send_diagnostic_desc"      => "To help SupportPal improve its products, your installation can send diagnostic data when something goes wrong.",
     
     /*
-     * v2.0.1
+     * 2.0.1
      */
     "incoming_rejected"         => "Incoming (Rejected)",
     "show_original"             => "Show Original",
+
+    /*
+     * 2.0.2
+     */
+    "cron_makesure"             => "For assistance registering the cron job, please see <a target='_blank' href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-CronJob'>Cron Job Help</a>.",
+    "widget"                    => "Widget|Widgets",
 
 ];

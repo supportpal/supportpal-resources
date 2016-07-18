@@ -35,7 +35,7 @@ return [
     "php_version"               => "PHP Version",
     "php_version_not_found"     => "Not available, found PHP version: :version",
     "php_extensions"            => "PHP Extensions",
-    "file_writeable"            => "Files/Directories Writable",
+    "file_writeable"            => "File Permissions",
     "file_writeable_desc"       => "All of the below should be writable by the web server. We recommend using 755 file permissions, though some systems may require 777 if the files are not owned by the web server user. Directories should be recursively writable.",
 
     // Step 3
@@ -75,6 +75,28 @@ return [
     /*
      * 2.0.1
      */
+
     "post_install"              => "For the system to function properly, a cron job must be set-up. Please read our <a href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-PostInstallationSteps'>post installation steps</a> for details on this and other recommend actions to improve functionality and security.",
+
+    /*
+     * 2.0.2
+     */
+    "required_requirements"     => "You meet :required of :total required requirements.",
+    "optional_requirements"     => "You meet :optional of :total optional requirements.",
+    "both_requirements"         => "You meet :required of :total_required required requirements and :optional of :total_optional optional requirements.",
+    "php_version_is"            => "Your PHP Version is :version.",
+    "enabled"                   => "Enabled",
+    "disabled"                  => "Disabled",
+    "php_settings"              => "PHP Settings",
+    "ipv6_support"              => "IPv6 Support",
+    "png_jpg_support"           => "PNG & JEPG support",
+    "memory_limit"              => ">= 128MB Memory",
+    "memory_limit_error"        => "Your memory limit is ':limit'.",
+    "permission_denied"         => "Permission Denied",
+    "writable"                  => "Writable",
+    "help_php_version"          => "For assistance installing a new version of PHP please contact your hosting provider or server administrator.",
+    "help_php_extensions"       => "PHP extensions differ depending on your server, your host and other system variable. For assistance installing missing extensions, please contact your hosting provider or server administrator.",
+    "help_php_settings"         => "For additional assistance, please read <a target=\"_blank\" href=\"http://docs.supportpal.com/display/DOCS/System+Requirements#SystemRequirements-PHPSettingsPHPSettings\">PHP Settings Help</a>.",
+    "disabled_functions"        => "Disabled Functions",
 
 ];

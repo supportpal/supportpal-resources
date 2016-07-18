@@ -28,4 +28,8 @@ return [
     "locked_desc"               => "If the custom field value cannot be changed by the user once set.",
     "department_desc"           => "Choose which departments the field is available in.",
 
+    /*
+     * 2.0.2
+     */
+    "please_select"             => "Please select..."
 ];

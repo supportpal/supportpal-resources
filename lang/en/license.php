@@ -9,7 +9,7 @@ return [
     "update"            => "Update",
     "pre_release"       => "Pre-Release",
 
-    "reasons"           => "Possible Reasons:",
+    "reasons"           => "Possible Reasons",
     "need_to_reissue"   => "You may need to <strong>reissue</strong> the license at our <a href='http://www.supportpal.com/manage/'>client area</a>.",
     "new_key"           => "New License Key",
     "enter_key"         => "If you have a new license key, please enter it below and press Submit to continue.",

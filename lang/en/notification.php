@@ -14,4 +14,10 @@ return [
     "failed_logins"         => "Failed Operator Logins",
     "new_comments"          => "New Comments",
 
+    /*
+     * 2.0.2
+     */
+    "private_message"       => "New Private Message",
+    "private_message_text"  => ":name has sent you a new private message.",
+
 ];

@@ -7,14 +7,12 @@ return [
     // Core
     "apitoken"          => "Manage API Tokens",
     "company"           => "Manage Companies",
-    "dashboard"         => "View Dashboard",
     "emailtemplate"     => "Manage Email Templates",
     "ipban"             => "Manage IP Bans",
     "ipwhitelist"       => "Manage IP Whitelist",
     "language"          => "Manage Languages",
     "license"           => "View License Information",
     "module"            => "Manage Modules",
-    "plugin"            => "Manage Plugins",
     "scheduledtask"     => "Manage Scheduled Tasks",
     "spamrule"          => "Manage Spam Rules",
     "emaillog"          => "View Email Log",
@@ -67,5 +65,11 @@ return [
 
     // General
     "tag"               => "Manage Tags",
+
+    /*
+     * 2.0.2
+     */
+    // Core
+    "plugin"            => "View Plugins",
 
 ];
