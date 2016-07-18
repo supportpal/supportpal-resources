@@ -8,12 +8,6 @@
         {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
     </div>
 
-    <div class="warning box ticket-viewing {% if viewing is empty %}hide{% endif %}">
-        {% if viewing is not empty %}
-            {{ Lang.get('ticket.also_viewing', { 'name': viewing|join(', ')|e })|raw }}
-        {% endif %}
-    </div>
-
     <div class="sidebox">
         <h3 class="collapsable">
             <i class="fa fa-info-circle icon"></i>
@@ -123,17 +117,19 @@
                             ticket.due_time|default is not empty
                                 ? timeWithOffset(ticket.due_time, false)|date(Config.get('settings.date_format'))
                                 : "now"|date(Config.get('settings.date_format')),
-                            { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 10 }
+                            { 'class': 'datepicker', 'placeholder': '&#xf073;', 'style': 'width: 90px;' }
                         )
-                    }} &nbsp;
-                    {{ form_text('duetime_time',
+                    }}{{ form_text('duetime_time',
                             ticket.due_time|default is not empty
                                 ? timeWithOffset(ticket.due_time, false)|date('g:ia')
                                 : "now"|date('g:ia'),
-                            { 'class': 'timepicker', 'size': 7 }
+                            { 'class': 'timepicker', 'style': 'border-left: 0; width: 76px;' }
                         )
                     }}
-                    &nbsp; <button class="as-link"><i class="fa fa-check"></i></button>
+                    &nbsp; <button class="as-link update"><i class="fa fa-check"></i></button>
+                    <span class="remove-duetime {% if ticket.due_time|default is empty %}hide{% endif %}">
+                        &nbsp; <button class="as-link remove"><i class="fa fa-trash"></i></button>
+                    </span>
                 </td>
             </tr>
             <tr>

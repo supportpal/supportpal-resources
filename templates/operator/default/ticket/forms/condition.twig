@@ -48,9 +48,7 @@
     </td>
     <td width="45%" class="condition-value">
         {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
-                '.filter.' in Route.currentRouteName()
-                    ? { '-1': Lang.get('general.none'), 0: Lang.get('general.viewing_operator') }
-                    : operators|default is not empty and condition_operators is not null ? condition_operators : [ ],
+                condition_operators|default is not empty and condition_operators is not null ? condition_operators : [ ],
                 condition|default is not empty and condition.item == 0 ? condition.value : null,
                 { 'data-item': 0, 'data-operator': 0 }) }}
 
@@ -160,6 +158,11 @@
                 },
                 condition|default is not empty and condition.item == 23 ? condition.value : null,
                 { 'data-item': 23, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                channelAccounts|default is not empty and channelAccounts is not null ? channelAccounts : [ ],
+                condition|default is not empty and condition.item == 24 ? condition.value : null,
+                { 'data-item': 24, 'data-operator': 0, 'class': 'hide' }) }}
     </td>
     <td width="16">
         <i class="fa fa-times right remove-button"></i>

@@ -35,27 +35,27 @@
 
             <h1>{{ Lang.get('license.license_invalid') }}</h1>
 
-            {% if Session.has('error') and errors|default is empty and not errors.has() %}
-                <div class="error">{{ Session.get('error') }}</div>
-            {% endif %}
-            {% if Session.has('success') %}
-                <div class="success">{{ Session.get('success') }}</div>
-            {% endif %}
+            <div class="white-box">
 
-            {% if errors|default is not empty and errors.has() %}
-                <div class="error box">
-                    <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-                    {% for error in errors.all() %}
-                        {{ error }}<br />
-                    {% endfor %}
-                </div>
-            {% endif %}
+                {% if Session.has('error') and errors|default is empty and not errors.has() %}
+                    <div class="error">{{ Session.get('error') }}</div>
+                {% endif %}
+                {% if Session.has('success') %}
+                    <div class="success">{{ Session.get('success') }}</div>
+                {% endif %}
 
-            {{ form_open({ 'method': 'POST', 'url': route('core.operator.license.update') }) }}
+                {% if errors|default is not empty and errors.has() %}
+                    <div class="error box">
+                        <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+                        {% for error in errors.all() %}
+                            {{ error }}<br />
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
                 <div style="text-align:left;">
 
-                    <h3>{{ Lang.get('license.reasons') }}</h3>
+                    <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
                     <ul>
                         {% for reason in licenseStatusReasons %}
                         <li>{{ reason }}</li>
@@ -70,12 +70,16 @@
 
                 </div>
 
-                {{ csrf_field() }}
-                {{ form_text('license_key') }}
+                {{ form_open({ 'method': 'POST', 'url': route('core.operator.license.update') }) }}
 
-                {{ form_submit(Lang.get('license.submit')) }}
+                    {{ csrf_field() }}
+                    {{ form_text('license_key', null, {'placeholder': Lang.get('license.license_key')}) }}
 
-            {{ form_close() }}
+                    {{ form_submit(Lang.get('license.submit')) }}
+
+                {{ form_close() }}
+
+            </div>
 
             <div id="forgotbox">
                 <a href="http://www.supportpal.com/manage/">{{ Lang.get('license.assistance') }}</a>

@@ -21,7 +21,7 @@
 
         <div id="tabProfile" class="tabContent">
 
-            {% include 'operator.' ~ template ~ '.user.forms.profile' %}
+            {% include 'operator.' ~ template ~ '.user.forms.profile' with {'operator': true} %}
 
             <div class="form-row">
                 {{ form_label('opsettings[template]', Lang.get('user.operator_template')) }}
@@ -218,6 +218,7 @@
     {% endif %}
 
     <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 

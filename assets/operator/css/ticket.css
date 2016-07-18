@@ -104,7 +104,11 @@ span.subject:hover:after {
     display: none;
 }
 
-.message .text table {
+.message .text img, .ticket-draft img {
+    max-width: 100%;
+}
+
+.message .text table.redactor-table {
     border: none;
     border-collapse: collapse;
     font-size: 1em;
@@ -112,17 +116,46 @@ span.subject:hover:after {
     width: 100%;
 }
 
-.message .text table td,
-.message .text table th {
+.message .text table.redactor-table td,
+.message .text table.redactor-table th {
     border: 1px solid #ddd;
     padding: 5px;
     vertical-align: top;
+}
+
+.message .text:after {
+    clear: both;
+    content: '';
+    display: block;
+}
+
+div.expandable {
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    height: 10px;
+    line-height: 0;
+    margin: 10px 0;
+    text-align: center;
+    width: 22px;
+}
+div.expandable:hover {
+    background-color: #d8d8d8;
+    cursor: pointer;
+}
+div.supportpal_quote {
+    display: none;
+    color: #500050;
 }
 
 div.collapsed {
     background: #f5f5f5;
     color: #999;
     opacity: 0.6;
+}
+
+div.collapsed.note {
+    background: #fcfdf2;
 }
 
 div.collapsed, div.collapsible .header {
@@ -257,6 +290,10 @@ div.collapsed-messages span {
     padding: 2px 0 !important;
 }
 
+.recipients .selectize-control.multi .selectize-input > div {
+    margin-top: 3px;
+}
+
 .attachments {
     margin: 0 0 20px 68px;
 }
@@ -292,6 +329,18 @@ button.split-ticket {
     z-index: 500;
 }
 
+.ticket-viewing.box {
+    border-bottom: 1px solid #DFE5E6;
+    margin-bottom: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 60;
+}
+
+.ticket-viewing[style*="display: block"] + .desk_content_padding {
+    margin-top: 47px;
+}
+
 .reply-form {
     padding-right: 268px;
     width: 100%;
@@ -306,6 +355,8 @@ button.split-ticket {
     background: #fcf9e5;
     border: 1px solid #f7df7a;
     border-top: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 /*

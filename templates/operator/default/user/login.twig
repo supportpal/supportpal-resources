@@ -2,43 +2,45 @@
 
 {% block content %}
 
-    {% if Session.has('error') or Session.has('email_error') %}
-    	<div class="error">
-            {{ implode('<br /><br />', array_filter([ Session.get('error'), Session.get('email_error') ]))|raw }}
-		</div>
-	{% elseif Input.has('error') and base64_encode(base64_decode(Input.get('error'), true)) == Input.get('error') %}
-		<div class="error">{{ base64_decode(Input.get('error')) }}</div>
-    {% elseif Session.has('success') %}
-    	<div class="success">{{ Session.get('success') }}</div>
-    {% endif %}
-
-    {% if errors|default is not empty and errors.has() %}
-        <div class="error box">
-            <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-            {% for error in errors.all() %}
-                {{ error }}<br />
-            {% endfor %}
-        </div>
-    {% endif %}
-
 	<div class="loginBox">
 
 		{{ form_open({ 'route': 'operator.login', 'method': 'post', 'class': 'validate' }) }}
 
             {% if Input.has('intended') %}
-            {{ form_hidden('intended', base64_decode(Input.get('intended'))) }}
+            	{{ form_hidden('intended', base64_decode(Input.get('intended'))) }}
             {% endif %}
 
-            <div class="form-row">
-			    {{ form_text('email', null, Config.get('settings.ldap_enabled', 0)
-				    ? {'class': 'email', 'placeholder': Lang.get('general.email') ~ '/' ~ Lang.get('general.username')}
-				    : {'class': 'email', 'placeholder': Lang.get('general.email')}) }}
-            </div>
-			<div class="form-row">
-                {{ form_password('password', { 'class': 'password', 'placeholder': Lang.get('general.password') }) }}
-            </div>
+			<div class="white-box">
 
-			{{ form_submit(Lang.get('user.login')) }}
+				{% if Session.has('error') or Session.has('email_error') %}
+					<div class="error">
+						{{ implode('<br /><br />', array_filter([ Session.get('error'), Session.get('email_error') ]))|raw }}
+					</div>
+				{% elseif Session.has('success') %}
+					<div class="success">{{ Session.get('success') }}</div>
+				{% endif %}
+
+				{% if errors|default is not empty and errors.has() %}
+					<div class="error box">
+						<strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+						{% for error in errors.all() %}
+							{{ error }}<br />
+						{% endfor %}
+					</div>
+				{% endif %}
+
+				<div class="form-row">
+					{{ form_text('email', null, Config.get('settings.ldap_enabled', 0)
+						? {'class': 'email', 'placeholder': Lang.get('general.email') ~ '/' ~ Lang.get('general.username')}
+						: {'class': 'email', 'placeholder': Lang.get('general.email')}) }}
+				</div>
+				<div class="form-row">
+					{{ form_password('password', { 'class': 'password', 'placeholder': Lang.get('general.password') }) }}
+				</div>
+
+				{{ form_submit(Lang.get('user.login')) }}
+
+			</div>
 
 			<span class="left">
 				<label>
@@ -56,16 +58,18 @@
 
 	<div class="forgotBox">
 
-		<h2>{{ Lang.get('user.reset_password') }}</h2>
+		<div class="white-box">
 
-		{{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
+			{{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
 
-			<div class="form-row">
-                {{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
-            </div>
-			{{ form_submit(Lang.choice('general.submit', 1)) }}
+				<div class="form-row">
+					{{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
+				</div>
+				{{ form_submit(Lang.get('user.reset_password')) }}
 
-		{{ form_close() }}
+			{{ form_close() }}
+
+		</div>
 
 		<a class="forgotToggle">{{ Lang.get('general.cancel') }}</a>
 

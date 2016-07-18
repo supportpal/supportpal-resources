@@ -82,6 +82,31 @@
                     <span class="description">{{ Lang.get('user.password_strength_desc') }}</span>
                 </div>
             </div>
+
+            <div class="form-row">
+                {{ form_label('ban_after_count_user', Lang.get('user.ban_after_count')) }}
+                <div class="input-container">
+                    {{ form_text('ban_after_count_user', null, {'size': 2}) }}<br />
+                    <span class="description">{{ Lang.get('user.ban_after_count_user') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ban_length_user', Lang.get('user.ban_length')) }}
+                <div class="input-container">
+                    <div class="duration">
+                        {{ form_text('ban_length_user[days]', banLengthUser['days'], { 'size': 3 }) }}
+                        <div class="description">{{ Lang.choice('general.day', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('ban_length_user[hours]', banLengthUser['hours'], { 'size': 3, 'style': 'border-left: 0; border-right: 0;' }) }}
+                        <div class="description">{{ Lang.choice('general.hour', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('ban_length_user[minutes]', banLengthUser['minutes'], { 'size': 3 }) }}
+                        <div class="description">{{ Lang.choice('general.minute', 2) }}</div>
+                    </div><br />
+                    <span class="description">{{ Lang.get('user.ban_length_desc') }}</span>
+                </div>
+            </div>
         </div>
 
         <div id="tabOperators" class="tabContent hide">
@@ -126,6 +151,31 @@
                     {{ Lang.get('user.password_str_symbols') }}<br/>
 
                     <span class="description">{{ Lang.get('user.password_strength_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ban_after_count_operator', Lang.get('user.ban_after_count')) }}
+                <div class="input-container">
+                    {{ form_text('ban_after_count_operator', null, {'size': 2}) }}<br />
+                    <span class="description">{{ Lang.get('user.ban_after_count_operator') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ban_length_operator', Lang.get('user.ban_length')) }}
+                <div class="input-container">
+                    <div class="duration">
+                        {{ form_text('ban_length_operator[days]', banLengthOperator['days'], { 'size': 3 }) }}
+                        <div class="description">{{ Lang.choice('general.day', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('ban_length_operator[hours]', banLengthOperator['hours'], { 'size': 3, 'style': 'border-left: 0; border-right: 0;' }) }}
+                        <div class="description">{{ Lang.choice('general.hour', 2) }}</div>
+                    </div><div class="duration">
+                        {{ form_text('ban_length_operator[minutes]', banLengthOperator['minutes'], { 'size': 3 }) }}
+                        <div class="description">{{ Lang.choice('general.minute', 2) }}</div>
+                    </div><br />
+                    <span class="description">{{ Lang.get('user.ban_length_desc') }}</span>
                 </div>
             </div>
         </div>

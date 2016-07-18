@@ -97,6 +97,10 @@
                 {{ Lang.choice('user.user', 1) }}
             </label> &nbsp;
             <label>
+                {{ form_check('column_organisation', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['organisation']) }}
+                {{ Lang.choice('user.organisation', 1) }}
+            </label> &nbsp;
+            <label>
                 {{ form_check('column_department', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['department']) }}
                 {{ Lang.choice('ticket.department', 1) }}
             </label> &nbsp;
@@ -130,6 +134,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
     <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
@@ -172,7 +177,7 @@
                 $.ajax({
                     url: url,
                     type: 'DELETE',
-                    data: { 'hash': hash, '_token': csrf_token },
+                    data: { 'hash': hash },
                     success: function(result) {
                         if (result.success == true
                             && (typeof $listItem !== 'undefined' && $listItem instanceof jQuery)
@@ -306,8 +311,13 @@
             function saveMessage(form) {
                 var data = form.serializeArray();
                 // Add other data
-                data.push({ name: 'ticket_id', value: getSelectedRows() });
                 data.push({ name: 'reply_type', value: 0 });
+
+                // Add ticket IDs.
+                var ids = getSelectedRows().split(',');
+                for(var i = 0; i < ids.length; i++) {
+                    data.push({ name: 'ticket['+i+']', value: ids[i] });
+                }
 
                 // Post updated data
                 $.ajax({

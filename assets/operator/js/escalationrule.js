@@ -2,7 +2,7 @@ $(function() {
     // Show desired value dropdown for given action
     $(document.body).on('change', '.rule-action select', function() {
         // Remove redactor first
-        $(this).parents('tr').find('.rule-value .redactor-box').before(document.createElement("textarea"));
+        $(this).parents('tr').find('.rule-value .redactor-box').before($(this).parents('tr').find('.rule-value .redactor-box textarea'));
         $(this).parents('tr').find('.rule-value .redactor-box').remove();
 
         // Show right value

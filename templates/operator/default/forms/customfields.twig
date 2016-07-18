@@ -12,7 +12,8 @@
                             (customfield['value']) ? true : false,
                             (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
                         }} {{ Lang.get('general.yes') }}
-                    </label> &nbsp;
+                    </label>
+                    <br />
                     <label>
                         {{ form_radio('customfield[' ~ customfield['id'] ~ ']', 0,
                             (customfield['value'] == '0') ? true : false,
@@ -48,7 +49,7 @@
                     {'multiple': 'multiple', 'disabled': (customfield['value'] is not empty and customfield['locked'] ? 'disabled' : null)}) }}
 
             {% elseif customfield['type'] == 5 %}
-                {{ form_select('customfield[' ~ customfield['id'] ~ ']', customfield['options'],
+                {{ form_select('customfield[' ~ customfield['id'] ~ ']', {'': Lang.get('customfield.please_select')} + customfield['options'],
                     customfield['value'], (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
 
             {% elseif customfield['type'] == 6 %}
@@ -57,7 +58,7 @@
                         value="{% if customfield['value'] is not empty %}{{ customfield['value'] }}{% endif %}" />
                 {% else %}
                     {{ form_password('customfield[' ~ customfield['id'] ~ ']',
-                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {}))
+                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'}))
                     }} &nbsp; {% if operator|default is empty %}<span class="description">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
                 {% endif %}
 
@@ -75,7 +76,7 @@
 
             {% elseif customfield['type'] == 8 %}
                 {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'})) }}
 
             {% elseif customfield['type'] == 9 %}
                 {{ form_textarea('customfield[' ~ customfield['id'] ~ ']', customfield['value'],

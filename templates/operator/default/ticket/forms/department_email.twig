@@ -26,8 +26,7 @@
             </div>
 
             <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
-                {{ Lang.get('ticket.remote_email_piping_desc')|raw }} {{ Lang.get('ticket.email_piping_desc') }}<br />
-                <input type="text" value="| php -q {{ base_path('remote_pipe') }}" style="width: 100%;" />
+                {{ Lang.get('ticket.remote_email_piping_desc')|raw }}
             </div>
         </div>
     </div>

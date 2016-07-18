@@ -1,0 +1,5 @@
+<div class="warning box ticket-viewing" style="display: {% if viewing is empty %}none{% else %}block{% endif %}">
+    {% if viewing is not empty %}
+        {{ Lang.get('ticket.also_viewing', { 'name': viewing })|raw }}
+    {% endif %}
+</div>

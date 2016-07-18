@@ -111,11 +111,9 @@ $(document).ready(function () {
         if (xhr.status == 401) {
             // Logged out, redirect to login
             window.location.replace(laroute.route(
-                'operator.login',
-                {
-                    'error': btoa(Lang.get('messages.session_expired')),
-                    'intended': btoa(window.location.href)
-                }));
+                'operator.sessionexpired',
+                {'intended': btoa(window.location.href)}
+            ));
             return false;
         } else if (xhr.status == 403) {
             // Ensure this is a session expired message (VerifyCsrfToken middleware)

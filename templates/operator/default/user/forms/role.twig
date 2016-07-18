@@ -44,8 +44,10 @@
         <div class="form-row">
             {{ form_label('operator', Lang.get('general.permissions')) }}
             <div class="input-container role-options">
-                {% if record.exists and record.id != 1 %}
-                    {{ form_check('check-all', true) }} {{ Lang.get('general.check_uncheck_all') }}
+                {% if not record.exists or record.id != 1 %}
+                    <label style="font-weight: normal; position: relative;">
+                        {{ form_check('check-all', true) }} {{ Lang.get('general.check_uncheck_all') }}
+                    </label>
                 {% endif %}
                 
                 {% for id, name in modules %}
@@ -66,6 +68,36 @@
                         <div class="clear"></div>
                     {% endif %}
                 {% endfor %}
+
+                {% if plugins|default is not empty %}
+                    <h3>{{ Lang.choice('core.plugins', 2) }}</h3>
+                    <div class="input-group row">
+                        {% for key,name in plugins %}
+                            <div  class="item item25">
+                                <label>
+                                    {{ form_check('plugin[' ~ key ~ ']', true, in_array(key, pluginPermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                    {{ name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="clear"></div>
+                {% endif %}
+
+                {% if widgets|default is not empty %}
+                    <h3>{{ Lang.choice('core.widget', 2) }}</h3>
+                    <div class="input-group row">
+                        {% for key,name in widgets %}
+                            <div  class="item item25">
+                                <label>
+                                    {{ form_check('widget[' ~ key ~ ']', true, in_array(key, widgetPermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                    {{ name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="clear"></div>
+                {% endif %}
             </div>
         </div>
 
@@ -88,8 +120,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             // Check/Uncheck all checkboxes
-            $('input[name="check-all"]').click(function () {
-                $(this).parent().find('input:checkbox').prop('checked', this.checked);
+            $('input[name="check-all"]').change(function () {
+                $(this).parents('.role-options').find('input:checkbox').prop('checked', this.checked);
             });
 
             // Groups

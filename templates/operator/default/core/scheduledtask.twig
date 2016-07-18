@@ -53,8 +53,7 @@
     <br />
 
     <div id="scheduledTaskCron" class="warning box">
-        <strong>{{ Lang.get('core.cron_settings') }}</strong> &nbsp;-&nbsp; {{ Lang.get('core.cron_makesure') }} <br />
-        * * * * * php -q {{ base_path('cron') }} >> /dev/null 2>&1
+        <strong>{{ Lang.get('core.cron_settings') }}</strong> &nbsp;-&nbsp; {{ Lang.get('core.cron_makesure')|raw }}
     </div>
 
 {% endblock %}

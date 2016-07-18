@@ -55,6 +55,20 @@ $(document).ready(function() {
             $('#navarea, ul#nav ul').css('display', 'none');
             $('.mobile-nav').removeClass('active');
         }
+
+        // Ticket viewing sticks and adds margin at top or bottom
+        if ($('.ticket-viewing').is(':visible')) {
+            if ($(this).height() <= 720) {
+                // Mobile
+                $('.desk_content_padding').css({ 'margin-bottom': $('.ticket-viewing').outerHeight(), 'margin-top': 0 });
+            } else {
+                // Desktop
+                $('.desk_content_padding').css({ 'margin-bottom': 0, 'margin-top': $('.ticket-viewing').outerHeight() });
+            }
+        } else {
+            // Not visible so remove any margin
+            $('.desk_content_padding').css({ 'margin-bottom': 0, 'margin-top': 0 });
+        }
     });
 
     // Hide the header on clicking the sidebar or main area

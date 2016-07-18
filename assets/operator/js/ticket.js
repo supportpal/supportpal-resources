@@ -6,7 +6,7 @@
  */
 function Ticket(parameters)
 {
-    "use strict"
+    "use strict";
 
     /**
      * Message drafts.
@@ -26,7 +26,7 @@ function Ticket(parameters)
         failure = failure || false;
 
         $('.ticket-update.'+(failure ? 'fail' : 'success')).show(500).delay(5000).hide(500);
-    }
+    };
 
     /**
      * Function to run everytime a store / update message AJAX call is made.
@@ -48,8 +48,8 @@ function Ticket(parameters)
         }
 
         // Update log
-        $('.dataTable').dataTable()._fnAjaxUpdate();
-    }
+        $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+    };
 
     /**
      * Pre-process the createMessage and updateMessage form functions. This will return false
@@ -61,30 +61,34 @@ function Ticket(parameters)
      */
     var handleMessageForm = function($form, $redactor)
     {
-        var $textarea = $redactor.redactor('core.getTextarea'),
-            textarea_id = $textarea.uniqueId().prop('id'),
-            isEmpty = $textarea.redactor('utils.isEmpty', $textarea.redactor('code.get'));
+        if ($redactor.parent('.redactor-box').length) {
+            var $textarea = $redactor.redactor('core.getTextarea'),
+                textarea_id = $textarea.uniqueId().prop('id'),
+                isEmpty = $textarea.redactor('utils.isEmpty', $textarea.redactor('code.get'));
 
-        // Validation.
-        // We're using manual validation here because jquery validate does not support multiple fields with the
-        // same name. We use the same name for replies and notes so this causes a problem.
-        if (isEmpty) {
-            var error_id = textarea_id + '-error';
+            // Validation.
+            // We're using manual validation here because jquery validate does not support multiple fields with the
+            // same name. We use the same name for replies and notes so this causes a problem.
+            if (isEmpty) {
+                var error_id = textarea_id + '-error';
 
-            // Make sure we don't duplicate the error message.
-            if ($("#" + error_id).length == 0) {
-                $textarea.parents('.form-row, .edit-message').addClass('has-error');
-                $redactor.redactor('core.getBox').after(
-                    '<span id="' + error_id + '" class="field-error">' +
-                        Lang.get('validation.required', {'attribute': Lang.get('general.text').toLowerCase()}) +
-                    '</span>'
-                );
-            } else {
-                // If it already exists, show it.
-                $('#'+error_id).show();
+                // Make sure we don't duplicate the error message.
+                if ($("#" + error_id).length == 0) {
+                    $textarea.parents('.form-row, .edit-message').addClass('has-error');
+                    $redactor.redactor('core.getBox').after(
+                        '<span id="' + error_id + '" class="field-error">' +
+                            Lang.get('validation.required', {'attribute': Lang.get('general.text').toLowerCase()}) +
+                        '</span>'
+                    );
+                } else {
+                    // If it already exists, show it.
+                    $('#'+error_id).show();
+                }
+
+                return false;
             }
-
-            return false;
+        } else {
+            var textarea_id = $redactor.prop('id');
         }
 
         // Remove 'split' checkboxes from form data
@@ -95,7 +99,7 @@ function Ticket(parameters)
 
         // Disable the submit button, so they don't submit multiple messages.
         $form.find('input[type="submit"]').prop('disabled', true);
-    }
+    };
 
     /**
      * Create a new message reply to the user or new operator note.
@@ -108,19 +112,24 @@ function Ticket(parameters)
     {
         var self = this;
 
-        // Validation.
+        // Validation & remove unnecessary items from the form.
         if (handleMessageForm($form, $redactor) === false) {
             return false;
         }
 
+        // Now that we've modified the form, add the ticket id to the POST data.
+        var data = $form.serializeArray();
+        data.push({ name: 'ticket[0]', value: $form.find(':input[name=ticket_id]').val() });
+
         $.ajax({
             url: laroute.route('ticket.operator.message.store'),
             type: 'POST',
-            data: $form.serializeArray(),
+            data: data,
             dataType: 'json'
         }).done(function (response) {
             if (response.status != 'success') {
                 showFeedback(true);
+                $form.trigger("supportpal.new_message:failed");
                 return;
             }
 
@@ -128,16 +137,27 @@ function Ticket(parameters)
             showFeedback();
             showMessage(response.data.view);
 
-            // Clear redactor
-            $redactor.redactor('insert.set', '');
-            $redactor.redactor('core.getTextarea').val('');
+            // Is it a note?
+            var is_note = parseInt(data[0].value, 10);
 
-            // Only add the signature back to the message reply box (not notes).
-            if ($('.reply-type .option.active').data('type') == 1) {
-                self.setNoteDraft(null);
-            } else {
-                $redactor.redactor('insert.set', signature);
-                self.setMessageDraft(null);
+            $form.trigger(
+                "supportpal.new_message:success",
+                [ is_note, $redactor.parent('.redactor-box').length ? $redactor.redactor('core.getTextarea') : $redactor ]
+            );
+
+            // Only clear the editor if it's a redactor instance
+            if ($redactor.parent('.redactor-box').length) {
+                // Clear current text
+                $redactor.redactor('insert.set', '');
+                $redactor.redactor('core.getTextarea').val('');
+
+                // Only add the signature back to the message reply box (not notes).
+                if (is_note) {
+                    self.setNoteDraft(null);
+                } else {
+                    $redactor.redactor('insert.set', signature);
+                    self.setMessageDraft(null);
+                }
             }
 
             // Clear ticket attachments
@@ -153,7 +173,7 @@ function Ticket(parameters)
         }).always(function () {
             always_message_handler($form);
         });
-    }
+    };
 
     /**
      * Edit an existing message.
@@ -190,7 +210,7 @@ function Ticket(parameters)
         }).always(function () {
             always_message_handler($form);
         });
-    }
+    };
 
     /**
      * Get the drafts object.
@@ -200,7 +220,7 @@ function Ticket(parameters)
     this.getDrafts = function()
     {
         return drafts;
-    }
+    };
 
     /**
      * Set a new draft.
@@ -211,7 +231,7 @@ function Ticket(parameters)
     this.setDraft = function(key, value)
     {
         drafts[key] = value;
-    }
+    };
 
     /**
      * Check whether a draft is different to a given value.
@@ -223,7 +243,7 @@ function Ticket(parameters)
     this.draftHasChanged = function (key, new_value)
     {
         return new_value !== drafts[key] && new_value !== '';
-    }
+    };
 
     /**
      * Determine whether the message draft has changed.
@@ -234,7 +254,7 @@ function Ticket(parameters)
     this.messageDraftHasChanged = function(new_value)
     {
         return this.draftHasChanged('newMessage', new_value);
-    }
+    };
 
     /**
      * Set a new message to the user draft.
@@ -244,7 +264,7 @@ function Ticket(parameters)
     this.setMessageDraft = function(message)
     {
         drafts.newMessage = message;
-    }
+    };
 
     /**
      * Get the current message draft.
@@ -254,7 +274,7 @@ function Ticket(parameters)
     this.getMessageDraft = function()
     {
         return drafts.newMessage;
-    }
+    };
 
     /**
      * Determine whether the notes has changed.
@@ -265,7 +285,7 @@ function Ticket(parameters)
     this.noteDraftHasChanged = function (new_value)
     {
         return this.draftHasChanged('newNote', new_value);
-    }
+    };
 
     /**
      * Set a new message note draft.
@@ -275,7 +295,7 @@ function Ticket(parameters)
     this.setNoteDraft = function(message)
     {
         drafts.newNote = message;
-    }
+    };
 
     /**
      * Get the current note draft.
@@ -292,6 +312,10 @@ $(document).ready(function() {
 
     pollReplies();
 
+    $(document).on('click', '.expandable', function () {
+        $(this).next().toggle('show');
+    });
+
     // Reply type
     $('.reply-type .option').click(function() {
         // Update reply_type input
@@ -304,11 +328,25 @@ $(document).ready(function() {
         // If it's a note, hide the recipients and email user option
         if ($(this).data('type') == 1) {
             $('#emailToUsers, .recipients').hide();
-            $('#' + $('#newMessage').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
 
-            // Show the notes redactor box.
-            $('#newMessage').redactor('core.getBox').hide();
-            $('#newNote').redactor('core.getBox').show();
+            // Hide the reply textarea
+            if ($('#newMessage').parent('.redactor-box').length) {
+                // If it's a redactor instance
+                $('#' + $('#newMessage').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
+                $('#newMessage').redactor('core.getBox').hide();
+            } else {
+                // If it's just a textarea
+                $('#newMessage').hide();
+            }
+
+            // Show the notes textarea
+            if ($('#newNote').parent('.redactor-box').length) {
+                // If it's a redactor instance
+                $('#newNote').redactor('core.getBox').show();
+            } else {
+                // If it's just a textarea
+                $('#newNote').show();
+            }
 
             // Determine whether to show the discard box.
             if (ticket.getNoteDraft()) {
@@ -320,9 +358,23 @@ $(document).ready(function() {
             $('#emailToUsers, .recipients').show();
             $('#' + $('#newNote').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
 
-            // Show the message redactor box.
-            $('#newMessage').redactor('core.getBox').show();
-            $('#newNote').redactor('core.getBox').hide();
+            // Show the reply textarea
+            if ($('#newMessage').parent('.redactor-box').length) {
+                // If it's a redactor instance
+                $('#newMessage').redactor('core.getBox').show();
+            } else {
+                // If it's just a textarea
+                $('#newMessage').show();
+            }
+
+            // Hide the notes textarea
+            if ($('#newNote').parent('.redactor-box').length) {
+                // If it's a redactor instance
+                $('#newNote').redactor('core.getBox').hide();
+            } else {
+                // If it's just a textarea
+                $('#newNote').hide();
+            }
 
             // Determine whether to show the discard box.
             if (ticket.getMessageDraft()) {
@@ -361,6 +413,11 @@ $(document).ready(function() {
 
     // Toggle edit form
     $(document.body).on('click', '.edit-button', function() {
+        if ($(this).parents('.message').hasClass('collapsed')) {
+            // Stop message collapsing
+            $(this).parents('.header').click();
+        }
+
         $(this).parents('.message').find('.text, .edit-message').toggle();
     });
 
@@ -453,7 +510,7 @@ $(document).ready(function() {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
-                $('.dataTable').dataTable()._fnAjaxUpdate();
+                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
                 // Update due time
                 $('.edit-duetime').text(response.data);
             } else {
@@ -469,21 +526,35 @@ $(document).ready(function() {
         $('.update-duetime').toggle();
     });
     $('.update-duetime button').click(function() {
+        var date, time;
+
+        // Are we updating or removing?
+        if ($(this).hasClass('update')) {
+            date = $('input[name="duetime_date"]').val();
+            time = $('input[name="duetime_time"]').val();
+        }
+
         // Post data
         $.post(
             laroute.route('ticket.operator.ticket.updateDueTime', { id: ticketId }),
             {
-                duetime_date: $('input[name="duetime_date"]').val(),
-                duetime_time: $('input[name="duetime_time"]').val()
+                duetime_date: date,
+                duetime_time: time
             },
         function(response) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
-                $('.dataTable').dataTable()._fnAjaxUpdate();
-                // Update due time
+                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+                // Update due time and hide form
                 $('.edit-duetime').text(response.data);
                 $('.update-duetime').hide();
+                // If it says 'set a due time', hide the trash can icon, else show it
+                if (response.data == Lang.get('ticket.set_due_time')) {
+                    $('.update-duetime .remove-duetime').hide();
+                } else {
+                    $('.update-duetime .remove-duetime').show();
+                }
             } else {
                 $('.ticket-update.fail').show(500).delay(5000).hide(500);
             }
@@ -617,7 +688,7 @@ $(document).ready(function() {
     }
 
     // Show only the first 'n' characters of each message excluding first/last one
-    $('.staff-header').nextUntil('.messages-header', '.message').not(selector)
+    $('.notes-header').nextUntil('.messages-header', '.message').not(selector)
     .add($('.messages-header ~ .message:not(' + selector + ')')).find('.text').html(function () {
         var orig_text = $(this).html();
         var trimmed = $(this).text().replace(/[\n\r]/g, ' ').replace(/(<([^>]+)>)/ig,"");
@@ -643,14 +714,14 @@ $(document).ready(function() {
     // Collapse tickets with >5 messages
     if ($('.message').size() > 5) {
         // Staff notes and ticket content regions of the screen
-        var regions = [ ".staff-header", ".messages-header" ];
+        var regions = [ ".notes-header", ".messages-header" ];
 
         for (var i = 0; i < regions.length; i++) {
             // If this region of the screen has > 5 messages, let's shrink it!
             if ($(regions[i] + ' ~ .message').size() > 5) {
                 // Build the basic selector
                 var basicSelector = $(regions[i] + ' ~ .message');
-                if (regions[i] == ".staff-header")
+                if (regions[i] == ".notes-header")
                     basicSelector = $(regions[i]).nextUntil('.messages-header', '.message');
 
                 // Group the middle section of messages and hide them
@@ -699,7 +770,7 @@ $(document).ready(function() {
             method: 'POST',
             url: laroute.route('ticket.operator.message.store'),
             data: {
-                ticket_id: ticketId,
+                ticket: [ ticketId ],
                 reply_type: is_note,
                 is_draft: 1,
                 text: message
@@ -726,7 +797,7 @@ $(document).ready(function() {
                 // Check both message drafts and note drafts.
                 for (var redactor_id in drafts) {
                     // skip loop if the property is from prototype
-                    if (!drafts.hasOwnProperty(redactor_id)) {
+                    if (!drafts.hasOwnProperty(redactor_id) || $('input[type="submit"].post-button').prop('disabled')) {
                         continue;
                     }
 
@@ -746,7 +817,7 @@ $(document).ready(function() {
 
                             // Save draft
                             var is_note = redactor_id == 'newNote' ? 1 : 0;
-                            saveDraft($('#'+redactor_id).redactor('code.get'), is_note);
+                            saveDraft(currentMessage, is_note);
 
                             // Re-enable button
                             $('.save-draft').prop('disabled', false);
@@ -894,9 +965,6 @@ $(document).ready(function() {
             if (value) {
                 // Attempt to update user
                 updateTicket($('select[name="user"]').serializeArray());
-
-                // We need to update a lot of details on the page. Quick fix, refresh the page.
-                window.location.reload();
             }
         }
     });
@@ -1055,12 +1123,20 @@ $(document).ready(function() {
 
         }
 
-        // Insert into the textarea where the cursor/caret currently is, sets to start if not in focus
-        if (!$('#newMessage').redactor('focus.isFocused')) {
-            $('#newMessage').redactor('focus.setStart');
+        // Which textarea is currently active
+        var $textarea;
+        if ($('.reply-type .option.active').data('type')) {
+            $textarea = $('#newNote');
+        } else {
+            $textarea = $('#newMessage');
         }
 
-        $('#newMessage').redactor('insert.html', finalText + '<br />');
+        // Insert into the textarea where the cursor/caret currently is, sets to start if not in focus
+        if (!$textarea.redactor('focus.isFocused')) {
+            $textarea.redactor('focus.setStart');
+        }
+
+        $textarea.redactor('insert.html', finalText + '<br />');
     });
 
 });
@@ -1125,7 +1201,7 @@ function updateTicket(data) {
     $('.reply-type button, #sidebar button, #sidebar select').prop('disabled', true);
 
     // Add ticket ID
-    data.push({ name: 'ticket', value: [ticketId] });
+    data.push({ name: 'ticket', value: ticketId });
 
     // Post updated data
     $.post(
@@ -1135,11 +1211,13 @@ function updateTicket(data) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('.dataTable').dataTable()._fnAjaxUpdate();
+            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
             // Specific case for updating user
             if (response.message != 'undefined' && response.message == 'ticket_user_updated') {
                 $('.edit-user').text(response.data);
                 $('.update-user').hide();
+                // We need to update a lot of details on the page. Quick fix, refresh the page.
+                window.location.reload();
             }
             // Poll for new replies and updates
             pollReplies();
@@ -1166,7 +1244,7 @@ function ticketAction(route, data) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('.dataTable').dataTable()._fnAjaxUpdate();
+            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
             // Poll for new replies and updates
             pollReplies();
         } else {
@@ -1192,7 +1270,7 @@ function changeDepartment(data) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
-                $('.dataTable').dataTable()._fnAjaxUpdate();
+                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
                 // Poll for new replies and updates
                 pollReplies();
 
@@ -1288,7 +1366,7 @@ function applyMacro(macroId) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('.dataTable').dataTable()._fnAjaxUpdate();
+            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
             // Poll for new replies and updates
             pollReplies(true);
         } else {
@@ -1324,24 +1402,27 @@ function pollReplies(allMessages) {
         success: function(response) {
             // If there are notifications, show them
             if (typeof response.data != 'undefined') {
-                // Add each message
-                $.each(response.data.messages, function(index, value) {
-                    showMessage(value);
-                });
-                // Show other operators viewing ticket
-                if (response.data.viewing.length > 0) {
-                    $('.ticket-viewing').html(
-                        Lang.get('ticket.also_viewing', { 'name': '<strong>'+response.data.viewing.join(', ')+'</strong>' })
-                    ).show(500);
-                } else {
-                    $('.ticket-viewing').hide(500);
+                if (response.data.messages.length) {
+                    // Add each message
+                    $.each(response.data.messages, function (index, value) {
+                        showMessage(value);
+                    });
+
+                    $('form.message-form').trigger("supportpal.polled_messages");
                 }
+
+                // Show other operators viewing ticket
+                $('.ticket-viewing').replaceWith(response.data.viewing).show(500);
+                // Depending on view, add margin to top or bottom of content area if visible (code in mobile.js)
+                $(window).resize();
+
                 // Show other operator's draft
                 if (response.data.draft !== '') {
                     $('.ticket-draft').html(response.data.draft).show(500);
                 } else {
                     $('.ticket-draft').hide(500);
                 }
+
                 // Update ticket details
                 $('.last-action').text(response.data.details.updated_at);
                 if (response.data.details.update) {

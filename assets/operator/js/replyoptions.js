@@ -70,11 +70,10 @@ $(function() {
         return {
             getTemplate: function()
             {
-                return String() + '<section id="redactor-modal-ssLink">' +
-                    '<input type="text" name="cannedResponseSearch" placeholder="' + Lang.get('ticket.search_canned') + '"' +
-                    ' title="' + Lang.get('ticket.add_canned_response') + '" />' +
-                    '<ul id="cannedResponseResults" class="redactor-search" style="display: none"></ul>' +
-                    '</section>';
+                return String() + '<section id="redactor-modal-ssLink">'
+                    + '<input type="text" name="cannedResponseSearch" placeholder="' + Lang.get('ticket.search_canned') + '" />'
+                    + '<ul id="cannedResponseResults" class="redactor-search" style="display: none"></ul>'
+                    + '</section>';
             },
             init: function ()
             {
@@ -102,7 +101,7 @@ $(function() {
             {
                 // Get the element that triggered this on click event handler
                 var $modal = this,
-                    $this = (event.target) ? $(event.target) : $(event.srcElement),
+                    $this = (e.target) ? $(e.target) : $(e.srcElement),
                     id;
 
                 // Get the ID, sometimes it may be a div inside the a tag
@@ -184,8 +183,7 @@ $(function() {
             {
                 return String()
                 + '<section id="redactor-modal-ssLink">'
-                + '<input type="text" name="selfServiceSearch" placeholder="' + Lang.get('ticket.search_selfservice') + '"'
-                + ' title="' + Lang.get('ticket.add_selfservice_link') + '" />'
+                + '<input type="text" name="selfServiceSearch" placeholder="' + Lang.get('ticket.search_selfservice') + '" />'
                 + '<ul id="selfServiceResults" class="redactor-search" style="display: none"></ul>'
                 + '</section>';
             },
@@ -213,7 +211,7 @@ $(function() {
             },
             insert: function(e)
             {
-                var $this = (event.target) ? $(event.target) : $(event.srcElement), url;
+                var $this = (e.target) ? $(e.target) : $(e.srcElement), url;
 
                 // Get the URL, sometimes it may be a div inside the a tag
                 if ($this.is('a')) {

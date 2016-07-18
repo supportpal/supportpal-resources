@@ -954,6 +954,10 @@ ul.dropdown ul li:hover > ul {
     width: 219px;
 }
 
+#sidebar .details > div .avatar {
+    margin-top: 0;
+}
+
 #sidebar .details a {
     text-decoration: underline;
 }
@@ -1133,7 +1137,7 @@ ul.dropdown ul li:hover > ul {
 }
 
 .box .title {
-    font-size: 130%;
+    font-size: 120%;
     font-weight: bold;
 }
 

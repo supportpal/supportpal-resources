@@ -1,0 +1,18 @@
+{% extends 'operator.' ~ template ~ '.user.login-master' %}
+
+{% block content %}
+
+    <div class="white-box">
+
+        <div class="error">{{ Lang.get('messages.session_expired') }}</div>
+
+        <form action="{{ route('operator.login') }}" method="get">
+            {% if Input.has('intended') %}
+                {{ form_hidden('intended', Input.get('intended')) }}
+            {% endif %}
+            <input type="submit" value="{{ Lang.get('general.continue') }}" style="margin-top: 0;">
+        </form>
+
+    </div>
+
+{% endblock %}

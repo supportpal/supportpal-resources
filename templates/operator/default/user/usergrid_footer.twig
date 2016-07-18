@@ -1,11 +1,13 @@
 <tr>
     <td class="grid-options" colspan="{{ totalColumns }}" style="line-height:41px;">
         <button class="delete-user" type="button">{{ Lang.get('general.delete') }}</button> &nbsp;
+        {% if not groups.isEmpty() %}
         <select name="btnChangeGroup" id="btnChangeGroup">
             <option value="">{{ Lang.get('user.add_group') }}...</option>
             {% for group in groups %}
                 <option value="{{ group.id }}">{{ group.name }}</option>
             {% endfor %}
         </select>
+        {% endif %}
     </td>
 </tr>

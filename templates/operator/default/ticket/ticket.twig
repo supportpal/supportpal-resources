@@ -15,8 +15,11 @@
     {% include 'operator.' ~ template ~ '.ticket.sidebar-ticket' %}
 {% endblock %}
 
-{% block content %}
+{% block precontent %}
+    {% include 'operator.' ~ template ~ '.ticket.also_viewing' %}
+{% endblock %}
 
+{% block content %}
     <h1 class="ticket-subject">
         <span {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}class="subject"{% endif %}>{{ ticket.subject }}</span>
         {{ form_text('subject', ticket.subject, { 'class': 'edit-subject hide', 'size': '50' }) }}
@@ -154,6 +157,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
     <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 

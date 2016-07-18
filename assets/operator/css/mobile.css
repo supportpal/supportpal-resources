@@ -100,7 +100,7 @@ html {
 	}
 
 	#sidebar > div:last-child {
-		padding-bottom: 33px;
+		padding-bottom: 47px;
 	}
 
 	#sidebar.sidebar-close {
@@ -118,7 +118,7 @@ html {
 
 	#sidebar.sidebar-close .sidebox h3 {
 		display: block;
-		font-size: 0;
+		line-height: 0;
 		margin: 0;
 		text-align: center;
 		visibility: hidden;
@@ -131,8 +131,9 @@ html {
 	#sidebar.sidebar-close .sidebox .icon {
 		cursor: pointer;
 		display: block;
+		font-size: 14px;
 		margin: 0;
-		padding: 18px;
+		padding: 16px;
 		visibility: visible;
 	}
 
@@ -170,17 +171,17 @@ html {
 	}
 
 	#sidebar .toggle-sidebar {
-		padding: 7px 15px;
+		padding: 14px;
 		width: 269px;
 		z-index: 100;
 	}
 
 	#sidebar.sidebar-close .toggle-sidebar {
-		padding: 8px;
+		padding: 14px 0;
 		width: 50px;
 	}
 
-	#sidebar.sidebar-close .ticket-update {
+	#sidebar.sidebar-close .ticket-update, #sidebar.sidebar-close .ticket-viewing {
 		position: fixed;
 	    z-index: 101;
 	    width: 100%;
@@ -575,10 +576,15 @@ html {
 	    top: 0;
 	}
 
-	.ticket-update {
+	.ticket-update, .ticket-viewing.box {
 		border-bottom: 0;
 		border-top: 1px solid #DFE5E6;
 		bottom: 0;
+	}
+
+	.ticket-viewing:not([style*="display: none"]) + .desk_content_padding {
+		margin-bottom: 47px;
+		margin-top: 0;
 	}
 
 }
