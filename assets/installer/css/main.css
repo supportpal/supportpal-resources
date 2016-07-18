@@ -216,6 +216,10 @@ span.success {
     color: #c0392b;
 }
 
+.fa-orange {
+    color: #f39c12;
+}
+
 /* Tables */
 
 table {
@@ -503,4 +507,53 @@ body.index .content {
 .description {
     color: #888;
     font-size: 95%;
+}
+
+/* Requirements */
+
+.requirement {
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.requirement:last-of-type {
+    margin-bottom: 0;
+}
+
+.requirement:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.requirement .status {
+    float: left;
+}
+
+.requirement .status .fa {
+    font-size: 32px;
+}
+
+.requirement .is-valid {
+    color: #666;
+}
+
+.requirement .details {
+    margin-left: 48px;
+}
+
+.requirement .details h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.requirement h5 {
+    color: #454545;
+    font-size: 0.9em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.requirement table {
+    margin-top: 0;
 }

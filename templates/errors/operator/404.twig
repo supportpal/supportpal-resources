@@ -1,0 +1,16 @@
+{% extends 'operator.' ~ template ~ '.index' %}
+
+{% block title %}
+    404 - {{ Lang.get('messages.page_not_found') }}
+{% endblock %}
+
+{% block content %}
+
+{# There is an error, print it #}
+<div class="fail box">
+    <i class="fa fa-exclamation-triangle left"></i>
+    <span class="title">{{ Lang.get('messages.page_not_found') }}!</span><br />
+    {{ Lang.get('messages.cant_find_page') }} {{ Lang.get('messages.please_report') }}
+</div>
+
+{% endblock %}
