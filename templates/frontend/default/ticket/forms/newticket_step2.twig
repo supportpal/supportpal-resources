@@ -40,13 +40,15 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
-                <div class="input-container">
-                    {{ form_text('organisation') }} &nbsp;
-                    <span class="description">({{ Lang.get('general.optional') }})</span>
+            {% if Config.get('settings.organisations_enabled') %}
+                <div class="form-row">
+                    {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
+                    <div class="input-container">
+                        {{ form_text('organisation') }} &nbsp;
+                        <span class="description">({{ Lang.get('general.optional') }})</span>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
 
         </div>
 

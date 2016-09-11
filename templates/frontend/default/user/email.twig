@@ -81,4 +81,11 @@
         {{ Purifier.clean(record.contents) }}
     </div>
 
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Open links in a new window/tab
+            $('.email-content a').attr('target', '_blank');
+        });
+    </script>
+
 {% endblock %}

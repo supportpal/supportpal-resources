@@ -5,11 +5,12 @@
         {{ form_hidden('token', Input.get('token')) }}
     {% endif %}
 
-    <div class="form-row form-full recipients">
+    <div class="form-row form-full recipients {% if ticket.cc|default is empty %}hide{% endif %}">
         <div class="cc-emails">
             {{ form_label('cc[]', Lang.get('ticket.cc')) }}
             <div class="input-container">
                 {{ form_select('cc[]', ticket.cc, ticket.cc, { 'multiple': 'multiple' }) }}
+                <span class="light">{{ Lang.get('ticket.cc_desc') }}</span>
             </div>
         </div>
     </div>

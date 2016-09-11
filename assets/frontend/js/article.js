@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    // Open links (not anchors) in a new window/tab
+    $('.article a').attr('target', '_blank');
+    $(".commentText a:not([href^='#'])").attr('target', '_blank');
 
     // Change ordering
     $('.commentOrdering').on('change', function() {

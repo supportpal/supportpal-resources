@@ -143,6 +143,11 @@
 
     {% if ticket.locked == 0 %}
         <div class="add-reply">
+            {% if ticket.cc|default is empty %}
+                <a class="button right toggle-cc">
+                    {{ Lang.get('ticket.add_cc') }}
+                </a>
+            {% endif %}
             <h3>{{ Lang.get('ticket.add_reply') }}</h3>
             {% include 'frontend.' ~ template ~ '.ticket.forms.message' %}
         </div>
@@ -162,31 +167,31 @@
         {{ jsValidatorFields|raw }}
     {% endif %}
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/ticket.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/ticket-print.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/ticket.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/ticket-print.css') }}">
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
     <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ asset('resources/assets/frontend/js/ticket.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/frontend/js/ticket.js') }}"></script>
 {% endblock %}

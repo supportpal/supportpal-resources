@@ -1,7 +1,7 @@
 {% extends parent_template %}
 
 {% block scripts_header  %}
-    <script src="{{ asset('resources/assets/frontend/js/recaptcha.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/frontend/js/recaptcha.js') }}"></script>
 {% endblock %}
 
 {% block meta %}
@@ -205,8 +205,8 @@
         var showRatings = "{{ Config.get('settings.rating_show') }}";
     </script>
 
-    <script type="text/javascript" src="{{ asset('resources/assets/frontend/js/article.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/frontend/css/article-print.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/article.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/article-print.css') }}">
 
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}

@@ -3,7 +3,7 @@
 {% block title %}{{ Lang.get('user.register') }}{% endblock %}
 
 {% block scripts_header %}
-<script src="{{ asset('resources/assets/frontend/js/recaptcha.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/frontend/js/recaptcha.js') }}"></script>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -42,11 +42,11 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle

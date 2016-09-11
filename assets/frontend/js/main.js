@@ -62,11 +62,17 @@ $(document).ready(function() {
     }
 
     // Smooth scrolling for anchors
-    $(document.body).on('click', 'a[href*=#]', function(event) {
-        $('html, body').animate({
-            scrollTop: $('[name="_' + $.attr(this, 'href').substr(1) + '"]').offset().top - 25
-        }, 500);
+    $(document.body).on('click', 'a[href^=#]', function(event) {
         event.preventDefault();
+
+        var href = $.attr(this, 'href').substr(1),
+            $elem = $('[name="_' + $.attr(this, 'href').substr(1) + '"]');
+
+        if (href.length !== 0 && $elem.length !== 0) {
+            $('html, body').animate({
+                scrollTop: $elem.offset().top - 25
+            }, 500);
+        }
     });
 
     // For opening/collapsing sidebar boxes

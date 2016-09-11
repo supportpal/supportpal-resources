@@ -1,7 +1,7 @@
 {% extends parent_template %}
 
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block title %}{{ Lang.choice('ticket.ticket', 2) }}{% endblock %}
@@ -25,11 +25,11 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <link href="{{ asset('resources/assets/frontend/css/datatables.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/frontend/css/datatables.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
     <script type="text/javascript">
         $(document).ready(function() {

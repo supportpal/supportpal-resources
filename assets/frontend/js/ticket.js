@@ -8,6 +8,44 @@ $(document).ready(function() {
     // Enable hide / show password toggle
     callHideShowPassword();
 
+    // Ajax load messages.
+    $(document).on('click', '.show_message', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var $this = $(this),
+            $message = $(this).parents('.message'),
+            token = $('meta[name="token"]').prop('content'),
+            route = laroute.route('ticket.frontend.message.showJson', { id: $message.data('id') });
+        if (token.length !== 0) {
+            route += "?token=" + token;
+        }
+
+        // Remove the show more link and replace it by a loading icon.
+        $(this).hide();
+        $message.find('.text').append(
+            '<span class="loading-text description">'
+                + '<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...'
+            + '</span>'
+        );
+
+        $.get(route)
+            .success(function (ajax) {
+                // Load the message in, it should already be sanitized.
+                $message.find('.text').html(ajax.data.text);
+            })
+            .fail(function () {
+                swal(Lang.get('messages.error'), Lang.get('messages.error_loading_message'), 'error');
+                $this.show();
+                $message.find('.loading-text').remove();
+            });
+    });
+
+    // Open links in a new window/tab
+    $(document).on('click', '.message .text a', function() {
+        $(this).attr('target', '_blank');
+    });
+
     // Redactor
     redactor = $('textarea[name=text]').redactor($.Redactor.default_opts);
 
@@ -35,6 +73,12 @@ $(document).ready(function() {
             }
             return false;
         }
+    });
+
+    // Show CC email input
+    $('.toggle-cc').on('click', function() {
+        $('.recipients').show();
+        $(this).hide();
     });
 
     // Update message

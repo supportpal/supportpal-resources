@@ -43,7 +43,7 @@
                                 {{ Lang.get('user.email_history') }}
                             </a>
                         </li>
-                        {% if auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
+                        {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
                             <li>
                                 <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
                                     {{ Lang.choice('user.organisation', 1) }}

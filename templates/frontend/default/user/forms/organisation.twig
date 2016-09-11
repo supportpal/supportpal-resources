@@ -1,3 +1,4 @@
+{% if Config.get('settings.organisations_enabled') %}
     <div class="form-row">
         {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
         <div class="input-container">
@@ -7,7 +8,7 @@
 
             {% if organisation|default is not empty and new is not defined and not record.organisation.isOwner(record.id) %}
                 &nbsp; <button class="leave-organisation" type='button'>{{ Lang.get('user.leave_organisation') }}</button>
-            {% elseif organisation|default is not empty and new is not defined and record.organisation.isOwner(record.id)  %}
+            {% elseif organisation|default is not empty and new is not defined and record.organisation.isOwner(record.id) %}
                 &nbsp; <a href="{{ route('user.organisation') }}"><button type='button'>{{ Lang.get('user.manage_organisation') }}</button></a>
             {% endif %}
         </div>
@@ -15,7 +16,7 @@
 
     {% if new|default is not empty %}
     <div class="form-row">
-        {{ form_label('access_level', Lang.get('user.access_level')|raw) }}
+        {{ form_label('access_level', Lang.choice('user.organisation', 1) ~ ' ' ~ Lang.get('user.access_level')) }}
         <div class="input-container">
             {{ form_select('access_level', { 0: Lang.get('user.manager'), 1: Lang.choice('user.user', 1) }, 1) }}<br />
             <span class="light">
@@ -24,3 +25,18 @@
         </div>
     </div>
     {% endif %}
+
+    {% if organisation|default is not empty and new is not defined and record.organisation_access_level == 0 %}
+        <div class="form-row">
+            {{ form_label('organisation_notifications', Lang.choice('user.organisation', 1) ~ ' ' ~ Lang.get('user.notifications')) }}
+            <div class="input-container">
+                {{ form_check('organisation_notifications', 1, record.organisation_notifications|default is not empty ?
+                    record.organisation_notifications : Config.get('settings.organisation_notifications'),
+                    { 'class': 'toggle', 'id': 'toggle_organisation_notifications' }) }}
+                <label for="toggle_organisation_notifications"></label>
+                <br />
+                <span class="light">{{ Lang.get('user.organisation_notifications_desc') }}</span>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

@@ -8,13 +8,13 @@
 
 </div>
 
-<script src="{{ asset('resources/assets/frontend/js/main.js')}}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/frontend/js/main.js')}}" type="text/javascript"></script>
 
 <!-- Laravel Javascript Validation -->
-<script type="text/javascript" src="{{ asset('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
 
 <!-- Laravel Localisation -->
-<script type="text/javascript" src="{{ asset('resources/assets/general/js/lang.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/lang.min.js') }}"></script>
 <script type="text/javascript">
     Lang.addMessages({{ translationStrings|raw }});
     // Add the messages before setting the locale...
@@ -22,7 +22,7 @@
 </script>
 
 <!-- Laravel Routes -->
-<script type="text/javascript" src="{{ asset('resources/assets/general/js/routes.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/routes.min.js') }}"></script>
 <script type="text/javascript">
     laroute.set_absolute({{ Config.get('laroute.absolute', false) }});
     laroute.set_root_url("{{ url('/') }}");

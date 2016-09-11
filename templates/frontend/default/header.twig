@@ -5,18 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf_token" content="{{ csrf_token() }}" />
+    <meta name="token" content="{{ Input.get('token') }}" />
     <meta name="date_format" content="{{ convertMomentFormat(Config.get('settings.date_format')) }}" />
     {{ block('meta') }}
 
     <title>{{ company }} - {% block title %}{{ Lang.get('general.support_portal') }}{% endblock %}</title>
 
-    <script src="{{ asset('resources/assets/frontend/js/jquery.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset_rev('resources/assets/frontend/js/jquery.min.js') }}" type="text/javascript"></script>
 
     {{ block('scripts_header') }}
 
-    <link href="{{ asset('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('resources/assets/frontend/css/mobile.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/frontend/css/mobile.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
 
     {% set route = Route.currentRouteName() %}
 </head>
@@ -78,7 +79,7 @@
                         {{ Lang.get('user.profile') }}
                     </a>
                 </li>
-                {% if auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
+                {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
                     <li>
                         <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
                             {{ Lang.choice('user.organisation', 1) }}

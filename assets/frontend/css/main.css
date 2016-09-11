@@ -174,6 +174,10 @@ input[type="file"] {
     width: 100%;
 }
 
+input[type="checkbox"], input[type="radio"] {
+    margin: 1px 3px 3px 0;
+}
+
 button, input[type="button"], input[type="submit"], label.button, .button {
     background: #888;
     border: 0;
@@ -217,6 +221,62 @@ button a, button a:hover, .desk_wrapper button .fa,
 a.button, a.button:hover, .desk_wrapper .button .fa {
     color: #fff;
     text-decoration: none;
+}
+
+input.toggle {
+    margin-left: -9999px;
+    position: absolute;
+    visibility: hidden;
+}
+
+input.toggle + label {
+    background-color: #ddd;
+    border-radius: 30px;
+    cursor: pointer;
+    height: 30px;
+    outline: none;
+    margin-left: 0 !important;
+    position: relative;
+    transition: background 0.4s;
+    user-select: none;
+    vertical-align: middle;
+    width: 60px;
+    padding: 6px 30px;
+}
+
+input.toggle + label:before,
+input.toggle + label:after {
+    content: "";
+    display: block;
+    position: absolute;
+}
+
+input.toggle + label:before {
+    background-color: #fff;
+    border-radius: 30px;
+    bottom: 1px;
+    left: 1px;
+    right: 1px;
+    top: 1px;
+    transition: background 0.4s;
+}
+
+input.toggle + label:after {
+    background-color: #ddd;
+    border-radius: 22px;
+    bottom: 4px;
+    left: 4px;
+    top: 4px;
+    transition: margin 0.4s, background 0.4s;
+    width: 22px;
+}
+
+input.toggle:checked + label {
+    background-color: #27ae60;
+}
+input.toggle:checked + label:after {
+    margin-left: 30px;
+    background-color: #27ae60;
 }
 
 .form-row {
