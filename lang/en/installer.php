@@ -99,4 +99,9 @@ return [
     "help_php_settings"         => "For additional assistance, please read <a target=\"_blank\" href=\"http://docs.supportpal.com/display/DOCS/System+Requirements#SystemRequirements-PHPSettingsPHPSettings\">PHP Settings Help</a>.",
     "disabled_functions"        => "Disabled Functions",
 
+    /*
+     * 2.0.3
+     */
+    "support_expired_error"     => "An error occurred while contacting the license server with message: ':error'.<br /> Please contact support quoting this message.",
+
 ];

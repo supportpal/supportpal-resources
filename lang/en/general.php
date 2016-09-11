@@ -134,7 +134,6 @@ return [
     "permissions"               => "Permissions",
     "no_permissions_found"      => "No permissions found",
     "check_uncheck_all"         => "Check / Uncheck All",
-    "custom_fields"             => "Custom fields",
     "first"                     => "First",
     "second"                    => "Second",
     "third"                     => "Third",
@@ -212,4 +211,17 @@ return [
     "hide_details"              => "Hide details",
     "welcome"                   => "Welcome",
     
+    /*
+     * 2.0.3
+     */
+    "sort_by"                   => "Sort by",
+    "frequently_used"           => "Frequently Used",
+    "recently_used"             => "Recently Used",
+    "recently_created"          => "Recently Created",
+    "load_more"                 => "Load more",
+    "clear_selected"            => "clear selected",
+    "expand_all"                => "Expand All",
+    "collapse_all"              => "Collapse All",
+    "show_more"                 => "Show more",
+    "custom_fields"             => "Custom Fields",
 ];

@@ -17,4 +17,9 @@ return [
     "update_department"         => "Update department",
     "update_priority"           => "Update priority",
     "update_status"             => "Update status",
+    
+    /*
+     * 2.0.3
+     */
+    "update_custom_field"       => "Update ticket custom field value",
 ];

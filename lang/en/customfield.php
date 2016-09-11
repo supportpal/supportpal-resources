@@ -31,5 +31,10 @@ return [
     /*
      * 2.0.2
      */
-    "please_select"             => "Please select..."
+    "please_select"             => "Please select...",
+
+    /*
+     * 2.0.3
+     */
+    "description_desc"          => "The help text that will appear below the custom field and can optionally be left blank.",
 ];

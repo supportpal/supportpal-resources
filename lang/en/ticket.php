@@ -98,7 +98,6 @@ return [
     "department_port"           => "Default values are: 110 for POP3, 995 for secure POP3, 143 for IMAP, and 993 for secure IMAP. Leave blank to use the default value.",
     "department_encryption"     => "Some email providers require SSL or TLS encryption in order to connect, if you are unsure leave this setting as None.",
     "department_delete_mail"    => "If using IMAP, you can choose to not delete emails on the server after they've been imported as tickets.",
-    "department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in. Enabling this setting will mean all emails are imported as tickets in this department regardless of the TO address.",
     "another_email"             => "Add Another Email Address",
     "protocol"                  => "Protocol",
     "server"                    => "Mail Server",
@@ -221,7 +220,6 @@ return [
     "follow_up_status_desc"     => "Set the ticket to a different status until the follow up date.",
     "exact_date_time"           => "Exact date & time",
     "time_from_now"             => "Time from now",
-	"follow_up_active"			=> "A <a class='view-followup' style='text-decoration: underline;'>follow up</a> is currently active on this ticket and will run in the near future.",
 
     // Schedule
     "schedule"                  => "Schedule|Schedules",
@@ -277,7 +275,6 @@ return [
     "ticket_signature"          => "Ticket Signature",
 
     "default_open_status"       => "Default Open Status",
-    "default_open_status_desc"  => "Select the default status with which new tickets are automatically set to.",
 
     "default_resolve_status"    => "Default Resolved Status",
     "default_resolve_status_desc"=> "Select the default status that is used for tickets that have been resolved.",
@@ -351,8 +348,6 @@ return [
     "delete_follow_up"          => "Delete Follow Up",
 
     "add_cc"                    => "Add CC",
-    "send_email_to_user"        => "Send email to user",
-    "send_email_to_operator"    => "Send email to operators",
     "reply_above_line"          => "Please reply above this line",
 
 	"oauth2_token"              => "OAuth2 Token",
@@ -380,5 +375,26 @@ return [
     "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
 	"not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
 	"verbose_email_log_desc"    => "If email collection should be logged on file. We recommend to keep enabled to help with debugging purposes. Five days worth of logs are stored, older log files will be purged automatically by the system.",
+
+	/*
+	 * 2.0.3
+	 */
+	"department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in, a ticket is not opened if a matching department email address cannot be found. Enabling this setting will mean all emails without a matching department email address are imported as tickets in this department.",
+	"default_open_status_desc"  => "Select the default status that should be automatically set when a user opens or replies to a ticket.",
+	"default_reply_options"		=> "Default Reply Options",
+	"default_reply_options_desc"=> "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
+    "associate_response_tag"    => "Associate canned response with a tag...",
+    "canned_response_tags_desc" => "Add tags which may help finding a canned response when replying to a ticket.",
+	"loading_tags"				=> "Loading tags",
+	"append_ip_address"			=> "Append IP Address",
+	"append_ip_address_desc"	=> "Append the IP address of users to their messages when they are opening and replying to tickets from the frontend.",
+	"unassign_operator"			=> "Unassign Operator",
+	"remove_tag"				=> "Remove Tag",
+    "message_clipped"           => "[Message Clipped]",
+    "view_entire_message"       => "View entire message",
+	"no_custom_fields"          => "No custom fields found. Click <a href=':route'>here</a> to create one.",
+    "follow_up_active"			=> "A <a class='view-followup' style='text-decoration: underline;'>follow up</a> is currently active on this ticket and will run shortly after <strong>:time</strong>.",
+    "disable_user_email_replies" => "Disable User Email Replies",
+    "disable_user_email_replies_desc" => "Enable to block email replies from users, and also remove the reply clipping line from outbound ticket emails.",
 
 ];

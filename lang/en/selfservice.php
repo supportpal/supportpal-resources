@@ -112,4 +112,11 @@ return [
     "show_rating"               => "Show Ratings",
     "show_rating_desc"          => "Show article rating to everyone (public) or registered users only.",
 
+    /*
+     * 2.0.3
+     */
+    "auth_required"             => "Please login or register an account to view the article.",
+    "download_auth_required"    => "Please login or register an account to download the article attachment",
+    "auth_required"             => "Please login or register an account to view the article."
+
 ];

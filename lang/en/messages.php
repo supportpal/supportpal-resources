@@ -14,8 +14,6 @@ return [
     "are_you_sure"          => "Are you sure?",
     "yes_im_sure"           => "Yes, I'm sure",
 
-    "warn_delete"           => "Once this record has been deleted, it cannot be recovered.",
-
     "success_created"       => "Successfully created new :item!",
     "error_created"         => "Failed trying to create new :item.",
 
@@ -97,4 +95,13 @@ return [
     "missing_extension"     => "Missing Extension",
     "php_ldap_missing"      => "The php-ldap extension is required to use LDAP authentication. Please enable it and refresh the page.",
     "php_imap_missing"      => "The php-imap extension is required to use Email Download. If you wish to use Email Download, please enable the extension and refresh the page.",
+    
+    /*
+     * 2.0.3
+     */
+    "warn_delete"           => "Once this record has been deleted, it cannot be recovered. Deleting this record may also affect other areas in the system where this record is currently being used.",
+    "only_ssl_connections"  => "Only SSL connections are allowed, you should update your request to a secure connection.",
+    "queued_emails"         => "Success - The emails will begin being queued and sent shortly.",
+    "error_loading_message" => "An error occurred while loading the message. Please try again.",
+    "please_refresh"        => "Please refresh the page.",
 ];

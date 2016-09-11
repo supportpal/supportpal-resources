@@ -149,9 +149,6 @@ return array(
     "load_template"                 => "Load Template",
     "load_template_desc"            => "Choosing a template will replace the current email subject and message.",
     "clear_template"                => "Clear Template",
-    "email_per_batch"               => "Emails per batch",
-    "batch_interval"                => "Batch interval",
-    "select_user_groups"            => "Select user groups or type in e-mail addresses",
 
     "personal_settings"             => "Personal Settings",
     "personal_settings_desc"        => "Update your own profile and modify settings that relate only to your operator account.",
@@ -212,5 +209,27 @@ return array(
     "ban_length"                    => "Length of IP Ban",
     "ban_length_desc"               => "The length of the IP ban when they reach the configured number of failed logins in a single day.",
     "n_failed_logins"               => ":count failed logins within 24 hours",
+    
+    /*
+     * 2.0.3
+     */
+    "taking_a_break"                => "Taking a break...",
+    "operator_session_expired"      => "You were inactive for a while or logged in on another device so I took a quick nap. Please wake me up by logging back in.",
+    "log_back_in"                   => "Log Back In",
+    "all_users"                     => "All Users",
+    "all_operators"                 => "All Operators",
+    "email_per_batch"               => "Emails Per Batch",
+    "email_per_batch_desc"          => "The number of emails that are sent together at a time.",
+    "batch_interval"                => "Batch Interval",
+    "batch_interval_desc"           => "The gap between the email batches in minutes, 1 minute is the minimum.",
+    "select_user_groups"            => "Select user/operator groups or type in e-mail addresses...",
+    "mass_email_sending_time"       => "It will take approximately :time to send all emails.",
+    "organisations_enabled"         => "Organisations Enabled",
+    "organisations_enabled_desc"    => "By default, users can add an organisation to their profile and add other users to that organisation. If you are only dealing with consumers, you can disable the organisation option and hide it from the interface.",
+    "manager_notifications"         => "Organisation Manager Notifications",
+    "manager_notifications_desc"    => "If managers of organisations should receive email updates of tickets opened by other users in the organisation by default. Each manager will have their own personal option for this in their profile and can override this setting.",
+    "manager_email_notifications_desc" => "If they should receive email notifications of updates to tickets opened by other users in the organisation.",
+    "organisation_notifications_desc" => "If you'd like to receive email notifications of updates to tickets opened by other users in your organisation.",
+    "select_operator_group_desc"    => "Please select at least one operator group for this operator.",
 
 );

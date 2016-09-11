@@ -128,4 +128,11 @@ return [
     "ticket_email_operator_group"       => "Sent email to operator group :new_value.",
     "ticket_email_user_group"           => "Sent email to user group :new_value.",
 
+    /*
+     * 2.0.3
+     */
+    "selfservice_attachment_saved"      => "Added attachment ':new_value' to article ID :rel.",
+    "selfservice_attachment_deleted"    => "Deleted attachment ':new_value' from to article ID :rel.",
+    "ticket_unassigned_self"            => "Unassigned self from ticket #:rel.",
+
 ];

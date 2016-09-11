@@ -72,4 +72,10 @@ return [
     // Core
     "plugin"            => "View Plugins",
 
+    /*
+     * 2.0.3
+     */
+    // User
+    "operator"          => "Manage Operators",
+
 ];

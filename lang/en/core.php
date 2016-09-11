@@ -227,7 +227,6 @@ return [
     "admin_folder"              => "Admin Folder",
     "admin_folder_desc"         => "Set the folder name to visit for the operator panel. It is recommended to change from the default \"admin\" name from a security point of view.",
     "enable_ssl"                => "Enable SSL",
-    "enable_ssl_desc"           => "Enabling this will mean that the ticket and account sections in the frontend can only be accessed on the secure version of your website. Please ensure HTTPS functions correctly on your server before enabling.",
     "force_ssl"                 => "Force SSL for Operators",
     "force_ssl_desc"            => "Force all operators to use the secure version of your website for the operator panel.",
     "frontend_template"         => "Frontend Template",
@@ -257,7 +256,7 @@ return [
     "pretty_urls_desc"          => "Enabling will remove index.php from URLs, only enable if you are able to access the operator panel without index.php. Disable if you do not have mod_rewrite installed, .htaccess files are not allowed or haven't converted the Apache .htaccess rewrite rules to work with your alternative web server.",
     "send_diagnostic"           => "Send Diagnostic Data",
     "send_diagnostic_desc"      => "To help SupportPal improve its products, your installation can send diagnostic data when something goes wrong.",
-    
+
     /*
      * 2.0.1
      */
@@ -269,5 +268,19 @@ return [
      */
     "cron_makesure"             => "For assistance registering the cron job, please see <a target='_blank' href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-CronJob'>Cron Job Help</a>.",
     "widget"                    => "Widget|Widgets",
+
+    /*
+     * 2.0.3
+     */
+    "enable_ssl_desc"           => "Enabling this will force the whole frontend and operator area to use secure connections, a recommended setting. Please ensure HTTPS functions correctly on your server before enabling.",
+    "unexpected_template_error" => "An unexpected error occurred while syntax checking the template. Please try again.",
+    "empty_template_preview"    => "Please provide a valid template in order to use the preview function.",
+    "no_department_address"     => "Failed to find a department address in the recipient list.",
+    "email_loop_detected"       => "Loop detected - email sent from a department address.",
+    "email_ticket_locked"       => "Ticket locked. User has been asked to open a new ticket via email.",
+    "email_no_body"             => "Failed to identify the email message body.",
+    "email_runtime_error"       => "A runtime error occurred while creating the ticket/reply.",
+    "email_reply_disabled"      => "User email replies have been disabled for this department.",
+    "email_throttled"           => "Too many incoming emails from user. The limit is :max_requests emails every :decay_time minutes.",
 
 ];
