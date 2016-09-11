@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block title %}
@@ -42,7 +42,7 @@
         <div class="form-row">
             {{ form_label('name', Lang.get('general.name')) }}
             <div class="input-container">
-                {{ form_text('name') }}
+                {{ form_text('name', null, {'size': 30}) }}
             </div>
         </div>
 
@@ -102,17 +102,17 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {

@@ -404,6 +404,7 @@ button.as-link:hover, button.as-link.active {
 }
 
 textarea {
+    resize: vertical;
     width: 100%;
 }
 
@@ -1406,6 +1407,78 @@ ul.tabs li.active:hover, #main ul.tabs a.active:hover {
     margin-bottom: 5px;
 }
 
+/* Canned Responses */
+
+.cannedResponseOrder {
+    margin: -30px 40px 0 0;
+}
+
+#redactor-modal .cannedResponseOrder select {
+    width: auto;
+}
+
+#redactor-modal section #redactor-modal-cannedResponses {
+    padding-bottom: 30px;
+}
+
+#redactor-modal-cannedResponses .tags-column {
+    width: 145px;
+}
+
+#redactor-modal-cannedResponses .tags-column h3 {
+    border-bottom: 1px solid #eee;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+#cannedResponseTags {
+    height: 200px;
+    list-style: none;
+    margin: 15px 0 0;
+    overflow-y: auto;
+    padding: 0;
+}
+
+#cannedResponseTags li.tag-item {
+    padding: 3px 0;
+}
+
+#cannedResponseTags li.tag-item a:hover,
+#cannedResponseTags li.tag-item a.active {
+    background: #f0f0f0;
+}
+
+#cannedResponseTags li.tag-item a {
+    border: 1px solid #ddd;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    display: inline-block;
+    font-size: 0.9em;
+    padding: 1px 6px 1px 8px;
+}
+
+#cannedResponseTags li.tag-item .badge {
+    float: right;
+    margin-left: 5px;
+    margin-top: 3px;
+    padding: 4px 5px;
+}
+
+#redactor-modal-cannedResponses .clear-selected {
+    font-size: 0.85em;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#redactor-modal-cannedResponses .search-column {
+    max-width: 470px;
+}
+
+#redactor-modal-cannedResponses .manage-link {
+    text-align: center;
+}
+
 /* Overwrite dataTables */
 
 .dataTables_length,
@@ -1632,9 +1705,9 @@ table.dataTable > tbody > tr.child span.dtr-title {
 ul.redactor-search {
     border: 1px solid #ddd;
     border-top: 0;
+    height: 215px;
     list-style: none;
     margin: 0;
-    max-height: 156px;
     overflow-y: auto;
     padding: 0;
 }
@@ -1664,11 +1737,18 @@ ul.redactor-search li .title {
     font-weight: bold;
 }
 
+ul.redactor-search li span.tag {
+    display: inline-block;
+    line-height: 13px;
+    margin-top: -2px;
+    vertical-align: middle;
+}
+
 ul.redactor-search li .description {
-    height: 21px;
+    font-size: 90%;
+    line-height: 1.4em;
+    max-height: 4.2em;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 /* CodeMirror */
@@ -1841,6 +1921,7 @@ ul#attached-files .deleteAttachment:hover {
     font: 10px "Open Sans", Sans-Serif;
     padding: 4px 10px;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .ui-tooltip .arrow {
@@ -1953,6 +2034,12 @@ ul#attached-files .deleteAttachment:hover {
 
 /* Pikaday */
 input.datepicker {
+    font-family: 'FontAwesome', 'Open Sans';
+    line-height: 21px;
+}
+
+/* Timepicker */
+input.timepicker {
     font-family: 'FontAwesome', 'Open Sans';
     line-height: 21px;
 }

@@ -2,7 +2,7 @@ $(function() {
     // Show desired value dropdown for given action
     $(document.body).on('change', '.rule-action select', function() {
         // Remove redactor first
-        $(this).parents('tr').find('.rule-value .redactor-box').before($(this).parents('tr').find('.rule-value .redactor-box textarea'));
+        $(this).parents('tr').find('.rule-value .redactor-box').before($(this).parents('tr').find('.rule-value .redactor-box textarea.text'));
         $(this).parents('tr').find('.rule-value .redactor-box').remove();
 
         // Show right value
@@ -11,9 +11,37 @@ $(function() {
         $(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"]').show()
             .find(':input').prop('disabled', false);
 
+        // Handle custom fields
+        if ($(this).val() == '13') {
+            $(this).parents('tr').find('.rule-customfield').hide()
+                .find(':input').prop('disabled', true);
+            $(this).parents('tr').find('.rule-customfield[data-id="' + $(this).parents('tr').find('.value-id').val() +'"]').show()
+                .find(':input').prop('disabled', false);
+
+            // Pikaday if needed
+            if ($(this).parents('tr').find('.datepicker').is(':visible')) {
+                $(this).parents('tr').find('.datepicker').pikaday({ format: $('meta[name=date_format]').prop('content') });
+            }
+        }
+
         // If it's a textarea, use redactor
-        if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea')) {
+        if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea.text')) {
             redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input'));
+        }
+    });
+
+    // Handle custom field option change
+    $(document.body).on('change', '.rule-value .value-id', function() {
+        if ($(this).parents('tr').find('.rule-action select').val() == '13') {
+            $(this).parents('tr').find('.rule-customfield').hide()
+                .find(':input').prop('disabled', true);
+            $(this).parents('tr').find('.rule-customfield[data-id="' + $(this).val() +'"]').show()
+                .find(':input').prop('disabled', false);
+        }
+
+        // Pikaday if needed
+        if ($(this).parents('tr').find('.datepicker').is(':visible')) {
+            $(this).parents('tr').find('.datepicker').pikaday({ format: $('meta[name=date_format]').prop('content') });
         }
     });
 
@@ -34,8 +62,21 @@ $(function() {
         $(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"]').show()
             .find(':input').prop('disabled', false);
 
+        // Handle custom fields
+        if ($(this).val() == '13') {
+            $(this).parents('tr').find('.rule-customfield').hide()
+                .find(':input').prop('disabled', true);
+            $(this).parents('tr').find('.rule-customfield[data-id="' + $(this).parents('tr').find('.value-id').val() +'"]').show()
+                .find(':input').prop('disabled', false);
+
+            // Pikaday if needed
+            if ($(this).parents('tr').find('.datepicker').is(':visible')) {
+                $(this).parents('tr').find('.datepicker').pikaday({ format: $('meta[name=date_format]').prop('content') });
+            }
+        }
+
         // If it's a textarea, use redactor
-        if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea')) {
+        if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea.text')) {
             redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input'));
         }
     });

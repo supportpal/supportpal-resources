@@ -1,8 +1,12 @@
 {% extends parent_template %}
 
+{% block title %}
+    (#{{ ticket.number }}) {{ ticket.subject }}
+{% endblock %}
+
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
     {% if extendedViews['scripts_header']|default is not empty %}
         {% for view in extendedViews['scripts_header'] %}
@@ -19,7 +23,10 @@
     {% include 'operator.' ~ template ~ '.ticket.also_viewing' %}
 {% endblock %}
 
-{% block content %}
+{% block pageTitle %}
+    <a href="{{ docsLink }}" target="_blank" class="docs-link right">
+        <i class="fa fa-question-circle docs-link"></i>
+    </a>
     <h1 class="ticket-subject">
         <span {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}class="subject"{% endif %}>{{ ticket.subject }}</span>
         {{ form_text('subject', ticket.subject, { 'class': 'edit-subject hide', 'size': '50' }) }}
@@ -27,17 +34,18 @@
             <span class="tag internal">{{ Lang.get('ticket.internal') }}</span>
         {% endif %}
         &nbsp;<i class="fa fa-lock {% if not ticket.locked %}hide {% endif %}"></i>
-
     </h1>
     <h2 class="ticketview">
         {{ Lang.choice('general.submit', 2) ~ ' ' ~ Lang.get('general.by') }}
         &nbsp;<a href="{{ route('user.operator.user.edit', { 'user': ticket.user.id }) }}">{{ ticket.user.formatted_name }}</a>&nbsp;
         {{ Lang.get('general.at') ~ ' ' ~ formatDate(ticket.created_at) }}
     </h2>
+{% endblock %}
 
+{% block content %}
     <div class="warning box followup-warning {% if ticket.followup is empty %}hide{% endif %}">
         <i class="fa fa-clock-o"></i>&nbsp;
-        {{ Lang.get('ticket.follow_up_active')|raw }}
+        <span>{{ Lang.get('ticket.follow_up_active', {'time': formatDate(ticket.followup.time)})|raw }}</span>
     </div>
 
     {% if feedback|default is not empty and feedback.rating|default is not empty %}
@@ -52,11 +60,20 @@
         </div>
     {% endif %}
 
-    {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
-        {{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ] }) }}
-            {{ form_button(Lang.get('ticket.split_selected_replies'), { 'disabled': 'disabled', 'class': 'split-ticket right hide' }) }}
-        {{ form_close() }}
-    {% endif %}
+    <span class="button-group messages-button-group right">
+        {{ form_button('<i class="fa fa-expand"></i> ' ~ Lang.get('general.expand_all'),
+            { 'class': 'expand-messages hide' }) }}<!--
+        -->{{ form_button('<i class="fa fa-compress"></i> ' ~ Lang.get('general.collapse_all'),
+            { 'class': 'collapse-messages hide' }) }}<!--
+        {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+            -->{{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ], 'style': 'display: inline-block;' }) }}
+                {{ form_button('<i class="fa fa-columns"></i> ' ~ Lang.get('ticket.split_selected_replies'),
+                    { 'disabled': 'disabled', 'class': 'split-ticket hide' }) }}
+            {{ form_close() }}
+        {% else %}
+            -->
+        {% endif %}
+    </span>
 
     <ul class="tabs">
       <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
@@ -149,31 +166,31 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
 
     <!-- Custom fields -->
-    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-    <script src="{{ asset('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
         var ticketId = "{{ ticket.id }}",
@@ -197,6 +214,8 @@
             replyOrder = 'DESC';
         {% endif %}
         var notesPosition = {{ Config.get('settings.ticket_notes_position') }};
+
+        var cannedResponsePermission = {% if Auth.guard('operator').user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
 
         // Initialise redactor.
         var redactor_plugins = {
@@ -247,16 +266,16 @@
         });
     </script>
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/operator/js/ticket.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/ticket.js') }}"></script>
     <script type="text/javascript">
         var ticket = new Ticket("");
     </script>
-    <script src="{{ asset('resources/assets/libs/he/js/he.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>
 
-    <link href="{{ asset('resources/assets/operator/css/ticket-print.css') }}" rel="stylesheet" media="print" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/operator/css/ticket-print.css') }}" rel="stylesheet" media="print" type="text/css" />
 
     {% if extendedViews['scripts_footer']|default is not empty %}
         {% for view in extendedViews['scripts_footer'] %}

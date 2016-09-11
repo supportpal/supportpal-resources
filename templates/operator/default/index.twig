@@ -8,48 +8,48 @@
     <meta name="date_format" content="{{ convertMomentFormat(Config.get('settings.date_format')) }}" />
 
     {% set title = block('title') %}
-    <title>{% if title is not empty %}{{ title }} - {% endif %} SupportPal Operator Panel</title>
+    <title>{% if title is not empty %}{{ title|raw }} - {% endif %} SupportPal Operator Panel</title>
 
     <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
-    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
-    <link rel="icon" type="image/png" href="{{ asset('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
+    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
     <meta name="application-name" content="SupportPal"/>
     <meta name="msapplication-TileColor" content="#FFFFFF" />
-    <meta name="msapplication-TileImage" content="{{ asset('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
-    <meta name="msapplication-square70x70logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
-    <meta name="msapplication-square150x150logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
-    <meta name="msapplication-wide310x150logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
-    <meta name="msapplication-square310x310logo" content="{{ asset('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+    <meta name="msapplication-TileImage" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
+    <meta name="msapplication-square70x70logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
 
     <!-- jQuery -->
-    <script src="{{ asset('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
-    <link href="{{ asset('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
-    <script src="{{ asset('resources/assets/libs/jquery-ui/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/jquery-ui/js/jquery-ui.min.js') }}"></script>
 
     <!-- Globals -->
     <script type="text/javascript">
         // Saving variables for use in asset files
-        var notificationIcon = "{{ asset('resources/assets/operator/images/apple-touch-icon.png') }}";
+        var notificationIcon = "{{ asset_rev('resources/assets/operator/images/apple-touch-icon.png') }}";
         var notificationType = "{{ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.display_notifications') }}";
     </script>
 
     {% block scripts_header %}{% endblock %}
 
-    <link href="{{ asset('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
 
-    <link href="{{ asset('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
+    <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
 </head>
 
 <body>
@@ -57,9 +57,9 @@
 <div id="header">
     {% block header %}
         <a href="{{ route('core.operator.dashboard') }}" class="logo left">
-            <img src="{{ asset('resources/assets/operator/images/logo_icon.png') }}"
+            <img src="{{ asset_rev('resources/assets/operator/images/logo_icon.png') }}"
                  alt="{{ Lang.get('core.product_name') }}" class="2x logo-icon" height="32" />
-            <img src="{{ asset('resources/assets/operator/images/logo.png') }}"
+            <img src="{{ asset_rev('resources/assets/operator/images/logo.png') }}"
                  alt="{{ Lang.get('core.product_name') }}" class="2x logo-full hide" height="32" />
         </a>
 
@@ -134,16 +134,18 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% if Auth.guard('operator').user().hasPermission('view.feedback') %}
                         <li aria-haspopup="false">
                             <a href="{{ route('ticket.operator.feedback.index') }}">
                                 {{ Lang.get('ticket.feedback') }}
                             </a>
                         </li>
+                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
 
-                {% if Auth.guard('operator').user().hasPermission('view.user|view.organisation|view.user|view.massemail') %}
+                {% if Auth.guard('operator').user().hasPermission('view.user|view.organisation|view.operator|view.massemail') %}
                 <li class="dir" aria-haspopup="true" id="userHeaderDropdown">
                     <a class="nav dropdownmenu">
                         {{ Lang.choice('user.user', 2) }}
@@ -157,14 +159,14 @@
                             </a>
                         </li>
                         {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.organisation') %}
+                        {% if Config.get('settings.organisations_enabled') and Auth.guard('operator').user().hasPermission('view.organisation') %}
                         <li aria-haspopup="false" id="manageOrgSetting">
                             <a href="{{ route('user.operator.organisation') }}">
                                 {{ Lang.get('general.manage') }} {{ Lang.choice('user.organisation', 2) }}
                             </a>
                         </li>
                         {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.user|create.user') %}
+                        {% if Auth.guard('operator').user().hasPermission('view.operator') %}
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.operator') }}">
                                 {{ Lang.get('general.manage') }} {{ Lang.choice('general.operator', 2) }}
@@ -357,14 +359,16 @@
 
         <div class="desk_content_padding">
 
-            {% if title is not empty %}
-                {% if docsLink is not empty %}
-                    <a href="{{ docsLink }}" target="_blank" class="docs-link right">
-                        <i class="fa fa-question-circle docs-link"></i>
-                    </a>
+            {% block pageTitle %}
+                {% if title is not empty %}
+                    {% if docsLink is not empty %}
+                        <a href="{{ docsLink }}" target="_blank" class="docs-link right">
+                            <i class="fa fa-question-circle docs-link"></i>
+                        </a>
+                    {% endif %}
+                    <h1 id="pageTitle">{{ title|raw }}</h1>
                 {% endif %}
-                <h1 id="pageTitle">{{ title }}</h1>
-            {% endif %}
+            {% endblock %}
 
             {% set description = block('description') %}
             {% if description is not empty %}
@@ -405,10 +409,10 @@
 </div>
 
 <!-- Laravel Javascript Validation -->
-<script type="text/javascript" src="{{ asset('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
 
 <!-- Laravel Localisation -->
-<script type="text/javascript" src="{{ asset('resources/assets/general/js/lang.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/lang.min.js') }}"></script>
 <script type="text/javascript">
     Lang.addMessages({{ translationStrings|raw }});
     // Add the messages before setting the locale...
@@ -416,7 +420,7 @@
 </script>
 
 <!-- Laravel Routes -->
-<script type="text/javascript" src="{{ asset('resources/assets/general/js/routes.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/routes.min.js') }}"></script>
 <script type="text/javascript">
     laroute.set_absolute({{ Config.get('laroute.absolute', false) }});
     laroute.set_root_url("{{ url('/') }}");
@@ -425,34 +429,34 @@
 </script>
 
 <!-- Global Javascript Functions -->
-<script src="{{ asset('resources/assets/operator/js/mobile.js') }}" type="text/javascript"></script>
-<script src="{{ asset('resources/assets/operator/js/main.js') }}" type="text/javascript"></script>
-<script src="{{ asset('resources/assets/operator/js/search.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/operator/js/mobile.js') }}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/operator/js/main.js') }}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/operator/js/search.js') }}"></script>
 
 {% block scripts_footer %}
 {% endblock %}
 
 <!-- Hopscotch - product tours -->
-<script src="{{ asset('app/Widgets/GettingStarted/Views/vendor/hopscotch/js/hopscotch.js') }}"></script>
+<script src="{{ asset_rev('app/Widgets/GettingStarted/Views/vendor/hopscotch/js/hopscotch.js') }}"></script>
 
 {% set enabled = Config.get('settings.product_tour_enabled', null) %}
 {% if enabled == '1' or enabled is null %}
-    <link rel="stylesheet" href="{{ asset('app/Widgets/GettingStarted/Views/vendor/hopscotch/css/hopscotch.min.css') }}"  property="stylesheet" />
-    <script src="{{ asset('resources/assets/operator/js/producttour.js') }}" type="text/javascript"></script>
+    <link rel="stylesheet" href="{{ asset_rev('app/Widgets/GettingStarted/Views/vendor/hopscotch/css/hopscotch.min.css') }}"  property="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/operator/js/producttour.js') }}" type="text/javascript"></script>
 {% endif %}
 
 <!-- Notifications library -->
-<script src="{{ asset('resources/assets/libs/pnotify/js/pnotify.core.js') }}" type="text/javascript"></script>
-<script src="{{ asset('resources/assets/libs/pnotify/js/pnotify.buttons.js') }}" type="text/javascript"></script>
-<script src="{{ asset('resources/assets/libs/pnotify/js/pnotify.desktop.js') }}" type="text/javascript"></script>
-<link href="{{ asset('resources/assets/libs/pnotify/css/pnotify.buttons.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
-<link href="{{ asset('resources/assets/libs/pnotify/css/pnotify.core.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
-<script src="{{ asset('resources/assets/operator/js/notification.js') }}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.core.js') }}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.buttons.js') }}" type="text/javascript"></script>
+<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.desktop.js') }}" type="text/javascript"></script>
+<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.buttons.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
+<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.core.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
+<script src="{{ asset_rev('resources/assets/operator/js/notification.js') }}" type="text/javascript"></script>
 
 <!-- Pace - AJAX notifications -->
 <script data-pace-options='{ "ajax": { "ignoreURLs": [ "notification", "pollReplies" ] } }'
-        src="{{ asset('resources/assets/libs/pace/js/pace.min.js') }}" type="text/javascript"></script>
-<link href="{{ asset('resources/assets/operator/css/pace.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
+        src="{{ asset_rev('resources/assets/libs/pace/js/pace.min.js') }}" type="text/javascript"></script>
+<link href="{{ asset_rev('resources/assets/operator/css/pace.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 
 </body>
 

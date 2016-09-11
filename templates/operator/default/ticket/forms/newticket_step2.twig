@@ -38,6 +38,19 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                {{ form_label('select', Lang.choice('ticket.tag', 2)) }}
+                <div class="input-container">
+                    <select name="tag[]" multiple="multiple">
+                        {% for tag in tags %}
+                            <option value='{{ tag.name }}'>
+                                {{ tag.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
             <div class="form-row form-full">
                 {{ form_label('assignedto[]', Lang.get('ticket.assigned_to')) }}
                 <div class="input-container">
@@ -56,7 +69,7 @@
             <div class="form-row form-full">
                 {{ form_label('subject', Lang.get('ticket.subject')) }}
                 <div class="input-container">
-                    {{ form_text('subject', null, { 'style': 'width: 300px' }) }}
+                    {{ form_text('subject') }}
                 </div>
             </div>
 
@@ -106,13 +119,15 @@
                     <span class="input-group">
                         <span class="send-user-email">
                             <label style="font-weight: normal">
-                                {{ form_check('send_user_email', 1, true) }} {{ Lang.get('ticket.send_email_to_user') }}
+                                {{ form_check('send_user_email', 1, operator.default_reply_options['send_email_to_users']) }}
+                                {{ Lang.get('ticket.send_email_to_users') }}
                             </label>
                             &nbsp;&nbsp;
                         </span>
                         <span class="send-operators-email">
                             <label style="font-weight: normal">
-                                {{ form_check('send_operators_email', 1) }} {{ Lang.get('ticket.send_email_to_operator') }}
+                                {{ form_check('send_operators_email', 1, department.notify_operators) }}
+                                {{ Lang.get('ticket.send_email_to_operators') }}
                             </label>
                         </span>
                     </span>
@@ -145,26 +160,27 @@
             operatorId = '{{ Auth.guard('operator').user().id }}',
             internal = {{ internal }};
     </script>
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/newticket.js') }}"></script>
-    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/replyoptions.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/replyoptions.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset('resources/assets/general/js/done_typing.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
 
     <script type="text/javascript">
         // Initialise redactor.
+        var cannedResponsePermission = {% if Auth.guard('operator').user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
         var redactor_plugins = {
             plugins: [
-                'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize',
+                'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'cannedResponses',
                 {% if isModuleEnabled('Selfservice') %}'ssLink'{% endif %}
             ]
         };
@@ -175,11 +191,11 @@
     </script>
 
     <!-- Custom fields -->
-    <script src="{{ asset('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle

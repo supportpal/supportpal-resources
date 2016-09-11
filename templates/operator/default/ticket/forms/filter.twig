@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name') }}
+                    {{ form_text('name', null, {'size': 30}) }}
                 </div>
             </div>
 
@@ -89,9 +89,9 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -120,8 +120,8 @@
     </script>
 
     <!-- Date picker -->
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}

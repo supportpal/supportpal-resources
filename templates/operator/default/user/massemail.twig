@@ -27,6 +27,8 @@
                         {{ record.formatted_name }} {{ '<' ~ record.email ~ '>' }}
                     {% else %}
                         <select name="to[]" multiple="multiple">
+                            <option value="all-users">{{ Lang.get('user.all_users') }}</option>
+                            <option value="all-operators">{{ Lang.get('user.all_operators') }}</option>
                             <optgroup label="{{ Lang.choice("user.operator_group", 2) }}">
                                 {% for group in operator_groups %}
                                     <option data-data='{{ group|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ group.id }}'>
@@ -59,7 +61,7 @@
                 {{ form_label('load_template', Lang.get('user.load_template')) }}
                 <div class="input-container">
                     <div class="input-with-button">
-                        {{ form_select('load_template', templates) }}
+                        {{ form_select('load_template', templates) }}&nbsp;
                         {{ form_button(Lang.get('user.clear_template'), { 'class': 'clear-form' }) }}
                     </div>
                     <span class="description">{{ Lang.get('user.load_template_desc') }}</span>
@@ -77,7 +79,35 @@
             <div class="form-row form-full">
                 {{ form_label('contents', Lang.choice('general.message', 1)) }}
                 <div class="input-container">
-                    {{ form_redactor_mf('contents') }}
+                    <div>
+                        {{ form_redactor_mf('contents') }}
+                        <ul id="attached-files">
+                            <li class="hide">
+                                <i class="fa fa-file"></i>
+                                &nbsp;
+                                <span class="information">
+                                <span class="filename ellipsis"></span>
+                                &nbsp;
+                                <span class="filesize"></span>
+                            </span>
+                                <i class="fa fa-times deleteAttachment right hide"></i>
+                                <div class="progress">
+                                    <div class="bar"></div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <label for="fileupload" class="file-input button" style="margin-right: 10px">
+                            <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+                        </label>
+
+                        <input id="fileupload" type="file" name="files[]"
+                               data-url="{{ route('ticket.operator.attachment.upload') }}" multiple="multiple">
+                    </div>
+
+                    <div class="attachment-details">
+                        <input type="hidden" name="attachment[]" disabled="disabled" />
+                    </div>
                 </div>
             </div>
 
@@ -85,14 +115,16 @@
                 <div class="form-row">
                     {{ form_label('batch_number', Lang.get('user.email_per_batch')) }}
                     <div class="input-container">
-                        {{ form_text('batch_number', 25, { 'size': 3 }) }}
+                        {{ form_text('batch_number', 50, { 'size': 3 }) }}<br />
+                        <span class="description">{{ Lang.get('user.email_per_batch_desc') }}</span>
                     </div>
                 </div>
 
                 <div class="form-row">
                     {{ form_label('batch_interval', Lang.get('user.batch_interval')) }}
                     <div class="input-container">
-                        {{ form_text('batch_interval', 1, { 'size': 2 }) }} &nbsp; <span class="description">({{ Lang.choice('general.minute', 2) }})</span>
+                        {{ form_text('batch_interval', 1, { 'size': 2 }) }}<br />
+                        <span class="description">{{ Lang.get('user.batch_interval_desc') }}</span>
                     </div>
                 </div>
             {% endif %}
@@ -100,7 +132,7 @@
         </div>
 
         <div class="form-button">
-            {{ form_submit(Lang.choice('general.submit', 1)) }}
+            {{ form_submit(Lang.choice('general.submit', 1)) }} <span class="sending-time description"></span>
         </div>
 
     {{ form_close() }}
@@ -116,20 +148,26 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+
+    <!-- Attachments -->
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+    <script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+    <script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/codeeditor.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -190,7 +228,11 @@
                 });
             {% endif %}
 
-            var $editor = $('textarea').redactor($.extend($.Redactor.default_opts, {plugins: ['syntax']}));
+            var opts = {
+                syntaxEmailTemplate: true,
+                plugins: ['syntax']
+            };
+            var $editor = $('textarea').redactor($.extend($.Redactor.default_opts, opts));
 
             // Load email template
             $('select[name="load_template"]').change(function() {
@@ -217,9 +259,26 @@
                 $editor.redactor('code.set', '');
             });
 
-            // Insert merge field in editor
-            $('button.as-link').on('click', function() {
-                $editor.redactor('insert.text', $(this).text());
+            // Work out how long it will take to send email when changing any important variable
+            $('select[name="to[]"], input[name="batch_number"], input[name="batch_interval"]').on('change', function() {
+                $.ajax({
+                    url: laroute.route('user.operator.massemail.sendingtime'),
+                    type: 'GET',
+                    data: {
+                        'to': $('select[name="to[]"]').val(),
+                        'number': $('input[name="batch_number"]').val(),
+                        'interval': $('input[name="batch_interval"]').val()
+                    },
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        // Add sending time next to submit button
+                        $('.sending-time').text(response.data);
+                    } else {
+                        // Some error, hide it
+                        $('.sending-time').text('');
+                    }
+                });
             });
         });
     </script>

@@ -21,7 +21,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name') }}
+                    {{ form_text('name', null, {'size': 30}) }}
                 </div>
             </div>
 
@@ -48,12 +48,12 @@
                 <div class="input-container">
                     <div class="input-group">
                         <label style="display: inline-block; text-align: center; position: static;">
-                            <img src="{{ asset('resources/assets/operator/images/view_hierarchical.png') }}" alt="{{ Lang.get('selfservice.hierarchical') }}" /><br />
+                            <img src="{{ asset_rev('resources/assets/operator/images/view_hierarchical.png') }}" alt="{{ Lang.get('selfservice.hierarchical') }}" /><br />
                             {{ form_radio('view', 0, true) }} {{ Lang.get('selfservice.hierarchical') }}
                         </label>
                         &nbsp;&nbsp;
                         <label style="display: inline-block; text-align: center;">
-                            <img src="{{ asset('resources/assets/operator/images/view_list.png') }}" alt="{{ Lang.get('selfservice.list') }}" /><br />
+                            <img src="{{ asset_rev('resources/assets/operator/images/view_list.png') }}" alt="{{ Lang.get('selfservice.list') }}" /><br />
                             {{ form_radio('view', 1) }} {{ Lang.get('selfservice.list') }}
                         </label>
                     </div>
@@ -67,7 +67,7 @@
                     <div class="input-group">
                         {% for k, icon in icons %}
                             <label style="display: inline-block; text-align:center">
-                                <img src="{{ asset(icon['location']) }}" /><br />
+                                <img src="{{ asset_rev(icon['location']) }}" /><br />
                                 {{ form_radio('default_icon', k) }} {{ icon['name'] }}
                             </label>
                             &nbsp;&nbsp;&nbsp;&nbsp;

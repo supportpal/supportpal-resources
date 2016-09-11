@@ -1,0 +1,63 @@
+{% for customfield in customfields %}
+    <span class="rule-customfield hide" data-id="{{ customfield.id }}">
+        {% if customfield.type == 0 %}
+            <label>
+                {{ form_radio('rules[' ~ (count is defined ? count : '') ~ '][value_text]', 1,
+                    (rule.value_id == customfield.id and rule.value_text) ? true : false)
+                }} {{ Lang.get('general.yes') }}
+            </label> &nbsp;
+            <label>
+                {{ form_radio('rules[' ~ (count is defined ? count : '') ~ '][value_text]', 0,
+                    (rule.value_id == customfield.id and rule.value_text == '0') ? true : false)
+                }} {{ Lang.get('general.no') }}
+            </label>
+
+        {% elseif customfield.type == 1 %}
+            {{ form_checkbox('rules[' ~ (count is defined ? count : '') ~ '][value_text]', 1, rule.value_id == customfield.id ? rule.value_text : null) }}
+
+        {% elseif customfield.type == 2 %}
+            {% for option in customfield.options %}
+                <label>
+                    {{ form_checkbox('rules[' ~ (count is defined ? count : '') ~ '][value_text][]', option.id,
+                        rule.value_id == customfield.id and rule.value_text|default is not empty and in_array(option.id, json_decode(rule.value_text, true)) ? true : false) }} {{ option.value }}
+                </label>
+                {% if not loop.last %}
+                    &nbsp;
+                {% endif %}
+            {% endfor %}
+
+        {% elseif customfield.type == 3 %}
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule.value_id == customfield.id and rule.value_text|default is not empty ? rule.value_text : null,
+                {'class': 'datepicker', 'placeholder': '&#xf073;'}) }}
+
+        {% elseif customfield.type == 4 %}
+            {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text][]', array_column(customfield.options.toArray(), 'value', 'id'),
+                rule.value_id == customfield.id ? json_decode(rule.value_text, true) : null, {'multiple': 'multiple'}) }}
+
+        {% elseif customfield.type == 5 %}
+            {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text]', array_column(customfield.options.toArray(), 'value', 'id'), rule.value_id == customfield.id ? rule.value_text : null) }}
+
+        {% elseif customfield.type == 6 %}
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]', rule.value_id == customfield.id ? rule.value_text : null) }}
+
+        {% elseif customfield.type == 7 %}
+            {% for option in customfield['options'] %}
+                <label>
+                    {{ form_radio('rules[' ~ (count is defined ? count : '') ~ '][value_text]', option.id,
+                        (rule.value_id == customfield.id and rule.value_text == option.id) ? true : false) }} {{ option.value }}
+                </label>
+                {% if not loop.last %}
+                    &nbsp;
+                {% endif %}
+            {% endfor %}
+
+        {% elseif customfield.type == 8 %}
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]', rule.value_id == customfield.id ? rule.value_text : null) }}
+
+        {% elseif customfield.type == 9 %}
+            {{ form_textarea('rules[' ~ (count is defined ? count : '') ~ '][value_text]', rule.value_id == customfield.id ? rule.value_text : null) }}
+
+        {% endif %}
+    </span>
+{% endfor %}

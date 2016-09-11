@@ -116,14 +116,14 @@
                     {{ form_text('duetime_date',
                             ticket.due_time|default is not empty
                                 ? timeWithOffset(ticket.due_time, false)|date(Config.get('settings.date_format'))
-                                : "now"|date(Config.get('settings.date_format')),
+                                : "now"|date(Config.get('settings.date_format'), getTimezone()),
                             { 'class': 'datepicker', 'placeholder': '&#xf073;', 'style': 'width: 90px;' }
                         )
                     }}{{ form_text('duetime_time',
                             ticket.due_time|default is not empty
                                 ? timeWithOffset(ticket.due_time, false)|date('g:ia')
-                                : "now"|date('g:ia'),
-                            { 'class': 'timepicker', 'style': 'border-left: 0; width: 76px;' }
+                                : "now"|date('g:ia', getTimezone()),
+                            { 'class': 'timepicker', 'placeholder': '&#xf017;', 'style': 'border-left: 0; width: 76px;' }
                         )
                     }}
                     &nbsp; <button class="as-link update"><i class="fa fa-check"></i></button>
@@ -161,7 +161,7 @@
             </h3>
             <div style="white-space: normal;">
                 <img src="data:image/png;base64,{{ ticket.user.avatar }}"
-                    width="{% if ticket.user.organisation is not empty %}44{% else %}24{% endif %}"
+                    width="{% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}44{% else %}24{% endif %}"
                     class="avatar left" style="margin-top: 0" />
                 &nbsp; <strong>{{ ticket.user.formatted_name }}</strong>
                 {% if ticket.user.groups is not empty %}
@@ -170,23 +170,23 @@
                     {% endfor %}
                 {% endif %}
                 <br />
-                {% if ticket.user.organisation is not empty %}
+                {% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}
                     &nbsp; <i class="fa fa-building-o"></i> &nbsp;
                     <a href="{{ ticket.user.organisation.url|raw }}">{{ ticket.user.organisation.name }}</a><br />
                 {% endif %}
 
                 {% if ticket.user.email|default is not empty %}
                     <br />
-                    <i class="fa fa-envelope"></i> &nbsp; {{ ticket.user.email }}<br />
+                    <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}<br />
                     {% if ticket.user.confirmed %}
-                        <i class="fa fa-check-square"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
-                        <i class="fa fa-calendar"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ prettyDate(ticket.user.created_at) }}<br />
+                        <i class="fa fa-check-square fa-fw"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
+                        <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ prettyDate(ticket.user.created_at) }}<br />
 
                         {% if ticket.user.last_active_at > 0 %}
-                            <i class="fa fa-clock-o"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ prettyDate(ticket.user.last_active_at) }}<br />
+                            <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ prettyDate(ticket.user.last_active_at) }}<br />
                         {% endif %}
                     {% else %}
-                        <i class="fa fa-square"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
+                        <i class="fa fa-square fa-fw"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
                     {% endif %}
                 {% endif %}
 
@@ -194,7 +194,7 @@
                     {% if ticket.user.email|default is empty %}
                     <br />
                     {% endif %}
-                    <i class="fa fa-globe"></i> &nbsp; {{ countries()[ticket.user.country] }}<br />
+                    <i class="fa fa-globe fa-fw"></i> &nbsp; {{ countries()[ticket.user.country] }}<br />
                 {% endif %}
 
                 {% if userTickets.count() %}
@@ -259,8 +259,7 @@
     </div>
     {% endif %}
 
-    {% if customfields is not empty %}
-    <div class="sidebox">
+    <div class="sidebox {% if customfields is empty %}hide{% endif %}">
         <h3 class="collapsable">
             <i class="fa fa-file-text icon"></i>
             {{ Lang.choice('ticket.customfield', 2) }}
@@ -270,14 +269,15 @@
         </h3>
         <div>
             <form>
-                {% include 'operator.' ~ template ~ '.forms.customfields' %}
+                <div class="customfields">
+                    {% include 'operator.' ~ template ~ '.forms.customfields' %}
+                </div>
                 <div class="form-button">
                     <button class="save-fields" type="button">{{ Lang.get('general.save') }}</button>
                 </div>
             </form>
         </div>
     </div>
-    {% endif %}
 
     {% if not activeOperators.isEmpty() %}
     <div class="sidebox">

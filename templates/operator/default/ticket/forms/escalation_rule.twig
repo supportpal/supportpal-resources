@@ -22,7 +22,8 @@
     <td class="rule-value">
         <div class="action" data-action="0">
             {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
-                rule|default is not empty and rule.action == 0 ? rule.value_text : null)
+                rule|default is not empty and rule.action == 0 ? rule.value_text : null,
+                {'class': 'text'})
             }}
         </div>
 
@@ -30,7 +31,8 @@
             {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
                 rule|default is not empty and rule.action == 1 ? rule.value_text :
                 (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') is not empty
-                ? '<br /><br />' ~ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') : null))
+                ? '<br /><br />' ~ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') : null),
+                {'class': 'text'})
             }}
         </div>
 
@@ -157,6 +159,18 @@
                 {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
                     operators, rule|default is not empty and rule.action == 12 ? rule.value_id : null)
                 }}
+            {% endif %}
+        </div>
+
+        <div class="action" style="display: none" data-action="13">
+            {% if ticketCustomFields is not defined or ticketCustomFields.isEmpty() %}
+                {{ Lang.get('ticket.no_custom_fields', { 'route': route('ticket.operator.customfield.create') })|raw }}
+            {% else %}
+                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                    array_column(ticketCustomFields.toArray(), 'name', 'id'),
+                    rule|default is not empty and rule.action == 13 ? rule.value_id : null, {'class': 'value-id'})
+                }} &nbsp;
+                {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule_customfields' with {'customfields': ticketCustomFields} %}
             {% endif %}
         </div>
     </td>

@@ -1,7 +1,7 @@
 {% extends parent_template %}
 
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block title %}
@@ -45,18 +45,16 @@
     </div>
 
 	<div class="grid-options options box">
-        {% if Auth.guard('operator').user().hasPermission('create.user') %}
-            {% if operator|default is not empty and operator %}
-                <a href="{{ route('user.operator.operator.create') }}">
-                    <i class="fa fa-plus"></i>&nbsp;
-                    {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
-                </a>
-            {% else %}
-                <a href="{{ route('user.operator.user.create') }}" id="createUser">
-                    <i class="fa fa-plus"></i>&nbsp;
-                    {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
-                </a>
-            {% endif %} &nbsp;&nbsp;&nbsp;
+        {% if operator|default is not empty and operator and Auth.guard('operator').user().hasPermission('create.operator') %}
+            <a href="{{ route('user.operator.operator.create') }}">
+                <i class="fa fa-plus"></i>&nbsp;
+                {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
+            </a> &nbsp;&nbsp;&nbsp;
+        {% elseif Auth.guard('operator').user().hasPermission('create.user') %}
+            <a href="{{ route('user.operator.user.create') }}" id="createUser">
+                <i class="fa fa-plus"></i>&nbsp;
+                {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
+            </a> &nbsp;&nbsp;&nbsp;
         {% endif %}
         <a class="toggle-filtering">
             <i class="fa fa-filter"></i>&nbsp;
@@ -72,18 +70,18 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/filtering.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/filtering.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/filtering.css') }}">
 
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/datatable/selectall.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/datatable/selectall.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {

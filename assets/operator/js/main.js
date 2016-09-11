@@ -161,8 +161,8 @@ function addNewItem(className, container) {
         elem.prop('disabled', false);
         [ 'name', 'for', 'id' ].map( function(attribute) {
             var attr = elem.attr(attribute);
-            if (/^\w+\[(\d+)?](\[\w+])?$/.test(attr))
-                elem.attr(attribute, attr.replace(/\[(\d+)?]/mg, '[' + index + ']'));
+            if (/^\w+\[(\d+)?](\[\w+])?(\[\])?$/.test(attr))
+                elem.attr(attribute, attr.replace(/\[(\d+)?]/, '[' + index + ']'));
         });
     });
     // Where do we want to put it?

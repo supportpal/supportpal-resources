@@ -129,7 +129,7 @@
          * @returns {string}
          */
         var createToolbar = function () {
-            return '<div>' +
+            return '<div style="display: inline-block">' +
                         '<br />' +
                         '<button class="switch-view visual-preview" type="button">' +
                             Lang.get('general.preview') +
@@ -233,9 +233,9 @@
                 redactor.opts.codemirror = true;
 
                 // Add the toolbar after the redactor box.
-                $container = redactor.$box.wrap(createContainer());
+                $container = redactor.$box.siblings().addBack().wrapAll(createContainer());
                 $toolbar = $(createToolbar());
-                $container.after($toolbar);
+                $container.siblings(':last').addBack().last().after($toolbar);
 
                 // Initialise editor.
                 codeMirror = redactor.$element.initCodeMirror();
@@ -289,7 +289,8 @@
                     laroute.route('core.operator.emailtemplate.preview'),
                     {
                         'template': codeMirror.getValue(),
-                        'template_id': redactor.$box.parents('form').data('templateId')
+                        'template_id': redactor.$box.parents('form').data('templateId'),
+                        'is_email': (redactor.opts.syntaxEmailTemplate || false) ? 1 : 0
                     }
                 )
                     .done(function (json) {

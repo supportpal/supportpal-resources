@@ -1,5 +1,30 @@
 jQuery(function($){
 
+    // If there was an error and they had selected that this department
+    // is a child of another then we need to toggle the field to hide
+    // all the necessary DOM elements
+    if ($('select[name=parent]').val() != '0') {
+        $('.parentToggle').hide();
+    }
+
+    /**
+     * Toggle sections if the department is a subdepartment or not
+     */
+    $('#parent').on('change', function() {
+        if ($(this).val() != '0') {
+            $('.parentToggle').hide();
+        } else {
+            $('.parentToggle').show();
+        }
+    });
+
+    $('select[name="default_assignedto[]"]').selectize({
+        plugins: ['remove_button'],
+        delimiter: ',',
+        persist: false,
+        dropdownParent: 'body'
+    });
+
     /**
      * Add a new e-mail address to the department form
      */
@@ -22,17 +47,6 @@ jQuery(function($){
     $(".departmentEmail:first :input").prop('disabled', true);
 
     /**
-     * Toggle sections if the department is a subdepartment or not
-     */
-    $('#parent').on('change', function() {
-        if ($(this).val() != '0') {
-            $('.parentToggle').hide();
-        } else {
-            $('.parentToggle').show();
-        }
-    });
-
-    /**
      * Toggle sections depending on email support type
      */
     $('#emailAccounts').on('change', '.email-support', function() {
@@ -50,19 +64,17 @@ jQuery(function($){
         }
     });
     $('.email-support').each(function() {
-        if ($(this).val() == '0') {
-            $(this).parents('.departmentEmail').find('.email-download, .email-piping, .remote-piping').hide();
-        } else if ($(this).val() == '1') {
-            $(this).parents('.departmentEmail').find('.email-download').show();
-            $(this).parents('.departmentEmail').find('.email-piping, .remote-piping').hide();
-        } else if ($(this).val() == '2') {
-            $(this).parents('.departmentEmail').find('.email-download, .remote-piping').hide();
-            $(this).parents('.departmentEmail').find('.email-piping').show();
-        } else if ($(this).val() == '3') {
-            $(this).parents('.departmentEmail').find('.email-download, .email-piping').hide();
-            $(this).parents('.departmentEmail').find('.remote-piping').show();
-        }
+        $(this).change();
     });
+
+    // Handle hiding delete downloaded option when POP3 is selected
+    $('#emailAccounts').on('change', '.email-protocol select', function() {
+        if ($(this).val() == 0) {
+            $(this).parents('.email-download').find('.delete-downloaded').show();
+        } else {
+            $(this).parents('.email-download').find('.delete-downloaded').hide();
+        }
+    })
 
     // Validate email download details
     $('#emailAccounts').on('click', '.validate-email', function() {

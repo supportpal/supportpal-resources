@@ -312,8 +312,14 @@ $(document).ready(function() {
 
     pollReplies();
 
+    // Expand quoted areas
     $(document).on('click', '.expandable', function () {
         $(this).next().toggle('show');
+    });
+
+    // Open links in a new window/tab
+    $(document).on('click', '.message .text a', function() {
+        $(this).attr('target', '_blank');
     });
 
     // Reply type
@@ -677,35 +683,62 @@ $(document).ready(function() {
      * END Split to new ticket
      */
 
+    // Hide group with split/expand buttons when going to another tab
+    $('ul.tabs').on('click', 'li', function() {
+        if ($(this).is('#Messages')) {
+            $('.messages-button-group').show();
+        } else {
+            $('.messages-button-group').hide();
+        }
+    });
+
     /*
      * Toggle long tickets (>5 messages)
      */
-    var selector;
-    if (replyOrder == 'ASC') {
-        selector = ":last";
-    } else {
-        selector = ":first";
-    }
+    var selector = replyOrder == 'ASC' ? ":last" : ":first";
 
-    // Show only the first 'n' characters of each message excluding first/last one
-    $('.notes-header').nextUntil('.messages-header', '.message').not(selector)
-    .add($('.messages-header ~ .message:not(' + selector + ')')).find('.text').html(function () {
-        var orig_text = $(this).html();
-        var trimmed = $(this).text().replace(/[\n\r]/g, ' ').replace(/(<([^>]+)>)/ig,"");
-
-        $(this).parent().addClass('collapsed');
-
-        return '<span class="trimmed">' + trimmed.slice(0, 100) + '...</span>' +
-            '<span class="original" style="display:none;">' + orig_text + '</span>';
-    });
+    // Remove the collapsed class from the first/last message (depending on the reply order).
+    $('.notes-header').nextUntil('.messages-header' + selector, '.message' + selector)
+        .add($('.messages-header ~ .message' + selector))
+        .toggleClass('collapsible collapsed')
+        .find('.text')
+        .find('.original, .trimmed').toggle();
 
     // Collapsing or opening message
     $('#tabMessages').on('click', '.collapsed, .collapsible .header', function(event) {
         // Get right object
-        $this = $(this);
+        var $this = $(this);
         if ($this.parents('.collapsible').length) {
             $this = $this.parent();
         }
+
+        // If we're not currently in the processing of loading the message, and the message has not previously
+        // been fetched then fire an AJAX request to load the message into the DOM.
+        if (! $this.hasClass('loading') && ! $this.find('.text .original').hasClass('loaded')) {
+            $this.find('.text').append(
+                '<span class="loading-text description">'
+                    + '<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...'
+                + '</span>'
+            );
+            $this.addClass('loading');
+
+            $.get(laroute.route('ticket.operator.message.showJson', { id: $this.data('id') }))
+                .success(function (ajax) {
+                    // Load the message in, it should already be sanitized.
+                    $this.find('.text .original')
+                        .html(ajax.data.text)
+                        .addClass('loaded');
+                })
+                .fail(function () {
+                    swal(Lang.get('messages.error'), Lang.get('messages.error_loading_message'), 'error');
+                })
+                .always(function () {
+                    // Unset loading icon.
+                    $this.removeClass('loading');
+                    $this.find('.text .loading-text').remove();
+                });
+        }
+
         // Toggle between collapsed and collapsible mode
         $this.find('.original, .trimmed').toggle();
         $this.toggleClass('collapsible collapsed');
@@ -749,6 +782,28 @@ $(document).ready(function() {
     }
     /*
      * END Toggle long tickets (>5 messages)
+     */
+
+    /*
+     * Expand/collapse all messages
+     */
+    // Show button that allows expanding all if more than 2 messages
+    if ($('.message').size() > 2) {
+        $('.expand-messages').show();
+    }
+
+    // Expand/collapse all messages on click
+    $('.expand-messages, .collapse-messages').on('click', function() {
+        if ($(this).hasClass('expand-messages')) {
+            $('.collapsed-messages').click();
+            $('#tabMessages .collapsed').click();
+        } else {
+            $('#tabMessages .collapsible .header').click();
+        }
+        $('.expand-messages, .collapse-messages').toggle();
+    });
+    /*
+     * END Expand/collapse all messages
      */
 
     /*
@@ -1089,8 +1144,14 @@ $(document).ready(function() {
             message = message.find('.original');
         }
 
+        // Put the HTML in a new container
+        var $currentHtml = $('<div>').append(message.html());
+
+        // Remove any currently quoted section in that message
+        $currentHtml.find('.expandable, .supportpal_quote').remove();
+
         // Trim and convert break lines
-        message = htmlDecodeWithLineBreaks(message.html()).trim();
+        message = htmlDecodeWithLineBreaks($currentHtml.html()).trim();
 
         var length = 100;
         var finalText = '';
@@ -1152,8 +1213,14 @@ function htmlDecodeWithLineBreaks(html) {
 function showMessage(html) {
     // Add message to right place
     var message, code = $(html);
+
+    // Make the message visible.
+    code.removeClass('collapsed').addClass('collapsible');
+    code.find('.trimmed').hide();
+    code.find('.original').show();
+
+    // It's a note
     if (code.hasClass('note')) {
-        // It's a note
         // Determine where to put the note
         if (notesPosition === 0 || notesPosition === 1) {
             // Show the headers (in case its first note)
@@ -1277,13 +1344,32 @@ function changeDepartment(data) {
                 // Update department emails list
                 var first = null;
                 $fromSelectize[0].selectize.clearOptions();
-                $.each(response.data, function(index, value) {
+                $.each(response.data.emails, function(index, value) {
                     if (first === null) first = index;
                     $fromSelectize[0].selectize.addOption({ value: index, text: value });
                     $fromSelectize[0].selectize.refreshOptions(false);
                 });
                 // Select first option
                 $fromSelectize[0].selectize.addItem(first, true);
+
+                // Update custom fields
+                if (typeof response.data.customfields != 'undefined') {
+                    $('#sidebar .customfields').html(response.data.customfields);
+
+                    // Just check to see if we have any custom fields for this department
+                    if ($('#sidebar .customfields').html() == '') {
+                        // None - hide custom fields box
+                        $('#sidebar .customfields').parents('.sidebox').hide();
+                    } else {
+                        // We do - show custom fields box
+                        $('#sidebar .customfields').parents('.sidebox').show();
+                        // Enable hide/show password toggle if needed
+                        callHideShowPassword();
+                    }
+                }
+
+                // Refresh follow up tab
+                refreshFollowUpTab();
             } else {
                 $('.ticket-update.fail').show(500).delay(5000).hide(500);
             }
@@ -1377,6 +1463,27 @@ function applyMacro(macroId) {
     });
 }
 
+function refreshFollowUpTab() {
+    // Show loading icon
+    $('form.followup-form').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
+
+    // Fetch view
+    $.get(
+        laroute.route('ticket.operator.followup.render', { id: ticketId }), { },
+        function(response) {
+            if (response.status == 'success') {
+                // Update form
+                $('form.followup-form').html(response.data);
+            } else {
+                // Show message to refresh
+                $('form.followup-form').html(Lang.get('messages.please_refresh'));
+            }
+        }, "json").fail(function() {
+            // Show message to refresh
+            $('form.followup-form').html(Lang.get('messages.please_refresh'));
+        });
+}
+
 /*
  * Polling for new messages & other ticket related updates
  */
@@ -1427,7 +1534,7 @@ function pollReplies(allMessages) {
                 $('.last-action').text(response.data.details.updated_at);
                 if (response.data.details.update) {
                     // Update sidebar items
-                    $('.edit-user').text(response.data.details.user);
+                    $('.edit-user').html(response.data.details.user);
                     $('select[name="department"]').val(response.data.details.department);
                     $('select[name="status"]').val(response.data.details.status);
                     $('select[name="priority"]').val(response.data.details.priority);
@@ -1454,11 +1561,8 @@ function pollReplies(allMessages) {
                     // Update reply options status and if closed, hide close button
                     if (response.data.details.status == closedStatusId) {
                         $('.close-ticket').hide();
-                        // Set to open if operator replies again
-                        $('select[name=to_status]').val(openStatusId);
                     } else {
                         $('.close-ticket').show();
-                        $('select[name=to_status]').val(response.data.details.status);
                     }
 
                     // If locked, show unlock button instead
@@ -1469,6 +1573,13 @@ function pollReplies(allMessages) {
                         $('.lock-ticket').show();
                         $('h1 .fa-lock, .unlock-ticket').hide();
                     }
+                }
+
+                // Update custom fields
+                if (typeof response.data.customfields != 'undefined') {
+                    $('#sidebar .customfields').html(response.data.customfields);
+                    // Enable hide/show password toggle if needed
+                    callHideShowPassword();
                 }
             }
 

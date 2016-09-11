@@ -4,7 +4,7 @@
         {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][address]', Lang.get('general.address')) }}
         <div class="input-container">
             {{ form_hidden('emails[' ~ (i is defined ? i : '') ~ '][id]', email|default is not empty ? email.id : '') }}
-            {{ form_email('emails[' ~ (i is defined ? i : '') ~ '][address]', email|default is not empty ? email.address : '') }} &nbsp;
+            {{ form_email('emails[' ~ (i is defined ? i : '') ~ '][address]', email|default is not empty ? email.address : '', {'size': 30}) }} &nbsp;
             {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
         </div>
     </div>
@@ -33,7 +33,7 @@
 
     <div class="email-download {% if i is not defined or (email is defined and email.type == 1) %}hide{% endif %}">
 
-        <div class="form-row">
+        <div class="form-row email-protocol">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][protocol]', Lang.get('ticket.protocol')) }}
             <div class="input-container">
                 {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][protocol]', [ 'IMAP', 'POP3' ],
@@ -45,7 +45,7 @@
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][server]', Lang.get('ticket.server')) }}
             <div class="input-container">
                 {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][server]',
-                    email|default is not empty ? email.server : '') }}
+                    email|default is not empty ? email.server : '', {'size': 30}) }}
             </div>
         </div>
 
@@ -53,14 +53,14 @@
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][username]', Lang.get('ticket.username')) }}
             <div class="input-container">
                 {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][username]',
-                    email|default is not empty ? email.username : '') }}
+                    email|default is not empty ? email.username : '', {'size': 30}) }}
             </div>
         </div>
 
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][password]',  Lang.get('ticket.password')) }}
             <div class="input-container">
-                {{ form_password('emails[' ~ (i is defined ? i : '') ~ '][password]') }}
+                {{ form_password('emails[' ~ (i is defined ? i : '') ~ '][password]', {'size': 30}) }}
                 {% if i|default is not empty %}
                 <br />
                 <span class="description">{{ Lang.get('ticket.department_password') }}</span>
@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-row delete-downloaded {% if email is defined and email.protocol == 1 %}hide{% endif %}">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]', Lang.get('ticket.delete_downloaded')) }}
             <div class="input-container">
                 {{ form_check(

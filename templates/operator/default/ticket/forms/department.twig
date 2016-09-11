@@ -24,7 +24,7 @@
         <div class="form-row">
             {{ form_label('name', Lang.get('general.name')) }}
             <div class="input-container">
-                {{ form_text('name') }}
+                {{ form_text('name', null, {'size': 30}) }}
             </div>
         </div>
 
@@ -202,6 +202,15 @@
                     <span class="description">{{ Lang.get('ticket.email_operators_desc') }}</span>
                 </div>
             </div>
+
+            <div class="form-row">
+                {{ form_label('disable_user_email_replies', Lang.get('ticket.disable_user_email_replies')) }}
+                <div class="input-container">
+                    {{ form_check('disable_user_email_replies', 1, null, { 'class': 'toggle', 'id': 'toggle_disable_user_email_replies' }) }}
+                    <label for="toggle_disable_user_email_replies"></label><br />
+                    <span class="description">{{ Lang.get('ticket.disable_user_email_replies_desc') }}</span>
+                </div>
+            </div>
         </div>
 
         <h2>{{ Lang.choice('core.email_template', 2) }}</h2>
@@ -263,26 +272,8 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/department.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/department.js') }}"></script>
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // If there was an error and they had selected that this department
-            // is a child of another then we need to toggle the field to hide
-            // all the necessary DOM elements
-            if ($('select[name=parent]').val() != '0') {
-                $('.parentToggle').hide();
-            }
-
-            $('select[name="default_assignedto[]"]').selectize({
-                plugins: ['remove_button'],
-                delimiter: ',',
-                persist: false,
-                dropdownParent: 'body'
-            });
-        });
-    </script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 {% endblock %}

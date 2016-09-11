@@ -139,7 +139,7 @@
                 { 'data-item': 19, 'data-operator': 1, 'class': 'hide' }) }}
 
         {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
-                tags|default is not empty and tags is not null ? tags : [ ],
+                tags|default is not empty and tags is not null ? {0: '-- ' ~ Lang.get('general.none') ~ ' --'} + tags : {0: '-- ' ~ Lang.get('general.none') ~ ' --'},
                 condition|default is not empty and condition.item == 20 ? condition.value : null,
                 { 'data-item': 20, 'data-operator': 0, 'class': 'hide' }) }}
 

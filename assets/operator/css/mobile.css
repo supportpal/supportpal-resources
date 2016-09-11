@@ -106,6 +106,7 @@ html {
 	#sidebar.sidebar-close {
 		position: static;
 		width: 51px;
+		overflow-x: hidden;
 	}
 
 	#sidebar.sidebar-close .sidebox {
@@ -312,6 +313,10 @@ html {
  */
 
 @media (max-width: 720px) {
+
+	.hide720 {
+		display: none;
+	}
 
 	.form-row label {
 	    position: static;
@@ -570,6 +575,10 @@ html {
 
 	body.sidebar-open #sidebar, body.sidebar-open #main {
 	    padding-top: 50px;
+	}
+
+	#sidebar.sidebar-close {
+		padding-bottom: 46px;
 	}
 
 	.pace .pace-progress {

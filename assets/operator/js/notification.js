@@ -1,7 +1,7 @@
 var lastPoll;
 var stack = {"dir1": "up", "dir2": "left"};
 
-if (notificationType !== 0) {
+if (notificationType != 0) {
 
     // Poller for notifications
     (function pollNotifications() {

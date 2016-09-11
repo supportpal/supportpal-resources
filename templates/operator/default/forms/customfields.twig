@@ -34,7 +34,9 @@
                             customfield['value']|default is not empty and in_array(key, customfield['value']) ? true : false,
                             (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}
                     </label>
-                    <br />
+                    {% if not loop.last %}
+                        <br />
+                    {% endif %}
                 {% endfor %}
                 </div>
 
@@ -70,7 +72,9 @@
                             (customfield['value'] == key) ? true : false,
                             (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }} {{ option }}
                     </label>
-                    <br />
+                    {% if not loop.last %}
+                        <br />
+                    {% endif %}
                 {% endfor %}
                 </div>
 
@@ -102,6 +106,12 @@
                         {% endfor %}
                     </div>
                     {% endfor %}
+            {% endif %}
+            {% if customfield['description'] is not empty %}
+                {% if customfield['type'] != 0 and customfield['type'] != 2 and customfield['type'] != 7 %}
+                    <br />
+                {% endif %}
+                <span class="description">{{ customfield['description'] }}</span>
             {% endif %}
         </div>
     </div>

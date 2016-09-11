@@ -49,7 +49,7 @@
         <div class="form-row">
             {{ form_label('base_url', Lang.get('core.base_url')) }}
             <div class="input-container">
-                {{ form_text('base_url', null, { 'size': '45' }) }}<br />
+                {{ form_text('base_url', null, {'size': '45'}) }}<br />
                 <span class="description">{{ Lang.get('core.base_url_desc') }}</span>
             </div>
         </div>
@@ -60,15 +60,6 @@
                 {{ form_check('enable_ssl', 1, null, { 'class': 'toggle', 'id': 'toggle_enable_ssl' }) }}
                 <label for="toggle_enable_ssl"></label><br />
                 <span class="description">{{ Lang.get('core.enable_ssl_desc') }}</span>
-            </div>
-        </div>
-
-        <div class="form-row force-operator-ssl hide">
-            {{ form_label('force_operator_ssl', Lang.get('core.force_ssl')) }}
-            <div class="input-container">
-                {{ form_check('force_operator_ssl', 1, null, { 'class': 'toggle', 'id': 'toggle_force_operator_ssl' }) }}
-                <label for="toggle_force_operator_ssl"></label><br />
-                <span class="description">{{ Lang.get('core.force_ssl_desc') }}</span>
             </div>
         </div>
 
@@ -147,7 +138,7 @@
         <div class="form-row">
             {{ form_label('global_email_header', Lang.get('core.global_email_header')) }}
             <div class="input-container">
-                {{ form_textarea('global_email_header', company.global_email_header) }}<br>
+                {{ form_textarea('global_email_header', company.global_email_header) }}
                 <span class="description">{{ Lang.get('core.global_email_header_desc') }}</span>
             </div>
         </div>
@@ -155,7 +146,7 @@
         <div class="form-row">
             {{ form_label('global_email_footer', Lang.get('core.global_email_footer')) }}
             <div class="input-container">
-                {{ form_textarea('global_email_footer', company.global_email_footer) }}<br>
+                {{ form_textarea('global_email_footer', company.global_email_footer) }}
                 <span class="description">{{ Lang.get('core.global_email_footer_desc') }}</span>
             </div>
         </div>
@@ -178,14 +169,14 @@
             <div class="form-row">
                 {{ form_label('smtp_host', Lang.get('core.smtp_host')) }}
                 <div class="input-container">
-                    {{ form_text('smtp_host') }}
+                    {{ form_text('smtp_host', null, {'size': '45'}) }}
                 </div>
             </div>
 
             <div class="form-row">
                 {{ form_label('smtp_port', Lang.get('core.smtp_port')) }}
                 <div class="input-container">
-                    {{ form_text('smtp_port') }}
+                    {{ form_text('smtp_port', null, {'size': '6'}) }}
                 </div>
             </div>
 
@@ -203,16 +194,15 @@
 
             <div class="form-row">
                 {{ form_label('smtp_requires_auth', Lang.get('core.smtp_requires_auth')) }}
-                <div class="input-container">
-                    {{ form_radio('smtp_requires_auth', 1, null, {
+                <div class="input-container input-group">
+                    <label>{{ form_radio('smtp_requires_auth', 1, null, {
                             'onclick': "document.getElementById('smtp_auth').style.display = 'block';"
                         })
-                    }} {{ Lang.get('general.yes') }} &nbsp;
-
-                    {{ form_radio('smtp_requires_auth', 0, true, {
+                    }} {{ Lang.get('general.yes') }}</label> &nbsp;
+                    <label>{{ form_radio('smtp_requires_auth', 0, true, {
                             'onclick': "document.getElementById('smtp_auth').style.display = 'none';"
                         })
-                    }} {{ Lang.get('general.no') }}
+                    }} {{ Lang.get('general.no') }}</label>
                 </div>
             </div>
 
@@ -220,17 +210,19 @@
                 <div class="form-row">
                     {{ form_label('smtp_username', Lang.get('core.smtp_username')) }}
                     <div class="input-container">
-                        {{ form_text('smtp_username') }}
+                        {{ form_text('smtp_username', null, {'size': '45'}) }}
                     </div>
                 </div>
 
                 <div class="form-row">
                     {{ form_label('smtp_password', Lang.get('core.smtp_password')) }}
                     <div class="input-container">
-                        <div class="input-with-button">
-                            {{ form_password('smtp_password') }}
-                            {{ form_button(Lang.get('core.validate_smtp'), { 'class': 'validate-smtp' }) }}
-                        </div>
+                        {{ form_password('smtp_password') }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-container">
+                        {{ form_button(Lang.get('core.validate_smtp'), { 'class': 'validate-smtp' }) }} &nbsp;&nbsp;
                         <span class="validate text-progress hide">
                             <i class='fa fa-spinner fa-spin'></i> {{ Lang.get('messages.in_progress') }}...
                         </span>
@@ -385,9 +377,9 @@
 
 {% block scripts_footer %}
     <!-- Code Editor -->
-    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/codeeditor.js') }}"></script>
 
     <script type="text/javascript">
         $(function() {
@@ -434,14 +426,6 @@
                     $('.validate .error-message').text('');
                     $('.validate.text-fail').show();
                 });
-            });
-
-            // Force operator SSL setting
-            if ($('input[name="enable_ssl"]').is(":checked")) {
-                $('.force-operator-ssl').show();
-            }
-            $('input[name="enable_ssl"]').change(function () {
-                $('.force-operator-ssl').toggle();
             });
 
             // On page load, if the radio is checked, show the sections...

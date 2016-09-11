@@ -27,8 +27,15 @@
         {% endif %}
         {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
         <br />
-            <select name="operator" disabled="disabled">
+            <select name="assign" disabled="disabled">
                 <option value="">{{ Lang.get('ticket.assign_operator') }}...</option>
+                {% for operator in operators %}
+                    <option value="{{ operator.id }}">{{ operator.formatted_name }}</option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="unassign" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.unassign_operator') }}...</option>
                 {% for operator in operators %}
                     <option value="{{ operator.id }}">{{ operator.formatted_name }}</option>
                 {% endfor %}
@@ -60,6 +67,13 @@
             &nbsp;
             <select name="tag" disabled="disabled">
                 <option value="">{{ Lang.get('ticket.add_tag') }}...</option>
+                {% for tag in tags %}
+                    <option value="{{ tag.id }}">{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+            &nbsp;
+            <select name="remove_tag" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.remove_tag') }}...</option>
                 {% for tag in tags %}
                     <option value="{{ tag.id }}">{{ tag.name }}</option>
                 {% endfor %}

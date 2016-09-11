@@ -5,22 +5,61 @@ $(function () {
 
     // Toggle all checkboxes
     $('input[name="select-all"]').change(function() {
+        // This is the state, after the checkbox has been changed...
+        var is_checked = $(this).is(':checked');
+
         $('.dataTable tbody tr').each(function(index, $item) {
-            $(this).trigger('click');
+            // Grab the checkbox for the current row.
+            var checkbox = $(this).find('input[type=checkbox].selector');
+
+            // Check all checkboxes, regardless of their current state.
+            if (is_checked && !checkbox.is(":checked")) $(this).trigger('click');
+
+            // Unset all check boxes.
+            if (!is_checked && checkbox.is(':checked')) $(this).trigger('click');
         });
     });
 
     // Ability to select multiple rows
-    $('.dataTable').find('tbody')
-        .on('click', 'tr', function (e) {
-            // Don't trigger the event if we click a link in the table
-            if (typeof e.target === 'undefined'
-                || (e.target.tagName != 'A' && e.target.parentNode.tagName != 'A')
-            ) {
-                var input = $(this).find(".selector");
+    $('.dataTable')
+        // Un-check the select-all checkbox after every AJAX request.
+        .on('xhr.dt', function ( e, settings, json, xhr ) {
+            $('input[name="select-all"]').prop('checked', false);
 
-                input.is(':checked') ? input.prop('checked', false) : input.prop('checked', true);
+            $(this).find('input[type=checkbox]').prop('disabled', false);
+        } )
+
+        // Disable checkboxes before every AJAX request.
+        .on('preXhr.dt', function ( e, settings, data ) {
+            $(this).find('input[type=checkbox]').prop('disabled', true);
+        } )
+
+        .find('tbody')
+        .on('click', 'tr', function (e) {
+            // Get the checkbox.
+            var input = $(this).find(".selector");
+
+            // Don't trigger the event if we click a link in the table or the checkbox is disabled.
+            if ((typeof e.target === 'undefined' || (e.target.tagName != 'A' && e.target.parentNode.tagName != 'A'))
+                && input.is(':enabled')
+            ) {
                 $(this).toggleClass('selected');
+
+                // We want to un-check the checkbox.
+                if (input.is(':checked')) {
+                    input.prop('checked', false);
+
+                    // Uncheck the select all box, as we've no longer got all selected!
+                    $('input[name="select-all"]').prop('checked', false);
+                } else {
+                    // We want to check the checkbox.
+                    input.prop('checked', true);
+
+                    // Check if we've selected all the checkboxes..
+                    if (input.parents('tbody').find('input[type=checkbox].selector').not(':checked').length === 0) {
+                        $('input[name="select-all"]').prop('checked', true);
+                    }
+                }
 
                 // Re-enable buttons if at least one row is selected
                 if ($('tr.selected').length) {

@@ -1,0 +1,80 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.comment', 1) }} {{ Lang.get('general.reply') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_open({ 'route': 'selfservice.operator.comment.store', 'class': 'validate' }) }}
+
+    <div class="form-container first open">
+
+        {{ form_hidden('parent_id', record.id) }}
+        {{ form_hidden('article_id', record.article_id) }}
+
+        <div class="form-row">
+            {{ form_label('author', Lang.get('selfservice.comment_by')) }}
+            <div class="input-container">
+                <a href='{{ route("user.operator.user.edit", [ record.author_id ]) }}'>
+                    {{ record.author.formatted_name }}
+                </a>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('author', Lang.choice('selfservice.comment', 1)) }}
+            <div class="input-container">
+                {{ Purifier.clean(record.text) }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('article', Lang.choice('selfservice.article', 1)) }}
+            <div class="input-container">
+                <a href='{{ route("selfservice.operator.article.edit", {
+                    "type": record.article.type.slug,
+                    "article": record.article_id
+                }) }}'>
+                    {{ record.article.title }}
+                </a>
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('text', Lang.get('general.text')) }}
+            <div class="input-container">
+                {{ form_redactor('text', '@' ~ trim(str_replace(' ', '', record.author.formatted_name)) ~ ' ') }}
+            </div>
+        </div>
+
+        {{ form_hidden('status', 1) }}
+
+    </div>
+
+    <div class="form-button">
+        {{ form_submit(Lang.choice('general.submit', 1)) }}
+    </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('textarea[name=text]').redactor($.Redactor.default_opts);
+
+        });
+    </script>
+{% endblock %}

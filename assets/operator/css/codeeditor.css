@@ -24,3 +24,7 @@
 .loadinggif {
     background: url('../../installer/img/gears.gif') no-repeat center center white;
 }
+
+ul#attached-files {
+    margin: 0;
+}

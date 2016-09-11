@@ -49,6 +49,8 @@
                     <span class="badge right">{{ department.count }}</span>
                 </a>
             </li>
+            {% else %}
+                {{ Lang.get('general.none') }}
             {% endfor %}
         </ul>
     </div>

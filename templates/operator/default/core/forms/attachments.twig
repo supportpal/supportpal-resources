@@ -62,18 +62,18 @@
 <input id="fileupload" type="file" name="files[]" data-url="{{ route(route ~ ".upload") }}" multiple="multiple">
 
 <!-- Attachments JS -->
-<script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-<script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-<script src="{{ asset('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
-<script src="{{ asset('resources/assets/general/js/attachments.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
 
 <!-- Sweet alert 2 -->
 <script>
     // Load JavaScript
-    window.swal || document.write('<script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}">\x3C/script>');
+    window.swal || document.write('<script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}">\x3C/script>');
 
     // Load CSS
-    var path = '{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}';
+    var path = '{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}';
     if (!$("link[href='"+path+"']").length)
         $('<link href="'+path+'" rel="stylesheet">').appendTo("head");
 </script>

@@ -123,23 +123,30 @@ span.subject:hover:after {
     vertical-align: top;
 }
 
-.message .text:after {
+.message .text:before {
     clear: both;
     content: '';
     display: block;
 }
 
-div.expandable {
+.message div.expandable {
+    visibility: hidden;
+}
+
+.message div.expandable:before {
     background-color: #f1f1f1;
     border: 1px solid #ddd;
+    content: '...';
+    display: inline-block;
     font-weight: bold;
     height: 10px;
-    line-height: 0;
+    line-height: 2px;
     margin: 10px 0;
     text-align: center;
-    width: 22px;
+    visibility: visible;
+    width: 20px;
 }
-div.expandable:hover {
+.message div.expandable:hover:before {
     background-color: #d8d8d8;
     cursor: pointer;
 }
@@ -187,23 +194,6 @@ div.collapsed-messages span {
     background: #fff;
     line-height: 0;
     padding: 5px 10px;
-}
-
-.expandable {
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
-    color: #777;
-    font-weight: bold;
-    height: 10px;
-    letter-spacing: 1px;
-    line-height: 0;
-    margin: 5px 0;
-    text-align: center;
-    width: 24px;
-}
-.expandable:hover {
-    background-color: #d8d8d8;
-    cursor: pointer;
 }
 
 .quoted-text {
@@ -318,7 +308,7 @@ div.collapsed-messages span {
     padding: 4px 12px;
 }
 
-button.split-ticket {
+.messages-button-group {
     position: relative;
     z-index: 50;
 }
@@ -447,7 +437,7 @@ table.ticket-details .link:hover {
 }
 
 .existing-user {
-    width: 300px;
+    width: 100%;
 }
 
 .existing-user, .new-user {

@@ -1,7 +1,8 @@
 {% if overriddenViews|default is not empty and overriddenViews['message']|default is not empty %}
     {% include overriddenViews['message'] %}
 {% else %}
-    <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% endif %} clear">
+    <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% endif %} clear collapsed"
+         data-id="{{ message.id }}">
 
     	<div class="header">
     		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
@@ -42,7 +43,13 @@
     	</div>
 
     	<div class="text">
-    		{{ Purifier.clean(message.text) }}
+            <span class="trimmed">{{ message.excerpt }}</span>
+
+            <span class="original {% if message.show_more is empty %}loaded{% endif %}" style="display:none;">
+                {% if message.show_more is empty %}
+                    {{ Purifier.clean(message.text) }}
+                {% endif %}
+            </span>
     	</div>
 
         <div class="edit-message">

@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name') }}
+                    {{ form_text('name', null, {'size': 30}) }}
                 </div>
             </div>
 
@@ -66,8 +66,8 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             if ($('input[name="colour"]').val() === '') {

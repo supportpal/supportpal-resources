@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name') }}
+                    {{ form_text('name', null, {'size': 30}) }}
                 </div>
             </div>
 
@@ -33,7 +33,7 @@
                 {{ form_label('token', Lang.get('core.token')) }}
                 <div class="input-container">
                     <div class="input-with-button">
-                        {{ form_text('token', null, {'size': 40, 'readonly': 'readonly'}) }}
+                        {{ form_text('token', null, {'size': 40, 'readonly': 'readonly'}) }}&nbsp;
                         {{ form_button(Lang.get('general.edit'), {'class': 'edit-button'}) }}
                     </div>
                     <a class="regenerate description" href="#">{{ Lang.get('core.regenerate_token') }}</a>

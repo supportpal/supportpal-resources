@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block title %}
@@ -59,11 +59,11 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
-	<script src="{{ asset('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+	<script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {

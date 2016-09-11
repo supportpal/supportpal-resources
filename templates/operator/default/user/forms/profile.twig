@@ -1,21 +1,21 @@
     <div class="form-row">
         {{ form_label('firstname', Lang.get('user.firstname')) }}
         <div class="input-container">
-            {{ form_text('firstname') }}
+            {{ form_text('firstname', null, {'size': 30}) }}
         </div>
     </div>
 
     <div class="form-row">
         {{ form_label('lastname', Lang.get('user.lastname')) }}
         <div class="input-container">
-            {{ form_text('lastname') }}
+            {{ form_text('lastname', null, {'size': 30}) }}
         </div>
     </div>
 
     <div class="form-row">
         {{ form_label('email', Lang.get('general.email')) }}
         <div class="input-container">
-            {{ form_email('email') }}
+            {{ form_email('email', record.email, {size: 45}) }}
         </div>
     </div>
 
@@ -106,6 +106,9 @@
             {% endif %}
             <div class="input-container">
                 {{ form_select('groups[]', groups, (userGroups is defined ? userGroups : []), { 'multiple': 'multiple' }) }}
+                {% if operator|default is not empty and operator %}
+                    <span class="description">{{ Lang.get('user.select_operator_group_desc') }}</span>
+                {% endif %}
             </div>
         </div>
     {% endif %}
@@ -118,6 +121,15 @@
             <label for="toggle_confirmed"></label>
             <br />
             <span class="description">{{ Lang.get('user.account_active_desc') }}</span>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if managing|default is not empty and managing and (operator|default is empty or not operator) %}
+    <div class="form-row">
+        {{ form_label('notes', Lang.choice('general.note', 2)) }}
+        <div class="input-container">
+            {{ form_textarea('notes') }}
         </div>
     </div>
     {% endif %}

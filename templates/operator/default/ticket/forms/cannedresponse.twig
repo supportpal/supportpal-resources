@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name') }}
+                    {{ form_text('name', null, {'size': 45}) }}
                 </div>
             </div>
 
@@ -33,6 +33,20 @@
                 {{ form_label('text', Lang.get('ticket.response')) }}
                 <div class="input-container">
                     {{ form_redactor_mf('text') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('select', Lang.choice('ticket.tag', 2)) }}
+                <div class="input-container">
+                    <select name="tag[]" multiple="multiple">
+                        {% for tag in tags %}
+                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.name }}'>
+                                {{ tag.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="description">{{ Lang.get('ticket.canned_response_tags_desc') }}</span>
                 </div>
             </div>
 
@@ -71,21 +85,21 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
 
     <!-- Code Editor -->
-    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/codeeditor.js') }}"></script>
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/operator/js/selectize/no_results.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/no_results.js') }}"></script>
 
     <script type="text/javascript">
         var $select, $editor;
@@ -105,11 +119,15 @@
                 e.preventDefault();
             });
 
-            $('select[name="tags[]"]').selectize({
-                plugins: ['no_results'],
-                delimiter: ',',
-                persist: false,
-                dropdownParent: 'body'
+            // Tags
+            $('select[name="tag[]"]').selectize({
+                plugins: ['remove_button'],
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                create: true,
+                maxItems: null,
+                placeholder: Lang.get("ticket.associate_response_tag")
             });
 
             // On page load, toggle the user groups box depending on whether public is set/not

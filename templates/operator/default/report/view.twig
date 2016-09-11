@@ -1,7 +1,7 @@
 {% extends parent_template %}
 
 {% block scripts_header %}
-    <link href="{{ asset('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block sidebar %}
@@ -70,7 +70,7 @@
 
         <div id="chartWrapper" {% if report.charts[0] == 'table' %}class="hide"{% endif %}>
             <div style="text-align: center;" {% if (in_array('table', report.charts) and report.charts|length <= 2) or (not in_array('table', report.charts) and report.charts|length == 1) %}class="hide"{% endif %}>
-                <strong>Type:</strong> &nbsp;
+                <strong>{{ Lang.get('general.type') }}:</strong> &nbsp;
                 <select name="chartType">
                     {% if in_array('pie', report.charts) %}<option value="pie">{{ Lang.get('report.pie') }}</option>{% endif %}
                     {% if in_array('bar', report.charts) %}<option value="bar">{{ Lang.get('report.bar') }}</option>{% endif %}
@@ -95,19 +95,19 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/report.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/filtering.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/report.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/filtering.css') }}">
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-    <script src="{{ asset('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
 
-    <script src="{{ asset('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="{{ asset('resources/assets/operator/js/filtering.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     
     <script type="text/javascript">
         var chartData, startTimestamp, endTimestamp;
@@ -278,7 +278,8 @@
                 "data": data,
                 "order": [],
                 "bProcessing": true,
-                "dom": 'Blfrtip'
+                "dom": 'Blfrtip',
+                "language": {{ dataTable_lang|raw }}
             });
         }
 

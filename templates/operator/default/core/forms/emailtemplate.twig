@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name', null, {'size': 45}) }}
+                    {{ form_text('name', null, {'size': 30}) }}
                 </div>
             </div>
 
@@ -80,21 +80,27 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
 
     <!-- Code Editor -->
-    <script src="{{ asset('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/operator/css/codeeditor.css') }}" />
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/codeeditor.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/codeeditor.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('textarea').redactor($.extend($.Redactor.default_opts, {imageUpload: null, plugins: ['syntax']}));
+            var opts = {
+                imageUpload: null,
+                syntaxEmailTemplate: true,
+                plugins: ['syntax']
+            };
+
+            $('textarea').redactor($.extend($.Redactor.default_opts, opts));
 
             // Insert merge field in visible editor
             $('button.as-link').on('click', function() {

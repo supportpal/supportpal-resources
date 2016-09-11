@@ -26,13 +26,14 @@ $(document.body).ready(function() {
         },
         _renderItemData: function(ul, item) {
             if (item.id !== 0 && item.id !== '') {
-                var string = "<a href=" + item.link + "><span class='result-id'>#" +
-                    item.id.toString().replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>') + "</span>&nbsp; <span class='result-name'>" +
-                    item.label.replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>') + "</span><br><span class='result-secondary'>" +
-                    item.secondary.replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>') + "</span></a>";
+                var $string = $("<a href=" + item.link + "><span class='result-id'></span>&nbsp; <span class='result-name'>" +
+                    "</span><br><span class='result-secondary'></span></a>");
+                $string.find('.result-id').html("#" + item.id.toString().replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>'));
+                $string.find('.result-name').html(item.label.replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>'));
+                $string.find('.result-secondary').html(item.secondary.replace(new RegExp("(" + term + ")", "gi"), '<strong>$1</strong>'));
                 return $("<li class='search-option'>")
                     .data('ui-autocomplete-item', item)
-                    .append(string)
+                    .append($string)
                     .appendTo(ul);
             } else if (item.id === '') {
                 return $("<li class='all-results'>")

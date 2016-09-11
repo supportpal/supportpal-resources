@@ -1,0 +1,89 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.comment', 1) }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, { 'route': [ 'selfservice.operator.comment.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+
+        <div class="form-container first open">
+
+            <div class="form-row">
+                {{ form_label('author', Lang.get('selfservice.comment_by')) }}
+                <div class="input-container">
+                    <a href='{{ route("user.operator.user.edit", [ record.author_id ]) }}'>
+                        {{ record.author.formatted_name }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('article', Lang.choice('selfservice.article', 1)) }}
+                <div class="input-container">
+                    <a href='{{ route("selfservice.operator.article.edit", {
+                            "type": record.article.type.slug,
+                            "article": record.article_id
+                        }) }}'>
+                        {{ record.article.title }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('text', Lang.get('general.text')) }}
+                <div class="input-container">
+                    {{ form_redactor('text', record|default is not empty and record.exists ? record.text
+                        : '@' ~ trim(str_replace(' ', '', record.author.formatted_name)) ~ ' ') }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('status', Lang.choice('general.status', 1)) }}
+                <div class="input-container">
+                    {{ form_select('status', {
+                            0: Lang.get('selfservice.awaiting_moderation'),
+                            1: Lang.get('selfservice.published'),
+                            2: Lang.get('selfservice.spam')
+                        }, (record|default is not empty and record.exists) ? record.status : 1) }}
+                </div>
+            </div>
+
+            {% if record|default is not empty and record.exists and Config.get('settings.comment_ratings') %}
+                <div class="form-row">
+                    {{ form_label('rating', Lang.choice('selfservice.rating', 1)) }}
+                    <div class="input-container">
+                        <span class="score">{{ record.rating }}</span>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('textarea[name=text]').redactor($.Redactor.default_opts);
+
+        });
+    </script>
+{% endblock %}

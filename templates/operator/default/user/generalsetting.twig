@@ -16,6 +16,7 @@
             <li id="System" class="active">{{ Lang.get('general.system') }}</li>
             <li id="Users">{{ Lang.choice('user.user', 2) }}</li>
             <li id="Operators">{{ Lang.choice('general.operator', 2) }}</li>
+            <li id="Organisations">{{ Lang.choice('user.organisation', 2) }}</li>
         </ul>
 
         <div id="tabSystem" class="tabContent">
@@ -37,7 +38,7 @@
 
         <div id="tabUsers" class="tabContent hide">
             <div class="form-row">
-                {{ form_label('toggle_registration_enabled', Lang.get('user.user_reg_enabled')) }}
+                {{ form_label('registration_enabled', Lang.get('user.user_reg_enabled')) }}
                 <div class="input-container">
                     {{ form_check('registration_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_registration_enabled' }) }}
                     <label for="toggle_registration_enabled"></label><br />
@@ -46,7 +47,7 @@
             </div>
 
             <div class="form-row">
-                {{ form_label('toggle_registration_captcha', Lang.get('user.user_reg_captcha')) }}
+                {{ form_label('registration_captcha', Lang.get('user.user_reg_captcha')) }}
                 <div class="input-container">
                     {{ form_check('registration_captcha', 1, null, { 'class': 'toggle', 'id': 'toggle_registration_captcha' }) }}
                     <label for="toggle_registration_captcha"></label><br />
@@ -176,6 +177,25 @@
                         <div class="description">{{ Lang.choice('general.minute', 2) }}</div>
                     </div><br />
                     <span class="description">{{ Lang.get('user.ban_length_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabOrganisations" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('organisations_enabled', Lang.get('user.organisations_enabled')) }}
+                <div class="input-container">
+                    {{ form_check('organisations_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_organisations_enabled' }) }}
+                    <label for="toggle_organisations_enabled"></label><br />
+                    <span class="description">{{ Lang.get('user.organisations_enabled_desc') }}</span>
+                </div>
+            </div>
+            <div class="form-row">
+                {{ form_label('organisation_notifications', Lang.get('user.manager_notifications')) }}
+                <div class="input-container">
+                    {{ form_check('organisation_notifications', 1, null, { 'class': 'toggle', 'id': 'toggle_organisation_notifications' }) }}
+                    <label for="toggle_organisation_notifications"></label><br />
+                    <span class="description">{{ Lang.get('user.manager_notifications_desc') }}</span>
                 </div>
             </div>
         </div>

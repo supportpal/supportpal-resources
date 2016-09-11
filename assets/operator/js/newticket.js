@@ -50,15 +50,6 @@ $(document).ready(function() {
         // Handle ticket type switching
         $('input[name="internal"]').change(function() {
             $('.user-ticket').toggle();
-            if ($(this).val() == '1') {
-                $('input[name="send_user_email"]').prop('disabled', true);
-                $('.send-user-email').hide();
-                $('input[name="send_operators_email"]').prop('checked', true);
-            } else {
-                $('input[name="send_user_email"]').prop('disabled', false);
-                $('.send-user-email').show();
-                $('input[name="send_operators_email"]').prop('checked', false);
-            }
         });
 
         // Handle ticket type switching
@@ -89,7 +80,18 @@ $(document).ready(function() {
             $('input[name="send_operators_email"]').prop('checked', true);
         }
 
-        // Initialise select2
+        // Tags
+        $('select[name="tag[]"]').selectize({
+            plugins: ['remove_button'],
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            create: true,
+            maxItems: null,
+            placeholder: Lang.get("ticket.type_in_tags")
+        });
+
+        // Assigned operators
         $('select[name="assignedto[]"]').selectize({
             plugins: ['remove_button'],
             delimiter: ',',

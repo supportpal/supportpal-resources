@@ -30,7 +30,10 @@
                     <td>
                         <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
                         &nbsp;
-                        {{ user.formattedname }} <span class="description">{{ '<' ~ user.email ~ '>' }}</span>
+                        {{ user.formattedname }}
+                        {% if user.email is not empty %}
+                            <span class="description">{{ '<' ~ user.email ~ '>' }}</span>
+                        {% endif %}
                         {% if record.owner_id == user.id %}
                             <span class="tag">{{ Lang.get('user.owner') }}</span>
                         {% endif %}
@@ -104,12 +107,12 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -145,7 +148,7 @@
                         swal.disableButtons();
                         // Make the request
                         $.ajax({
-                            url: laroute.route('user.operator.organisation.removeUser', { id: record.id }),
+                            url: laroute.route('user.operator.organisation.removeUser', {id: {{ record.id }}}),
                             type: 'DELETE',
                             data: {  user: $this.data('user') },
                             success: function(response) {
@@ -192,12 +195,12 @@
                 render: {
                     option: function(item, escape) {
                         return '<div>' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                            '<span class="title">' +
+                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
+                                '<span class="title">' +
                                 '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                            '</span>' +
-                            '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
-                        '</div>';
+                                '</span>' +
+                                (item.email ? '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
+                                '</div>';
                     }
                 },
                 load: function(query, callback) {

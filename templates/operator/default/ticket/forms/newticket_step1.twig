@@ -49,12 +49,14 @@
                                 <label>
                                     <span class="label">{{ Lang.get('general.email') }}</span>
                                     {{ form_text('user_email') }}
-                                </label><br />
-                                <label>
-                                    <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
-                                    {{ form_text('user_organisation') }}
-                                </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
-
+                                </label>
+                                {% if Config.get('settings.organisations_enabled') %}
+                                    <br />
+                                    <label>
+                                        <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
+                                        {{ form_text('user_organisation') }}
+                                    </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -80,9 +82,9 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script type="text/javascript" src="{{ asset('resources/assets/operator/js/newticket.js') }}"></script>
-    <link href="{{ asset('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
-    <link href="{{ asset('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 {% endblock %}
