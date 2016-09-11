@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+.left {
+    float: left;
+}
+.avatar {
+    -moz-border-radius: 99px;
+    -webkit-border-radius: 99px;
+    border-radius: 99px;
+    height: 48px;
+    margin-right: 20px;
+    width: 48px;
+}
+
+.name {
+    font-size: 1.3em;
+}
+.staff {
+    color: #c0392b;
+}
+.user {
+    color: #27ae60;
+}
+
+.description {
+    color: #888;
+    font-size: 95%;
+    line-height: 1.7em;
+}
+
+.text {
+    margin-top: 15px;
+    padding: 0 0 20px 68px;
+    word-wrap: break-word;
+}
