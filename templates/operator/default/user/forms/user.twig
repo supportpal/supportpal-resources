@@ -2,9 +2,16 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ record.formatted_name }} - {{ Lang.get("general.edit") }} {{ Lang.choice("user.user", 1) }}
+        {{ record.formatted_name }}
+        {% if auth_user().hasPermission('update.user') %}
+            - {{ Lang.get('general.edit_item', {'item': Lang.choice('user.user', 1)}) }}
+        {% endif %}
+        &nbsp;
+        <a class="button" href="{{ route('ticket.operator.ticket.createStep1', {'user': record.id}) }}">
+            {{ Lang.get('ticket.open_new') }}
+        </a>
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('user.user', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -13,7 +20,7 @@
     {% if record|default is not empty and record.exists %}
         {% include 'operator.' ~ template ~ '.user.forms.user_tabs' %}
 
-        {{ form_model(record, { 'route': [ 'user.operator.user.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+        {{ form_model(record, { 'route': [ 'user.operator.user.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'edit-user validate' }) }}
     {% else %}
         {{ form_open({ 'route': 'user.operator.user.store', 'files': true, 'class': 'validate' }) }}
     {% endif %}
@@ -38,16 +45,18 @@
         {% endif %}
 
         {% if customfields is not empty %}
-        <h2>{{ Lang.get('general.custom_fields') }}</h2>
-        <div class="form-container first">
-            {% include 'operator.' ~ template ~ '.forms.customfields' with { 'operator': true } %}
-        </div>
+            <div class="user-customfields">
+                <h2>{{ Lang.get('general.custom_fields') }}</h2>
+                <div class="form-container first">
+                    {% include 'operator.' ~ template ~ '.forms.customfields' with { 'operator': true } %}
+                </div>
+            </div>
         {% endif %}
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
             {% if record.exists and not operator %}
-                <button class="delete-user" type="button">{{ Lang.get('general.delete') ~ ' ' ~ Lang.choice('user.user', 1) }}</button>
+                <button class="delete-user" type="button">{{ Lang.get('general.delete', {'item': Lang.choice('user.user', 1)}) }}</button>
             {% endif %}
         </div>
 
@@ -158,6 +167,9 @@
 
                     // Handle notifications option showing/hiding
                     $('select[name="organisation_access_level"]').change();
+
+                    // Hide view organisation button
+                    $('.view-organisation').hide();
                 }
             });
 
@@ -216,6 +228,105 @@
                         }
                     });
                 });
+            {% endif %}
+
+            // If on edit page and in 'show' mode (no update permission)
+            {% if record|default is not empty and record.exists
+                and not auth_user().hasPermission('update.user') %}
+                // Hide password fields
+                $('.password-field').hide();
+                $('.reset-password').parents('.form-row').hide();
+
+                // Convert input fields to plain text
+                $('.edit-user :input').not('[type=hidden]').replaceWith(function() {
+                    var value = $(this).val();
+
+                    // Checkboxes
+                    if ($(this).is('[type=checkbox]')) {
+                        if ($(this).parents('.input-group').length) {
+                            if ($(this).is(':checked')) {
+                                return '<span></span>';
+                            } else {
+                                $(this).parent().add($(this).parent().next()).remove();
+                                return;
+                            }
+                        } else {
+                            value = $(this).is(':checked') ? Lang.get('general.yes') : Lang.get('general.no');
+                        }
+                    }
+
+                    // Dropdowns
+                    if ($(this).is('select')) {
+                        if (value != '') {
+                            value = $.map(
+                                $(this).find('option:selected'),
+                                function(element) { return $(element).text(); }
+                            ).join(', ');
+                        } else {
+                            value = 'None';
+                        }
+                    }
+
+                    // Radio buttons
+                    if ($(this).is('[type=radio]')) {
+                        if ($(this).is(':checked')) {
+                            return '<span></span>';
+                        } else {
+                            $(this).parent().add($(this).parent().next()).remove();
+                            return;
+                        }
+                    }
+
+                    // Buttons, Files and Submits
+                    if ($(this).is('[type=file]') || $(this).is('[type=submit]') || $(this).is('button')) {
+                        return '<span></span>';
+                    }
+
+                    // Text/textarea fields
+                    if (value == '') {
+                        value = Lang.get('general.na');
+                    }
+
+                    return '<span>' + value + '</span>'
+                });
+
+                // For checklists and radio fields, if there are none selected
+                $('.input-group:not(:has(label))').append('<span>' + Lang.get('general.none') + '</span>');
+
+                // Hide selectize boxes
+                $('.selectize-control').remove();
+            {% endif %}
+
+            // Only applies when creating a user as the brand can be changed
+            {% if not record.exists %}
+                // Brand and custom fields membership assignment
+                var brandCustomFields = JSON.parse('{{ brandCustomFields|raw }}');
+
+                // Change the custom fields to show when the brand is changed
+                $(':input[name="brand_id"]').on('change', function() {
+                    var brandId = $(this).val();
+
+                    // Check if each field exists in the currently selected brand
+                    $('[data-field]').each(function () {
+                        if (brandCustomFields[brandId].indexOf($(this).data('field')) === -1) {
+                            $(this).find(':input').prop('disabled', true);
+                            $(this).hide();
+                        } else {
+                            $(this).find(':input').prop('disabled', false);
+                            $(this).show();
+                        }
+                    });
+
+                    // Do we have any fields for this brand? If not, just hide the section
+                    if (brandCustomFields[brandId].length) {
+                        $('.user-customfields').show();
+                    } else {
+                        $('.user-customfields').hide();
+                    }
+                });
+
+                // Run above code when page loads to remove any fields it shouldn't show for default brand
+                $(':input[name="brand_id"]').change();
             {% endif %}
         });
     </script>

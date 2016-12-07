@@ -1,7 +1,9 @@
 <tr>
     <td class="grid-options" colspan="{{ totalColumns }}" style="line-height:41px;">
-        <button class="delete-user" type="button">{{ Lang.get('general.delete') }}</button> &nbsp;
-        {% if not groups.isEmpty() %}
+        {% if auth_user().hasPermission('delete.user') %}
+            <button class="delete-user" type="button">{{ Lang.get('general.delete') }}</button> &nbsp;
+        {% endif %}
+        {% if not groups.isEmpty() and auth_user().hasPermission('update.user') %}
         <select name="btnChangeGroup" id="btnChangeGroup">
             <option value="">{{ Lang.get('user.add_group') }}...</option>
             {% for group in groups %}

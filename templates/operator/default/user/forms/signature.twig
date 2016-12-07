@@ -1,0 +1,38 @@
+<div id="sectionWrapper">
+
+    {# if brands|length == 2 then then only one exists in the system - Default (fake brand) and Brand 1 #}
+    <ul class="tabs" style="margin: 0; {% if brands|length <= 2 %}display: none;{% endif %}">
+        {% for brand in brands %}
+            <li id="{{ brand.id }}" {% if loop.first %}class="active"{% endif %}>
+                {{ brand.name }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% for brand in brands %}
+        <div id="tab{{ brand.id }}" class="tabContent {% if not loop.first %}hide{% endif %}">
+            {# Add an empty item, we use this for DOM cloning when adding new records #}
+            {% include 'operator.' ~ template ~ '.user.forms.signature_content' with { 'hide': true, 'brand': brand } %}
+
+            <div class="section-items">
+                {% for department, signature in brand.signatures %}
+                    {% include 'operator.' ~ template ~ '.user.forms.signature_content' with { 'brand': brand } %}
+                {% endfor %}
+            </div>
+
+            <div class="form-container open {% if not brand.departments|length %}hide{% endif %}">
+                <div class="form-row small-selectize">
+                    <div class="input-container">
+                        <select name="brand[{{ brand.id }}][department]" title="{{ Lang.get('ticket.add_for_department') }}" class="add-item-selectize">
+                            <option></option>
+                            {% for id, name in brand.departments %}
+                                <option value="{{ id }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>

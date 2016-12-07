@@ -7,17 +7,17 @@
 {% block content %}
 
     <div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('general.message', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('general.message', 1), 'UTF-8') }) }}
     </div>
 
     <div class="message-block">
         {% for message in messages %}
         <div class="message clear message-{{ message.id }}">
             <div class="header">
-                {% if message.user_id == Auth.guard('operator').user.id %}
+                {% if message.user_id == auth_user.id %}
                     <span class="right">
                         <button class="as-link delete-confirm" data-route="{{ route('core.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
                             <i class="fa fa-times"></i>
@@ -27,7 +27,7 @@
 
                 <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24'
                      alt='Operator' class='avatar left' />
-                <span class="name {% if message.user_id == Auth.guard('operator').user.id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
+                <span class="name {% if message.user_id == auth_user.id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
                 <span class="description">{{ formatDate(message.created_at) }}</span>
             </div>
             <div class="text">
@@ -54,24 +54,34 @@
 {% block scripts_footer %}
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- Sweetalert -->
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
-            $('textarea').redactor($.Redactor.default_opts);
+            $('textarea').redactor($.extend($.Redactor.default_opts, {
+                focus: true,
+                plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
+            }));
 
             // Open links (not anchors) in a new window/tab
             $('.message .text a').attr('target', '_blank');
 
             // Delete ticket message
             $(document.body).on('click', '.delete-confirm', function() {
-
                 // Save the delete route and message ID
                 var deleteRoute = $(this).data('route');
                 var messageId = $(this).data('id');
@@ -119,7 +129,6 @@
                         });
                     }
                 });
-
             });
         });
     </script>

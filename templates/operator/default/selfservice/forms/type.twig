@@ -2,19 +2,31 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.type', 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.type', 1)}) }}
     {% else %}
-        {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.type', 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.type', 1)}) }}
     {% endif %}
 {% endblock %}
+
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    brand.name,
+    "<a href='" ~ route('selfservice.operator.type.index', { 'brand': record.brand_id }) ~ "'>"
+        ~ Lang.choice('selfservice.type', 2) ~
+    "</a>",
+    record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.type', 1)})
+        : Lang.get('general.add_item', {'item': Lang.choice('selfservice.type', 1)})
+] %}
 
 {% block content %}
 
     {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'selfservice.operator.type.update', record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
+        {{ form_model(record, { 'route': [ 'selfservice.operator.type.update', record.brand_id, record.id ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
     {% else %}
-        {{ form_open({ 'route': 'selfservice.operator.type.store', 'method': 'POST', 'files': true, 'class': 'validate' }) }}
+        {{ form_open({ 'route': [ 'selfservice.operator.type.store', record.brand_id ], 'method': 'POST', 'files': true, 'class': 'validate' }) }}
     {% endif %}
+
+        {{ form_hidden('brand_id', record.brand_id) }}
 
         <div class="form-container first open">
 

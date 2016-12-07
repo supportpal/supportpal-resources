@@ -40,7 +40,7 @@
                 group|default is not empty and group.type|default is not empty ? group.type : '0')
             }}
         </span>
-        {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition'),
+        {{ form_button(Lang.get('general.add_item', {'item': Lang.get('ticket.condition')}),
             { 'class': 'add-condition' })
         }}
     </div>

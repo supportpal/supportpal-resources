@@ -11,15 +11,15 @@
 {% block title %}
     {% if operator|default is not empty and operator %}
         {% if record|default is not empty and record.exists %}
-            {{ Lang.get("general.edit") }} {{ Lang.choice("user.operator_group", 1) }}
+            {{ Lang.get('general.edit_item', {'item': Lang.choice('user.operator_group', 1)}) }}
         {% else %}
-            {{ Lang.get("general.add") }} {{ Lang.choice("user.operator_group", 1) }}
+            {{ Lang.get('general.add_item', {'item': Lang.choice('user.operator_group', 1)}) }}
         {% endif %}
     {% else %}
         {% if record|default is not empty and record.exists %}
-            {{ Lang.get("general.edit") }} {{ Lang.choice("user.group", 1) }}
+            {{ Lang.get('general.edit_item', {'item': Lang.choice('user.group', 1)}) }}
         {% else %}
-            {{ Lang.get("general.add") }} {{ Lang.choice("user.group", 1) }}
+            {{ Lang.get('general.add_item', {'item': Lang.choice('user.group', 1)}) }}
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -62,12 +62,37 @@
 
         {{ form_hidden('administrator', operator|default is not empty and operator ? 1 : 0) }}
         {% if operator|default is not empty and operator %}
-        <div class="form-row form-full">
-            {{ form_label('roles', Lang.choice('user.role', 2)) }}
-            <div class="input-container">
-                {{ form_select('roles[]', roles, groupRoles, { 'multiple': 'multiple' }) }}
+            <div class="form-row form-full">
+                {{ form_label('roles', Lang.choice('user.role', 2)) }}
+                <div class="input-container">
+                    {{ form_select('roles[]', roles, groupRoles, { 'multiple': 'multiple' }) }}
+                </div>
             </div>
-        </div>
+
+            <div class="form-row">
+                {{ form_label('brand', Lang.choice('core.brand', 2)) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        {{ form_select('brand[]', array_column(Config.get('brand'), 'name', 'id'), groupBrands, {'multiple': 'multiple'}) }}
+                    </div>
+                    <span class="description">{{ Lang.get('user.group_brand_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('department', Lang.choice('ticket.department', 2)) }}
+                <div class="input-container">
+                    <select name="department[]" multiple="multiple">
+                        {% for department in departments %}
+                            <option {% if in_array(department.id, groupDepartments) %}selected="selected"{% endif %}
+                                    data-data='{{ department|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ department.id }}'>
+                                {{ department.dashes|raw }}{{ department.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="description">{{ Lang.get('user.group_department_desc') }}</span>
+                </div>
+            </div>
         {% endif %}
 
         <div class="form-button">
@@ -82,18 +107,18 @@
         <h2>{{ Lang.get('user.group_members') }}</h2>
 
         <div class="success box member-update hide">
-            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('user.group', 1)|lower }) }}
+            {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('user.group', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box member-update hide">
-            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('user.group', 1)|lower }) }}
+            {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('user.group', 1), 'UTF-8') }) }}
         </div>
 
         {{ table.render('operator.' ~ template ~ '.datatables')|raw }}
         {{ table.script()|raw }}
-    {% else %}
-        <!-- Have to extend page so the colour picker is visible -->
-        <br /><br /><br /><br />
     {% endif %}
+
+    <!-- Have to extend page so the selectizes/colour picker is visible -->
+    <br /><br /><br /><br /><br />
 
 {% endblock %}
 
@@ -103,6 +128,8 @@
     {% endif %}
 
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
@@ -122,8 +149,61 @@
             $('input[name="colour"]').minicolors();
 
             $('select[name="roles[]"]').selectize({
+                plugins: ['remove_button']
+            });
+
+            var $departmentsSelectize = $('select[name="department[]"]').selectize({
                 plugins: ['remove_button'],
-                delimiter: ','
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                render: {
+                    item: function(item, escape) {
+                        return '<div class="item">' + item.dashes + escape(item.name) + '</div>';
+                    },
+                    option: function(item, escape) {
+                        return '<div>' + item.dashes + escape(item.name) + '</div>';
+                    }
+                },
+            });
+
+            var xhr;
+
+            $('select[name="brand[]"]').selectize({
+                plugins: ['remove_button'],
+                dropdownParent: 'body',
+                placeholder: Lang.get('core.select_brand'),
+                onChange: function (values) {
+                    // Get the departments that are associated with these brands.
+                    var selectize = $departmentsSelectize[0].selectize,
+                            selected_items = selectize.getValue();
+                    selectize.disable();
+
+                    // Get the departments that are available for this brand
+                    selectize.load(function (callback) {
+                        xhr && xhr.abort();
+                        xhr = $.ajax({
+                            url: laroute.route(
+                                'ticket.operator.department.searchByBrand',
+                                {'brand_ids': values}
+                            ),
+                            success: function (res) {
+                                // Clear options and add new ones
+                                selectize.clearOptions();
+                                selectize.enable();
+                                callback(res.data);
+
+                                // Select previously selected items.
+                                $.each(selected_items, function (index, value) {
+                                    selectize.addItem(value, true);
+                                });
+                            },
+                            error: function () {
+                                callback();
+                            }
+                        })
+                    });
+                }
             });
         });
     </script>
@@ -145,13 +225,22 @@
                     create: false,
                     placeholder: Lang.get('user.search_for_user'),
                     render: {
+                        item: function(item, escape) {
+                            return '<div class="item">' +
+                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                    escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                                    (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
+                                    '</div>';
+                        },
                         option: function(item, escape) {
                             return '<div>' +
-                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                                    '<span class="title">' +
-                                    '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                                    '</span>' +
-                                    '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
+                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                    escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                                    (item.email || item.brand ? '<br /><span class="description">' +
+                                        (item.email ? escape(item.email || '') : '') +
+                                        (item.email && item.brand ? ' - ' : '') +
+                                        (item.brand ? escape(item.brand || '') : '') +
+                                    '</span>' : '') +
                                     '</div>';
                         }
                     },
@@ -178,7 +267,7 @@
                 $('.add-user').click(function() {
                     // Update group membership
                     $.ajax({
-                        url: laroute.route("user.operator.group.members.update", { id: {{ record.id }} }),
+                        url: laroute.route("user.operator.usergroup.members.update", { id: {{ record.id }} }),
                         type: 'PUT',
                         data: { "user": $('select[name="add-user"]').val() }
                     }).done(function(response) {

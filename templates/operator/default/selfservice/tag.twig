@@ -8,11 +8,16 @@
     {{ Lang.choice('selfservice.tag', 2) }}
 {% endblock %}
 
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    Lang.choice('selfservice.tag', 2)
+] %}
+
 {% block content %}
 
     <div class="grid-options options box">
         <a href="{{ route('selfservice.operator.tag.create') }}">
-            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('selfservice.add_tag') }}
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
         </a>
         &nbsp;&nbsp;
         <a class="filter-results">

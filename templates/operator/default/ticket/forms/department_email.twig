@@ -1,10 +1,48 @@
 <div class="departmentEmail form-container open first {% if hide|default is not empty %} hide {% endif %}">
 
+    {{
+        form_hidden(
+            'emails[' ~ (i is defined ? i : '') ~ '][id]',
+            email|default is not empty ? email.id : '',
+            hide|default is not empty ? { 'disabled': 'disabled' } : []
+        )
+    }}
+
+    {% if brands|length > 1 %}
+        <div class="form-row small-selectize">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][brand_id]', Lang.choice('core.brand', 1)) }}
+            <div class="input-container">
+                <select name="{{ 'emails[' ~ (i is defined ? i : '') ~ '][brand_id]' }}"
+                        {% if hide|default is not empty %}disabled="disabled"{% endif %}>
+                    <option></option>
+                    {% for brand in record.brands %}
+                        <option value="{{ brand.id }}" {% if email.brand_id == brand.id %}selected="selected"{% endif %}>
+                            {{ brand.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    {% else %}
+        {{
+            form_hidden(
+                'emails[' ~ (i is defined ? i : '') ~ '][brand_id]',
+                brands|keys|first,
+                hide|default is not empty ? { 'disabled': 'disabled' } : null
+            )
+        }}
+    {% endif %}
+
     <div class="form-row">
         {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][address]', Lang.get('general.address')) }}
         <div class="input-container">
-            {{ form_hidden('emails[' ~ (i is defined ? i : '') ~ '][id]', email|default is not empty ? email.id : '') }}
-            {{ form_email('emails[' ~ (i is defined ? i : '') ~ '][address]', email|default is not empty ? email.address : '', {'size': 30}) }} &nbsp;
+            {{
+                form_email(
+                    'emails[' ~ (i is defined ? i : '') ~ '][address]',
+                    email|default is not empty ? email.address : '',
+                    {'size': 30}|merge((hide|default is not empty ? { 'disabled': 'disabled' } : []))
+                )
+            }} &nbsp;
             {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
         </div>
     </div>
@@ -12,21 +50,51 @@
     <div class="form-row">
         {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][type]', Lang.get('general.type')) }}
         <div class="input-container">
-            {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][type]', [
-                    Lang.get('general.none'),
-                    Lang.get('ticket.email_download'),
-                    Lang.get('ticket.email_piping'),
-                    Lang.get('ticket.remote_email_piping')
-                ],
-                email|default is not empty ? email.type : '', { 'class': 'email-support' }) }}
-
-            <div class="email-piping {% if i is not defined or (email is defined and email.type == 2) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
-                {{ Lang.get('ticket.email_piping_desc') }}<br />
-                <input type="text" value="| php -q {{ base_path('pipe') }}" style="width: 100%;" />
-            </div>
+            {{
+                form_select(
+                    'emails[' ~ (i is defined ? i : '') ~ '][type]',
+                    [
+                        Lang.get('general.none'),
+                        Lang.get('ticket.email_download'),
+                        Lang.get('ticket.email_piping'),
+                        Lang.get('ticket.remote_email_piping')
+                    ],
+                    email|default is not empty ? email.type : '',
+                    { 'class': 'email-support' }|merge((hide|default is not empty ? { 'disabled': 'disabled' } : []))
+                )
+            }}
 
             <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
                 {{ Lang.get('ticket.remote_email_piping_desc')|raw }}
+            </div>
+        </div>
+    </div>
+
+    <div class="email-piping {% if i is not defined or (email is defined and email.type == 2) %}hide{% endif %}">
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][consume_all]', Lang.get('ticket.consume_all')) }}
+            <div class="input-container">
+                {{
+                    form_check(
+                        'emails[' ~ (i is defined ? i : '') ~ '][consume_all]',
+                        1,
+                        email|default is not empty and email.consume_all == "1" ? true : null,
+                        {
+                            'class': 'toggle',
+                            'id': 'toggle_piping_emails[' ~ (i is defined ? i : '') ~ '][consume_all]'
+                        }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
+                <label for="toggle_piping_emails{{ '[' ~ (i is defined ? i : '') ~ '][consume_all]' }}"></label>
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_consume_all') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="input-container warning box" style="margin-bottom: 0">
+                {{ Lang.get('ticket.email_piping_desc') }}<br />
+                <input type="text" class="pipe_path" value="| php -q {{ base_path('pipe') }}" style="width: 100%;" />
             </div>
         </div>
     </div>
@@ -36,31 +104,52 @@
         <div class="form-row email-protocol">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][protocol]', Lang.get('ticket.protocol')) }}
             <div class="input-container">
-                {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][protocol]', [ 'IMAP', 'POP3' ],
-                    email|default is not empty ? email.protocol : '') }}
+                {{
+                    form_select(
+                        'emails[' ~ (i is defined ? i : '') ~ '][protocol]',
+                        [ 'IMAP', 'POP3' ],
+                        email|default is not empty ? email.protocol : '',
+                        hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []
+                    )
+                }}
             </div>
         </div>
 
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][server]', Lang.get('ticket.server')) }}
             <div class="input-container">
-                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][server]',
-                    email|default is not empty ? email.server : '', {'size': 30}) }}
+                {{
+                    form_text(
+                        'emails[' ~ (i is defined ? i : '') ~ '][server]',
+                        email|default is not empty ? email.server : '',
+                        { 'size': 30 }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
             </div>
         </div>
 
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][username]', Lang.get('ticket.username')) }}
             <div class="input-container">
-                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][username]',
-                    email|default is not empty ? email.username : '', {'size': 30}) }}
+                {{
+                    form_text(
+                        'emails[' ~ (i is defined ? i : '') ~ '][username]',
+                        email|default is not empty ? email.username : '',
+                        { 'size': 30 }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
             </div>
         </div>
 
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][password]',  Lang.get('ticket.password')) }}
             <div class="input-container">
-                {{ form_password('emails[' ~ (i is defined ? i : '') ~ '][password]', {'size': 30}) }}
+                {{
+                    form_password(
+                        'emails[' ~ (i is defined ? i : '') ~ '][password]',
+                        {'size': 30}|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
                 {% if i|default is not empty %}
                 <br />
                 <span class="description">{{ Lang.get('ticket.department_password') }}</span>
@@ -85,8 +174,13 @@
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][port]', Lang.get('ticket.port')) }}
             <div class="input-container">
-                {{ form_text('emails[' ~ (i is defined ? i : '') ~ '][port]',
-                    email|default is not empty ? email.port : '', { 'size': 5 }) }}<br />
+                {{
+                    form_text(
+                        'emails[' ~ (i is defined ? i : '') ~ '][port]',
+                        email|default is not empty ? email.port : '',
+                        { 'size': 5 }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}<br />
                 <span class="description">{{ Lang.get('ticket.department_port') }}</span>
             </div>
         </div>
@@ -94,8 +188,14 @@
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][encryption]', Lang.get('ticket.encryption')) }}
             <div class="input-container">
-                {{ form_select('emails[' ~ (i is defined ? i : '') ~ '][encryption]', [ Lang.get('general.none'), 'SSL', 'TLS' ],
-                    email|default is not empty ? email.encryption : '') }}<br />
+                {{
+                    form_select(
+                        'emails[' ~ (i is defined ? i : '') ~ '][encryption]',
+                        [ Lang.get('general.none'), 'SSL', 'TLS' ],
+                        email|default is not empty ? email.encryption : '',
+                        hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []
+                    )
+                }}<br />
                 <span class="description">{{ Lang.get('ticket.department_encryption') }}</span>
             </div>
         </div>
@@ -103,12 +203,17 @@
         <div class="form-row delete-downloaded {% if email is defined and email.protocol == 1 %}hide{% endif %}">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]', Lang.get('ticket.delete_downloaded')) }}
             <div class="input-container">
-                {{ form_check(
+                {{
+                    form_check(
                         'emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]',
                         1,
                         email|default is not empty and email.delete_downloaded == "1" ? true : null,
-                        { 'class': 'toggle', 'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]' }
-                ) }}
+                        {
+                            'class': 'toggle',
+                            'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][delete_downloaded]'
+                        }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
                 <label for="toggle_emails{{ '[' ~ (i is defined ? i : '') ~ '][delete_downloaded]' }}"></label>
                 <br />
                 <span class="description">{{ Lang.get('ticket.department_delete_mail') }}</span>
@@ -118,13 +223,18 @@
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][consume_all]', Lang.get('ticket.consume_all')) }}
             <div class="input-container">
-                {{ form_check(
+                {{
+                    form_check(
                         'emails[' ~ (i is defined ? i : '') ~ '][consume_all]',
                         1,
                         email|default is not empty and email.consume_all == "1" ? true : null,
-                        { 'class': 'toggle', 'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][consume_all]' }
-                ) }}
-                <label for="toggle_emails{{ '[' ~ (i is defined ? i : '') ~ '][consume_all]' }}"></label>
+                        {
+                            'class': 'toggle',
+                            'id': 'toggle_download_emails[' ~ (i is defined ? i : '') ~ '][consume_all]'
+                        }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
+                <label for="toggle_download_emails{{ '[' ~ (i is defined ? i : '') ~ '][consume_all]' }}"></label>
                 <br />
                 <span class="description">{{ Lang.get('ticket.department_consume_all') }}</span>
             </div>

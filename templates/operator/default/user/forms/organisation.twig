@@ -1,7 +1,13 @@
-    <div class="form-row">
+    <div class="form-row small-selectize">
         {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
         <div class="input-container">
             {{ form_select('organisation', organisations, userOrganisation|default is not empty ? userOrganisation.id : null) }}
+            {% if record.exists and userOrganisation|default is not empty %}
+                &nbsp;
+                <a class="view-organisation button" href="{{ route('user.operator.organisation.edit', userOrganisation.id) }}" target="_blank">
+                    {{ Lang.get('user.view_organisation') }}
+                </a>
+            {% endif %}
         </div>
     </div>
     <div class="form-row access-level">

@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice('user.ban', 1) }} {{ Lang.get('general.ip') }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('core.ip_ban', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice('user.ban', 1) }} {{ Lang.get('general.ip') }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('core.ip_ban', 1)}) }}
     {% endif %}
 {% endblock %}
 

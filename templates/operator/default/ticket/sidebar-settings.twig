@@ -7,25 +7,25 @@
         </div>
     </h3>
     <ul {% if module != 'ticket' %}class="hide"{% endif %}>
-        {% if Auth.guard('operator').user().hasPermission('view.cannedresponse') %}
+        {% if auth_user().hasPermission('view.cannedresponse') %}
         <li {% if route starts with 'ticket.operator.cannedresponse' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.cannedresponse.index') }}">{{ Lang.choice("ticket.cannedresponse", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.channel') %}
-        <li id="channelSettings" {% if route starts with 'ticket.operator.channel' or route starts with 'ticket.channel' %}class="current"{% endif %}>
-            <a href="{{ route('ticket.operator.channel.index') }}">{{ Lang.choice("ticket.channel", 2) }}</a>
+        {% if auth_user().hasPermission('view.channel') %}
+        <li {% if route starts with 'ticket.operator.channel' or route starts with 'ticket.channel' %}class="current"{% endif %}>
+            <a id="channelSettings" href="{{ route('ticket.operator.channel.index') }}">{{ Lang.choice("ticket.channel", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.ticketcustomfield') %}
+        {% if auth_user().hasPermission('view.ticketcustomfield') %}
         <li {% if route starts with 'ticket.operator.customfield' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.customfield.index') }}">{{ Lang.choice("customfield.customfield", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.department') %}
+        {% if auth_user().hasPermission('view.department') %}
         <li {% if route starts with 'ticket.operator.department' %}class="current"{% endif %}>
             <a id="ticketDeptSetting" href="{{ route('ticket.operator.department.index') }}">
                 {{ Lang.choice("ticket.department", 2) }}
@@ -33,61 +33,61 @@
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.feedbackform') %}
+        {% if auth_user().hasPermission('view.feedbackform') %}
         <li {% if route starts with 'ticket.operator.feedbackform' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.feedbackform.index') }}">{{ Lang.choice("ticket.feedback_form", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.filter') %}
+        {% if auth_user().hasPermission('view.filter') %}
         <li {% if route starts with 'ticket.operator.filter' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.filter.index') }}">{{ Lang.choice("ticket.filter", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.ticketsetting') %}
+        {% if auth_user().hasPermission('view.ticketsetting') %}
         <li {% if route starts with 'ticket.operator.generalsetting' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.generalsetting') }}">{{ Lang.get("general.generalsetting") }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.holiday') %}
+        {% if auth_user().hasPermission('view.holiday') %}
         <li {% if route starts with 'ticket.operator.holiday' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.holiday.index') }}">{{ Lang.choice("ticket.holiday", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.macro') %}
+        {% if auth_user().hasPermission('view.macro') %}
         <li {% if route starts with 'ticket.operator.macro' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.macro.index') }}">{{ Lang.choice("ticket.macro", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.priority') %}
+        {% if auth_user().hasPermission('view.priority') %}
         <li {% if route starts with 'ticket.operator.priority' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.priority.index') }}">{{ Lang.choice("ticket.priority", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.schedule') %}
+        {% if auth_user().hasPermission('view.schedule') %}
         <li {% if route starts with 'ticket.operator.schedule' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.schedule.index') }}">{{ Lang.choice("ticket.schedule", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.slaplan') %}
+        {% if auth_user().hasPermission('view.slaplan') %}
         <li {% if route starts with 'ticket.operator.slaplan' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.slaplan.index') }}">{{ Lang.choice("ticket.sla_plan", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.status') %}
+        {% if auth_user().hasPermission('view.status') %}
         <li {% if route starts with 'ticket.operator.status' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.status.index') }}">{{ Lang.choice("general.status", 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.tickettag') %}
+        {% if auth_user().hasPermission('view.tickettag') %}
         <li {% if route starts with 'ticket.operator.tag' %}class="current"{% endif %}>
             <a href="{{ route('ticket.operator.tag.index') }}">{{ Lang.choice("ticket.tag", 2) }}</a>
         </li>

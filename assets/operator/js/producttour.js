@@ -34,10 +34,24 @@ var tour = {
             }
         },
         {
+            title: Lang.choice('core.brand', 2),
+            content: Lang.get('core.brand_desc'),
+            target: 'brandSettings',
+            placement: 'right',
+            showPrevButton: true,
+            xOffset: '20px',
+            yOffset: '-22px',
+            multipage: true,
+            onNext: function() {
+                window.location = laroute.route('core.operator.brand.edit', { brand: 1 });
+            }
+        },
+        {
             title: Lang.get('core.company_name'),
             content: Lang.get('core.company_name_desc'),
-            target: 'company_name',
+            target: 'name',
             placement: 'right',
+            xOffset: '10px',
             yOffset: '-15px',
             onNext: function() {
                 $('#Email').trigger('click');
@@ -48,6 +62,7 @@ var tour = {
             content: Lang.get('core.default_email_desc'),
             target: 'default_email',
             placement: 'right',
+            xOffset: '10px',
             yOffset: '-15px',
             showPrevButton: true,
             onNext: function() {
@@ -57,7 +72,7 @@ var tour = {
                 $('#Email').trigger('click');
             },
             onPrev: function() {
-                $('#Company').trigger('click');
+                $('#Website').trigger('click');
             }
         },
         {
@@ -66,6 +81,7 @@ var tour = {
             target: 'ticketDeptSetting',
             placement: 'right',
             showPrevButton: true,
+            xOffset: '20px',
             yOffset: '-70px',
             multipage: true,
             onNext: function() {
@@ -135,8 +151,8 @@ var tour = {
             content: Lang.get('core.ticket_channel_desc'),
             target: 'channelSettings',
             placement: 'right',
-            xOffset: '120px',
-            yOffset: '-40px',
+            xOffset: '20px',
+            yOffset: '-43px',
             showPrevButton: true,
             multipage: true,
             onNext: function() {

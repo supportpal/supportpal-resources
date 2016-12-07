@@ -6,7 +6,7 @@
     </div>
 
     {% for module in Config.get('enabled_modules') %}
-        {% if View.exists('operator.' ~ template ~ '.' ~ module.slug|lower ~ '.sidebar-settings') and Auth.guard('operator').user().canViewSettings(module.slug) %}
+        {% if View.exists('operator.' ~ template ~ '.' ~ module.slug|lower ~ '.sidebar-settings') and auth_user().canViewSettings(module.slug) %}
             {% if route is not defined %}
                 {% set route = Route.currentRouteName() %}
             {% endif %}
@@ -18,5 +18,5 @@
         {% endif %}
     {% endfor %}
 
-    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="http://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
+    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
 </div>

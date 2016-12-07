@@ -6,8 +6,8 @@
 
 		{{ form_open({ 'route': 'operator.login', 'method': 'post', 'class': 'validate' }) }}
 
-            {% if Input.has('intended') %}
-            	{{ form_hidden('intended', base64_decode(Input.get('intended'))) }}
+            {% if intended_url is not null %}
+            	{{ form_hidden('intended', intended_url) }}
             {% endif %}
 
 			<div class="white-box">

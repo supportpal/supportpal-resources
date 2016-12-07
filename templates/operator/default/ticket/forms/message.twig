@@ -3,7 +3,7 @@
 {% else %}
     <div class="quick-actions right">
         <span class="button-group">
-            {% if not in_array(Auth.guard('operator').user().id, ticket.assigned.pluck('id').all()) %}
+            {% if not in_array(auth_user().id, ticket.assigned.pluck('id').all()) %}
                 <button class="take-ticket"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
             {% else %}
                 <!--
@@ -12,7 +12,7 @@
             --><button class="lock-ticket {% if ticket.locked %}hide{% endif %}"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
             --><button class="unlock-ticket {% if not ticket.locked %}hide{% endif %}"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
         </span>
-        {% if (Auth.guard('operator').user().hasPermission('delete.ticket')) %}
+        {% if (auth_user().hasPermission('delete.ticket')) %}
             &nbsp;&nbsp;&nbsp;
             <span class="button-group">
                 <button class="delete-ticket" type="button"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
@@ -44,10 +44,31 @@
         <div class="reply-form">
 
             {{ form_hidden('ticket_id', ticketId) }}
+            {{ form_hidden('reply_all', 1) }}
 
             {% if ticket.department_email_id is not empty %}
-                <div class="form-row form-full recipients">
+                <div class="form-row form-full recipients {% if ticket.cc is not empty %}with-cc{% endif %}">
                     <div>
+                        <div class="reply-all {% if ticket.cc is empty %}hide{% endif %}">
+                            <div class="button">
+                                <span class="icon">
+                                    <i class="fa fa-reply-all" aria-hidden="true"></i>
+                                </span>
+                                <span class="pointer">
+                                    <i class="fa fa-chevron-down"></i>
+                                </span>
+                            </div>
+                            <div class="dropdown hide">
+                                <ul>
+                                    <li class="selected" data-value="1">
+                                        <i class="fa fa-reply-all" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.reply_all') }}
+                                    </li>
+                                    <li data-value="0">
+                                        <i class="fa fa-reply" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.reply_without_cc') }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                         {{ form_label('from', Lang.get('ticket.from')) }}
                         <div class="input-container">
                             {{ form_select('department_email', fromEmails, ticket.department_email_id) }}
@@ -75,13 +96,11 @@
             <div class="form-row">
                 {% if draft|default is not empty %}
                     {{ form_redactor('text', draft, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
-                {% elseif (Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature') is not empty) %}
-                    {{ form_redactor('text',
-                            '<br /><br />' ~ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_signature'),
-                            { "class": "textarea", "size": "50x3", "id": "newMessage" })
-                    }}
                 {% else %}
-                    {{ form_redactor('text', null, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
+                    {{ form_redactor('text',
+                        signature is not empty ? '<br /><br />' ~ signature : null,
+                        { "class": "textarea", "size": "50x3", "id": "newMessage" })
+                    }}
                 {% endif %}
 
                 {# Operator notes #}
@@ -111,7 +130,7 @@
             </div>
 
             <div style="margin-top: 15px;">
-                {{ form_submit(Lang.choice('general.post', 1), { 'class': 'post-button right' }) }}
+                {{ form_submit(Lang.get('ticket.post_reply'), { 'class': 'post-button right' }) }}
 
                 <span class="reply-buttons">
                     {% if ticket.department_email_id is not empty %}

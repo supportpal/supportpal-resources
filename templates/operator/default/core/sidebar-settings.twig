@@ -7,55 +7,61 @@
         </div>
     </h3>
     <ul {% if module != 'core' %}class="hide"{% endif %}>
-        {% if Auth.guard('operator').user().hasPermission('view.apitoken') %}
+        {% if auth_user().hasPermission('view.apitoken') %}
         <li {% if route starts with 'core.operator.apitoken' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.apitoken.index') }}">{{ Lang.choice('core.api_token', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.emailtemplate') %}
+        {% if auth_user().hasPermission('view.brand') %}
+        <li {% if route starts with 'core.operator.brand' %}class="current"{% endif %}>
+            <a id="brandSettings" href="{{ route('core.operator.brand.index') }}">{{ Lang.choice('core.brand', 2) }}</a>
+        </li>
+        {% endif %}
+
+        {% if auth_user().hasPermission('view.emailtemplate') %}
         <li {% if route starts with 'core.operator.emailtemplate' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.emailtemplate.index') }}">{{ Lang.choice('core.email_template', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.coresetting') %}
+        {% if auth_user().hasPermission('view.coresetting') %}
         <li {% if route starts with 'core.operator.generalsetting' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.generalsetting') }}">{{ Lang.get('general.generalsetting') }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.ipban') %}
+        {% if auth_user().hasPermission('view.ipban') %}
         <li {% if route starts with 'core.operator.ipban' %}class="current"{% endif %}>
-            <a href="{{ route('core.operator.ipban.index') }}">{{ Lang.get('general.ip') ~ ' ' ~ Lang.choice('user.ban', 2) }}</a>
+            <a href="{{ route('core.operator.ipban.index') }}">{{ Lang.choice('core.ip_ban', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.ipwhitelist') %}
+        {% if auth_user().hasPermission('view.ipwhitelist') %}
         <li {% if route starts with 'core.operator.ipwhitelist' %}class="current"{% endif %}>
-            <a href="{{ route('core.operator.ipwhitelist.index') }}">{{ Lang.get('general.ip') ~ ' ' ~ Lang.get('user.whitelist') }}</a>
+            <a href="{{ route('core.operator.ipwhitelist.index') }}">{{ Lang.get('core.ip_whitelist') }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.language') %}
+        {% if auth_user().hasPermission('view.language') %}
         <li {% if route starts with 'core.operator.language' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.language.index') }}">{{ Lang.choice('general.language', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.module') %}
+        {% if auth_user().hasPermission('view.module') %}
         <li {% if route starts with 'core.operator.module' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.module.index') }}">{{ Lang.choice('core.modules', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.scheduledtask') %}
+        {% if auth_user().hasPermission('view.scheduledtask') %}
         <li id="scheduledTaskSetting" {% if route starts with 'core.operator.scheduledtask' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.scheduledtask.index') }}">{{ Lang.choice('core.scheduled_task', 2) }}</a>
         </li>
         {% endif %}
 
-        {% if Auth.guard('operator').user().hasPermission('view.spamrule') %}
+        {% if auth_user().hasPermission('view.spamrule') %}
         <li {% if route starts with 'core.operator.spamrule' %}class="current"{% endif %}>
             <a href="{{ route('core.operator.spamrule.index') }}">{{ Lang.choice("core.spam_rule", 2) }}</a>
         </li>

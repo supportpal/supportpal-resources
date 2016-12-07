@@ -1,13 +1,10 @@
 $(document).ready(function () {
-
     // For mobile retina images
     if (window.devicePixelRatio == 2) {
-
         var images = $("img.2x");
 
         // Loop through the images and make them hi-res
         for (var i = 0; i < images.length; i++) {
-
             // Get new image name for @2x version
             var imageType = images[i].src.substr(-4);
             var imageName = images[i].src.substr(0, images[i].src.length - 4);
@@ -15,9 +12,7 @@ $(document).ready(function () {
 
             // Change image source
             images[i].src = imageName;
-
         }
-
     }
 
     // Preserves the mouse-over on top-level menu elements when hovering over children
@@ -36,20 +31,18 @@ $(document).ready(function () {
 
     // Tabs toggling
     $('ul.tabs li').on('click', function() {
-
         // Get name of tab
         var name = $(this).attr('id');
 
         // Hide current div
-        $('div.tabContent').hide();
+        $(this).parent().siblings('div.tabContent').hide();
         // Show new div
         $('#tab' + name).show();
 
         // Remove active from old tab
-        $('ul.tabs li.active').removeClass('active');
+        $(this).parent().find('li.active').removeClass('active');
         // Set to active
         $(this).addClass('active');
-
     });
 
     // Search - Don't submit if it's empty
@@ -132,9 +125,13 @@ $(document).ready(function () {
 
 });
 
-
 /**
- * Add a new item to DOM container
+ * Add a new item to DOM container. This function expects a classname:input[name$="[id]"] to be present
+ * for every unique DOM item within the container.
+ *
+ * @param className
+ * @param container
+ * @returns {number}
  */
 function addNewItem(className, container) {
     // Clone the department e-mail form
@@ -177,6 +174,8 @@ function addNewItem(className, container) {
     newElem.find('select').each(function() {
         $(this).find('option:first').prop('selected', 'selected');
     });
+
+    return index;
 }
 
 // Adds a button to show/hide passwords
@@ -187,4 +186,57 @@ function callHideShowPassword() {
 // Date picker fields
 function callPikaday() {
     $('.datepicker').pikaday({ format: $('meta[name=date_format]').prop('content') });
+}
+
+function array_map (callback) { // eslint-disable-line camelcase
+                                //  discuss at: http://locutus.io/php/array_map/
+                                // original by: Andrea Giammarchi (http://webreflection.blogspot.com)
+                                // improved by: Kevin van Zonneveld (http://kvz.io)
+                                // improved by: Brett Zamir (http://brett-zamir.me)
+                                //    input by: thekid
+                                //      note 1: If the callback is a string (or object, if an array is supplied),
+                                //      note 1: it can only work if the function name is in the global context
+                                //   example 1: array_map( function (a){return (a * a * a)}, [1, 2, 3, 4, 5] )
+                                //   returns 1: [ 1, 8, 27, 64, 125 ]
+
+    var argc = arguments.length
+    var argv = arguments
+    var obj = null
+    var cb = callback
+    var j = argv[1].length
+    var i = 0
+    var k = 1
+    var m = 0
+    var tmp = []
+    var tmpArr = []
+
+    var $global = (typeof window !== 'undefined' ? window : GLOBAL)
+
+    while (i < j) {
+        while (k < argc) {
+            tmp[m++] = argv[k++][i]
+        }
+
+        m = 0
+        k = 1
+
+        if (callback) {
+            if (typeof callback === 'string') {
+                cb = $global[callback]
+            } else if (typeof callback === 'object' && callback.length) {
+                obj = typeof callback[0] === 'string' ? $global[callback[0]] : callback[0]
+                if (typeof obj === 'undefined') {
+                    throw new Error('Object not found: ' + callback[0])
+                }
+                cb = typeof callback[1] === 'string' ? obj[callback[1]] : callback[1]
+            }
+            tmpArr[i++] = cb.apply(obj, tmp)
+        } else {
+            tmpArr[i++] = tmp
+        }
+
+        tmp = []
+    }
+
+    return tmpArr
 }

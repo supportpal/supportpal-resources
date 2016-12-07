@@ -3,7 +3,7 @@
     <h2>{{ Lang.choice('general.detail', 2) }}</h2>
 
     <div class="form-row">
-        {{ form_label('followup_date', Lang.get('ticket.follow_up') ~ ' ' ~ Lang.get('general.date')) }}
+        {{ form_label('followup_date', Lang.get('ticket.follow_up_date')) }}
             <div class="input-container">
                 {{ form_radio('date_type', 0, true) }} {{ Lang.get('ticket.exact_date_time') }} &nbsp;
                 {{ form_radio('date_type', 1) }} {{ Lang.get('ticket.time_from_now') }}
@@ -95,7 +95,7 @@
         </table>
 
         <div class="form-row">
-            {{ form_button(Lang.get('ticket.add_action'), { 'class': 'add-rule' }) }}
+            {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('general.action', 1)}), { 'class': 'add-rule' }) }}
         </div>
 
     </div>
@@ -104,7 +104,7 @@
         {{ form_button(Lang.get('general.save'), { 'class': 'save-followup' }) }}
         <span>&nbsp;&nbsp;</span>
         {{ form_button(Lang.get('ticket.delete_follow_up'),
-                ticket.followup|default is not empty ? { 'class': 'delete-followup' } : { 'class': 'delete-followup hide' })
+            ticket.followup|default is not empty ? { 'class': 'delete-followup' } : { 'class': 'delete-followup hide' })
         }}
     </div>
 

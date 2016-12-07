@@ -11,15 +11,15 @@
 {% block content %}
 
 	<div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.organisation', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.organisation', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.organisation', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.organisation', 1), 'UTF-8') }) }}
     </div>
 
 	<div class="grid-options options box">
 	    <a href="{{ route('user.operator.organisation.create') }}" id="createOrganisation">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.organisation", 1) }}
+	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.organisation', 1)}) }}
 	    </a>
 	    &nbsp;&nbsp;
         <a class="filter-results">
@@ -31,6 +31,12 @@
                 <label>{{ Lang.get('general.name') }}:</label>
                 <div id="filter_name"></div>
             </div>
+            {% if Config.get('brand')|length > 1 %}
+            <div>
+                <label>{{ Lang.choice('core.brand', 1) }}:</label>
+                <div id="filter_brand"></div>
+            </div>
+            {% endif %}
         </div>
 	</div>
 
@@ -56,7 +62,10 @@
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"}
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
+                {% if Config.get('brand')|length > 1 %}
+                    {column_number : 1, filter_container_id: "filter_brand"}
+                {% endif %}
             ]);
         });
     </script>

@@ -15,14 +15,36 @@
         <h2>{{ Lang.get('ticket.department_user_details') }}</h2>
 
         <div class="form-container first">
-            <div class="form-row">
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row small-selectize">
+                    {{ form_label('brand', Lang.choice('core.brand', 1)) }}
+                    <div class="input-container">
+                        <select name="brand">
+                            <option></option>
+                            {% for brand in assignedBrands %}
+                            <option value="{{ brand.id }}" {% if user is not empty and user.brand_id == brand.id %}selected="selected"{% endif %}>
+                                {{ brand.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            {% else %}
+                <input type="hidden" name="brand" value="{{ Config.get('brand')|first.id }}" />
+            {% endif %}
+
+            <div class="form-row small-selectize">
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
-                    {{ form_select('department', departments) }}
+                    {% if Config.get('brand')|length > 1 and user is empty %}
+                        {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
+                    {% else %}
+                        {{ form_select('department', departments) }}
+                    {% endif %}
                 </div>
             </div>
         </div>
-        <div class="form-container">
+        <div class="form-container ticket-type {% if Config.get('brand')|length > 1 and user is empty %}hide{% endif %}">
             <div class="form-row">
                 {{ form_label('internal', Lang.get('ticket.ticket_type')) }}
                 <div class="input-container">
@@ -35,7 +57,15 @@
                             &nbsp;&nbsp;
                             <label>{{ form_radio('user_type', 1) }} {{ Lang.get('ticket.new_user') }}</label>
 
-                            <div class="existing-user" id="existing-user">{{ form_select('user') }}</div>
+                            <div class="existing-user" id="existing-user">
+                                <select name="user">
+                                    {% if user is not empty %}
+                                        <option value="{{ user.id }}" data-data="{{ user|json_encode(constant('JSON_FORCE_OBJECT')) }}" selected="selected">
+                                            {{ user.formatted_name }}
+                                        </option>
+                                    {% endif %}
+                                </select>
+                            </div>
 
                             <div class="new-user hide">
                                 <label>
@@ -60,15 +90,19 @@
                             </div>
                         </div>
 
-                        <label>{{ form_radio('internal', 1) }} {{ Lang.get('ticket.internal_ticket') }}</label> -
-                        <span class="description">{{ Lang.get('ticket.internal_ticket_desc') }}</span>
+                        <div class="internal-ticket">
+                            {{ form_hidden('user', auth_user.id, { 'disabled': 'disabled' }) }}
+
+                            <label>{{ form_radio('internal', 1) }} {{ Lang.get('ticket.internal_ticket') }}</label> -
+                            <span class="description">{{ Lang.get('ticket.internal_ticket_desc') }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-button">
-            {{ form_submit(Lang.get('general.continue')) }}
+        <div class="form-button continue-button">
+            {{ form_submit(Lang.get('general.continue'), Config.get('brand')|length > 1 and user is empty ? {'disabled': 'disabled'} : {}) }}
         </div>
 
     {{ form_close() }}

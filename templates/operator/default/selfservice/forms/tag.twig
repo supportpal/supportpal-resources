@@ -2,11 +2,18 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.tag', 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
     {% else %}
-        {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.tag', 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
     {% endif %}
 {% endblock %}
+
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    "<a href='" ~ route('selfservice.operator.tag.index') ~ "'>" ~ Lang.choice('selfservice.tag', 2) ~ "</a>",
+    record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.tag', 1)})
+        : Lang.get('general.add_item', {'item': Lang.choice('selfservice.tag', 1)})
+] %}
 
 {% block content %}
 

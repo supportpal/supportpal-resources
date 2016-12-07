@@ -8,11 +8,17 @@
     {{ Lang.choice('selfservice.type', 2) }}
 {% endblock %}
 
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    brand.name,
+    Lang.choice('selfservice.type', 2)
+] %}
+
 {% block content %}
 
     <div class="options box">
-        <a href="{{ route('selfservice.operator.type.create') }}">
-            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('selfservice.add_type') }}
+        <a href="{{ route('selfservice.operator.type.create', brand.id) }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.type', 1)}) }}
         </a>
         &nbsp;&nbsp;
         <a class="filter-results">
@@ -34,7 +40,7 @@
     {{ table.render()|raw }}
     {{ table.script()|raw }}
 
-    <div class="note box bottombox">
+    <div class="note box bottombox" id="dndOrderNote">
         <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('selfservice.type_order') }}
     </div>
 

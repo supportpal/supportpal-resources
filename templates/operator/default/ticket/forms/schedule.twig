@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.schedule", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.schedule', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.schedule", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.schedule', 1)}) }}
     {% endif %}
 {% endblock %}
 

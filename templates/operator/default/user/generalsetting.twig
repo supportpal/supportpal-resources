@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block title %}
-    {{ Lang.choice('user.user', 1) }} {{ Lang.get('general.generalsetting') }}
+    {{ Lang.get('general.module_generalsetting', {'module': Lang.choice('user.user', 1)}) }}
 {% endblock %}
 
 {% block content %}

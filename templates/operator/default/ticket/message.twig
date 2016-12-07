@@ -13,7 +13,7 @@
                 <span class="attachment hide">&nbsp; <i class="fa fa-paperclip"></i></span>
             {% endif %}
             <span class="right">
-                {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+                {% if can_update_ticket(auth_user(), message.ticket) %}
                     {{ form_check('split', 1, false, { 'class': 'split-ticket hide', 'data-id': message.id }) }} &nbsp;
                     <button class="as-link quoteMessage" data-id="{{ message.id }}">
                         <i class="fa fa-quote-right"></i>
@@ -33,11 +33,34 @@
                 {% else %}
                     {{ Lang.choice('user.user', 1) }}
                 {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
-                &nbsp;&middot;&nbsp; {{ Lang.get('general.via') }} {{ message.channel.name }}
+                &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                 {% if message.emaillog %}
-                    <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="show-original description">
-                        ({{ Lang.get('core.show_original') }})
-                    </a>
+                    <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
+                    {% if message.emaillog %}
+                    <div class="webui-popover-content form-row recipients email-details">
+                <div>
+                    <label>{{ Lang.get('ticket.to') }}</label>
+                    <div class="input-container">{{ message.emaillog.to|join(', ') }}</div>
+                </div>
+                        {% if not message.emaillog.cc is empty %}
+                            <div>
+                        <label>{{ Lang.get('ticket.cc') }}</label>
+                        <div class="input-container">{{ message.emaillog.cc|join(', ') }}</div>
+                    </div>
+                        {% endif %}
+                        <div>
+                    <label>{{ Lang.get('ticket.from') }}</label>
+                    <div class="input-container">
+                        {{ message.emaillog.from_name ~ ' <' ~ message.emaillog.from_address ~ '>' }}
+                    </div>
+                </div>
+                <div>
+                    <div class="input-container">
+                        <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('core.show_original') }}</a>
+                    </div>
+                </div>
+            </div>
+                {% endif %}
                 {% endif %}
             </span>
     	</div>

@@ -5,14 +5,33 @@
 {% endblock %}
 
 {% block title %}
-    {{ type.name }}: {{ Lang.choice('general.category', 2) }}
+    {% if type|default is not empty %}
+        {{ type.name }}
+    {% else %}
+        {{ Lang.choice('selfservice.category', 2) }}
+    {% endif %}
 {% endblock %}
+
+{% if type|default is not empty %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
+            ~ type.brand.name ~
+        "</a>",
+        Lang.choice('selfservice.category', 2)
+    ] %}
+{% else %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        Lang.choice('selfservice.category', 2)
+    ] %}
+{% endif %}
 
 {% block content %}
 
     <div class="grid-options options box">
-        <a href="{{ route('selfservice.operator.category.create', { 'type': type.slug|lower }) }}">
-            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('selfservice.add_category') }}
+        <a href="{{ route('selfservice.operator.category.create', { 'type': type.id }) }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)}) }}
         </a>
         &nbsp;&nbsp;
         <a class="filter-results">
@@ -23,6 +42,14 @@
             <div>
                 <label>{{ Lang.get('general.name') }}:</label>
                 <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('selfservice.type', 1) }}:</label>
+                <div id="filter_type"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('core.brand', 1) }}:</label>
+                <div id="filter_brand"></div>
             </div>
             <div>
                 <label>{{ Lang.get('general.public') }}:</label>
@@ -55,7 +82,9 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 1, filter_container_id: "filter_public"}
+                {column_number : 1, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_type"},
+                {column_number : 2, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_brand"},
+                {column_number : 3, filter_container_id: "filter_public"}
             ]);
         });
     </script>

@@ -2,21 +2,48 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ type.name }}: {{ Lang.get('general.edit') }} {{ Lang.choice('selfservice.article', 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.article', 1)}) }}
     {% else %}
-        {{ type.name }}: {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.article', 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
     {% endif %}
 {% endblock %}
 
+{% if type|default is not empty %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
+            ~ type.brand.name ~
+        "</a>",
+        "<a href='" ~ route('selfservice.operator.article.index', { 'type': type.id }) ~ "'>"
+            ~ type.name ~
+        "</a>",
+        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.article', 1)})
+            : Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)})
+    ] %}
+{% else %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.article.index') ~ "'>"
+            ~ Lang.choice('selfservice.article', 2) ~
+        "</a>",
+        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.article', 1)})
+            : Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)})
+    ] %}
+{% endif %}
+
 {% block content %}
 
-    {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'selfservice.operator.article.update', type.slug, record.id ], 'method': 'PUT', 'class': 'validate' }) }}
-    {% else %}
-        {{ form_open({ 'route': [ 'selfservice.operator.article.store', type.slug ], 'class': 'validate' }) }}
+    {% if brandWarning %}
+        <div class="warning box">
+            <strong>{{ Lang.get('messages.warning') }}:</strong> {{ Lang.get('selfservice.article_brand_warning') }}
+        </div>
     {% endif %}
 
-        {{ form_hidden('type_id', type.id) }}
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'selfservice.operator.article.update', record.id ], 'method': 'PUT', 'class': 'validate', 'id': 'articleForm' }) }}
+    {% else %}
+        {{ form_open({ 'route': [ 'selfservice.operator.article.store' ], 'class': 'validate', 'id': 'articleForm' }) }}
+    {% endif %}
 
         <div class="form-container first open">
 
@@ -56,21 +83,6 @@
             </div>
 
             <div class="form-row">
-                {{ form_label('select', Lang.choice('selfservice.category', 2)) }}
-                <div class="input-container">
-                    <select name="category[]" multiple="multiple">
-                        {% for category in categories %}
-                            <option data-data='{{ category|json_encode(constant('JSON_FORCE_OBJECT')) }}'
-                                {% if record|default is not empty and record.categories.contains('id', category.id) %}selected="selected"{% endif %}
-                                value='{{ category.id }}'>
-                                {{ category.name }} {{ category.hierarchy }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
                 {{ form_label('select', Lang.choice('selfservice.tag', 2)) }}
                 <div class="input-container">
                     <select name="tag[]" multiple="multiple">
@@ -83,11 +95,41 @@
                 </div>
             </div>
 
+        </div>
+
+        <h2>{{ Lang.choice('selfservice.category', 2) }}</h2>
+
+        <div id="categories">
+
+            {# Add an empty item, we use this for DOM cloning when adding new categories #}
+            {% include 'operator.' ~ template ~ '.selfservice.forms.article_categories' with { 'hide': true } %}
+
+            {# Add existing categories, if there aren't any then show an empty box... #}
+            {% for i, record_type in record.types %}
+                {% include 'operator.' ~ template ~ '.selfservice.forms.article_categories' %}
+            {% else %}
+                {% include 'operator.' ~ template ~ '.selfservice.forms.article_categories' with { 'i': 0, 'record_type': record.types.first() } %}
+            {% endfor %}
+
+            <div class="form-container open">
+                <div class="form-row">
+                    <div class="input-container">
+                        {{ form_button(Lang.get('selfservice.add_to_another_brand'), { 'id': 'add-brand' }) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('selfservice.visibility') }}</h2>
+
+        <div class="form-container open first">
+
             <div class="form-row">
                 {{ form_label('published', Lang.get('selfservice.published')) }}
                 <div class="input-container">
                     {{ form_check('published', 1, record|default is not empty and record.exists ? record.published : true,
-                        { 'class': 'toggle', 'id': 'toggle_published' }) }}
+                    { 'class': 'toggle', 'id': 'toggle_published' }) }}
                     <label for="toggle_published"></label>
                     <br />
                     <span class="description">{{ Lang.get('selfservice.published_desc') }}</span>
@@ -104,24 +146,6 @@
                 </div>
             </div>
 
-            {% if record.views > 0 %}
-            <div class="form-row">
-                <label>{{ Lang.get('general.views')|capitalize }}</label>
-                <div class="input-container">
-                    {{ record.views }}
-                </div>
-            </div>
-            {% endif %}
-
-            {% if record.exists %}
-            <div class="form-row">
-                <label>{{ Lang.get('general.url') }}</label>
-                <div class="input-container">
-                    <a href="{{ record.frontend_url }}" target="_blank">{{ urldecode(record.frontend_url) }}</a>
-                </div>
-            </div>
-            {% endif %}
-
         </div>
 
         <div class="form-button">
@@ -137,60 +161,23 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-            $('textarea[name=text]').redactor($.Redactor.default_opts);
-
-            var $categorySelectize = $('select[name="category[]"]').selectize({
-                plugins: ['remove_button'],
-                valueField: 'id',
-                labelField: 'name',
-                searchField: 'name',
-                create: false,
-                maxItems: null,
-                placeholder: Lang.get("selfservice.associate_category"),
-                render: {
-                    option: function(item, escape) {
-                        return '<div>' + escape(item.name) +
-                                    '<span class="description">' + escape(item.hierarchy) + '</span>' +
-                                '</div>';
-                    }
-                }
-            });
-
-            // If there's a category specified in the URL, set a sefault selectize value
-            if ('{{ Input.get('category', '') }}' !== '') {
-                // Set the category from the URL
-                $categorySelectize[0].selectize.setValue('{{ Input.get('category', '') }}');
-            }
-
-            $('select[name="tag[]"]').selectize({
-                plugins: ['remove_button'],
-                valueField: 'id',
-                labelField: 'name',
-                searchField: 'name',
-                create: true,
-                maxItems: null,
-                placeholder: Lang.get("selfservice.associate_tag")
-            });
-
-            /**
-             * Only show the toggle_protected row if the article is published
-             */
-            $('#toggle_public').on('change', function() {
-                var $container = $('#toggle_protected_container');
-                this.checked ? $container.show() : $container.hide();
-            });
-
-        });
-    </script>
+    <script src="{{ asset_rev('resources/assets/operator/js/article.js') }}"></script>
 {% endblock %}

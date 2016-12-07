@@ -23,9 +23,9 @@
         	<div>
                 <label>{{ Lang.get('general.date') }}:</label>
                 <div>
-                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start') ~ ' ' ~ Lang.get('general.date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                     &nbsp;{{ Lang.get('general.to') }}&nbsp;
-                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end') ~ ' ' ~ Lang.get('general.date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                 </div>
             </div>
             <div>
@@ -35,13 +35,13 @@
                 </div>
             </div>
             <div>
-                <label>{{ Lang.get('ticket.from') ~ ' ' ~ Lang.get('general.name') }}:</label>
+                <label>{{ Lang.get('ticket.from_name') }}:</label>
                 <div>
                 	{{ form_text('sSearch_2', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class':  'reset-filter' }) }}
                 </div>
             </div>
             <div>
-                <label>{{ Lang.get('ticket.from') ~ ' ' ~ Lang.get('general.address') }}:</label>
+                <label>{{ Lang.get('ticket.from_address') }}:</label>
                 <div>
                 	{{ form_text('sSearch_3', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class':  'reset-filter' }) }}
                 </div>

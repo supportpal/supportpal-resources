@@ -14,7 +14,7 @@
     </div>
 
     <div class="conditiongroup-buttons">
-        {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition'), { 'class': 'add-condition' }) }}
+        {{ form_button(Lang.get('general.add_item', {'item': Lang.get('ticket.condition')}), { 'class': 'add-condition' }) }}
         &nbsp;
         {{ form_button(Lang.get('general.update'), { 'class': 'update-filtering' }) }}
     </div>

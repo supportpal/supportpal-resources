@@ -16,44 +16,44 @@
 
 	<div class="success box delete hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('general.operator', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
     <div class="fail box delete hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('general.operator', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
 
     <div class="success box update hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+            {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('general.operator', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('user.user', 1)|lower }) }}
+            {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
     <div class="fail box update hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('general.operator', 1)|lower }) }}
+            {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('general.operator', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('user.user', 1)|lower }) }}
+            {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
 
 	<div class="grid-options options box">
-        {% if operator|default is not empty and operator and Auth.guard('operator').user().hasPermission('create.operator') %}
+        {% if operator|default is not empty and operator and auth_user().hasPermission('create.operator') %}
             <a href="{{ route('user.operator.operator.create') }}">
                 <i class="fa fa-plus"></i>&nbsp;
-                {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
+                {{ Lang.get('general.add_item', {'item': Lang.choice('general.operator', 1)}) }}
             </a> &nbsp;&nbsp;&nbsp;
-        {% elseif Auth.guard('operator').user().hasPermission('create.user') %}
+        {% elseif auth_user().hasPermission('create.user') %}
             <a href="{{ route('user.operator.user.create') }}" id="createUser">
                 <i class="fa fa-plus"></i>&nbsp;
-                {{ Lang.get("general.add") }} {{ Lang.choice("user.user", 1) }}
+                {{ Lang.get('general.add_item', {'item': Lang.choice('user.user', 1)}) }}
             </a> &nbsp;&nbsp;&nbsp;
         {% endif %}
         <a class="toggle-filtering">
@@ -105,9 +105,17 @@
                 // Get the group id
                 var groupId = $(this).val();
 
+                // Get URL depending if its operators or users
+                var url;
+                {% if operator|default is not empty and operator %}
+                    url = laroute.route("user.operator.operatorgroup.members.update", { id: groupId });
+                {% else %}
+                    url = laroute.route("user.operator.usergroup.members.update", { id: groupId });
+                {% endif %}
+
                 // Update group membership
                 $.ajax({
-                    url: laroute.route("user.operator.group.members.update", { id: groupId }),
+                    url: url,
                     type: 'PUT',
                     data: { "user": getSelectedRows() }
                 }).done(function(response) {
@@ -146,6 +154,14 @@
         });
 
         function deleteUser(data) {
+            // Get URL depending if its operators or users
+            var url;
+            {% if operator|default is not empty and operator %}
+                url = laroute.route('user.operator.operator.destroymultiple');
+            {% else %}
+                url = laroute.route('user.operator.user.destroymultiple');
+            {% endif %}
+
             // Show the alert
             swal({
                 title: Lang.get('messages.are_you_sure'),
@@ -161,7 +177,7 @@
                     swal.disableButtons();
                     // Delete record and reload table if successful
                     $.ajax({
-                        url: laroute.route('user.operator.user.destroymultiple'),
+                        url: url,
                         type: 'DELETE',
                         data: { 'user': data },
                         dataType: 'json'
@@ -183,4 +199,12 @@
             });
         }
     </script>
+
+    {% if not auth_user().hasPermission('update.user|delete.user') %}
+        <style type="text/css">
+            input[name='select-all'] {
+                display: none;
+            }
+        </style>
+    {% endif %}
 {% endblock %}

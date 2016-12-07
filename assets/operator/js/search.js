@@ -76,7 +76,7 @@ $(document.body).ready(function() {
                                 category: ""
                             });
                         } else {
-                            var link = laroute.route('core.operator.searchresult', { query: term });
+                            var link = laroute.route('core.operator.searchresult', { query: encodeURI(term) });
                             result.data.push({
                                 id: "",
                                 label: Lang.get('messages.show_all_results'),
@@ -99,11 +99,10 @@ $(document.body).ready(function() {
         },
         autoFocus: true,
         minLength: 0,
-        appendTo: ".headerSearch"
-    });
-
-    // Fixes 'show all results' showing in textbox
-    $('.headerSearch').on('click', '.all-results a', function(e) {
-        $('.headerSearch input[name=query]').val('');
+        appendTo: ".headerSearch",
+        select: function( event, ui ) {
+            // Don't set the search input box to the selected value
+            return false;
+        }
     });
 });

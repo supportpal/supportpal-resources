@@ -2,23 +2,64 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ type.name }}: {{ Lang.get('general.edit') }} {{ Lang.choice('general.category', 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('general.category', 1)}) }}
     {% else %}
-        {{ type.name }}: {{ Lang.get('general.add') }} {{ Lang.choice('general.category', 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)}) }}
     {% endif %}
 {% endblock %}
+
+{% if type|default is not empty %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
+            ~ type.brand.name ~
+        "</a>",
+        "<a href='" ~ route('selfservice.operator.category.index', { 'type': type.id }) ~ "'>"
+            ~ type.name ~
+        "</a>",
+        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('general.category', 1)})
+            : Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)})
+    ] %}
+{% else %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.category.index') ~ "'>"
+            ~ Lang.choice('selfservice.category', 2) ~
+        "</a>",
+        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('general.category', 1)})
+            : Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)})
+    ] %}
+{% endif %}
 
 {% block content %}
 
     {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'selfservice.operator.category.update', type.slug, record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {{ form_model(record, { 'route': [ 'selfservice.operator.category.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
     {% else %}
-        {{ form_open({ 'route': [ 'selfservice.operator.category.store', type.slug ], 'class': 'validate' }) }}
+        {{ form_open({ 'route': [ 'selfservice.operator.category.store' ], 'class': 'validate' }) }}
     {% endif %}
 
-        {{ form_hidden('type_id', type.id) }}
-
         <div class="form-container first open">
+
+            <div class="form-row small-selectize">
+                {{ form_label('type_id', Lang.choice('selfservice.type', 1)) }}
+                <div class="input-container">
+                    <select name="type_id">
+                        <option value="">{{ Lang.get('selfservice.select_type') }}</option>
+                        {% for brand in Config.get('brand') %}
+                            {% if auth_user().isAssignedToBrand(brand.id) %}
+                                <optgroup label="{{ brand.name }}">
+                                    {% for brand_type in brand.types %}
+                                        <option value="{{ brand_type.id }}" {% if brand_type.id == record.type_id %}selected="selected"{% endif %}>
+                                            {{ brand_type.name }}
+                                        </option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
 
             <div class="form-row">
                 {{ form_label('text', Lang.get('general.name')) }}
@@ -27,8 +68,8 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                {{ form_label('select', Lang.get('general.parent')) }}
+            <div class="form-row small-selectize">
+                {{ form_label('parent_id', Lang.get('general.parent')) }}
                 <div class="input-container">
                     {{ form_select('parent_id', categories,
                         record|default is not empty and record.exists ? record.parent_id : null) }}
@@ -52,10 +93,73 @@
 
     {{ form_close() }}
 
+    <br /><br />
+
 {% endblock %}
 
 {% block scripts_footer %}
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * AJAX instance for type dropdown.
+             */
+            var xhr;
+
+            // Type dropdown
+            $('select[name="type_id"]').selectize({
+                onChange: function(value) {
+                    // Only carry on if we have a type
+                    if (!value.length) return;
+
+                    var selectize = parent[0].selectize;
+
+                    // Load the categories for the selected self-service type.
+                    selectize.disable();
+                    selectize.clearOptions();
+                    selectize.load(function(callback) {
+                        xhr && xhr.abort();
+                        xhr = $.ajax({
+                            url: laroute.route('selfservice.operator.type.categories', { 'type': value, 'category': '{{ record.id }}' }),
+                            success: function(res) {
+                                // Add None value and update rest of options
+                                selectize.enable();
+                                selectize.addOption({'id': 0, 'name': Lang.get('general.none')});
+                                callback(res.data);
+                                selectize.setValue(0, true);
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        })
+                    });
+                }
+            });
+
+            // Parent dropdown
+            var parent = $('select[name="parent_id"]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                render: {
+                    item: function(item, escape) {
+                        return '<div class="item">' + escape(item.name) +
+                                (item.hierarchy ? '<span class="description">' + escape(item.hierarchy) + '</span>' : '') +
+                            '</div>';
+                    },
+                    option: function(item, escape) {
+                        return '<div>' + escape(item.name) +
+                                (item.hierarchy ? '<span class="description">' + escape(item.hierarchy) + '</span>' : '') +
+                            '</div>';
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock %}

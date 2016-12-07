@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.get('user.whitelisted') }} {{ Lang.get('general.ip') }}
+        {{ Lang.get('general.edit_item', {'item': Lang.get('core.ip_whitelist')}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.get('user.whitelisted') }} {{ Lang.get('general.ip') }}
+        {{ Lang.get('general.add_item', {'item': Lang.get('core.ip_whitelist')}) }}
     {% endif %}
 {% endblock %}
 

@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.feedback_form", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.feedback_form', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.feedback_form", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.feedback_form', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -113,7 +113,7 @@
                     {{ form_select('condition_group_type', { 0: Lang.get('ticket.all_groups'), 1: Lang.get('ticket.any_group') },
                         record.condition_group_type|default is not empty ? record.condition_group_type : 0) }}
                 </span>
-                {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition_group'), { 'class': 'add-conditiongroup' }) }}
+                {{ form_button(Lang.get('general.add_item', {'item': Lang.get('ticket.condition_group')}), { 'class': 'add-conditiongroup' }) }}
             </div>
         </div>
 
@@ -147,7 +147,7 @@
             </table>
 
             <div class="form-row">
-                {{ form_button(Lang.get('ticket.add_field'), { 'class': 'add-field' }) }}
+                {{ form_button(Lang.get('general.add_item', {'item': Lang.get('general.field')}), { 'class': 'add-field' }) }}
             </div>
 
         </div>

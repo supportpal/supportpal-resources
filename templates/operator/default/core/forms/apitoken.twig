@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get('general.edit') }} {{ Lang.choice('core.api_token', 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('core.api_token', 1)}) }}
     {% else %}
-        {{ Lang.get('general.add') }} {{ Lang.choice('core.api_token', 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('core.api_token', 1)}) }}
     {% endif %}
 {% endblock %}
 

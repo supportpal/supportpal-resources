@@ -47,6 +47,17 @@ function Ticket(parameters)
             $('.split-ticket').show();
         }
 
+        // If we have one or more CC email, show the reply-all button, else hide it (if it's there)
+        if ($('.cc-emails').is(':visible')) {
+            if ($ccSelectize[0].selectize.getValue().length) {
+                $('.recipients').addClass('with-cc');
+                $('.recipients .reply-all').show();
+            } else {
+                $('.recipients').removeClass('with-cc');
+                $('.recipients .reply-all').hide();
+            }
+        }
+
         // Update log
         $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
     };
@@ -188,6 +199,8 @@ function Ticket(parameters)
             return false;
         }
 
+        var self = this;
+
         $.ajax({
             url: $form.data('route'),
             type: 'PUT',
@@ -202,6 +215,12 @@ function Ticket(parameters)
             // Hide edit form
             var message = $(response.data.view).replaceAll($form.parents('.message'));
 
+            // Show the edited message (otherwise it's collapsed).
+            message.click();
+
+            // Register email details.
+            self.registerEmailDetails(message.find('.show-email-details'));
+
             // Update editor for editing this updated message
             showFeedback();
             redactor(message.find('textarea'));
@@ -210,6 +229,16 @@ function Ticket(parameters)
         }).always(function () {
             always_message_handler($form);
         });
+    };
+
+    /**
+     * Register email details.
+     *
+     * @param $element
+     */
+    this.registerEmailDetails = function($element)
+    {
+        $element.webuiPopover({ placement: 'vertical', padding: false, offsetTop: 2 });
     };
 
     /**
@@ -360,6 +389,9 @@ $(document).ready(function() {
             } else {
                 $('.discard-draft').hide();
             }
+
+            // Change submit to show 'Post Note'
+            $('.post-button').val(Lang.get('ticket.post_note'));
         } else {
             $('#emailToUsers, .recipients').show();
             $('#' + $('#newNote').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
@@ -388,6 +420,9 @@ $(document).ready(function() {
             } else {
                 $('.discard-draft').hide();
             }
+
+            // Change submit to show 'Post Reply'
+            $('.post-button').val(Lang.get('ticket.post_reply'));
         }
     });
 
@@ -398,10 +433,18 @@ $(document).ready(function() {
     // Process close button
     $('.close-ticket').click(function() {
         ticketAction(laroute.route('ticket.operator.action.close'));
+        $(document).ajaxStop(function () {
+            // Go back to ticket grid
+            window.location.replace(ticketGridUrl);
+        });
     });
     // Process lock button
     $('.lock-ticket').click(function() {
         ticketAction(laroute.route('ticket.operator.action.lock'));
+        $(document).ajaxStop(function () {
+            // Go back to ticket grid
+            window.location.replace(ticketGridUrl);
+        });
     });
     // Process unlock button
     $('.unlock-ticket').click(function() {
@@ -418,17 +461,26 @@ $(document).ready(function() {
     });
 
     // Toggle edit form
-    $(document.body).on('click', '.edit-button', function() {
-        if ($(this).parents('.message').hasClass('collapsed')) {
-            // Stop message collapsing
-            $(this).parents('.header').click();
+    $(document.body).on('click', '.edit-button', function(event) {
+        var message = $(this).parents('.message');
+
+        // Don't collapse message if it's currently open
+        if (message.hasClass('collapsible')) {
+            event.stopPropagation();
         }
 
-        $(this).parents('.message').find('.text, .edit-message').toggle();
+        message.find('.text, .edit-message').toggle();
+
+        // Focus the textarea, when editing the message.
+        if (message.find('.edit-message').is(':visible')) {
+            message.find('textarea:not(.CodeMirror textarea):eq(0)').redactor('focus.setStart');
+        }
     });
 
     // Delete ticket message
-    $(document.body).on('click', '.delete-confirm', function() {
+    $(document.body).on('click', '.delete-confirm', function(event) {
+        // Don't collapse or expand message
+        event.stopPropagation();
 
         // Save the delete route and message ID
         var deleteRoute = $(this).data('route');
@@ -461,8 +513,7 @@ $(document).ready(function() {
                             $('.message-' + messageId).remove();
                             if (!$('.message').length) {
                                 // No more messages exist, ticket will likely have been deleted, redirect to grid
-                                $('body').append($('<form class="redirect" action="' + laroute.route('ticket.operator.ticket') + '" method="get"></form>'));
-                                $('form.redirect').submit();
+                                window.location.replace(ticketGridUrl);
                             }
                             if (!$('.note').length) {
                                 // No more notes, hide the headers
@@ -581,7 +632,7 @@ $(document).ready(function() {
 
         // If it's an edit or new message
         if ($(this).hasClass('edit')) {
-            ticket.updateMessage($(this), $(this).find('textarea'));
+            ticket.updateMessage($(this), $(this).find('textarea:not(.CodeMirror textarea):eq(0)'));
         } else {
             var selector = $('.reply-type .option.active').data('type') == 1 ? '#newNote' : '#newMessage';
 
@@ -702,19 +753,22 @@ $(document).ready(function() {
         .add($('.messages-header ~ .message' + selector))
         .toggleClass('collapsible collapsed')
         .find('.text')
-        .find('.original, .trimmed').toggle();
+        .children('.original, .trimmed').toggle();
 
     // Collapsing or opening message
-    $('#tabMessages').on('click', '.collapsed, .collapsible .header', function(event) {
+    $(document).on('click', '.collapsed, .collapsible .header', function() {
         // Get right object
         var $this = $(this);
         if ($this.parents('.collapsible').length) {
             $this = $this.parent();
         }
 
+        // This holds the trimmed and original versions of the message.
+        var $text = $this.find('.text');
+
         // If we're not currently in the processing of loading the message, and the message has not previously
         // been fetched then fire an AJAX request to load the message into the DOM.
-        if (! $this.hasClass('loading') && ! $this.find('.text .original').hasClass('loaded')) {
+        if (! $this.hasClass('loading') && ! $text.children('.original').hasClass('loaded')) {
             $this.find('.text').append(
                 '<span class="loading-text description">'
                     + '<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...'
@@ -725,7 +779,7 @@ $(document).ready(function() {
             $.get(laroute.route('ticket.operator.message.showJson', { id: $this.data('id') }))
                 .success(function (ajax) {
                     // Load the message in, it should already be sanitized.
-                    $this.find('.text .original')
+                    $text.children('.original')
                         .html(ajax.data.text)
                         .addClass('loaded');
                 })
@@ -740,7 +794,7 @@ $(document).ready(function() {
         }
 
         // Toggle between collapsed and collapsible mode
-        $this.find('.original, .trimmed').toggle();
+        $text.children('.original, .trimmed').toggle();
         $this.toggleClass('collapsible collapsed');
     });
 
@@ -893,7 +947,7 @@ $(document).ready(function() {
         }
     })();
     /*
-     * Saving drafts automatically
+     * END Saving drafts automatically
      */
 
     // Save draft button
@@ -942,6 +996,45 @@ $(document).ready(function() {
         applyMacro($(this).data('macro'));
     });
 
+    // Hide reply all dropdown if clicking outside the reply-all div
+    $(document).click(function() {
+        if (! $(event.target).closest('.reply-all').length) {
+            if ($('.reply-all .dropdown').is(":visible")) {
+                $('.reply-all .dropdown').hide();
+            }
+        }
+    });
+
+    // Handle reply all button to show dropdown
+    $('.reply-all .button').on('click', function() {
+        $(this).parent().find('.dropdown').toggle();
+    });
+
+    // Reply all
+    $('.reply-all .dropdown li').click(function() {
+        var value = $(this).data('value');
+
+        // Update reply_all input
+        $('input[name="reply_all"]').val(value);
+
+        // Change active dropdown option
+        $(this).parent().find('li').removeClass('selected');
+        $(this).addClass('selected');
+
+        // Update icon in button and show/hide CC emails based on value
+        $(this).parents('.reply-all').find('.button .icon .fa').removeClass('fa-reply fa-reply-all');
+        if (value == '1') {
+            $(this).parents('.reply-all').find('.button .icon .fa').addClass('fa-reply-all');
+            $('.cc-emails').show();
+        } else {
+            $(this).parents('.reply-all').find('.button .icon .fa').addClass('fa-reply');
+            $('.cc-emails').hide();
+        }
+
+        // Hide dropdown
+        $(this).parents('.dropdown').hide();
+    });
+
     // Regex for email
     var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
@@ -952,7 +1045,7 @@ $(document).ready(function() {
     });
 
     // CC email input
-    $('select[name="cc[]"]').selectize({
+    $ccSelectize = $('select[name="cc[]"]').selectize({
         plugins: ['restore_on_backspace', 'remove_button'],
         delimiter: ',',
         persist: false,
@@ -977,6 +1070,7 @@ $(document).ready(function() {
     // Show CC email input
     $('.add-cc').on('click', function() {
         $('.cc-emails').toggle();
+        $('.add-cc').hide();
     });
 
     /**
@@ -994,11 +1088,9 @@ $(document).ready(function() {
         render: {
             option: function(item, escape) {
                 return '<div>' +
-                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                    '<span class="title">' +
-                    '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                    '</span>' +
-                    '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
+                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                    escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                    (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
                     '</div>';
             }
         },
@@ -1007,9 +1099,12 @@ $(document).ready(function() {
 
             var data = { q: query };
 
-            // If we want it to be internal, show only operators, else users
             if ($('input[name="user_internal"]').is(":checked")) {
+                // If we want it to be internal, show only operators, else users
                 data.operator = true;
+            } else {
+                // User search, only fetch users for this ticket brand
+                data.brand_id = brandId;
             }
 
             $.get(laroute.route('user.operator.search'), data)
@@ -1034,15 +1129,23 @@ $(document).ready(function() {
      */
     $tagSelectize = $('.assign-tags').selectize({
         plugins: ['remove_button'],
-        valueField: 'id',
+        valueField: 'name',
         labelField: 'name',
         searchField: [ 'name' ],
         create: true,
         maxItems: null,
         placeholder: Lang.get('ticket.type_in_tags') + '...',
         render: {
+            item: function(item, escape) {
+                return '<div class="item" style="background-color: ' + escape(item.colour) + '; color: ' + item.colour_text + '">'
+                        + escape(item.name)
+                    + '</div>';
+            },
             option: function(item, escape) {
-                return '<div>' + escape(item.name) + '</div>';
+                return '<div>'
+                        + '<span class="statusIcon" style="background-color: ' + escape(item.colour) +'"></span>'
+                        + '&nbsp; ' + escape(item.name)
+                    + '</div>';
             }
         },
         load: function(query, callback) {
@@ -1086,20 +1189,24 @@ $(document).ready(function() {
         maxItems: null,
         placeholder: Lang.get('ticket.assign_operator') + '...',
         render: {
+            item: function(item, escape) {
+                return '<div class="item">'
+                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + escape(item.formatted_name)
+                    + '</div>';
+            },
             option: function(item, escape) {
-                return '<div>' +
-                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                    '<span class="title">' +
-                    '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                    '</span>' +
-                    '</div>';
+                return '<div>'
+                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + escape(item.formatted_name)
+                    + '</div>';
             }
         },
         load: function(query, callback) {
             if (!query.length) return callback();
 
             // Set the route for the current department
-            var route = laroute.route('ticket.operator.department.search', { id: $('select[name="department"]').val(), name: '' });
+            var route = laroute.route('ticket.operator.department.search', { id: $('select[name="department"]').val() });
 
             $.get( route, { s: query })
                 .done(function(res) { callback(res.data); })
@@ -1127,21 +1234,20 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('click', '.show-original', function() {
-        // Stop message collapsing
-        $(this).parents('.header').click();
-    });
+    // Show email details popup
+    ticket.registerEmailDetails($('.show-email-details'));
 
-    $(document).on('click', '.quoteMessage', function() {
-        // Stop message collapsing
-        $(this).parents('.header').click();
+    // Quote message
+    $(document).on('click', '.quoteMessage', function(event) {
+        // Don't expand or collapse message
+        event.stopPropagation();
 
         // Get the message
         var message = $(this).parents('.message').find('.text');
 
         // In case it's a collapsed message, get the original text
-        if (message.find('.original').length) {
-            message = message.find('.original');
+        if (message.children('.original').length) {
+            message = message.children('.original');
         }
 
         // Put the HTML in a new container
@@ -1198,8 +1304,75 @@ $(document).ready(function() {
         }
 
         $textarea.redactor('insert.html', finalText + '<br />');
+
+        // Scroll to textarea
+        $('html, body').animate({
+            scrollTop: $('.reply-form').offset().top - 25
+        }, 1000);
     });
 
+    // Tooltip on status and user groups
+    $(document).tooltip({
+        selector: '.statusIcon, .userGroup',
+        position: {
+            my: "center bottom-12",
+            at: "center top",
+            using: function( position, feedback ) {
+                $( this ).css( position );
+                $( "<div>" )
+                    .addClass( "arrow" )
+                    .addClass( feedback.vertical )
+                    .addClass( feedback.horizontal )
+                    .appendTo( this );
+            }
+        }
+    });
+
+    /*
+     * Jump to reply
+     */
+    // Jump to the reply area when clicking the button
+    $('.jump-to-reply button').click(function() {
+        $('html, body').animate({
+            scrollTop: $(".reply-header").offset().top - 25
+        }, 1000);
+    });
+
+    // It should only show when needed, depending on the ticket replies order
+    $(window).scroll(function() {
+        // Only do this if the message tab is visible currently
+        if ($('#tabMessages').is(':visible') && $('form.message-form:not(.edit)').is(':visible')) {
+            var y;
+            if (replyOrder == 'ASC') {
+                var y = $(".reply-header").offset().top;
+                // Show until you reach the start of the add reply
+                if ($(this).scrollTop() + $(this).height() < y) {
+                    $('.jump-to-reply').fadeIn();
+                } else {
+                    $('.jump-to-reply').fadeOut();
+                }
+            } else {
+                // Show once you pass the post button
+                y = $('form.message-form:not(.edit)').offset().top + $('form.message-form:not(.edit)').outerHeight(true);
+                if ($(this).scrollTop() > y) {
+                    $('.jump-to-reply').fadeIn();
+                } else {
+                    $('.jump-to-reply').fadeOut();
+                }
+            }
+        }
+    });
+
+    // If the order is ascending, show the down arrow instead
+    if (replyOrder == 'ASC') {
+        $('.jump-to-reply button .fa').toggleClass('fa-arrow-up fa-arrow-down');
+    }
+
+    // Pretend a scroll to see if we should be showing the jump to reply button straight away or not
+    $(window).scroll();
+    /*
+     * END Jump to reply
+     */
 });
 
 function htmlDecodeWithLineBreaks(html) {
@@ -1216,8 +1389,8 @@ function showMessage(html) {
 
     // Make the message visible.
     code.removeClass('collapsed').addClass('collapsible');
-    code.find('.trimmed').hide();
-    code.find('.original').show();
+    code.find('.text').children('.trimmed').hide();
+    code.find('.text').children('.original').show();
 
     // It's a note
     if (code.hasClass('note')) {
@@ -1418,9 +1591,8 @@ function deleteTicket(block) {
                             Lang.get('messages.success_deleted', { item: Lang.get('general.record') }),
                             'success'
                         );
-                        // Go to ticket grid
-                        $('body').append($('<form class="redirect" action="' + laroute.route('ticket.operator.ticket') + '" method="get"></form>'));
-                        $('form.redirect').submit();
+                        // Go back to ticket grid
+                        window.location.replace(ticketGridUrl);
                     } else {
                         swal(
                             Lang.get('messages.error'),
@@ -1542,9 +1714,9 @@ function pollReplies(allMessages) {
                     $tagSelectize[0].selectize.clear(true);
                     $tagSelectize[0].selectize.refreshOptions(false);
                     $.each(response.data.details.tags, function(index, value) {
-                        $tagSelectize[0].selectize.addOption({ id: value.id, name: value.name });
+                        $tagSelectize[0].selectize.addOption({ id: value.id, name: value.name, colour: value.colour, colour_text: value.colour_text });
                         $tagSelectize[0].selectize.refreshOptions(false);
-                        $tagSelectize[0].selectize.addItem(value.id, true);
+                        $tagSelectize[0].selectize.addItem(value.name, true);
                     });
 
                     $assignSelectize[0].selectize.clear(true);
@@ -1592,23 +1764,6 @@ function pollReplies(allMessages) {
             pollTimeout = setTimeout(function() {
                 pollReplies();
             }, 15000);
-        }
-    });
-
-    // Tooltip on status and user groups
-    $(document).tooltip({
-        selector: '.statusIcon, .userGroup',
-        position: {
-            my: "center bottom-12",
-            at: "center top",
-            using: function( position, feedback ) {
-                $( this ).css( position );
-                $( "<div>" )
-                    .addClass( "arrow" )
-                    .addClass( feedback.vertical )
-                    .addClass( feedback.horizontal )
-                    .appendTo( this );
-            }
         }
     });
 }

@@ -1,3 +1,28 @@
+    {% if operator is not defined or not operator %}
+        {% if record.exists %}
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row">
+                    {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
+                    <div class="input-container">
+                        {{ record.brand.name }}
+                        <input type="hidden" name="brand_id" value="{{ record.brand_id }}" />
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row">
+                    {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
+                    <div class="input-container">
+                        {{ form_select('brand_id', array_column(enabledBrands, 'name', 'id'), Config.get('settings.default_brand')) }}
+                    </div>
+                </div>
+            {% else %}
+                <input type="hidden" name="brand_id" value="{{ Config.get('settings.default_brand') }}" />
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
     <div class="form-row">
         {{ form_label('firstname', Lang.get('user.firstname')) }}
         <div class="input-container">

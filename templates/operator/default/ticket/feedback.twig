@@ -15,9 +15,9 @@
             <div style="border-top: 0;">
                 <label>{{ Lang.get('general.date') }}:</label>
                 <div>
-                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start') ~ ' ' ~ Lang.get('general.date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    {{ form_text('sSearch_0_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                     &nbsp;{{ Lang.get('general.to') }}&nbsp;
-                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end') ~ ' ' ~ Lang.get('general.date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    {{ form_text('sSearch_0_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end_date'), 'size': 12 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                 </div>
             </div>
         </div>
@@ -73,10 +73,10 @@
     <div id="tabSent" class="tabContent hide">
 
         <div class="success box expire hide">
-            {{ Lang.get('messages.success_updated', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box expire hide">
-            {{ Lang.get('messages.error_updated', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
 
         {{ sentTable.render()|raw }}
@@ -87,17 +87,17 @@
     <div id="tabQueued" class="tabContent hide">
 
         <div class="success box send hide">
-            {{ Lang.get('messages.success_sending', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.success_sending', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box send hide">
-            {{ Lang.get('messages.error_sending', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.error_sending', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
 
         <div class="success box delete hide">
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box delete hide">
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('ticket.feedback_form', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('ticket.feedback_form', 1), 'UTF-8') }) }}
         </div>
 
         {{ queuedTable.render()|raw }}

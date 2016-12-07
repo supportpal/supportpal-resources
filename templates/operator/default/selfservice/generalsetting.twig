@@ -5,98 +5,98 @@
 {% endblock %}
 
 {% block title %}
-    {{ Lang.get('selfservice.selfservice') }} {{ Lang.get('general.generalsetting') }}
+    {{ Lang.get('general.module_generalsetting', {'module': Lang.get('selfservice.selfservice')}) }}
 {% endblock %}
 
 {% block content %}
 
     {{ form_model(fields, { 'method': 'PUT', 'route': [ 'selfservice.operator.generalsetting.update' ] }) }}
 
-	<ul class="tabs">
-	  <li id="Comments" class="active">{{ Lang.choice('selfservice.comment', 2) }}</li>
-	  <li id="Ratings">{{ Lang.choice('selfservice.rating', 2) }}</li>
-	</ul>
+        <ul class="tabs">
+          <li id="Comments" class="active">{{ Lang.choice('selfservice.comment', 2) }}</li>
+          <li id="Ratings">{{ Lang.choice('selfservice.rating', 2) }}</li>
+        </ul>
 
-	<div id="tabComments" class="tabContent">
+        <div id="tabComments" class="tabContent">
 
-	    <div class="form-row">
-	    	{{ form_label('comments_enabled', Lang.get('selfservice.enable_comments')) }}
-            <div class="input-container">
-                {{ form_check('comments_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_comments_enabled' }) }}
-                <label for="toggle_comments_enabled"></label>
-                <br />
-                <span class="description">{{ Lang.get('selfservice.enable_comments_desc') }}</span>
+            <div class="form-row">
+                {{ form_label('comments_enabled', Lang.get('selfservice.enable_comments')) }}
+                <div class="input-container">
+                    {{ form_check('comments_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_comments_enabled' }) }}
+                    <label for="toggle_comments_enabled"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.enable_comments_desc') }}</span>
+                </div>
             </div>
-	    </div>
 
-        <div class="form-row">
-            {{ form_label('comment_write', Lang.get('selfservice.write_comments')) }}
-            <div class="input-container">
-                {{ form_select('comment_write', { 0: Lang.get('general.anyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
-                <span class="description">{{ Lang.get('selfservice.write_comments_desc') }}</span>
+            <div class="form-row">
+                {{ form_label('comment_write', Lang.get('selfservice.write_comments')) }}
+                <div class="input-container">
+                    {{ form_select('comment_write', { 0: Lang.get('general.anyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.write_comments_desc') }}</span>
+                </div>
             </div>
+
+            <div class="form-row">
+                {{ form_label('comment_captcha', Lang.get('selfservice.show_captcha')) }}
+                <div class="input-container">
+                    {{ form_select('comment_captcha', { 0: Lang.get('general.never'), 1: Lang.get('selfservice.unregistered_users'), 2: Lang.get('general.always') }) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.show_captcha_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('comment_moderation', Lang.get('selfservice.comment_moderation')) }}
+                <div class="input-container">
+                    {{ form_select('comment_moderation', { 0: Lang.get('selfservice.unmoderated'), 1: Lang.get('selfservice.moderated') }) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.comment_moderation_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('comment_threshold', Lang.get('selfservice.comment_threshold')) }}
+                <div class="input-container">
+                    {{ form_text('comment_threshold', null, {'size': 4}) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.comment_threshold_desc') }}</span>
+                </div>
+            </div>
+
         </div>
 
-        <div class="form-row">
-            {{ form_label('comment_captcha', Lang.get('selfservice.show_captcha')) }}
-            <div class="input-container">
-                {{ form_select('comment_captcha', { 0: Lang.get('general.never'), 1: Lang.get('selfservice.unregistered_users'), 2: Lang.get('general.always') }) }}<br />
-                <span class="description">{{ Lang.get('selfservice.show_captcha_desc') }}</span>
+        <div id="tabRatings" class="tabContent hide">
+
+            <div class="form-row">
+                {{ form_label('ratings_enabled', Lang.get('selfservice.enable_ratings')) }}
+                <div class="input-container">
+                    {{ form_check('ratings_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_ratings_enabled' }) }}
+                    <label for="toggle_ratings_enabled"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.enable_ratings_desc') }}</span>
+                </div>
             </div>
+
+            <div class="form-row">
+                {{ form_label('rating_post', Lang.get('selfservice.post_rating')) }}
+                <div class="input-container">
+                    {{ form_select('rating_post', { 0: Lang.get('general.anyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.post_rating_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('rating_show', Lang.get('selfservice.show_rating')) }}
+                <div class="input-container">
+                    {{ form_select('rating_show', { 0: Lang.get('general.everyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
+                    <span class="description">{{ Lang.get('selfservice.show_rating_desc') }}</span>
+                </div>
+            </div>
+
         </div>
 
-        <div class="form-row">
-            {{ form_label('comment_moderation', Lang.get('selfservice.comment_moderation')) }}
-            <div class="input-container">
-                {{ form_select('comment_moderation', { 0: Lang.get('selfservice.unmoderated'), 1: Lang.get('selfservice.moderated') }) }}<br />
-                <span class="description">{{ Lang.get('selfservice.comment_moderation_desc') }}</span>
-            </div>
+        <div class="form-button">
+            {{ form_submit(Lang.get('general.save')) }}
         </div>
 
-        <div class="form-row">
-            {{ form_label('comment_threshold', Lang.get('selfservice.comment_threshold')) }}
-            <div class="input-container">
-                {{ form_text('comment_threshold', null, {'size': 4}) }}<br />
-                <span class="description">{{ Lang.get('selfservice.comment_threshold_desc') }}</span>
-            </div>
-        </div>
-
-	</div>
-
-    <div id="tabRatings" class="tabContent hide">
-
-        <div class="form-row">
-            {{ form_label('ratings_enabled', Lang.get('selfservice.enable_ratings')) }}
-            <div class="input-container">
-                {{ form_check('ratings_enabled', 1, null, { 'class': 'toggle', 'id': 'toggle_ratings_enabled' }) }}
-                <label for="toggle_ratings_enabled"></label>
-                <br />
-                <span class="description">{{ Lang.get('selfservice.enable_ratings_desc') }}</span>
-            </div>
-        </div>
-
-        <div class="form-row">
-            {{ form_label('rating_post', Lang.get('selfservice.post_rating')) }}
-            <div class="input-container">
-                {{ form_select('rating_post', { 0: Lang.get('general.anyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
-                <span class="description">{{ Lang.get('selfservice.post_rating_desc') }}</span>
-            </div>
-        </div>
-
-        <div class="form-row">
-            {{ form_label('rating_show', Lang.get('selfservice.show_rating')) }}
-            <div class="input-container">
-                {{ form_select('rating_show', { 0: Lang.get('general.everyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
-                <span class="description">{{ Lang.get('selfservice.show_rating_desc') }}</span>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="form-button">
-        {{ form_submit(Lang.get('general.save')) }}
-    </div>
-
-{{ form_close() }}
+    {{ form_close() }}
 
 {% endblock %}

@@ -36,7 +36,7 @@
             {% endif %}
         </div>
         <div class="field-add-option {% if field is not defined or (field.type != '2' and field.type != '4' and field.type != '5' and field.type != '7' and field.type != '10') %}hide{% endif %}">
-            {{ form_button(Lang.get('ticket.add_option'), { 'class': 'add-option' }) }}
+            {{ form_button(Lang.get('general.add_item', {'item': Lang.get('general.option')}), { 'class': 'add-option' }) }}
         </div>
     </td>
     <td width="16">

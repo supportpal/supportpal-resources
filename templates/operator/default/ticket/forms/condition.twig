@@ -73,7 +73,7 @@
                 { 'data-item': 4, 'data-operator': 0, 'class': 'hide' }) }}
 
         {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
-                companies|default is not empty and companies is not null ? companies : [ ],
+                brands|default is not empty and brands is not null ? brands : array_column(assignedBrands, 'name', 'id'),
                 condition|default is not empty and condition.item == 5 ? condition.value : null,
                 { 'data-item': 5, 'data-operator': 0, 'class': 'hide' }) }}
 
@@ -163,6 +163,11 @@
                 channelAccounts|default is not empty and channelAccounts is not null ? channelAccounts : [ ],
                 condition|default is not empty and condition.item == 24 ? condition.value : null,
                 { 'data-item': 24, 'data-operator': 0, 'class': 'hide' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                brands|default is not empty and brands is not null ? brands : array_column(assignedBrands, 'name', 'id'),
+                condition|default is not empty and condition.item == 25 ? condition.value : null,
+                { 'data-item': 25, 'data-operator': 0, 'class': 'hide' }) }}
     </td>
     <td width="16">
         <i class="fa fa-times right remove-button"></i>

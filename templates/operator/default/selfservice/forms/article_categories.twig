@@ -1,0 +1,77 @@
+<div class="category form-container open {% if loop.first %}first{% endif %} {% if hide|default is not empty %} hide {% endif %}">
+
+    {{ form_hidden('category[' ~ (i is defined ? i : '') ~ '][id]', record_type|default is not empty ? record_type.id : '') }}
+
+    <div class="form-row small-selectize">
+        {{ form_label('category[' ~ (i is defined ? i : '') ~ '][type]', Lang.choice('selfservice.type', 1)) }}
+        <div class="input-container">
+            <select name="category[{{ i is defined ? i : '' }}][type]"
+                    {% if hide|default is not empty %}disabled="disabled"{% endif %}>
+
+                <option value="">{{ Lang.get('selfservice.select_type') }}</option>
+                {% for brand in assignedBrands %}
+                <optgroup label="{{ brand.name }}">
+                    {% for brand_type in brand.types %}
+                        {% if brand_type.id == record_type.id or (not record.exists and type.id == brand_type.id) %}
+                            {% set selected = true %}
+                        {% else %}
+                            {% set selected = false %}
+                        {% endif %}
+
+                        <option value="{{ brand_type.id }}" {% if selected %}selected="selected"{% endif %}>
+                            {{ brand_type.name }}
+                        </option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+            &nbsp;
+            {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
+        </div>
+    </div>
+
+    <div class="form-row">
+        {{ form_label('category[' ~ (i is defined ? i : '') ~ '][categories][]', Lang.choice('selfservice.category', 1)) }}
+        <div class="input-container">
+            <select name="category[{{ i is defined ? i : '' }}][categories][]" multiple="multiple"
+                    {% if hide|default is not empty %}disabled="disabled"{% endif %}>
+
+                {% for category in record_type.categories %}
+                    {% if record|default is not empty and record.categories.contains('id', category.id) %}
+                        {% set selected = true %}
+                    {% elseif not record.exists and Input.get('category') == category.id %}
+                        {% set selected = true %}
+                    {% else %}
+                        {% set selected = false %}
+                    {% endif %}
+
+                    <option data-data='{{ category|json_encode(constant('JSON_FORCE_OBJECT')) }}'
+                            {% if selected %}selected="selected"{% endif %}
+                            value="{{ category.id }}">
+
+                        {{ category.name }} {{ category.hierarchy }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    {% if record.exists and record_type|default is not empty %}
+        <div class="form-row type-url">
+            <label>{{ Lang.get('general.url') }}</label>
+            <div class="input-container">
+                <a href="{{ record.frontend_url(record_type, true) }}" target="_blank">{{ urldecode(record.frontend_url(record_type, true)) }}</a>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if record.exists and record_type|default is not empty and record_type.pivot.views > 0 %}
+        <div class="form-row type-views">
+            <label>{{ Lang.get('general.views')|capitalize }}</label>
+            <div class="input-container">
+                {{ record_type.pivot.views }}
+            </div>
+        </div>
+    {% endif %}
+
+</div>

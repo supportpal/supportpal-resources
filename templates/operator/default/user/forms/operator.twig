@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ record.formatted_name }} - {{ Lang.get("general.edit") }} {{ Lang.choice("general.operator", 1) }}
+        {{ record.formatted_name }} - {{ Lang.get('general.edit_item', {'item': Lang.choice('general.operator', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('general.operator', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -24,24 +24,36 @@
         <h2>{{ Lang.get('user.operator_settings') }}</h2>
         <div class="form-container first">
             <div class="form-row">
-                {{ form_label('depts[]', Lang.choice("ticket.department", 2)) }}
+                {{ form_label('department', Lang.choice('ticket.department', 2)) }}
                 <div class="input-container">
-                    <div class="input-group">
-                        {% for department in departments %}
-                            <label>
-                                {{ form_checkbox('depts[]', department.id, in_array(department.id, assignedDepartments, true)) }}
-                                {{ Purifier.clean(department.name) }}
-                            </label><br />
-                        {% endfor %}
-                    </div>
                     <span class="description">{{ Lang.get('user.op_settings_dept_desc') }}</span>
+                    <br />
+                    <div style="margin-top: 5px;">
+                        {{ Lang.get('user.op_settings_group_dept') }}
+                        {{ form_select('group_departments', departments, record.assignedDepartments([]).pluck('id').all(),
+                            {'multiple': 'multiple', 'disabled': 'disabled'}) }}
+                        <span class="description">{{ Lang.get('user.op_settings_group_dept_desc') }}</span>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        {{ Lang.get('user.op_settings_individual_dept') }}
+                        {{ form_select('depts[]', departments, record.departments.pluck('id').all(), {'multiple': 'multiple'}) }}
+                        <span class="description">{{ Lang.get('user.op_settings_individual_dept_desc') }}</span>
+                    </div>
                 </div>
             </div>
 
             <div class="form-row form-full">
                 {{ form_label('ticket_signature', Lang.get('ticket.ticket_signature')) }}
                 <div class="input-container">
-                    {{ form_redactor('ticket_signature', opsetting|default is not empty ? opsetting.ticket_signature : null, { 'size': '50x3' }) }}
+                    <div style="margin-bottom: 10px;">
+                        {{ form_redactor_mf('ticket_signature', signature) }}
+                    </div>
+                    <span class="description">
+                        {{ Lang.get('user.ticket_signature_desc') }}
+                        {% if auth_user().hasPermission('view.operatorsignature') %}
+                            {{ Lang.get('user.operator_signature_desc', {'route': route('user.operator.operatorsignature')})|raw }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
 
@@ -51,7 +63,7 @@
                     <div class="input-group">
                         <label>
                             {{ form_check('default_reply_options[send_email_to_users]', 1,
-                                opsetting|default is not empty ? opsetting.default_reply_options['send_email_to_users'] : null) }}
+                                opsetting|default is not empty ? opsetting.default_reply_options['send_email_to_users'] : 1) }}
                             {{ Lang.get('ticket.send_email_to_users') }}
                         </label><br />
                         <label>
@@ -112,6 +124,7 @@
                     <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
                 </div>
             </div>
+
         </div>
 
         <div class="form-button">
@@ -127,16 +140,44 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- Passwords -->
     <script src="{{ asset_rev('resources/assets/operator/js/randomPassword.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
 
+    <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <!-- Signatures -->
+    <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
+    <script type="text/javascript">
+        var opts = {
+            focus: false,
+            imageUpload: null,
+            mergeFields: {
+                tickets: true,
+                organisations: '{{ Config.get('settings.organisations_enabled') }}'
+            },
+            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
+        };
+
+        // Do not initialise redactor on the dummy DOM element.
+        $('textarea[name="ticket_signature"]').redactor($.extend($.Redactor.default_opts, opts));
+    </script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -156,13 +197,71 @@
                 }
             });
 
+            // On changing group, fetch newly assigned departments and update department selectizes accordingly
+            var xhr;
             $('select[name="groups[]"]').selectize({
                 plugins: ['remove_button'],
                 delimiter: ',',
-                placeholder: Lang.get('user.select_group')
+                placeholder: Lang.get('user.select_group'),
+                onChange: function (values) {
+                    var selectize = $groupDepartments[0].selectize,
+                            deptSelectize = $departments[0].selectize,
+                            deptSelected = deptSelectize.getValue();
+
+                    selectize.load(function(callback) {
+                        xhr && xhr.abort();
+                        xhr = $.ajax({
+                            url: laroute.route(
+                                'user.operator.operator.departments',
+                                {
+                                    id: {{ record.exists ? record.id : 0 }},
+                                    department_ids: '',
+                                    group_ids: values
+                                }
+                            ),
+                            success: function(res) {
+                                // Clear selected values
+                                selectize.clear();
+
+                                // Refresh individual departments list
+                                deptSelectize.clearOptions();
+                                $.each(fullDepartmentOptions, function (index, value) {
+                                    deptSelectize.addOption(value);
+                                });
+
+                                // Select all assigned departments via groups.
+                                // Remove these from individual departments list
+                                $.each(res.data, function (index, value) {
+                                    selectize.addItem(value.id, true);
+                                    deptSelectize.removeOption(value.id);
+                                });
+
+                                // Re-select departments that we had before
+                                deptSelectize.setValue(deptSelected);
+
+                                callback();
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        })
+                    });
+                }
             });
 
-            $('textarea').redactor($.Redactor.default_opts);
+            var $groupDepartments = $('select[name="group_departments"]').selectize();
+
+            var $departments = $('select[name="depts[]"]').selectize({
+                plugins: ['remove_button']
+            });
+
+            // Save the full list of department options
+            var fullDepartmentOptions = $departments[0].selectize.options;
+
+            // Remove selected group departments from individual departments.
+            $.each($groupDepartments[0].selectize.getValue(), function (index, value) {
+                $departments[0].selectize.removeOption(value);
+            });
         });
     </script>
 {% endblock %}

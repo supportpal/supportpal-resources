@@ -1,13 +1,56 @@
-<div class="form-row form-full">
-    {{ form_label('data[' ~ code ~ '][subject]', Lang.get('core.email_subject')) }}
-    <div class="input-container">
-        {{ form_text('data[' ~ code ~ '][subject]', recordData[code]|default is not empty ? recordData[code]['subject'] : null) }}
-    </div>
-</div>
+<div class="section-item form-container {% if brands|length == 2 %}first{% endif %} open {% if hide|default is not empty %}hide{% endif %}">
 
-<div class="form-row form-full">
-    {{ form_label('data[' ~ code ~ '][contents]', Lang.get('core.email_content')) }}
-    <div class="input-container">
-        {{ form_redactor_mf('data[' ~ code ~ '][contents]', recordData[code]|default is not empty ? recordData[code]['contents'] : null) }}
+    <div class="form-row form-full">
+        {{ form_label('template[' ~ brand.id ~ '][' ~ language_code ~ '][language]', Lang.choice('general.language', 1)) }}
+        <div class="input-container">
+            {{
+                form_hidden(
+                    'template[' ~ brand.id ~ '][' ~ language_code ~ '][language]',
+                    language_code,
+                    hide|default is not empty ? { 'disabled': 'disabled' } : []
+                )
+            }}
+
+            <span class="item-type">
+                {% if email_template.language.name is empty %}
+                    {{ Lang.get('general.default') }}
+                {% else %}
+                    {{ email_template.language.name }}
+                {% endif %}
+            </span> &nbsp;
+
+            {% if email_template.language.name is empty %}
+                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button hide' }) }}
+            {% else %}
+                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
+            {% endif %}
+        </div>
     </div>
+
+    <div class="form-row form-full">
+        {{ form_label('template[' ~ brand.id ~ '][' ~ language_code ~ '][subject]', Lang.get('core.email_subject')) }}
+        <div class="input-container">
+            {{
+                form_text(
+                    'template[' ~ brand.id ~ '][' ~ language_code ~ '][subject]',
+                    email_template.subject,
+                    hide|default is not empty ? { 'disabled': 'disabled' } : []
+                )
+            }}
+        </div>
+    </div>
+
+    <div class="form-row form-full" data-brand="{{ brand.id }}">
+        {{ form_label('template[' ~ brand.id ~ '][' ~ language_code ~ '][contents]', Lang.get('core.email_content')) }}
+        <div class="input-container">
+            {{
+                form_redactor_mf(
+                    'template[' ~ brand.id ~ '][' ~ language_code ~ '][contents]',
+                    email_template.contents,
+                    hide|default is not empty ? { 'disabled': 'disabled' } : []
+                )
+            }}
+        </div>
+    </div>
+
 </div>

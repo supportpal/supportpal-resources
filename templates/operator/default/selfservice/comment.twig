@@ -8,12 +8,17 @@
     {{ Lang.choice('selfservice.comment', 2) }}
 {% endblock %}
 
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    Lang.choice('selfservice.comment', 2)
+] %}
+
 {% block content %}
 	<div class="success box update hide">
-        {{ Lang.get('messages.success_updated', { 'item': Lang.choice('selfservice.comment', 1)|lower }) }}
+        {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('selfservice.comment', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box update hide">
-        {{ Lang.get('messages.error_updated', { 'item': Lang.choice('selfservice.comment', 1)|lower }) }}
+        {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('selfservice.comment', 1), 'UTF-8') }) }}
     </div>
 
     <div class="options box">
@@ -29,6 +34,14 @@
             <div>
                 <label>{{ Lang.choice('selfservice.article', 1) }}:</label>
                 <div id="filter_article"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('selfservice.type', 1) }}:</label>
+                <div id="filter_type"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('core.brand', 1) }}:</label>
+                <div id="filter_brand"></div>
             </div>
         </div>
     </div>
@@ -78,6 +91,8 @@
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_by", filter_type: "text"},
                 {column_number : 1, column_data_type: "text", filter_container_id: "filter_article", filter_type: "text"},
+                {column_number : 2, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_type"},
+                {column_number : 3, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_brand"},
             ]);
 
             // Open links (not anchors) in a new window/tab

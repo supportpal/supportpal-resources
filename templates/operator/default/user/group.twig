@@ -20,27 +20,27 @@
 
 	<div class="success box delete hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.operator_group', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.operator_group', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.group', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.group', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
     <div class="fail box delete hide">
         {% if operator|default is not empty and operator %}
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.operator_group', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.operator_group', 1), 'UTF-8') }) }}
         {% else %}
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.group', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.group', 1), 'UTF-8') }) }}
         {% endif %}
     </div>
 
 	<div class="grid-options options box">
         {% if operator|default is not empty and operator %}
     	    <a href="{{ route('user.operator.operatorgroup.create') }}">
-                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.operator_group", 1) }}
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.operator_group', 1)}) }}
     	    </a>
         {% else %}
             <a href="{{ route('user.operator.usergroup.create') }}">
-                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.group", 1) }}
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.group', 1)}) }}
             </a>
         {% endif %}
         &nbsp;&nbsp;

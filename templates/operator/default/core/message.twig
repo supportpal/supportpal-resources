@@ -18,10 +18,10 @@
     <div id="tabInbox" class="tabContent">
 
         <div class="success box delete hide">
-            {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('general.message', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box delete hide">
-            {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('general.message', 1)|lower }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('general.message', 1), 'UTF-8') }) }}
         </div>
 
         {{ table.render()|raw }}
@@ -56,18 +56,34 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    <!-- Datatables -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
-            $('textarea').redactor($.Redactor.default_opts);
+            var $composeEditor = $('textarea').redactor($.extend($.Redactor.default_opts, {
+                plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
+            }));
+
+            $(document).on('click', '.tabs li#Compose', function (e) {
+                $composeEditor.redactor('focus.setStart');
+            });
         });
     </script>
 {% endblock %}

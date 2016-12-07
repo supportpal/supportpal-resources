@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.macro", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.macro', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.macro", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.macro', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -74,7 +74,7 @@
                         record.condition_group_type|default is not empty ? record.condition_group_type : 0)
                     }}
                 </span>
-                {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.get('ticket.condition_group'), { 'class': 'add-conditiongroup' }) }}
+                {{ form_button(Lang.get('general.add_item', {'item': Lang.get('ticket.condition_group')}), { 'class': 'add-conditiongroup' }) }}
             </div>
 
         </div>
@@ -109,7 +109,7 @@
             </table>
 
             <div class="form-row">
-                {{ form_button(Lang.get('ticket.add_action'), { 'class': 'add-rule' }) }}
+                {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('general.action', 1)}), { 'class': 'add-rule' }) }}
             </div>
 
         </div>
@@ -127,13 +127,29 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
+
     <script type="text/javascript">
         var embedImageRoute = laroute.route('core.embed.image');
+        var organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}";
+
+        $(document).ready(function() {
+            $('input[name="name"]').focus();
+        });
     </script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>

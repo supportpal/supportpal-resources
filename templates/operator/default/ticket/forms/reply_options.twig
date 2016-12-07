@@ -14,7 +14,7 @@
             {% endif %}
 
             {% if ticket.department_email_id is not empty %}
-                {% if toEmails is not empty and (not ticket.internal or ticket.user_id != Auth.guard('operator').user().id) %}
+                {% if toEmails is not empty and (not ticket.internal or ticket.user_id != auth_user().id) %}
                     <div class="option" id="emailToUsers">
                         <label>
                             {{ form_check('send_email_to_users', 1, operator.default_reply_options['send_email_to_users']) }}
@@ -25,7 +25,7 @@
             {% endif %}
             <div class="option">
                 <label>
-                    {{ form_check('send_email_to_operators', 1, ticket.internal and ticket.user_id == Auth.guard('operator').user().id ? true :
+                    {{ form_check('send_email_to_operators', 1, ticket.internal and ticket.user_id == auth_user().id ? true :
                         ticket.department.notify_operators ? true : false) }}
                     {{ Lang.get('ticket.send_email_to_operators') }}
                 </label>
@@ -92,7 +92,7 @@
 
 </div>
 
-<script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/replyoptions.js') }}"></script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
 
 <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
 <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/sanitize.js') }}"></script>

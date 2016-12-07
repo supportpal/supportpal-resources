@@ -52,4 +52,9 @@ jQuery(function($){
         }
     });
 
+    // Selectize for brands
+    $('select[name="brand[]"]').selectize({
+        plugins: ['remove_button'],
+        placeholder: Lang.get('core.select_brand')
+    });
 });

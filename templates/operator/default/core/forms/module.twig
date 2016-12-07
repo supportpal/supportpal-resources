@@ -1,7 +1,7 @@
 {% extends parent_template %}
 
 {% block title %}
-    {{ Lang.get('core.edit_module') }}
+    {{ Lang.get('general.edit_item', {'item': Lang.choice('core.modules', 1)}) }}
 {% endblock %}
 
 {% block sidebar %}

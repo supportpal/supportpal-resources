@@ -12,6 +12,19 @@
 
         <div class="form-container first">
 
+            {{ form_hidden('user', user) }}
+            {{ form_hidden('internal', internal) }}
+            {{ form_hidden('brand', brand.id) }}
+
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row">
+                    {{ form_label('brand', Lang.choice('core.brand', 1)) }}
+                    <div class="input-container">
+                        {{ brand.name }}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form-row">
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
@@ -19,10 +32,6 @@
                     {{ form_hidden('department', department.id) }}
                 </div>
             </div>
-
-            {{ form_hidden('user', user) }}
-            {{ form_hidden('internal', internal) }}
-            {{ form_hidden('company', company) }}
 
             <div class="form-row">
                 {{ form_label('status', Lang.choice('general.status', 1)) }}
@@ -43,7 +52,7 @@
                 <div class="input-container">
                     <select name="tag[]" multiple="multiple">
                         {% for tag in tags %}
-                            <option value='{{ tag.name }}'>
+                            <option value='{{ tag.name }}' data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}'>
                                 {{ tag.name }}
                             </option>
                         {% endfor %}
@@ -100,11 +109,8 @@
                     </div>
 
                     <div class="form-row" style="padding: 0;">
-                        {% if operator.ticket_signature is not empty %}
-                            {{ form_redactor('text', '<br /><br />' ~ operator.ticket_signature, { 'size': '50x3' }) }}
-                        {% else %}
-                            {{ form_redactor('text', null, { 'size': '50x3' }) }}
-                        {% endif %}
+                        {% set signature = get_signature(brand.id, department.id, user, null, true) %}
+                        {{ form_redactor('text', signature is not empty ? '<br /><br />' ~ signature : null, { 'size': '50x3' }) }}
                     </div>
 
                     {% include 'operator.' ~ template ~ '.core.forms.attachments' with {
@@ -116,7 +122,7 @@
 
                     &nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <span class="input-group">
+                    <span class="input-group" style="display: inline-block; margin-top: 10px; vertical-align: middle;">
                         <span class="send-user-email">
                             <label style="font-weight: normal">
                                 {{ form_check('send_user_email', 1, operator.default_reply_options['send_email_to_users']) }}
@@ -157,36 +163,45 @@
         // Global variables for redactor plugins
         var ticketId = null,
             userId = {{ user }},
-            operatorId = '{{ Auth.guard('operator').user().id }}',
+            operatorId = '{{ auth_user().id }}',
             internal = {{ internal }};
     </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/replyoptions.js') }}"></script>
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
 
     <script type="text/javascript">
         // Initialise redactor.
-        var cannedResponsePermission = {% if Auth.guard('operator').user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
-        var redactor_plugins = {
+        var cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
+        var redactor_config = {
             plugins: [
-                'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'cannedResponses',
+                'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'cannedResponses',
                 {% if isModuleEnabled('Selfservice') %}'ssLink'{% endif %}
             ]
         };
 
         $(document).ready(function() {
-            $('textarea[name="text"]').redactor($.extend($.Redactor.default_opts, redactor_plugins));
+            $('textarea[name="text"]').redactor($.extend($.Redactor.default_opts, redactor_config));
         });
     </script>
 

@@ -15,10 +15,10 @@
 {% block content %}
 
 	<div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.ldap_account', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.ldap_account', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.ldap_account', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.ldap_account', 1), 'UTF-8') }) }}
     </div>
 
     {% if not extension_loaded('ldap') %}
@@ -30,7 +30,7 @@
 
 	<div class="grid-options options box">
         <a href="{{ route('user.operator.ldapaccount.create') }}">
-            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.ldap_account", 1) }}
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.ldap_account', 1)}) }}
         </a>
         &nbsp;&nbsp;
         <a class="filter-results">
@@ -58,7 +58,7 @@
 
     {% if not ldap_enabled %}
         <div class="fail box bottombox">
-            <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('user.ldap_extension_missing') }}
+            <strong>{{ Lang.get('messages.note') }}:</strong> {{ Lang.get('user.ldap_extension_missing') }}
         </div>
     {% endif %}
 

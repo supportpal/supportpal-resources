@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.tag", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.tag', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.tag", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.tag', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -29,6 +29,13 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                {{ form_label('colour', Lang.get('general.colour')) }}
+                <div class="input-container">
+                    {{ form_text('colour') }}
+                </div>
+            </div>
+
         </div>
 
         <div class="form-button">
@@ -37,10 +44,25 @@
 
     {{ form_close() }}
 
+    <br />
+    <br />
+    <br />
+
 {% endblock %}
 
 {% block scripts_footer %}
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ($('input[name="colour"]').val() === '') {
+                $('input[name="colour"]').val('#dddddd');
+            }
+            $('input[name="colour"]').minicolors();
+        });
+    </script>
 {% endblock %}

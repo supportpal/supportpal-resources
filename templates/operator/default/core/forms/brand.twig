@@ -1,0 +1,193 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('core.brand', 1)}) }}
+    {% else %}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('core.brand', 1)}) }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if record|default is not empty and record.exists %}
+        {{ form_model(record, { 'route': [ 'core.operator.brand.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% else %}
+        {{ form_open({ 'route': 'core.operator.brand.store', 'class': 'validate' }) }}
+    {% endif %}
+
+        <ul class="tabs">
+            <li id="General" class="active">{{ Lang.get('general.general') }}</li>
+            <li id="Website">{{ Lang.get('core.website') }}</li>
+            <li id="Email">{{ Lang.get('general.email') }}</li>
+            <li id="Locale">{{ Lang.get('core.locale') }}</li>
+        </ul>
+
+        <div id="tabGeneral" class="tabContent">
+            <div class="form-row">
+                {{ form_label('name', Lang.get('general.name')) }}
+                <div class="input-container">
+                    {{ form_text('name') }}<br />
+                    <span class="description">{{ Lang.get('core.brand_name_desc') }}</span>
+                </div>
+            </div>
+
+            {% if record|default is empty or not record.exists or Config.get('settings.default_brand') != record.id %}
+                <div class="form-row">
+                    {{ form_label('enabled', Lang.get('general.enabled')) }}
+                    <div class="input-container">
+                        {{ form_check('enabled', 1, record|default is not empty and record.exists ? record.enabled : 1,
+                            { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
+                        <label for="toggle_enabled"></label><br />
+                        <span class="description">{{ Lang.get('core.brand_enabled_desc') }}</span>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="form-row">
+                {{ form_label('group[]', Lang.choice('user.operator_group', 2)) }}
+                <div class="input-container">
+                    <div class="input-group">
+                        {{ form_select('group[]', groups, recordGroups, {'multiple': 'multiple'}) }}
+                        <span class="description">{{ Lang.get('core.brand_groups_desc') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabWebsite" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('system_url', Lang.get('core.base_url')) }}
+                <div class="input-container">
+                    {{ form_text('system_url', null, {'size': '45'}) }}<br />
+                    <span class="description">{{ Lang.get('core.base_url_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('frontend_logo', Lang.get('core.frontend_logo')) }}
+                <div class="input-container">
+                    {{ form_text('frontend_logo', null, { 'size': 65 }) }}<br />
+                    <span class="description">{{ Lang.get('core.frontend_logo_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('frontend_template', Lang.get('core.frontend_template')) }}
+                <div class="input-container">
+                    {{ form_select('frontend_template', frontendTemplates) }}
+                </div>
+            </div>
+        </div>
+
+        <div id="tabEmail" class="tabContent hide">
+
+            <div class="form-row">
+                {{ form_label('default_email', Lang.get('core.default_email_addr')) }}
+                <div class="input-container">
+                    {{ form_text('default_email', null, { 'size': 45 }) }}<br>
+                    <span class="description">{{ Lang.get('core.default_email_addr_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('global_email_header', Lang.get('core.global_email_header')) }}
+                <div class="input-container">
+                    {{ form_textarea('global_email_header') }}
+                    <span class="description">{{ Lang.get('core.global_email_header_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('global_email_footer', Lang.get('core.global_email_footer')) }}
+                <div class="input-container">
+                    {{ form_textarea('global_email_footer') }}
+                    <span class="description">{{ Lang.get('core.global_email_footer_desc') }}</span>
+                </div>
+            </div>
+
+            <!-- todo option to pick global email, and change the default -->
+            <div class="form-row">
+                {{ form_label('email_method', Lang.get('core.email_method')) }}
+                <div class="input-container input-group">
+                    <label>
+                        {{ form_radio('email_method', 'default', true, { 'onclick': "document.getElementById('smtp').style.display = 'none';" }) }}
+                        {{ Lang.get('core.inherit_global_setting') }}
+                    </label> &nbsp;
+                    <label>
+                        {{ form_radio('email_method', 'mail', null, { 'onclick': "document.getElementById('smtp').style.display = 'none';" }) }}
+                        {{ Lang.get('core.php_mail_function') }}
+                    </label> &nbsp;
+                    <label>
+                        {{ form_radio('email_method', 'smtp', null, { 'onclick': "document.getElementById('smtp').style.display = 'block';" }) }}
+                        {{ Lang.get('core.smtp') }}
+                    </label>
+                </div>
+            </div>
+
+            {% include 'operator.' ~ template ~ '.core.forms.smtp_tab' with {'email_method': record.email_method} %}
+
+        </div>
+
+        <div id="tabLocale" class="tabContent hide">
+
+            {% include 'operator.' ~ template ~ '.core.forms.locale_tab' %}
+
+            <div class="form-row">
+                {{ form_label('default_language', Lang.get('general.default_language')) }}
+                <div class="input-container">
+                    {{ form_select('default_language', {'default': Lang.get('general.system_default')} + languages) }}<br />
+                    <span class="description">{{ Lang.get('core.brand_default_lang_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('language_toggle', Lang.get('general.language_toggle')) }}
+                <div class="input-container input-group">
+                    <label>{{ form_radio('language_toggle', 2, true) }} {{ Lang.get('general.system_default') }}</label><br />
+                    <label>{{ form_radio('language_toggle', 1) }} {{ Lang.get('general.show') }}</label><br />
+                    <label>{{ form_radio('language_toggle', 0) }} {{ Lang.get('general.hide') }}</label><br />
+                    <span class="description">{{ Lang.get('core.brand_lang_toggle_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <!-- Selectize -->
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/settings.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('select[name="group[]"]').selectize({
+                plugins: ['remove_button']
+            });
+        });
+    </script>
+{% endblock %}

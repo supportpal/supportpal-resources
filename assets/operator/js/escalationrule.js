@@ -1,9 +1,11 @@
 $(function() {
     // Show desired value dropdown for given action
     $(document.body).on('change', '.rule-action select', function() {
-        // Remove redactor first
-        $(this).parents('tr').find('.rule-value .redactor-box').before($(this).parents('tr').find('.rule-value .redactor-box textarea.text'));
-        $(this).parents('tr').find('.rule-value .redactor-box').remove();
+        // Remove redactor (if it exists).
+        if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() + '"] .redactor-box').length) {
+            $(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() + '"] textarea.text')
+                .redactor('core.destroy');
+        }
 
         // Show right value
         $(this).parents('tr').find('.rule-value .action').hide()
@@ -112,7 +114,16 @@ $(function() {
     });
 
     function redactor(element) {
+        var opts = {
+            focus: false,
+            mergeFields: {
+                tickets: true,
+                organisations: organisationsEnabled
+            },
+            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
+        };
+
         // Redactor
-        element.redactor($.Redactor.default_opts);
+        element.redactor($.extend($.Redactor.default_opts, opts));
     }
 });

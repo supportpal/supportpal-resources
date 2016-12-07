@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block sidebar %}
     {% include 'operator.' ~ template ~ '.report.sidebar' %}
 {% endblock %}
@@ -35,10 +31,10 @@
                 </div> &nbsp;&nbsp;
                 <span class="report-date timeframeOptions {% if report.startDate == 0 %}hide{% endif %}">
                     <div class="report-date">
-                        {{ Lang.get('general.start') }}: &nbsp;{{ form_text('startDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
+                        {{ Lang.get('general.start') }}: &nbsp;{{ form_text('startDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 12 }) }}
                     </div> &nbsp;&nbsp;
                     <div class="report-date">
-                        {{ Lang.get('general.end') }}: &nbsp;{{ form_text('endDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
+                        {{ Lang.get('general.end') }}: &nbsp;{{ form_text('endDate', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 12 }) }}
                     </div>
                 </span>
             {% else %}
@@ -54,7 +50,7 @@
         {% include 'operator.' ~ template ~ '.report.condition_group' %}
     </div>
     {% else %}
-    {% include 'operator.' ~ template ~ '.report.condition_group' %}
+        {% include 'operator.' ~ template ~ '.report.condition_group' %}
     {% endif %}
 
     <div class="loading box hide">{{ Lang.get('general.loading') }}<i class="ellipsis"><i>.</i><i>.</i><i>.</i></i></div>
@@ -100,7 +96,19 @@
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
+    <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>
+
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <script src="{{ asset_rev('resources/assets/libs/jszip/js/jszip.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pdfmake/js/pdfmake.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pdfmake/js/vfs_fonts.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/datatables.net-buttons/css/buttons.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
 
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
@@ -108,7 +116,7 @@
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
     <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
-    
+
     <script type="text/javascript">
         var chartData, startTimestamp, endTimestamp;
 
@@ -252,10 +260,22 @@
             );
         }
 
+        // Recursively decode HTML entities.
+        function decodeHtmlEntities(item) {
+            if (item instanceof Array) {
+                return array_map(decodeHtmlEntities, item);
+            } else if (typeof item === 'string') {
+                return he.decode(item);
+            } else {
+                return item;
+            }
+        }
+
         // Takes the data and converts it to a chart friendly format
         function loadChart(data) {
-            // Draw the chart
-            chartData = google.visualization.arrayToDataTable(data);
+            // Draw the Google chart.
+            // Decode HTML entities as Google charts displays as-is (DEV-888).
+            chartData = google.visualization.arrayToDataTable(array_map(decodeHtmlEntities, data));
             drawChart(chartData, $('select[name="chartType"]').val());
 
             var head = [];
@@ -278,8 +298,18 @@
                 "data": data,
                 "order": [],
                 "bProcessing": true,
-                "dom": 'Blfrtip',
-                "language": {{ dataTable_lang|raw }}
+                "dom": '<"table-buttons"B>lfrtip',
+                "language": {{ dataTable_lang|raw }},
+                "buttons": [
+                    {
+                        extend: 'print',
+                        autoPrint: false,
+                        exportOptions: {
+                            // Don't decode entities as it's already decoded
+                            decodeEntities: false
+                        }
+                    }, 'csv', 'pdf', 'excel'
+                ]
             });
         }
 

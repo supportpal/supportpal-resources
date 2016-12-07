@@ -5,14 +5,62 @@
 {% endblock %}
 
 {% block title %}
-    {{ Lang.choice('ticket.ticket', 1) }} {{ Lang.get('general.generalsetting') }}
+    {{ Lang.get('general.module_generalsetting', {'module': Lang.choice('ticket.ticket', 1)}) }}
 {% endblock %}
 
 {% block content %}
 
     {{ form_model(fields, { 'method': 'PUT', 'route': [ 'ticket.operator.generalsetting.update' ] }) }}
 
-        <div class="form-container first">
+        <ul class="tabs">
+            <li id="General" class="active">{{ Lang.get('general.general') }}</li>
+            <li id="Statuses">{{ Lang.choice('general.status', 2) }}</li>
+            <li id="Inactive">{{ Lang.get('ticket.inactive_tickets') }}</li>
+        </ul>
+
+        <div id="tabGeneral" class="tabContent">
+
+            <!-- todo: add jQuery validation and an AJAX call which fetches the ticket validation regex -->
+            <div class="form-row">
+                {{ form_label('ticket_number_format', Lang.get('ticket.ticket_format')) }}
+                <div class="input-container">
+                    {{ form_text('ticket_number_format') }}<br />
+                    <span class="description">{{ Lang.get('ticket.ticket_format_desc')|raw }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ticket_reply_order', Lang.get('ticket.ticket_reply_order')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_reply_order', { 0: Lang.get('general.ascending'), 1: Lang.get('general.descending') }) }}<br />
+                    <span class="description">{{ Lang.get('ticket.ticket_reply_order_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('ticket_notes_position', Lang.get('ticket.ticket_notes_position')) }}
+                <div class="input-container">
+                    {{ form_select('ticket_notes_position', {
+                        0: Lang.get('ticket.ticket_notes_top_messages'),
+                        1: Lang.get('ticket.ticket_notes_top'),
+                        2: Lang.get('ticket.ticket_notes_messages')
+                    })
+                    }}<br />
+                    <span class="description">{{ Lang.get('ticket.ticket_notes_position_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('allowed_files', Lang.get('ticket.allowed_files')) }}
+                <div class="input-container">
+                    {{ form_text('allowed_files') }}<br />
+                    <span class="description">{{ Lang.get('ticket.allowed_files_desc') }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="tabStatuses" class="tabContent hide">
 
             <div class="form-row">
                 {{ form_label('default_open_status', Lang.get('ticket.default_open_status')) }}
@@ -23,12 +71,24 @@
             </div>
 
             <div class="form-row">
+                {{ form_label('default_reply_status', Lang.get('ticket.default_reply_status')) }}
+                <div class="input-container">
+                    {{ form_select('default_reply_status', statuses) }}<br />
+                    <span class="description">{{ Lang.get('ticket.default_reply_status_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
                 {{ form_label('default_resolved_status', Lang.get('ticket.default_resolve_status')) }}
                 <div class="input-container">
                     {{ form_select('default_resolved_status', statuses) }}<br />
                     <span class="description">{{ Lang.get('ticket.default_resolve_status_desc') }}</span>
                 </div>
             </div>
+
+        </div>
+
+        <div id="tabInactive" class="tabContent hide">
 
             <div class="form-row">
                 {{ form_label('waiting_response_time', Lang.get('ticket.waiting_response_time')) }}
@@ -64,45 +124,9 @@
                 </div>
             </div>
 
-            <!-- todo: add jQuery validation and an AJAX call which fetches the ticket validation regex -->
-            <div class="form-row">
-                {{ form_label('ticket_number_format', Lang.get('ticket.ticket_format')) }}
-                <div class="input-container">
-                    {{ form_text('ticket_number_format') }}<br />
-                    <span class="description">{{ Lang.get('ticket.ticket_format_desc')|raw }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('ticket_reply_order', Lang.get('ticket.ticket_reply_order')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_reply_order', { 0: Lang.get('general.ascending'), 1: Lang.get('general.descending') }) }}<br />
-                    <span class="description">{{ Lang.get('ticket.ticket_reply_order_desc') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('ticket_notes_position', Lang.get('ticket.ticket_notes_position')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_notes_position', {
-                            0: Lang.get('ticket.ticket_notes_top_messages'),
-                            1: Lang.get('ticket.ticket_notes_top'),
-                            2: Lang.get('ticket.ticket_notes_messages')
-                        })
-                    }}<br />
-                    <span class="description">{{ Lang.get('ticket.ticket_notes_position_desc') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row form-full">
-                {{ form_label('allowed_files', Lang.get('ticket.allowed_files')) }}
-                <div class="input-container">
-                    {{ form_text('allowed_files') }}<br />
-                    <span class="description">{{ Lang.get('ticket.allowed_files_desc') }}</span>
-                </div>
-            </div>
-
         </div>
+
+        <hr />
 
         <div class="form-button">
             {{ form_submit(Lang.get('general.save')) }}

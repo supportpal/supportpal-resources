@@ -4,7 +4,7 @@
     {% if record|default is not empty and record.exists %}
         {{ record.name }} - {{ Lang.get('user.profile') }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("user.organisation", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('user.organisation', 1)}) }}
     {% endif %}
 {% endblock %}
 
@@ -19,41 +19,35 @@
     {% endif %}
         <div class="form-container {% if record|default is empty or not record.exists %}first"{% else %}" style="padding-top: 0"{% endif %}>
 
+            {% if record.exists %}
+                {% if Config.get('brand')|length > 1 %}
+                    <div class="form-row">
+                        {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
+                        <div class="input-container">
+                            {{ record.brand.name }}
+                            <input type="hidden" name="brand_id" value="{{ record.brand_id }}" />
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if Config.get('brand')|length > 1 %}
+                    <div class="form-row">
+                        {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
+                        <div class="input-container">
+                            {{ form_select('brand_id', array_column(enabledBrands, 'name', 'id'), Config.get('settings.default_brand')) }}
+                        </div>
+                    </div>
+                {% else %}
+                    <input type="hidden" name="brand_id" value="{{ Config.get('settings.default_brand') }}" />
+                {% endif %}
+            {% endif %}
+
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
                     {{ form_text('name', null, { 'size': '50%' }) }}
                 </div>
             </div>
-
-            <div class="form-row">
-                {{ form_label('address', Lang.get('user.address')) }}
-                <div class="input-container">
-                    {{ form_text('address', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('city', Lang.get('user.city')) }}
-                <div class="input-container">
-                    {{ form_text('city', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('state', Lang.get('user.state')) }}
-                <div class="input-container">
-                    {{ form_text('state', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('postcode', Lang.get('user.postcode')) }}
-                <div class="input-container">
-                    {{ form_text('postcode', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
 
             <div class="form-row">
                 {{ form_label('country', Lang.get('user.country')) }}
@@ -63,31 +57,15 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                {{ form_label('phone', Lang.get('user.phone')) }}
-                <div class="input-container">
-                    {{ form_text('phone', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('website', Lang.get('user.website')) }}
-                <div class="input-container">
-                    {{ form_text('website', null, { 'size': '50%' }) }}
-                </div>
-            </div>
-
             {# Check whether we should allow organisations to change their default language #}
             {% if Config.get('settings.language_frontend_toggle') %}
-
-            <div class="form-row">
-                {{ form_label('language_code', Lang.choice('general.language', 1)) }}
-                <div class="input-container">
-                    {{ form_select('language_code', languages,
-                            record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+                <div class="form-row">
+                    {{ form_label('language_code', Lang.choice('general.language', 1)) }}
+                    <div class="input-container">
+                        {{ form_select('language_code', languages,
+                                record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+                    </div>
                 </div>
-            </div>
-
             {% endif %}
 
             <div class="form-row">
@@ -107,8 +85,17 @@
 
         </div>
 
+        {% if customfields is not empty %}
+            <div class="organisation-customfields">
+                <h2>{{ Lang.get('general.custom_fields') }}</h2>
+                <div class="form-container first">
+                    {% include 'operator.' ~ template ~ '.forms.customfields' with { 'operator': true } %}
+                </div>
+            </div>
+        {% endif %}
+
         <div class="form-button">
-            {{ form_submit(Lang.choice('general.save', 1)) }}
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
         </div>
 
     {{ form_close() }}
@@ -120,126 +107,53 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/randomPassword.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
         $(document).ready(function() {
-            // In case we set a new owner, change previous owner to manager
-            $(document.body).on('change', '.access-level', function() {
-                if ($(this).val() == 0) {
-                    // To avoid selecting this one
-                    $(this).toggleClass('access-level');
-                    // Find the current owner if it exists and change it to a manager
-                    $('.access-level').each(function() {
-                        if ($(this).val() == 0) {
-                            $(this).prop('disabled', false).find('option[value="1"]').prop('selected', true);
-                        }
-                    });
-                    // Add class back
-                    $(this).prop('disabled', 'disabled').toggleClass('access-level');
-                }
-            });
+            // Enable hide/show password toggle
+            callHideShowPassword();
 
-            $('.add-user').on('click', function() {
-                // Copy hidden row and insert it at the end
-                $('.new-row:last').clone().insertBefore('.new-row:last').show();
-                // Run selectize
-                selectize();
-            });
+            // Date picker
+            callPikaday();
 
-            $(document.body).on('click', '.new-row .remove-button', function() {
-                // Removing new rows
-                $(this).parents('tr').remove();
-            });
+            // Only applies when creating an organisation as the brand can be changed
+            {% if not record.exists %}
+                // Brand and custom fields membership assignment
+                var brandCustomFields = JSON.parse('{{ brandCustomFields|raw }}');
 
-            $(document.body).on('click', '.existing-row .remove-button', function() {
-                // Removing existing rows, need to make an AJAX call
-                var row = $(this).parents('tr');
-                $.ajax({
-                    url: laroute.route('user.operator.organisation.removeUser', { id: record.id }),
-                    type: 'DELETE',
-                    data: { user: $(this).data('user') },
-                    success: function(response) {
-                        if (response.status == 'success') {
-                            $('.delete.success').show(500).delay(5000).hide(500);
-                            row.remove();
+                // Change the custom fields to show when the brand is changed
+                $(':input[name="brand_id"]').on('change', function() {
+                    var brandId = $(this).val();
+
+                    // Check if each field exists in the currently selected brand
+                    $('[data-field]').each(function () {
+                        if (brandCustomFields[brandId].indexOf($(this).data('field')) === -1) {
+                            $(this).find(':input').prop('disabled', true);
+                            $(this).hide();
                         } else {
-                            $('.delete.fail').show(500).delay(5000).hide(500);
+                            $(this).find(':input').prop('disabled', false);
+                            $(this).show();
                         }
+                    });
+
+                    // Do we have any fields for this brand? If not, just hide the section
+                    if (brandCustomFields[brandId].length) {
+                        $('.organisation-customfields').show();
+                    } else {
+                        $('.organisation-customfields').hide();
                     }
-                }).fail(function() {
-                    $('.delete.fail').show(500).delay(5000).hide(500);
                 });
-            });
 
-            // Open up disabled fields on submit
-            $('form').on('submit', function() {
-                $(this).find(':input').prop('disabled', false);
-            });
-
-            // For existing new user row
-            selectize();
-            // Disable owner by default
-            $('.access-level').each(function() {
-                if ($(this).val() == 0) {
-                    $(this).prop('disabled', 'disabled');
-                }
-            });
-            // Add new row
-            $('.add-user').trigger('click');
-
+                // Run above code when page loads to remove any fields it shouldn't show for default brand
+                $(':input[name="brand_id"]').change();
+            {% endif %}
         });
-
-        function selectize() {
-            $('select[name="user"]:visible').selectize({
-                valueField: 'id',
-                labelField: 'formatted_name',
-                searchField: 'formatted_name',
-                options: [],
-                create: false,
-                render: {
-                    option: function(item, escape) {
-                        return '<div>' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                            '<span class="title">' +
-                                '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                            '</span>' +
-                            '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' +
-                        '</div>';
-                    }
-                },
-                load: function(query, callback) {
-                    if (!query.length) return callback();
-                    $.ajax({
-                        url: laroute.route('user.operator.organisation.search'),
-                        type: 'GET',
-                        dataType: 'json',
-                        data: {
-                            q: query,
-                            org_id: '{{ record.id|default is not empty ? record.id : null }}'
-                        },
-                        error: function() {
-                            callback();
-                        },
-                        success: function(res) {
-                            callback(res.data);
-                        }
-                    });
-                },
-                onChange: function(value) {
-                    console.log(value);
-                    $('select[name="user"]').each(function() {
-                        if ($(this).val() == value) {
-                            $(this).parents('tr').find('.access-level').attr('name', 'access_level[' + value + ']');
-                        }
-                    });
-                }
-            });
-        }
     </script>
 {% endblock %}

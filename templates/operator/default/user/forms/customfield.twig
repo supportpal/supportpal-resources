@@ -6,18 +6,34 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("user.customfield", 1) }}
+        {% if organisations|default is not empty and organisations %}
+            {{ Lang.get('general.edit_item', {'item': Lang.choice('user.organisation_customfield', 1)}) }}
+        {% else %}
+            {{ Lang.get('general.edit_item', {'item': Lang.choice('user.customfield', 1)}) }}
+        {% endif %}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("user.customfield", 1) }}
+        {% if organisations|default is not empty and organisations %}
+            {{ Lang.get('general.add_item', {'item': Lang.choice('user.organisation_customfield', 1)}) }}
+        {% else %}
+            {{ Lang.get('general.add_item', {'item': Lang.choice('user.customfield', 1)}) }}
+        {% endif %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
-    {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'user.operator.customfield.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+    {% if organisations|default is not empty and organisations %}
+        {% if record|default is not empty and record.exists %}
+            {{ form_model(record, { 'route': [ 'user.operator.organisationcustomfield.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {% else %}
+            {{ form_open({ 'route': 'user.operator.organisationcustomfield.store', 'class': 'validate' }) }}
+        {% endif %}
     {% else %}
-        {{ form_open({ 'route': 'user.operator.customfield.store', 'class': 'validate' }) }}
+        {% if record|default is not empty and record.exists %}
+            {{ form_model(record, { 'route': [ 'user.operator.customfield.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {% else %}
+            {{ form_open({ 'route': 'user.operator.customfield.store', 'class': 'validate' }) }}
+        {% endif %}
     {% endif %}
 
         <div class="form-container first">
@@ -68,11 +84,23 @@
 
                 <div class="form-row">
                     <div class="input-container">
-                        {{ form_button(Lang.get("general.add") ~ ' ' ~ Lang.get("general.option"), { 'class': 'add-option' }) }}
+                        {{ form_button(Lang.get('general.add_item', {'item': Lang.get('general.option')}), { 'class': 'add-option' }) }}
                     </div>
                 </div>
 
             </div>
+
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row">
+                    {{ form_label('brand[]', Lang.choice('core.brand', 2)) }}
+                    <div class="input-container">
+                        {{ form_select('brand[]', array_column(Config.get('brand'), 'name', 'id'), recordBrands, {'multiple': 'multiple'}) }}
+                        <span class="description">{{ Lang.get('customfield.brand_desc') }}</span>
+                    </div>
+                </div>
+            {% else %}
+                <input type="hidden" name="brand[]" value="{{ Config.get('brand')|first.id }}" />
+            {% endif %}
 
             <div class="form-row required-field {% if record.type == 1 or record.type == 2 or record.type == 4 %}hide{% endif %}">
                 {{ form_label('required', Lang.get('general.required')) }}
@@ -128,6 +156,9 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/customfield.js') }}"></script>
 {% endblock %}

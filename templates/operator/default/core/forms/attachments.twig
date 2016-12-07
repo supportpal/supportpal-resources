@@ -56,7 +56,7 @@
     {% endif %}
 </ul>
 
-<label for="fileupload" class="file-input button">
+<label for="fileupload" class="file-input button" style="margin-top: 10px;">
     <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
 </label>
 <input id="fileupload" type="file" name="files[]" data-url="{{ route(route ~ ".upload") }}" multiple="multiple">

@@ -41,7 +41,7 @@
     <script type="text/javascript">
         // Saving variables for use in asset files
         var notificationIcon = "{{ asset_rev('resources/assets/operator/images/apple-touch-icon.png') }}";
-        var notificationType = "{{ Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.display_notifications') }}";
+        var notificationType = "{{ Config.get('settings.operator' ~ auth_user().id ~ '.display_notifications') }}";
     </script>
 
     {% block scripts_header %}{% endblock %}
@@ -66,7 +66,7 @@
         <div class="opsettings right">
             <ul id="nav" class="dropdown2 dropdown-horizontal">
                 <li class="dir" aria-haspopup="true">
-                    <img src="data:image/png;base64,{{ Auth.guard('operator').user().avatar }}" width="24" height="24"
+                    <img src="data:image/png;base64,{{ auth_user().avatar }}" width="24" height="24"
                          alt="{{ Lang.choice('general.operator', 1) }}" class="avatar left"/>
                     &nbsp;
                     <i class="fa fa-chevron-down"></i>
@@ -74,6 +74,9 @@
                     <ul>
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.personalsetting') }}">{{ Lang.get('user.personal_settings') }}</a>
+                        </li>
+                        <li aria-haspopup="false">
+                            <a href="{{ route('user.operator.signature') }}">{{ Lang.choice('user.signature', 2) }}</a>
                         </li>
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.logout') }}">{{ Lang.get('user.logout') }}</a>
@@ -113,220 +116,297 @@
                 <input type="text" name="query" class="search" id="inputSearchHeader" placeholder="{{ Lang.get('general.search') }}..." autocomplete="on" />
             </form>
             <ul id="nav" class="dropdown dropdown-horizontal">
-                {% if isModuleEnabled('Ticket') and Auth.guard('operator').user().hasPermission('view.ticket|create.ticket') %}
-                <li class="dir" aria-haspopup="true" id="ticketHeaderDropdown">
-                    <a class="nav dropdownmenu">
-                        {{ Lang.choice('ticket.ticket', 2) }}
-                        <i class="fa fa-chevron-down"></i>
-                    </a>
-                    <ul>
-                        {% if Auth.guard('operator').user().hasPermission('view.ticket') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('ticket.operator.ticket') }}?status={{ statusesWithoutResolved }}">
-                                {{ Lang.get('general.manage') }} {{ Lang.choice('ticket.ticket', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('create.ticket') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('ticket.operator.ticket.createStep1') }}">
-                                {{ Lang.get('ticket.open_new') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.feedback') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('ticket.operator.feedback.index') }}">
-                                {{ Lang.get('ticket.feedback') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
+                {% if isModuleEnabled('Ticket') and auth_user().hasPermission('view.ticket|create.ticket') %}
+                    <li class="dir" aria-haspopup="true" id="ticketHeaderDropdown">
+                        <a class="nav dropdownmenu">
+                            {{ Lang.choice('ticket.ticket', 2) }}
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <ul>
+                            {% if auth_user().hasPermission('view.ticket') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ urldecode(route('ticket.operator.ticket', manageTicketsParams)) }}">
+                                        {{ Lang.get('ticket.manage_tickets') }}
+                                    </a>
+                                </li>
+                                {% if not recentTickets.isEmpty() %}
+                                    <li aria-haspopup="false">
+                                        <div class="recent">
+                                            <div class="title">{{ Lang.get('ticket.recent_tickets') }}</div>
+                                            {% for recentTicket in recentTickets %}
+                                                <a href="{{ route('ticket.operator.ticket.show', recentTicket.id) }}">
+                                                    <span class="statusIcon" style="background: {{ recentTicket.status.colour }};"></span>&nbsp;
+                                                    <span class="description">#{{ recentTicket.number }}</span> {{ recentTicket.subject }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                {% if not recentFilters.isEmpty() %}
+                                    <li aria-haspopup="false">
+                                        <div class="recent">
+                                            <div class="title">{{ Lang.get('ticket.recent_filters') }}</div>
+                                            {% for recentFilter in recentFilters %}
+                                                <a href="{{ route('ticket.operator.ticket', {'filter': recentFilter.id}) }}">
+                                                    {{ recentFilter.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% if auth_user().hasPermission('create.ticket') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('ticket.operator.ticket.createStep1') }}">
+                                        {{ Lang.get('ticket.open_new') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.feedback') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('ticket.operator.feedback.index') }}">
+                                        {{ Lang.get('ticket.feedback') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
                 {% endif %}
-
-                {% if Auth.guard('operator').user().hasPermission('view.user|view.organisation|view.operator|view.massemail') %}
-                <li class="dir" aria-haspopup="true" id="userHeaderDropdown">
-                    <a class="nav dropdownmenu">
-                        {{ Lang.choice('user.user', 2) }}
-                        <i class="fa fa-chevron-down"></i>
-                    </a>
-                    <ul>
-                        {% if Auth.guard('operator').user().hasPermission('view.user|create.user') %}
-                        <li aria-haspopup="false" id="manageUserSetting">
-                            <a href="{{ route('user.operator.user') }}">
-                                {{ Lang.get('general.manage') }} {{ Lang.choice('user.user', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Config.get('settings.organisations_enabled') and Auth.guard('operator').user().hasPermission('view.organisation') %}
-                        <li aria-haspopup="false" id="manageOrgSetting">
-                            <a href="{{ route('user.operator.organisation') }}">
-                                {{ Lang.get('general.manage') }} {{ Lang.choice('user.organisation', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.operator') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('user.operator.operator') }}">
-                                {{ Lang.get('general.manage') }} {{ Lang.choice('general.operator', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.massemail') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('user.operator.massemail') }}">
-                                {{ Lang.get('user.mass_email') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
+                {% if auth_user().hasPermission('view.user|view.organisation|view.operator|view.massemail') %}
+                    <li class="dir" aria-haspopup="true" id="userHeaderDropdown">
+                        <a class="nav dropdownmenu">
+                            {{ Lang.choice('user.user', 2) }}
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <ul>
+                            {% if auth_user().hasPermission('view.user|create.user') %}
+                                <li aria-haspopup="false" id="manageUserSetting">
+                                    <a href="{{ route('user.operator.user') }}">
+                                        {{ Lang.get('user.manage_users') }}
+                                    </a>
+                                </li>
+                                {% if not recentUsers.isEmpty() %}
+                                    <li aria-haspopup="false">
+                                        <div class="recent">
+                                            <div class="title">{{ Lang.get('user.recent_users') }}</div>
+                                            {% for recentUser in recentUsers %}
+                                                <a href="{{ route('user.operator.user.edit', recentUser.id) }}">
+                                                    {{ recentUser.formatted_name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% if Config.get('settings.organisations_enabled') and auth_user().hasPermission('view.organisation') %}
+                                <li aria-haspopup="false" id="manageOrgSetting">
+                                    <a href="{{ route('user.operator.organisation') }}">
+                                        {{ Lang.get('user.manage_organisations') }}
+                                    </a>
+                                </li>
+                                {% if not recentOrganisations.isEmpty() %}
+                                    <li aria-haspopup="false">
+                                        <div class="recent">
+                                            <div class="title">{{ Lang.get('user.recent_organisations') }}</div>
+                                            {% for recentOrganisation in recentOrganisations %}
+                                                <a href="{{ route('user.operator.organisation.edit', recentOrganisation.id) }}">
+                                                    {{ recentOrganisation.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.operator') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('user.operator.operator') }}">
+                                        {{ Lang.get('user.manage_operators') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.massemail') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('user.operator.massemail') }}">
+                                        {{ Lang.get('user.mass_email') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
                 {% endif %}
-
                 {% if isModuleEnabled('Selfservice')
-                        and Auth.guard('operator').user().hasPermission('view.comment|view.selfservicetag|view.selfservicetypes'
+                        and auth_user().hasPermission('view.comment|view.selfservicetag|view.selfservicetypes'
                                 ~ '|view.article|view.category')
                 %}
-                <li class="dir" aria-haspopup="true">
-                    <a class="nav dropdownmenu">
-                        {{ Lang.get('selfservice.selfservice') }}
-                        <i class="fa fa-chevron-down"></i>
-                    </a>
-                    <ul>
-                        {% for type in selfserviceTypes %}
-                            {% if Auth.guard('operator').user().hasPermission('view.article|view.category') %}
-                            <li aria-haspopup="true">
-                                <a class="dropdownmenu">
-                                    {{ type.name }}
-                                    <i class="fa fa-chevron-right"></i>
-                                </a>
-                                <ul>
-                                    {% if Auth.guard('operator').user().hasPermission('view.article') %}
+                    <li class="dir" aria-haspopup="true">
+                        <a class="nav dropdownmenu">
+                            {{ Lang.get('selfservice.selfservice') }}
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <ul>
+                            {% if auth_user().hasPermission('view.selfservicetype') %}
+                                {% if assignedBrands|length > 1 %}
+                                    <li aria-haspopup="true">
+                                        <a class="dropdownmenu">
+                                            <i class="fa fa-chevron-right"></i>
+                                            {{ Lang.choice('selfservice.type', 2) }}
+                                        </a>
+                                        <ul>
+                                            {% for brand in assignedBrands %}
+                                                <li aria-haspopup="false">
+                                                    <a href="{{ route('selfservice.operator.type.index', brand.id) }}">
+                                                        {{ brand.name }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% else %}
                                     <li aria-haspopup="false">
-                                        <a href="{{ route('selfservice.operator.article.index', { 'type': type.slug }) }}">
-                                            {{ Lang.choice('selfservice.article', 2) }}
+                                        <a href="{{ route('selfservice.operator.type.index', assignedBrands|first.id) }}">
+                                            {{ Lang.choice('selfservice.type', 2) }}
                                         </a>
                                     </li>
-                                    {% endif %}
-
-                                    {% if Auth.guard('operator').user().hasPermission('view.category') %}
-                                    <li aria-haspopup="false">
-                                        <a href="{{ route('selfservice.operator.category.index', { 'type': type.slug }) }}">
-                                            {{ Lang.choice('general.category', 2) }}
-                                        </a>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </li>
+                                {% endif %}
                             {% endif %}
-                        {% endfor %}
-
-                        {% if Auth.guard('operator').user().hasPermission('view.comment') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('selfservice.operator.comment.index') }}">
-                                {{ Lang.choice('selfservice.comment', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if Auth.guard('operator').user().hasPermission('view.selfservicetag') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('selfservice.operator.tag.index') }}">
-                                {{ Lang.choice('selfservice.tag', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if Auth.guard('operator').user().hasPermission('view.selfservicetype') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('selfservice.operator.type.index') }}">
-                                {{ Lang.choice('selfservice.type', 2) }}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
+                            {% if auth_user().hasPermission('view.category') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('selfservice.operator.category.index') }}">
+                                        {{ Lang.choice('general.category', 2) }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.article') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('selfservice.operator.article.index') }}">
+                                        {{ Lang.choice('selfservice.article', 2) }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.selfservicetag') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('selfservice.operator.tag.index') }}">
+                                        {{ Lang.choice('selfservice.tag', 2) }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.comment') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('selfservice.operator.comment.index') }}">
+                                        {{ Lang.choice('selfservice.comment', 2) }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
                 {% endif %}
-
-                {% if isModuleEnabled('Report') and Auth.guard('operator').user().hasPermission('view.reportdashboard') %}
-                <li class="dir" aria-haspopup="false">
-                    <a href="{{ route('report.operator.dashboard') }}" class="nav">{{ Lang.choice('report.report', 2) }}</a>
-                </li>
+                {% if isModuleEnabled('Report') and auth_user().hasPermission('view.reportdashboard') %}
+                    <li class="dir" aria-haspopup="false">
+                        <a href="{{ route('report.operator.dashboard') }}" class="nav">{{ Lang.choice('report.report', 2) }}</a>
+                    </li>
                 {% endif %}
-
-                {% if Auth.guard('operator').user().canViewSettings() %}
-                <li class="dir" aria-haspopup="false">
-                    <a id="settingsNavigation" href="{{ route('core.operator.setting') }}" class="nav">
-                        {{ Lang.choice('general.setting', 2) }}
-                    </a>
-                </li>
+                {% if auth_user().canViewSettings() %}
+                    <li class="dir" aria-haspopup="false">
+                        <a id="settingsNavigation" href="{{ route('core.operator.setting') }}" class="nav">
+                            {{ Lang.choice('general.setting', 2) }}
+                        </a>
+                    </li>
                 {% endif %}
-
-                {% if Auth.guard('operator').user().hasPermission('view.plugin') %}
-                <li class="dir" aria-haspopup="false">
-                    <a href="{{ route('core.operator.plugin.index') }}" class="nav">
-                        {{ Lang.choice('core.plugins', 2) }}
-                    </a>
-                </li>
+                {% if auth_user().hasPermission('view.plugin') %}
+                    <li class="dir" aria-haspopup="false">
+                        <a href="{{ route('core.operator.plugin.index') }}" class="nav">
+                            {{ Lang.choice('core.plugins', 2) }}
+                        </a>
+                    </li>
                 {% endif %}
-
-                {% if Auth.guard('operator').user().hasPermission('view.emaillog|view.license|view.operatorlog|view.activitylog') %}
-                <li class="dir" aria-haspopup="true">
-                    <a class="nav dropdownmenu">
-                        {{ Lang.get('core.utilities') }}
-                        <i class="fa fa-chevron-down"></i>
-                    </a>
-                    <ul>
-                        {% if Auth.guard('operator').user().hasPermission('view.emaillog') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('core.operator.emaillog') }}">
-                                {{ Lang.get('core.email_log') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.emailqueue') %}
-                            <li aria-haspopup="false">
-                                <a href="{{ route('core.operator.emailqueue') }}">
-                                    {{ Lang.get('core.email_queue') }}
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.license') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('core.operator.about') }}">
-                                {{ Lang.get('core.license_info') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.operatorlog') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('user.operator.operatorloginlog') }}">
-                                {{ Lang.get('user.operator_login_log') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.activitylog') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('user.operator.systemactivitylog') }}">
-                                {{ Lang.get('user.system_activity_log') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% if Auth.guard('operator').user().hasPermission('view.systemcleanup') %}
-                        <li aria-haspopup="false">
-                            <a href="{{ route('core.operator.systemcleanup') }}">
-                                {{ Lang.get('core.system_cleanup') }}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </li>
+                {% if auth_user().hasPermission('view.emaillog|view.emailqueue|view.license|view.operatorlog|view.phpinfo|view.activitylog') %}
+                    <li class="dir" aria-haspopup="true">
+                        <a class="nav dropdownmenu">
+                            {{ Lang.get('core.utilities') }}
+                            <i class="fa fa-chevron-down"></i>
+                        </a>
+                        <ul>
+                            {% if auth_user().hasPermission('view.emailqueue') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('core.operator.emailqueue') }}">
+                                        {{ Lang.get('core.email_queue') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.license') %}
+                                <li aria-haspopup="false">
+                                    <a href="{{ route('core.operator.about') }}">
+                                        {{ Lang.get('core.license_info') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.emaillog|view.operatorlog|view.activitylog') %}
+                                <li aria-haspopup="true">
+                                    <a class="dropdownmenu">
+                                        {{ Lang.choice('core.log', 2) }}
+                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                    <ul>
+                                        {% if auth_user().hasPermission('view.emaillog') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('core.operator.emaillog') }}">
+                                                    {{ Lang.get('core.email_log') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if auth_user().hasPermission('view.operatorlog') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('user.operator.operatorloginlog') }}">
+                                                    {{ Lang.get('user.operator_login_log') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if auth_user().hasPermission('view.activitylog') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('user.operator.systemactivitylog') }}">
+                                                    {{ Lang.get('user.system_activity_log') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if auth_user().hasPermission('view.phpinfo|view.systemcleanup') %}
+                                <li aria-haspopup="true">
+                                    <a class="dropdownmenu">
+                                        {{ Lang.get('general.system') }}
+                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                    <ul>
+                                        {% if auth_user().hasPermission('view.phpinfo') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('core.operator.phpinfo') }}">
+                                                    {{ Lang.get('core.php_info') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if auth_user().hasPermission('view.systemcleanup') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('core.operator.systemcleanup') }}">
+                                                    {{ Lang.get('core.system_cleanup') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
                 {% endif %}
 
                 <li class="dir mobile-only hide" aria-haspopup="false">
                     <a href="{{ route('user.operator.personalsetting') }}" class="nav">
                         {{ Lang.get('user.personal_settings') }}
+                    </a>
+                </li>
+                <li class="dir mobile-only hide" aria-haspopup="false">
+                    <a href="{{ route('user.operator.signature') }}" class="nav">
+                        {{ Lang.choice('user.signature', 2) }}
                     </a>
                 </li>
                 <li class="dir mobile-only hide" aria-haspopup="false">
@@ -342,12 +422,10 @@
 <div class="clear"></div>
 
 <div id="content">
-
     {% block sidebar %}
     {% endblock %}
 
     <div id="main">
-
         {% if Config.get('settings.maintenance_mode') %}
             <div class="box warning" style="margin-bottom: 0">
                 {{ Lang.get('messages.maintenance_mode') }}
@@ -369,6 +447,19 @@
                     <h1 id="pageTitle">{{ title|raw }}</h1>
                 {% endif %}
             {% endblock %}
+
+            {% if breadcrumb|default is not empty %}
+                <div class="breadcrumb">
+                    {% for item in breadcrumb %}
+                        {% if not loop.first %}
+                            &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+                        {% endif %}
+                        {% if loop.last %}<strong>{% endif %}
+                        {{ item|raw }}
+                        {% if loop.last %}</strong>{% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
 
             {% set description = block('description') %}
             {% if description is not empty %}
@@ -400,12 +491,9 @@
             {% endif %}
 
             {% block content %}{% endblock %}
-
         </div>
         <div class="clear"></div>
-
     </div>
-
 </div>
 
 <!-- Laravel Javascript Validation -->

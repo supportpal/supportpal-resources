@@ -11,7 +11,7 @@
     <div class="sidebox">
         <h3 class="collapsable">
             <i class="fa fa-info-circle icon"></i>
-            {{ Lang.choice('ticket.ticket', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}
+            {{ Lang.get('ticket.ticket_details') }}
             <div class="arrow">
                 <i class="fa fa-chevron-down"></i>
             </div>
@@ -24,7 +24,7 @@
             <tr>
                 <th>{{ Lang.choice('user.user', 1) }}</th>
                 <td>
-                    {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+                    {% if can_update_ticket(auth_user(), ticket) %}
                         <a class="link edit-user">{{ ticket.user.formatted_name }}</a>
                     {% else %}
                         {{ ticket.user.formatted_name }}
@@ -37,6 +37,14 @@
                     <label>{{ form_checkbox('user_internal', 1, ticket.internal) }} {{ Lang.get('ticket.internal') }}</label>
                 </td>
             </tr>
+            {% if Config.get('brand')|length > 1 %}
+            <tr>
+                <th>{{ Lang.choice('core.brand', 1) }}</th>
+                <td>
+                    {{ ticket.brand.name }}
+                </td>
+            </tr>
+            {% endif %}
             <tr>
                 <th>{{ Lang.choice('ticket.channel', 1) }}</th>
                 <td>
@@ -46,27 +54,48 @@
             <tr>
                 <th>{{ Lang.choice('ticket.department', 1) }}</th>
                 <td>
-                    {{ form_select('department', array_column(departments.toArray(), 'name', 'id'), ticket.department_id, Auth.guard('operator').user().hasPermission('update.ticket') ? {} : {'disabled': 'disabled'}) }}
+                    {{
+                        form_select(
+                            'department',
+                            array_column(departments.toArray(), 'name', 'id'),
+                            ticket.department_id,
+                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                        )
+                    }}
                 </td>
             </tr>
             <tr>
                 <th>{{ Lang.choice('general.status', 1) }}</th>
                 <td>
-                    {{ form_select('status', array_column(statuses.toArray(), 'name', 'id'), ticket.status_id, Auth.guard('operator').user().hasPermission('update.ticket') ? {} : {'disabled': 'disabled'}) }}
+                    {{
+                        form_select(
+                            'status',
+                            array_column(statuses.toArray(), 'name', 'id'),
+                            ticket.status_id,
+                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                        )
+                    }}
                 </td>
             </tr>
             <tr>
                 <th>{{ Lang.choice('ticket.priority', 1) }}</th>
                 <td>
-                    {{ form_select('priority', array_column(priorities.toArray(), 'name', 'id'), ticket.priority_id, Auth.guard('operator').user().hasPermission('update.ticket') ? {} : {'disabled': 'disabled'}) }}
+                    {{
+                        form_select(
+                            'priority',
+                            array_column(priorities.toArray(), 'name', 'id'),
+                            ticket.priority_id,
+                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                        )
+                    }}
                 </td>
             </tr>
-            {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+            {% if can_update_ticket(auth_user(), ticket) %}
             <tr>
                 <td colspan="2">
                     <select class="assign-tags" name="tag[]" multiple="multiple">
                         {% for tag in ticket.tags %}
-                            <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.id }}'>
+                            <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.name }}'>
                                 {{ tag.name }}
                             </option>
                         {% endfor %}
@@ -88,13 +117,24 @@
             {% if not slaplans.isEmpty() %}
             <tr>
                 <th>{{ Lang.choice('ticket.sla_plan', 1) }}</th>
-                <td>{{ form_select('slaplan', { 0: Lang.get('general.none') } + array_column(slaplans.toArray(), 'name', 'id'), ticket.slaplan|default is not empty ? ticket.slaplan.id : 0, Auth.guard('operator').user().hasPermission('update.ticket') ? {} : {'disabled': 'disabled'}) }}</td>
+                <td>
+                    {{
+                        form_select(
+                            'slaplan',
+                            {
+                                0: Lang.get('general.none')
+                            } + array_column(slaplans.toArray(), 'name', 'id'),
+                            ticket.slaplan|default is not empty ? ticket.slaplan.id : 0,
+                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                        )
+                    }}
+                </td>
             </tr>
             {% endif %}
             <tr>
                 <th>{{ Lang.get('ticket.due_time') }}</th>
                 <td>
-                    {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+                    {% if can_update_ticket(auth_user(), ticket) %}
                         <a class="edit-duetime link">
                             {% if ticket.due_time|default is not empty %}
                                 {{ formatDate(ticket.due_time) }}
@@ -106,7 +146,7 @@
                         {% if ticket.due_time|default is not empty %}
                             {{ formatDate(ticket.due_time) }}
                         {% else %}
-                            {{ Lang.get('ticket.set_due_time') }}
+                            {{ Lang.get('general.na') }}
                         {% endif %}
                     {% endif %}
                 </td>
@@ -154,7 +194,7 @@
         <div class="sidebox details">
             <h3 class="collapsable">
                 <i class="fa fa-user icon"></i>
-                {{ Lang.choice('user.user', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}
+                {{ Lang.get('user.user_details') }}
                 <div class="arrow">
                     <i class="fa fa-chevron-down"></i>
                 </div>
@@ -207,11 +247,11 @@
                     <li>
                         <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
                             title="{{ userTicket.status.name }}"></span> &nbsp;
-                        <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}">
+                        <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}" target="_blank">
                             {{ Purifier.clean(str_limit(userTicket.subject, 28, '...')) }}
                         </a>
                         <div class="description">
-                            {{ prettyDate(userTicket.created_at) }}
+                            {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ prettyDate(userTicket.created_at) }}
                         </div>
                     </li>
                     {% endfor %}
@@ -220,7 +260,7 @@
 
                 {% if not ticket.internal and organisationTickets.count() %}
                 <br />
-                <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.choice('user.organisation', 1) ~ ' ' ~ Lang.choice('ticket.ticket', 2) }}</strong>
+                <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.organisation_tickets') }}</strong>
                 &nbsp;&nbsp;
                 <a class="description" href="{{ route('user.operator.organisation.ticket', [ ticket.user.organisation_id ]) }}">{{ Lang.get('general.view_all') }} &raquo;</a>
                 <ul class="recent-tickets">
@@ -228,21 +268,40 @@
                     <li>
                         <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
                             title="{{ organisationTicket.status.name }}"></span> &nbsp;
-                        <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}">
+                        <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}" target="_blank">
                             {{ Purifier.clean(str_limit(organisationTicket.subject, 28, '...')) }}
                         </a>
                         <div class="description">
-                            {{ prettyDate(organisationTicket.created_at) }}
+                            {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ prettyDate(organisationTicket.created_at) }}
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
                 {% endif %}
+
+                {% if not ticket.internal and otherBrandTickets.count() %}
+                    <br />
+                    <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.ticket_other_brands') }}</strong>
+                    <ul class="recent-tickets">
+                        {% for otherBrandTicket in otherBrandTickets %}
+                            <li>
+                                <span class="statusIcon" style="background: {{ otherBrandTicket.status.colour }};"
+                                    title="{{ otherBrandTicket.status.name }}"></span> &nbsp;
+                                <a href="{{ route('ticket.operator.ticket.show', [ otherBrandTicket.id ]) }}" target="_blank">
+                                    {{ Purifier.clean(str_limit(otherBrandTicket.subject, 28, '...')) }}
+                                </a>
+                                <div class="description">
+                                    {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ prettyDate(otherBrandTicket.created_at) }}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
         </div>
     {% endif %}
 
-    {% if not macros.isEmpty() %}
+    {% if not macros.isEmpty() and can_update_ticket(auth_user(), ticket) %}
     <div class="sidebox">
         <h3 class="collapsable">
             <i class="fa fa-magic icon"></i>
@@ -272,9 +331,11 @@
                 <div class="customfields">
                     {% include 'operator.' ~ template ~ '.forms.customfields' %}
                 </div>
-                <div class="form-button">
-                    <button class="save-fields" type="button">{{ Lang.get('general.save') }}</button>
-                </div>
+                {% if can_update_ticket(auth_user(), ticket) %}
+                    <div class="form-button">
+                        <button class="save-fields" type="button">{{ Lang.get('general.save') }}</button>
+                    </div>
+                {% endif %}
             </form>
         </div>
     </div>
@@ -303,6 +364,6 @@
     {% endif %}
 
     <div class="copyright">
-        {{ Lang.get('core.carefully_crafted') }} <a href="http://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.
+        {{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.
     </div>
 </div>

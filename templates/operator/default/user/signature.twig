@@ -1,0 +1,73 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% if 'user.operator.operatorsignature.update' in form_route %}
+        {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+    {% endif %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('general.edit_item', {'item': Lang.choice('user.signature', 2)}) }}
+    {% if 'user.operator.operatorsignature.update' in form_route %}
+        - {{ record.formatted_name }}
+    {% endif %}
+{% endblock %}
+
+{% block description %}
+    {{ Lang.get('user.signature_desc') }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_model(record, {'route': form_route, 'method': 'PUT', 'class': 'validate', 'style': 'min-height: 300px;'}) }}
+
+        {% include 'operator.' ~ template ~ '.user.forms.signature' %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice("general.submit", 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <!-- Selectize -->
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <!-- Redactor -->
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
+
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script type="text/javascript">
+        var opts = {
+            focus: false,
+            imageUpload: null,
+            mergeFields: {
+                tickets: true,
+                organisations: '{{ Config.get('settings.organisations_enabled', 1) }}'
+            },
+            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
+        };
+
+        // Do not initialise redactor on the dummy DOM element.
+        $('div.section-items textarea').redactor($.extend($.Redactor.default_opts, opts));
+    </script>
+{% endblock %}

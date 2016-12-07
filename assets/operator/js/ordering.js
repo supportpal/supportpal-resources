@@ -1,9 +1,18 @@
-function tableDnd(route) {
-
-    $(".dataTable").tableDnD({
+function tableDnd(route)
+{
+    var $table = $(".dataTable");
+    $table.tableDnD({
         onDragStart: function(table, row) {
+            // Don't do anything if the table is filtered
+            if ($(row).hasClass('nodrag') || $(row).hasClass('nodrop')) {
+                return;
+            }
+
+            // Set a background colour on the row temporarily.
             $(row).css("background-color", "#fdf6ea");
-            setTimeout(function() { $(row).css("background-color", ""); }, 1500);
+            setTimeout(function () {
+                $(row).css("background-color", "");
+            }, 1500);
         },
         onDrop: function(table, row) {
             $(row).css("background-color", "");
@@ -49,4 +58,40 @@ function tableDnd(route) {
         }
     });
 
+    // If we're filtering the table, disable row ordering as it might cause unexpected results.
+    $table.on( 'draw.dt', function () {
+        var api = $table.DataTable(),
+            searchTerms = api.columns().search();
+
+        searchTerms.push(api.search());
+
+        // Check that we have a search term
+        var nonEmpty = $.grep(searchTerms, function(v) {
+            return v !== "";
+        });
+
+        if (nonEmpty.length > 0) {
+            disableDndOrdering();
+        } else {
+            enableDndOrdering();
+        }
+    } );
+}
+
+/**
+ * Enable row ordering on the DataTable.
+ */
+function enableDndOrdering()
+{
+    $(".dataTable").find('tr').removeClass('nodrag nodrop').css('cursor', 'move');
+    $('#dndOrderNote').show();
+}
+
+/**
+ * Disable row ordering on the DataTable.
+ */
+function disableDndOrdering()
+{
+    $(".dataTable").find('tr').addClass('nodrag nodrop').css('cursor', '');
+    $('#dndOrderNote').hide();
 }

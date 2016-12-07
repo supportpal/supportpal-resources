@@ -6,18 +6,18 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("ticket.department", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.department', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("ticket.department", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.department', 1)}) }}
     {% endif %}
 {% endblock %}
 
 {% block content %}
 
     {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'ticket.operator.department.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {{ form_model(record, { 'route': [ 'ticket.operator.department.update', record.id ], 'method': 'PUT', 'class': 'validate', 'id': 'departmentForm', 'data-id': record.id }) }}
     {% else %}
-        {{ form_open({ 'route': 'ticket.operator.department.store', 'class': 'validate' }) }}
+        {{ form_open({ 'route': 'ticket.operator.department.store', 'class': 'validate', 'id': 'departmentForm', 'data-id': null }) }}
     {% endif %}
 
     <div class="form-container open first">
@@ -35,7 +35,18 @@
             </div>
         </div>
 
-        <div class="form-row">
+        {% if brands|length > 1 %}
+            <div class="form-row">
+                {{ form_label('brand[]', Lang.choice('core.brand', 2)) }}
+                <div class="input-container">
+                    {{ form_select('brand[]', brands, record.brands.pluck('id').toArray(), { 'multiple': 'multiple' }) }}
+                </div>
+            </div>
+        {% else %}
+            <input type="hidden" name="brand[]" value="{{ brands|keys|first }}" />
+        {% endif %}
+
+        <div class="form-row small-selectize">
             {{ form_label('parent', Lang.get('general.parent')) }}
             <div class="input-container">
                 {{ form_select('parent', parentDepartments, record|default is not empty and record.exists ? record.parent_id : null, { 'id': 'parent' }) }}
@@ -51,13 +62,12 @@
         {% endif %}
             {{ form_label('public', Lang.get('general.public')) }}
             <div class="input-container">
-                {{ form_check('public', 1, record|default is not empty ? record.public : true, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                {{ form_check('public', 1, record|default is not empty and record.exists ? record.public : true, { 'class': 'toggle', 'id': 'toggle_public' }) }}
                 <label for="toggle_public"></label>
                 <br />
                 <span class="description">{{ Lang.get('ticket.department_public_desc') }}</span>
             </div>
         </div>
-
     </div>
 
     <div class="form-container collapsed">
@@ -103,13 +113,35 @@
     <div class="form-container open first">
 
         <div class="form-row">
+            {{ form_label('group', Lang.get('ticket.department_group')) }}
+            <div class="input-container">
+                <div class="input-group">
+                    <select name="group[]" multiple="multiple">
+                        {% for group in groups %}
+                            <option {% if in_array(group.id, recordGroups) %}selected="selected"{% endif %}
+                                data-data='{{ group|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ group.id }}'>
+                                {{ group.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="description">{{ Lang.get('ticket.department_group_desc') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
             {{ form_label('dept_operators', Lang.get('ticket.department_operator')) }}
             <div class="input-container">
                 <div class="input-group">
-                    {% for id, name in operators %}
-                        {{ form_checkbox('dept_operators[]', id, in_array(id, recordOperators)) }}
-                        {{ name }}<br />
-                    {% endfor %}
+                    <select name="dept_operators[]" multiple="multiple">
+                        {% for operator in operators %}
+                            <option {% if in_array(operator.id, recordOperators) %}selected="selected"{% endif %}
+                                data-data='{{ operator|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ operator.id }}'>
+                                {{ operator.formatted_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <span class="description">{{ Lang.get('ticket.department_operator_desc') }}</span>
                 </div>
             </div>
         </div>
@@ -117,7 +149,16 @@
         <div class="form-row form-full">
             {{ form_label('default_assignedto', Lang.get('ticket.department_default_assign')) }}
             <div class="input-container">
-                {{ form_select('default_assignedto[]', operators, record.default_assignedto, { 'multiple': 'multiple' }) }}
+                <select name="default_assignedto[]" multiple="multiple">
+                    {% if record.exists %}
+                        {% for operator in record.fetchAssignedOperators() %}
+                            <option {% if in_array(operator.id, record.default_assignedto) %}selected='selected'{% endif %}
+                                data-data='{{ operator|json_encode(constant("JSON_FORCE_OBJECT")) }}' value='{{ operator.id }}'>
+                                {{ operator.formatted_name }}
+                            </option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
                 <span class="description">{{ Lang.get('ticket.dept_default_assign_desc') }}</span>
             </div>
         </div>
@@ -126,7 +167,7 @@
 
     <div class="parentToggle {% if record.parent_id != 0 %}hide{% endif %}" id="emailAccounts">
 
-        <h2>{{ Lang.get('general.email') ~ ' ' ~ Lang.choice('general.account', 2) }}</h2>
+        <h2>{{ Lang.get('ticket.email_accounts') }}</h2>
         <h2 class="description">{{ Lang.get('ticket.email_accounts_desc') }}</h2>
 
         {% if not extension_loaded('imap') %}
@@ -149,7 +190,7 @@
         <div class="form-container open">
             <div class="form-row">
                 <div class="input-container">
-                    {{ form_button(Lang.get('ticket.another_email'), { 'class': 'add-email' }) }}
+                    {{ form_button(Lang.get('ticket.add_another_email'), { 'class': 'add-email' }) }}
                 </div>
             </div>
         </div>
@@ -165,7 +206,7 @@
                 {{ form_label('notify_ticket_autoclose', Lang.get('ticket.email_auto_close')) }}
                 <div class="input-container">
                     <input name="notify_ticket_autoclose" value="0" id="notify_ticket_autoclose" type="hidden">
-                    {{ form_check('notify_ticket_autoclose', 1, record|default is not empty ? record.notify_ticket_autoclose : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_autoclose' }) }}
+                    {{ form_check('notify_ticket_autoclose', 1, record|default is not empty and record.exists ? record.notify_ticket_autoclose : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_autoclose' }) }}
                     <label for="toggle_notify_ticket_autoclose"></label>
                     <br />
                     <span class="description">{{ Lang.get('ticket.email_auto_close_desc') }}</span>
@@ -176,7 +217,7 @@
                 {{ form_label('notify_ticket_closed', Lang.get('ticket.email_closed_by_operator')) }}
                 <div class="input-container">
                     <input name="notify_ticket_closed" value="0" id="notify_ticket_closed" type="hidden">
-                    {{ form_check('notify_ticket_closed', 1, record|default is not empty ? record.notify_ticket_closed : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_closed' }) }}
+                    {{ form_check('notify_ticket_closed', 1, record|default is not empty and record.exists ? record.notify_ticket_closed : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_closed' }) }}
                     <label for="toggle_notify_ticket_closed"></label>
                     <br />
                     <span class="description">{{ Lang.get('ticket.email_closed_by_op_desc') }}</span>
@@ -187,7 +228,7 @@
                 {{ form_label('notify_email_ticket', Lang.get('ticket.email_user_on_email')) }}
                 <div class="input-container">
                     <input name="notify_email_ticket" value="0" id="notify_email_ticket" type="hidden">
-                    {{ form_check('notify_email_ticket', 1, record|default is not empty ? record.notify_email_ticket : true, { 'class': 'toggle', 'id': 'toggle_notify_email_ticket' }) }}
+                    {{ form_check('notify_email_ticket', 1, record|default is not empty and record.exists ? record.notify_email_ticket : true, { 'class': 'toggle', 'id': 'toggle_notify_email_ticket' }) }}
                     <label for="toggle_notify_email_ticket"></label>
                     <br />
                     <span class="description">{{ Lang.get('ticket.email_user_on_email_desc') }}</span>

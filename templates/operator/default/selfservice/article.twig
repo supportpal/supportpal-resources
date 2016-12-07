@@ -5,14 +5,33 @@
 {% endblock %}
 
 {% block title %}
-    {{ type.name }}: {{ Lang.choice('selfservice.article', 2) }}
+    {% if type|default is not empty %}
+        {{ type.name }}
+    {% else %}
+        {{ Lang.choice('selfservice.article', 2) }}
+    {% endif %}
 {% endblock %}
+
+{% if type|default is not empty %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
+         ~ type.brand.name ~
+        "</a>",
+        Lang.choice('selfservice.article', 2)
+    ] %}
+{% else %}
+    {% set breadcrumb = [
+        Lang.get('selfservice.selfservice'),
+        Lang.choice('selfservice.article', 2)
+    ] %}
+{% endif %}
 
 {% block content %}
 
     <div class="grid-options options box">
-        <a href="{{ route('selfservice.operator.article.create', { 'type': type.slug|lower }) }}">
-            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('selfservice.add_article') }}
+        <a href="{{ route('selfservice.operator.article.create', type|default is not empty ? { 'type': type.id } : {}) }}">
+            <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
         </a>
         &nbsp;&nbsp;
         <a class="filter-results">
@@ -31,6 +50,14 @@
             <div>
                 <label>{{ Lang.choice('general.category', 1) }}:</label>
                 <div id="filter_category"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('selfservice.type', 1) }}:</label>
+                <div id="filter_type"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('core.brand', 1) }}:</label>
+                <div id="filter_brand"></div>
             </div>
             <div>
                 <label>{{ Lang.choice('selfservice.tag', 1) }}:</label>
@@ -69,8 +96,10 @@
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
                 {column_number : 1, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_author"},
                 {column_number : 2, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_category"},
-                {column_number : 3, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_tag"},
-                {column_number : 4, column_data_type: "text", filter_container_id: "filter_published"}
+                {column_number : 3, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_type"},
+                {column_number : 4, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_brand"},
+                {column_number : 5, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_tag"},
+                {column_number : 6, column_data_type: "text", filter_container_id: "filter_published"}
             ]);
         });
     </script>

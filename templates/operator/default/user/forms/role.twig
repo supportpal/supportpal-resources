@@ -6,9 +6,9 @@
 
 {% block title %}
     {% if record|default is not empty and record.exists %}
-        {{ Lang.get("general.edit") }} {{ Lang.choice("general.operator", 1) }} {{ Lang.choice("user.role", 1) }}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('user.operator_role', 1)}) }}
     {% else %}
-        {{ Lang.get("general.add") }} {{ Lang.choice("general.operator", 1) }} {{ Lang.choice("user.role", 1) }}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('user.operator_role', 1)}) }}
     {% endif %}
 {% endblock %}
 

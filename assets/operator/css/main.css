@@ -137,7 +137,7 @@ hr {
     border-radius: 15px;
     color: #333;
     font-size: 10px;
-    margin-left: 7px;
+    margin-right: 5px;
     padding: 1px 7px;
     text-transform: uppercase;
 }
@@ -217,7 +217,7 @@ form {
     margin: 0;
 }
 
-input, button, textarea, select, label.button {
+input, button, textarea, select, label.button, a.button {
     background: #fff;
     border: 1px solid #ddd;
     -moz-border-radius: 0;
@@ -270,7 +270,7 @@ input[type="file"] {
     width: 100%;
 }
 
-button, input[type="button"], input[type="submit"], label.button {
+button, input[type="button"], input[type="submit"], label.button, a.button {
     background: rgb(249,249,249); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(249,249,249,1) 0%, rgba(238,238,238,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(249,249,249,1)), color-stop(100%,rgba(238,238,238,1))); /* Chrome,Safari4+ */
@@ -294,7 +294,7 @@ button, input[type="button"], input[type="submit"], label.button {
     white-space: nowrap;
 }
 
-button:hover, input[type="button"]:hover, label.button:hover {
+button:hover, input[type="button"]:hover, label.button:hover, a.button:hover {
     background: #e5e5e5;
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
@@ -374,6 +374,16 @@ button i {
     position: static;
     text-align: left;
     width: auto;
+}
+
+a.button {
+    line-height: 30px;
+    padding: 5px 16px;
+    text-decoration: none;
+}
+
+#main a.button:hover {
+    color: #454545;
 }
 
 button.as-link, button.as-link:focus, button.as-link:active {
@@ -537,6 +547,14 @@ input.toggle:checked + label:after {
 
 .form-container.first {
     border-top: 1px solid #e9e9e9;
+}
+
+.form-container.first:not(.hide) + .form-container.first {
+    border-top: 0;
+}
+
+.tabs + .form-container.first:not(.hide) + .form-container.first {
+    border-top: 0;
 }
 
 .form-container .form-row {
@@ -762,6 +780,22 @@ input.toggle:checked + label:after {
     z-index: 502;
 }
 
+.breadcrumb {
+    color: #777;
+    padding: 2px 0;
+    margin-bottom: 25px;
+    margin-top: -20px;
+}
+
+.breadcrumb a {
+    color: #777;
+}
+
+.breadcrumb .fa {
+    color: #aaa;
+    font-size: 9px;
+}
+
 /* Navigation */
 
 #navarea {
@@ -825,12 +859,14 @@ ul.dropdown2 li:hover {
 }
 
 ul.dropdown ul, ul.dropdown2 ul {
-    background: #3B91CE;
-    margin-top: -1px;
+    background: #fff;
+    -moz-box-shadow: 0 0 2px #777;
+    -webkit-box-shadow: 0 0 2px #777;
+    box-shadow: 0 0 2px #777;
     position: absolute;
     top: 100%;
     visibility: hidden;
-    width: 180px;
+    width: 200px;
     z-index: 901;
 }
 ul.dropdown2 ul {
@@ -846,20 +882,31 @@ ul.dropdown ul li, ul.dropdown2 ul li {
     margin: 0;
 }
 
-ul.dropdown ul a:hover, ul.dropdown2 ul a:hover {
+ul.dropdown ul a:hover,
+ul.dropdown ul a:hover .description,
+ul.dropdown2 ul a:hover,
+ul.dropdown2 ul a:hover .fa {
     background: #3480B6;
+    color: #fff;
 }
 
 ul.dropdown ul li a, ul.dropdown2 ul li a, ul.dropdown ul li div, ul.dropdown2 ul li div {
-    border-top: 1px solid #3480B6;
-    color: #fff;
+    border-top: 1px solid #e9e9e9;
     display: block;
-    padding: 8px 15px;
+    overflow: hidden;
+    padding: 7px 15px;
     text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+ul.dropdown ul li:first-child > a,
+ul.dropdown2 ul li:first-child > a{
+    border-top: 0;
 }
 
 ul.dropdown ul ul {
-    left: 178px;
+    left: 198px;
 }
 
 ul.dropdown li:hover > ul, ul.dropdown2 li:hover > ul, ul.dropdown li.hover > ul, ul.dropdown2 li.hover > ul {
@@ -868,13 +915,14 @@ ul.dropdown li:hover > ul, ul.dropdown2 li:hover > ul, ul.dropdown li.hover > ul
 
 ul.dropdown ul li:hover > ul {
     margin-left: 2px;
-    margin-top: -39px;
+    margin-top: -36px;
     top: auto;
     visibility: visible !important;
 }
 
 #navarea a.nav:hover, #navarea a.activeParent, ul.dropdown li:hover > a.activeParent {
     background: #3480B6;
+    color: #fff;
 }
 
 #navarea a.dropdownmenu:hover, #navarea a.dropactive, #navarea a.activeParent {
@@ -882,13 +930,49 @@ ul.dropdown ul li:hover > ul {
     z-index: 80;
 }
 
+#navarea ul ul a.dropdownmenu .fa {
+    color: #3480B6;
+}
+
+#navarea ul ul a.dropdownmenu:hover .fa, #navarea ul ul a.activeParent .fa {
+    color: #fff;
+}
+
 #navarea ul.dropdown ul li:hover > a.activeParent {
-    padding: 8px 15px 8px;
+    padding: 7px 15px;
 }
 
 #navarea ul.topul {
     border-top: 0;
     margin-top: -36px;
+}
+
+#navarea div.recent {
+    border-top: 1px solid #e9e9e9;
+    padding: 4px 0;
+}
+
+#navarea div.title, #navarea div.recent div.title {
+    border: 0;
+    color: #777;
+    font-size: 90%;
+    font-weight: bold;
+    padding: 3px 15px 0;
+    text-transform: uppercase;
+}
+
+#navarea div.recent a {
+    border-top: 0;
+    font-size: 95%;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+#navarea div.recent a .statusIcon {
+    box-shadow: 0 0 0 1px #fff;
+    height: 11px;
+    margin-top: -2px;
+    width: 11px;
 }
 
 /* Content container */
@@ -993,6 +1077,20 @@ ul.dropdown ul li:hover > ul {
     color: #000;
 }
 
+#sidebar ul.with-badge li {
+    white-space: nowrap;
+}
+
+#sidebar ul.with-badge li div.list-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sidebar ul.with-badge .statusIcon, #sidebar ul.with-badge .flag {
+    display: inline-block;
+    margin-top: -2px;
+}
+
 #sidebar .copyright {
     color: #aaa;
     font-size: 0.9em;
@@ -1057,6 +1155,10 @@ ul.dropdown ul li:hover > ul {
     width: 100%;
 }
 
+#sidebar .form-row select {
+    max-width: 100%;
+}
+
 #sidebar .recent-tickets .description {
     line-height: 9px;
     padding-left: 24px;
@@ -1101,8 +1203,10 @@ ul.dropdown ul li:hover > ul {
 }
 
 #main .desk_content_padding {
-    padding: 25px;
+    height: auto !important;
     overflow: auto;
+    padding: 25px;
+    position: relative;
 }
 
 #main h2 {
@@ -1289,6 +1393,10 @@ ul.tabs li:hover, #main ul.tabs a:hover {
 ul.tabs li.active:hover, #main ul.tabs a.active:hover {
     background: #fff;
     color: #333;
+}
+
+ul.tabs li .badge, ul.tabs a .badge {
+    padding: 1px 6px;
 }
 
 /* SLA Plans */
@@ -1836,6 +1944,12 @@ ul#attached-files .deleteAttachment:hover {
 
 /* Selectize */
 
+.form-row.small-selectize .selectize-control {
+    display: inline-block;
+    vertical-align: middle;
+    width: 300px;
+}
+
 .selectize-input {
     border: 1px solid #ddd !important;
     -webkit-border-radius: 0 !important;
@@ -1873,8 +1987,16 @@ ul#attached-files .deleteAttachment:hover {
     height: 22px !important;
 }
 
+.selectize-input .item .avatar, .selectize-dropdown .avatar,
+#sidebar .selectize-input .avatar, #sidebar .selectize-dropdown .avatar,
+.selectize-input .item .statusIcon, .selectize-dropdown .statusIcon {
+    margin-right: 0;
+    margin-top: -3px;
+}
+
 .selectize-control.plugin-remove_button [data-value] .remove {
     border-left: 1px solid #ddd !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.15) !important;
 }
 
 .selectize-control::before {
@@ -1891,8 +2013,9 @@ ul#attached-files .deleteAttachment:hover {
     z-index: 2;
 }
 
-.selectize-control.loading::before {
-    opacity: 0.75;
+.selectize-control.loading::before,
+#main .selectize-control .selectize-input.disabled {
+    opacity: 0.8;
 }
 
 .ldap_operator {
@@ -2004,7 +2127,8 @@ ul#attached-files .deleteAttachment:hover {
 
 .has-error .field-error.field-error-below,
 .has-error .redactor-box + .field-error:not(:empty),
-.has-error .merge-field_container + .field-error:not(:empty) {
+.has-error .merge-field_container + .field-error:not(:empty),
+.form-full.has-error .field-error {
     display: table;
     margin-left: 0;
     margin-top: 7px;
@@ -2013,7 +2137,8 @@ ul#attached-files .deleteAttachment:hover {
 
 .has-error .field-error.field-error-below:before,
 .has-error .redactor-box + .field-error:not(:empty):before,
-.has-error .merge-field_container + .field-error:not(:empty):before {
+.has-error .merge-field_container + .field-error:not(:empty):before,
+.form-full.has-error .field-error:before {
     content: none;
 }
 
@@ -2042,4 +2167,21 @@ input.datepicker {
 input.timepicker {
     font-family: 'FontAwesome', 'Open Sans';
     line-height: 21px;
+}
+
+/* Webui-popover */
+.webui-popover {
+    border: 0;
+    border-radius: 0;
+    -moz-box-shadow: 0 0 2px #777;
+    -webkit-box-shadow: 0 0 2px #777;
+    box-shadow: 0 0 2px #777;
+    margin: 0 20px;
+    max-width: 100%;
+    max-width: calc(100% - 60px);
+    padding: 8px 15px;
+}
+
+.webui-popover .webui-popover-content>div:first-child {
+    width: auto;
 }

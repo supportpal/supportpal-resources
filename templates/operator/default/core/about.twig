@@ -76,14 +76,26 @@
         <div class="form-row">
             <label>{{ Lang.get('core.license_valid_ip') }}</label>
             <div class="input-container">
-                {{ licenseIPs }}
+                {{ licenseInformation.licenseIP }}
+                {% if licenseInformation.externalIP is not empty %}, {{ licenseInformation.externalIP }}{% endif %}
             </div>
         </div>
 
         <div class="form-row">
-            <label>{{ Lang.get('core.license_valid_domain') }}</label>
+            <label>{{ Lang.get('core.license_path') }}</label>
             <div class="input-container">
-                {{ licenseInformation.licenseHost }}
+                {{ licenseInformation.licenseDir }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.additional_brands') }}</label>
+            <div class="input-container">
+                {{ licenseInformation.additionalBrands }}
+                {% if licenseInformation.serviceid %}
+                    &nbsp;
+                    (<a href="https://www.supportpal.com/manage/upgrade.php?type=configoptions&id={{ licenseInformation.serviceid }}" target="_blank">{{ Lang.get('core.purchase_more') }}</a>)
+                {% endif %}
             </div>
         </div>
 
@@ -97,17 +109,21 @@
             <label>{{ Lang.get('core.support_status') }}</label>
             <div class="input-container">
                 {% if licenseInformation.supportStatus == 'Active' %}
-                    <strong style="color:#090;">{{ licenseInformation.supportStatus }}</strong>
+                    <strong style="color: #27ae60;">{{ licenseInformation.supportStatus }}</strong>
                 {% else %}
-                    <strong style="color:red;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc') }}
+                    <strong style="color: #e74c3c;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc')|raw }}
                 {% endif %}
             </div>
         </div>
 
         <div class="form-row">
-            <label>{{ Lang.get('core.support_expires') }} {% if monthlyProduct %}*{% endif %}</label>
+            <label>{{ Lang.get('core.support_expires') }}</label>
             <div class="input-container">
                 {{ licenseInformation.supportExpires }}
+                {% if monthlyProduct %}
+                    <br />
+                    {{ Lang.get('core.monthly_product') }}
+                {% endif %}
             </div>
         </div>
 
@@ -122,7 +138,7 @@
             <div class="input-container">
                 {{ ADVER['installed'] }}
                 {% if ADVER['update'] %}
-                    &nbsp; <strong style="color:#900;">{{ ADVER['update'] }}</strong>
+                    &nbsp; <strong style="color: #e74c3c;">{{ ADVER['update'] }}</strong>
                 {% endif %}
             </div>
         </div>
@@ -133,11 +149,6 @@
                 {{ ADVER['current'] }}
             </div>
         </div>
-
-        {% if monthlyProduct %}
-        <br />
-        {{ Lang.get('core.monthly_product') }}
-        {% endif %}
 
     </div>
 

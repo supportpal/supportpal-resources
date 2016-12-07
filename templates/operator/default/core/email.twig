@@ -51,6 +51,8 @@
                             {{ Lang.get('core.incoming_spam') }}
                         {% elseif record.type == 3 %}
                             {{ Lang.get('core.incoming_throttled') }}
+                        {% else %}
+                            {{ Lang.get('core.incoming_rejected') }}
                         {% endif %}
                     </div>
                 </div>

@@ -39,7 +39,7 @@
                     {% else %}
                         {{ Lang.choice('user.user', 1) }}
                     {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
-                    &nbsp;&middot;&nbsp; {{ Lang.get('general.via') }} {{ message.channel.name }}
+                    &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                     {% if message.emaillog %}
                         <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" class="show-original description">
                             ({{ Lang.get('core.show_original') }})

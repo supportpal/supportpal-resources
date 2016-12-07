@@ -55,14 +55,23 @@
 
                 <div style="text-align:left;">
 
-                    <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
-                    <ul>
-                        {% for reason in licenseStatusReasons %}
-                        <li>{{ reason }}</li>
-                        {% endfor %}
-                    </ul>
+                    {% if licenseResponse is not empty %}
+                        <h3 style="margin-top: 0">{{ Lang.get('license.server_response') }}: </h3>
+                        {{ licenseResponse }}<br />
+                    {% else %}
+                        <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
+                        <ul>
+                            {% for reason in licenseStatusReasons %}
+                            <li>{{ reason }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <hr />
 
                     {{ Lang.get('license.need_to_reissue')|raw }}
+
+                    <hr />
 
                     <h3>{{ Lang.get('license.new_key') }}</h3>
 
@@ -82,7 +91,7 @@
             </div>
 
             <div id="forgotbox">
-                <a href="http://www.supportpal.com/manage/">{{ Lang.get('license.assistance') }}</a>
+                <a href="http://www.supportpal.com/manage/" target="_blank">{{ Lang.get('license.assistance') }}</a>
             </div>
 
         </div>

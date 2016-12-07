@@ -30,7 +30,7 @@
 
 	<div class="grid-options options box">
 	    <a href="{{ route('ticket.operator.slaplan.create') }}">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("ticket.sla_plan", 1) }}
+	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.sla_plan', 1)}) }}
 	    </a>
         &nbsp;&nbsp;
         <a class="filter-results">
@@ -52,8 +52,8 @@
 	{{ table.render()|raw }}
 	{{ table.script()|raw }}
 
-    <div class="note box bottombox">
-        <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('ticket.sla_plan_desc') }}
+    <div class="note box bottombox" id="dndOrderNote">
+        <strong>{{ Lang.get('messages.note') }}:</strong> {{ Lang.get('ticket.sla_plan_desc') }}
     </div>
 
 {% endblock %}

@@ -23,7 +23,7 @@
 
 	<div class="grid-options options box">
 	    <a href="{{ route('ticket.operator.filter.create') }}">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("ticket.filter", 1) }}
+	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.filter', 1)}) }}
 	    </a>
         &nbsp;&nbsp;
         <a class="filter-results">

@@ -79,6 +79,14 @@ ul.dashboardStats li .number {
     100% { opacity: 1; }
 }
 
+.table-buttons {
+	margin-bottom: 15px;
+}
+
+.table-buttons div.dt-buttons {
+	float: none !important;
+}
+
 /* Feedback */
 
 .satisfaction {

@@ -27,7 +27,7 @@
 }
 
 table.dataTable tbody tr.ticket-viewed {
-    background: #f5f5f5;
+    background: #f9f9f9;
     opacity: 0.8;
 }
 
@@ -74,7 +74,7 @@ span.subject:hover:after {
 }
 
 .message .header {
-    line-height: 24px;
+    line-height: 25px;
 }
 
 .message .avatar {
@@ -91,6 +91,10 @@ span.subject:hover:after {
 }
 .message .header .user {
     color: #27ae60;
+}
+
+.message .show-email-details {
+    text-decoration: underline;
 }
 
 .message .text,
@@ -181,8 +185,13 @@ div.collapsed-messages {
     text-align: center;
 }
 
+div.collapsed .text {
+    display: block !important;
+}
+
+div.collapsed .edit-message,
 div.collapsed .attachments {
-    display: none;
+    display: none !important;
 }
 
 div.collapsed .header .attachment {
@@ -212,10 +221,16 @@ div.collapsed-messages span {
     position: relative;
 }
 
-.reply-type .option.active {
+.reply-type .option[data-type='0'].active {
     background: #3B91CE;
     border: 1px solid #3B91CE;
     color: #fff;
+}
+
+.reply-type .option[data-type='1'].active {
+    background: #f1c40f;
+    border: 1px solid #f1c40f;
+    color: #333;
 }
 
 .reply-type .option.active:after {
@@ -231,7 +246,7 @@ div.collapsed-messages span {
 }
 
 .reply-type .option:hover {
-    border: 1px solid #3B91CE;
+    border: 1px solid #ccc;
 }
 
 .recipients {
@@ -244,6 +259,7 @@ div.collapsed-messages span {
     border-bottom: 0;
     line-height: 30px;
     margin: 0;
+    position: relative;
 }
 
 .recipients.form-row label {
@@ -254,8 +270,16 @@ div.collapsed-messages span {
     width: 52px;
 }
 
+.recipients.with-cc.form-row label {
+    padding-left: 63px;
+}
+
 .recipients.form-row .input-container {
     margin-left: 55px;
+}
+
+.recipients.with-cc.form-row .input-container {
+    margin-left: 110px;
 }
 
 .recipients > div {
@@ -276,12 +300,114 @@ div.collapsed-messages span {
     padding: 1px 0 !important;
 }
 
-.recipients .single .selectize-input.has-items {
-    padding: 2px 0 !important;
-}
-
 .recipients .selectize-control.multi .selectize-input > div {
     margin-top: 3px;
+}
+
+.recipients .reply-all {
+    background: #fff;
+    height: 100%;
+    margin: 0;
+    padding: 10px;
+    position: absolute;
+    z-index: 5;
+}
+
+.recipients .reply-all div.button {
+    background: #eee;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    line-height: 28px;
+    padding: 0 7px;
+}
+
+.recipients .reply-all div.button:hover {
+    background: #e5e5e5;
+}
+
+.recipients .reply-all div.button span.icon {
+    display: inline-block;
+}
+
+.recipients .reply-all div.button span.pointer {
+    float: right;
+    margin: -3px 0 0 5px;
+}
+
+.recipients .reply-all div.button span.pointer .fa {
+    color: #999;
+    font-size: 8px;
+}
+
+.recipients .reply-all div.dropdown {
+    position: absolute;
+    z-index: 5;
+}
+
+.recipients .reply-all div.dropdown ul {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    -moz-box-shadow: 1px 1px 1px #eee;
+    -webkit-box-shadow: 1px 1px 1px #eee;
+    box-shadow: 1px 1px 1px #eee;
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    width: 170px;
+}
+
+.recipients .reply-all div.dropdown ul li {
+    color: #666;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+.recipients .reply-all div.dropdown ul li:hover {
+    color: #333;
+}
+.recipients .reply-all div.dropdown ul li.selected,
+.recipients .reply-all div.dropdown ul li.selected:hover {
+    color: #333;
+    background: #eee;
+}
+
+.email-details.form-row {
+    border: 0;
+}
+
+.email-details > div {
+    border: 0;
+    padding: 3px 0;
+}
+
+.email-details.form-row label {
+    line-height: 24px;
+    padding-left: 0;
+    text-align: right;
+    width: 40px;
+}
+
+.email-details.form-row .input-container,
+.email-details.form-row .input-container::first-line {
+    line-height: 24px;
+}
+
+.text .recipients {
+    border: 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    font-size: 95%;
+    margin-bottom: 20px;
+}
+
+.text .recipients label {
+    padding-left: 0;
+    text-align: right;
+    width: 40px;
+}
+
+.text .recipients.form-row .input-container {
+    margin-left: 50px;
 }
 
 .attachments {
@@ -349,6 +475,17 @@ div.collapsed-messages span {
     word-wrap: break-word;
 }
 
+.jump-to-reply {
+    bottom: 0;
+    position: fixed;
+    right: 25px;
+    z-index: 100;
+}
+
+.jump-to-reply button {
+    border-bottom: 0;
+}
+
 /*
  * Reply options
  */
@@ -389,7 +526,7 @@ div.collapsed-messages span {
 /* Sidebar - ticket details */
 
 table.ticket-details {
-    overflow: hidden;
+    overflow-x: hidden;
     margin-top: 10px;
     width: 100%;
 }
@@ -418,6 +555,10 @@ table.ticket-details select {
     font-size: 0.9em;
     max-width: 100%;
     width: 100%;
+}
+
+table.ticket-details .selectize-control.multi .selectize-input > div {
+    font-weight: normal;
 }
 
 table.ticket-details .link {

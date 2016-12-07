@@ -28,9 +28,9 @@
                 {% for user in record.users %}
                 <tr class="existing-row">
                     <td>
-                        <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
+                        <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="21" />
                         &nbsp;
-                        {{ user.formattedname }}
+                        <a href="{{ route('user.operator.user.edit', user.id) }}">{{ user.formattedname }}</a>
                         {% if user.email is not empty %}
                             <span class="description">{{ '<' ~ user.email ~ '>' }}</span>
                         {% endif %}
@@ -67,7 +67,7 @@
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.save', 1)) }}
-            {{ form_button(Lang.get('general.add') ~ ' ' ~ Lang.choice('user.user', 1), { 'class': 'add-user' }) }}
+            {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('user.user', 1)}), { 'class': 'add-user' }) }}
         </div>
 
     {{ form_close() }}
@@ -85,7 +85,7 @@
         {{ form_model(record, {'route': [ 'user.operator.organisation.transferOwnership', record.id ], 'method': 'POST'}) }}
 
             <div class="form-row">
-                {{ form_label('owner', Lang.get('general.new') ~ ' ' ~ Lang.get('user.owner')) }}
+                {{ form_label('owner', Lang.get('user.new_owner')) }}
                 <div class="input-container">
                     {{ form_select('owner', ownerOptions, null,
                         {'placeholder': Lang.get('user.start_typing_name')}) }}
@@ -97,6 +97,10 @@
             </div>
 
         {{ form_close() }}
+
+    {% else %}
+
+        <br /><br /><br />
 
     {% endif %}
 
@@ -189,17 +193,23 @@
             $('select[name="user"]:visible').selectize({
                 valueField: 'id',
                 labelField: 'formatted_name',
-                searchField: 'formatted_name',
+                searchField: [ 'formatted_name', 'email' ],
                 options: [],
                 create: false,
+                placeholder: Lang.get('user.search_for_user'),
                 render: {
+                    item: function(item, escape) {
+                        return '<div class="item">' +
+                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                escape(item.formatted_name) +
+                                (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
+                                '</div>';
+                    },
                     option: function(item, escape) {
                         return '<div>' +
-                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
-                                '<span class="title">' +
-                                '<span class="name">' + escape(item.formatted_name) + '</span> ' +
-                                '</span>' +
-                                (item.email ? '<span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
+                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                escape(item.formatted_name) +
+                                (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
                                 '</div>';
                     }
                 },
@@ -222,7 +232,6 @@
                     });
                 },
                 onChange: function(value) {
-                    console.log(value);
                     $('select[name="user"]').each(function() {
                         if ($(this).val() == value) {
                             $(this).parents('tr').find('.access-level').attr('name', 'access_level[' + value + ']');

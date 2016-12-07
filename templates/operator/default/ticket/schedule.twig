@@ -15,15 +15,15 @@
 {% block content %}
 
 	<div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('ticket.schedule', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('ticket.schedule', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('ticket.schedule', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('ticket.schedule', 1), 'UTF-8') }) }}
     </div>
 
 	<div class="grid-options options box">
 	    <a href="{{ route('ticket.operator.schedule.create') }}">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("ticket.schedule", 1) }}
+	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.schedule', 1)}) }}
 	    </a>
         &nbsp;&nbsp;
         <a class="filter-results">

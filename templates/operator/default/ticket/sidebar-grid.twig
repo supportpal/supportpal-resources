@@ -7,12 +7,14 @@
             <i class="fa fa-filter icon"></i>
             {{ Lang.choice('ticket.filter', 2) }}
         </h3>
-        <ul class="tickets">
+        <ul class="with-badge tickets">
             {% for filter in filters %}
             <li>
                 <a href="{{ route('ticket.operator.ticket') ~ '?filter=' ~ filter.id }}">
-                    {{ filter.name }}
                     <span class="badge right">{{ filter.count }}</span>
+                    <div class="list-item">
+                        {{ filter.name }}
+                    </div>
                 </a>
             </li>
             {% endfor %}
@@ -24,13 +26,15 @@
             <i class="fa fa-circle-o icon"></i>
             {{ Lang.choice('general.status', 2) }}
         </h3>
-        <ul>
+        <ul class="with-badge">
             {% for status in obj_statuses %}
             <li>
                 <a href="{{ route('ticket.operator.ticket') ~ '?status=' ~ status.id }}">
-                    <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
-                    {{ status.name }}
                     <span class="badge right">{{ status.count }}</span>
+                    <div class="list-item">
+                        <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
+                        {{ status.name }}
+                    </div>
                 </a>
             </li>
             {% endfor %}
@@ -41,14 +45,36 @@
             <i class="fa fa-folder icon"></i>
             {{ Lang.choice('ticket.department', 2) }}
         </h3>
-        <ul>
+        <ul class="with-badge">
             {% for department in obj_departments %}
             <li>
                 <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
-                    {{ Purifier.clean(department.name) }}
                     <span class="badge right">{{ department.count }}</span>
+                    <div class="list-item">
+                        {{ Purifier.clean(department.name) }}
+                    </div>
                 </a>
             </li>
+            {% else %}
+                {{ Lang.get('general.none') }}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="sidebox">
+        <h3>
+            <i class="fa fa-sitemap icon"></i>
+            {{ Lang.choice('core.brand', 2) }}
+        </h3>
+        <ul class="with-badge">
+            {% for brand in obj_brands %}
+                <li>
+                    <a href="{{ route('ticket.operator.ticket') ~ '?brand=' ~ brand.id }}">
+                        <span class="badge right">{{ brand.count }}</span>
+                        <div class="list-item">
+                            {{ brand.name }}
+                        </div>
+                    </a>
+                </li>
             {% else %}
                 {{ Lang.get('general.none') }}
             {% endfor %}
@@ -59,13 +85,15 @@
             <i class="fa fa-flag icon"></i>
             {{ Lang.choice('ticket.priority', 2) }}
         </h3>
-        <ul>
+        <ul class="with-badge">
             {% for priority in obj_priorities %}
             <li>
                 <a href="{{ route('ticket.operator.ticket') ~ '?priority=' ~ priority.id }}">
-                    <span class="flag" style="border-color: {{ priority.colour }}; border-right-color: transparent;"></span>&nbsp;
-                    {{ priority.name }}
                     <span class="badge right">{{ priority.count }}</span>
+                    <div class="list-item">
+                        <span class="flag" style="border-color: {{ priority.colour }}; border-right-color: transparent;"></span>&nbsp;
+                        {{ priority.name }}
+                    </div>
                 </a>
             </li>
             {% endfor %}
@@ -78,7 +106,8 @@
             {{ Lang.choice('ticket.tag', 2) }}
         </h3>
         {% for tag in obj_tags %}
-            <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}">
+            <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}"
+                style="background: {{ tag['colour'] }}; color: {{ tag['colour_text'] }};">
                 {{ tag['name'] }}
             </a>
         {% endfor %}
@@ -120,5 +149,5 @@
     </div>
     {% endif %}
 
-    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="http://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
+    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
 </div>

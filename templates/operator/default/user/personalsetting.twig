@@ -133,13 +133,6 @@
 
         <div id="tabTicket" class="tabContent hide">
 
-            <div class="form-row form-full">
-                {{ form_label('opsettings[ticket_signature]', Lang.get('ticket.ticket_signature')) }}
-                <div class="input-container">
-                    {{ form_redactor('opsettings[ticket_signature]', null, { 'size': '50x3' }) }}
-                </div>
-            </div>
-
             <div class="form-row">
             	{{ form_label('opsettings[ticket_reply_order]', Lang.get('ticket.ticket_reply_order')) }}
                 <div class="input-container">
@@ -147,7 +140,19 @@
                             0: Lang.get('general.system_default'),
                             1: Lang.get('general.ascending'),
                             2: Lang.get('general.descending')
-                        }) }}
+                        }) }}<br />
+                    <span class="description">{{ Lang.get('ticket.ticket_reply_order_desc') }} {{ Lang.get('ticket.ticket_reply_order_default') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('opsettings[default_ticket_filter]', Lang.get('ticket.default_ticket_filter')) }}
+                <div class="input-container">
+                    {{ form_select('opsettings[default_ticket_filter]',
+                        {0: Lang.get('general.none')} + filters) }}<br />
+                    <span class="description">
+                        {{ Lang.get('ticket.default_ticket_filter_desc') }}
+                    </span>
                 </div>
             </div>
 
@@ -260,15 +265,8 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
-            $('textarea').redactor($.Redactor.default_opts);
-
             $('button.twofa-verify').click(function() {
                 var code = $('input[name="twofa_verify"]').val();
                 var enable = {{ record.twofa_enabled }};

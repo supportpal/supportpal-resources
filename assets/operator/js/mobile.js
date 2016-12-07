@@ -88,7 +88,7 @@ $(document).ready(function() {
     });
 
     // Toggle sidebar
-    $('.toggle-sidebar, #sidebar .icon').on('click', function(e) {
+    $('#sidebar').on('click', '.toggle-sidebar, .icon', function(e) {
         // For icons, only if responsive view and sidebar is closed
         if ($(this).hasClass('toggle-sidebar') || ($(window).width() < 960 && !$('body').hasClass('sidebar-open'))) {
             $('body').toggleClass('sidebar-open');

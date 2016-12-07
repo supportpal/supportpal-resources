@@ -9,16 +9,20 @@
 {% endblock %}
 
 {% block title %}
-    {{ Lang.choice('user.customfield', 2) }}
+    {% if organisations|default is not empty and organisations %}
+        {{ Lang.choice('user.organisation_customfield', 2) }}
+    {% else %}
+        {{ Lang.choice('user.customfield', 2) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
 	<div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.customfield', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.customfield', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.customfield', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.customfield', 1), 'UTF-8') }) }}
     </div>
 
     <div class="success box ordering hide">
@@ -29,9 +33,15 @@
     </div>
 
 	<div class="grid-options options box">
-	    <a href="{{ route('user.operator.customfield.create') }}">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get("general.add") }} {{ Lang.choice("user.customfield", 1) }}
-	    </a>
+        {% if organisations|default is not empty and organisations %}
+            <a href="{{ route('user.operator.organisationcustomfield.create') }}">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.organisation_customfield', 1)}) }}
+            </a>
+        {% else %}
+            <a href="{{ route('user.operator.customfield.create') }}">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.customfield', 1)}) }}
+            </a>
+        {% endif %}
         &nbsp;&nbsp;
         <a class="filter-results">
             <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
@@ -68,8 +78,8 @@
 	{{ table.render()|raw }}
 	{{ table.script()|raw }}
 
-    <div class="note box bottombox">
-        <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('user.customfield_order') }}
+    <div class="note box bottombox" id="dndOrderNote">
+        <strong>{{ Lang.get('messages.note') }}:</strong> {{ Lang.get('user.customfield_order') }}
     </div>
 
 {% endblock %}

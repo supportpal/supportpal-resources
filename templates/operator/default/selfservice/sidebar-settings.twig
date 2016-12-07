@@ -7,7 +7,7 @@
         </div>
     </h3>
     <ul {% if module != 'selfservice' %}class="hide"{% endif %}>
-        {% if Auth.guard('operator').user().hasPermission('view.selfservicesetting') %}
+        {% if auth_user().hasPermission('view.selfservicesetting') %}
         <li {% if route starts with 'selfservice.operator.generalsetting' %}class="current"{% endif %}>
             <a href="{{ route('selfservice.operator.generalsetting') }}">{{ Lang.get("general.generalsetting") }}</a>
         </li>

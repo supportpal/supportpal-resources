@@ -32,26 +32,37 @@
     {% endif %}
 
     <div class="success box tickets-update hide">
-        {{ Lang.get('messages.success_updated', { 'item': Lang.get('ticket.tickets')|lower }) }}
+        {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
     </div>
     <div class="fail box tickets-update hide">
-        {{ Lang.get('messages.error_updated', { 'item': Lang.get('ticket.tickets')|lower }) }}
+        {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
     </div>
     <div class="success box tickets-delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.get('ticket.tickets')|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
     </div>
     <div class="fail box tickets-delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.get('ticket.tickets')|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
     </div>
     <div class="fail box ticket-assign hide">
     </div>
+    <div class="fail box ticket-department hide">
+    </div>
 
 	<div class="grid-options options box">
-        {% if (Auth.guard('operator').user().hasPermission('create.ticket')) %}
-    	    <a id="openNewTicket" href="{{ route('ticket.operator.ticket.createStep1') }}">
-                <i class="fa fa-plus"></i>&nbsp;
-    	        {{ Lang.get("ticket.open_new") }}
-    	    </a> &nbsp;&nbsp;&nbsp;
+        {% if (auth_user().hasPermission('create.ticket')) %}
+            {% if record|default is not empty %}
+                {% if record.formatted_name is not empty %}
+                    <a href="{{ route('ticket.operator.ticket.createStep1', {'user': record.id}) }}">
+                        <i class="fa fa-plus"></i>&nbsp;
+                        {{ Lang.get("ticket.open_new_for_user") }}
+                    </a>&nbsp;&nbsp;&nbsp;
+                {% endif %}
+            {% else %}
+                <a id="openNewTicket" href="{{ route('ticket.operator.ticket.createStep1') }}">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ Lang.get("ticket.open_new") }}
+                </a>&nbsp;&nbsp;&nbsp;
+            {% endif %}
         {% endif %}
         {% if not Input.get('filter') %}
         <a class="toggle-filtering" id="filter-columns">
@@ -70,12 +81,12 @@
                     0: Lang.get('ticket.opened_at'),
                     1: Lang.get('ticket.last_reply'),
                     2: Lang.get('ticket.due_time')
-                }, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_ordering')
+                }, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_ordering')
                 ) }} &nbsp;
             {{ form_select('grid_ordering_direction', {
                     0: Lang.get('general.ascending'),
                     1: Lang.get('general.descending')
-                }, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_ordering_direction'))
+                }, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_ordering_direction'))
             }}
         </span>
 
@@ -86,41 +97,47 @@
         {{ form_open({ 'route': 'ticket.operator.ticket.saveColumns' }) }}
             <strong>{{ Lang.choice('general.column', 2) }}</strong>: &nbsp;
             <label>
-                {{ form_check('column_priority', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['priority']) }}
+                {{ form_check('column_priority', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['priority']) }}
                 {{ Lang.choice('ticket.priority', 1) }}
             </label> &nbsp;
             <label>
-                {{ form_check('column_status', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['status']) }}
+                {{ form_check('column_status', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['status']) }}
                 {{ Lang.choice('general.status', 1) }}
             </label> &nbsp;
             <label>
-                {{ form_check('column_subject', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['subject']) }}
+                {{ form_check('column_subject', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['subject']) }}
                 {{ Lang.get('ticket.subject') }}
             </label> &nbsp;
             <label>
-                {{ form_check('column_user', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['user']) }}
+                {{ form_check('column_user', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['user']) }}
                 {{ Lang.choice('user.user', 1) }}
             </label> &nbsp;
             {% if Config.get('settings.organisations_enabled') %}
                 <label>
-                    {{ form_check('column_organisation', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['organisation']) }}
+                    {{ form_check('column_organisation', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['organisation']) }}
                     {{ Lang.choice('user.organisation', 1) }}
                 </label> &nbsp;
             {% endif %}
             <label>
-                {{ form_check('column_department', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['department']) }}
+                {{ form_check('column_department', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['department']) }}
                 {{ Lang.choice('ticket.department', 1) }}
             </label> &nbsp;
+            {% if Config.get('brand')|length > 1 %}
+                <label>
+                    {{ form_check('column_brand', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['brand']) }}
+                    {{ Lang.choice('core.brand', 1) }}
+                </label> &nbsp;
+            {% endif %}
             <label>
-                {{ form_check('column_submitted', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['submitted']) }}
+                {{ form_check('column_submitted', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['submitted']) }}
                 {{ Lang.get('ticket.submitted') }}
             </label> &nbsp;
             <label>
-                {{ form_check('column_lastreply', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['lastreply']) }}
+                {{ form_check('column_lastreply', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['lastreply']) }}
                 {{ Lang.get('ticket.last_reply') }}
             </label> &nbsp;
             <label>
-                {{ form_check('column_duetime', 1, Config.get('settings.operator' ~ Auth.guard('operator').user().id ~ '.ticket_grid_columns')['duetime']) }}
+                {{ form_check('column_duetime', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['duetime']) }}
                 {{ Lang.get('ticket.due_time') }}
             </label>
             {{ form_submit(Lang.get('general.save'), { 'class': 'right', 'style': 'margin: -4px;' }) }}
@@ -133,29 +150,40 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    <!-- Datatables -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
+    <!-- Sweetalert -->
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
+    <!-- File upload -->
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
 
+    <!-- Pikaday -->
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/replyoptions.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
@@ -216,7 +244,6 @@
 
                 // Update the grid
                 $('.dataTable').dataTable().api().ajax.reload(function() {
-
                     if (selection !== '') {
                         // Restore the row selection
                         var array = selection.split(","); // explode the selected rows
@@ -239,6 +266,12 @@
                     if ($('tr.selected').length) {
                         $('.ticket-options :input').prop('disabled', false);
                     }
+
+                    // Only if in main ticket grid
+                    {% if record|default is empty %}
+                        // Refresh sidebar
+                        refreshSidebar();
+                    {% endif %}
                 }, false);
             }, 60 * 1000); // Interval in milliseconds - seconds * 1000
 
@@ -246,7 +279,7 @@
             $('.update-filtering').click(function() {
                 $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
                     // DEV-829, remove hardcoded route conditions (?conditions=...)
-                    settings.sAjaxSource = laroute.route('ticket.datatables.operator_ticket');
+                    settings.sAjaxSource = '{{ sAjaxSource }}';
 
                     // Add conditions to parameters
                     var conditions = $(".conditiongroup").serializeArray();
@@ -281,7 +314,7 @@
                         + '        </div>'
                         + '    </li>'
                         + '</ul>'
-                        + '<label for="fileupload" class="file-input button">'
+                        + '<label for="fileupload" class="file-input button" style="margin-top: 15px;">'
                         + '    <i class="fa fa-paperclip"></i>&nbsp; ' + Lang.get("general.add_attachment")
                         + '</label>'
                         + '<input id="fileupload" type="file" name="files[]" data-url="' + laroute.route("ticket.operator.attachment.upload") + '" multiple="multiple">'
@@ -319,6 +352,8 @@
                     }
                 });
                 $('textarea').redactor($.extend($.Redactor.default_opts, {
+                    focus: true,
+                    plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize'],
                     // Key down event causes mass reply modal to hide
                     keydownCallback: function(e) { e.stopPropagation(); }
                 }));
@@ -353,7 +388,10 @@
                     // Show error message
                     swal(Lang.get('messages.error_created', { 'item': Lang.choice('general.message', 1) }));
                 }).always(function() {
+                    // Reload table
                     $('.dataTable').dataTable()._fnAjaxUpdate();
+                    // Refresh sidebar
+                    refreshSidebar();
                 });
             }
 
@@ -440,7 +478,10 @@
                         direction: $('select[name="grid_ordering_direction"]').val()
                     }
                 ).always(function() {
+                    // Reload table
                     $('.dataTable').dataTable()._fnAjaxUpdate();
+                    // Refresh sidebar
+                    refreshSidebar();
                 });
             });
 
@@ -479,9 +520,12 @@
             }, "json").fail(function() {
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
+                // Reload table
                 $('.dataTable').dataTable()._fnAjaxUpdate();
                 // Hide processing
                 $('.ticket-options .processing').hide();
+                // Refresh sidebar
+                refreshSidebar();
             });
         }
 
@@ -497,14 +541,22 @@
                 if (response.status == 'success') {
                     $('.tickets-update.success').show(500).delay(5000).hide(500);
                 } else {
-                    $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                    // Only show specific error for update department
+                    if (typeof response.message != 'undefined' && route == laroute.route('ticket.operator.action.department')) {
+                        $('.ticket-department.fail').text(response.message).show(500).delay(5000).hide(500).text();
+                    } else {
+                        $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                    }
                 }
             }, "json").fail(function() {
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
+                // Reload table
                 $('.dataTable').dataTable()._fnAjaxUpdate();
                 // Hide processing
                 $('.ticket-options .processing').hide();
+                // Refresh sidebar
+                refreshSidebar();
             });
         }
 
@@ -540,9 +592,12 @@
             }, "json").fail(function() {
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
+                // Reload table
                 $('.dataTable').dataTable()._fnAjaxUpdate();
                 // Hide processing
                 $('.ticket-options .processing').hide();
+                // Refresh sidebar
+                refreshSidebar();
             });
         }
 
@@ -588,9 +643,28 @@
                         swal.closeModal();
                         // Reload table
                         $('.dataTable').dataTable()._fnAjaxUpdate();
+                        // Refresh sidebar
+                        refreshSidebar();
                     });
                 }
             });
+        }
+
+        function refreshSidebar() {
+            $.get(laroute.route('ticket.operator.ticket.sidebar'))
+                .success(function (response) {
+                    if (response.status == 'success') {
+                        var newSidebar = $(response.data).html();
+
+                        // In case we're in mobile and they've expanded the sidebar, make sure the new sidebar has same class
+                        if ($('#sidebar .toggle-sidebar').hasClass('fa-angle-double-left')) {
+                            newSidebar.find('.toggle-sidebar').toggleClass('fa-angle-double-right fa-angle-double-left')
+                        }
+
+                        // Update the sidebar HTML
+                        $('#sidebar').html(newSidebar);
+                    }
+                });
         }
     </script>
 {% endblock %}

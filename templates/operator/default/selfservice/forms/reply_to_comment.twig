@@ -1,8 +1,14 @@
 {% extends parent_template %}
 
 {% block title %}
-    {{ Lang.get('general.add') }} {{ Lang.choice('selfservice.comment', 1) }} {{ Lang.get('general.reply') }}
+    {{ Lang.get('selfservice.reply_to_comment') }}
 {% endblock %}
+
+{% set breadcrumb = [
+    Lang.get('selfservice.selfservice'),
+    "<a href='" ~ route('selfservice.operator.comment.index') ~ "'>" ~ Lang.choice('selfservice.comment', 2) ~ "</a>",
+    Lang.get('selfservice.reply_to_comment')
+] %}
 
 {% block content %}
 
@@ -10,8 +16,9 @@
 
     <div class="form-container first open">
 
-        {{ form_hidden('parent_id', record.id) }}
         {{ form_hidden('article_id', record.article_id) }}
+        {{ form_hidden('type_id', record.type_id) }}
+        {{ form_hidden('parent_id', record.id) }}
 
         <div class="form-row">
             {{ form_label('author', Lang.get('selfservice.comment_by')) }}
@@ -33,7 +40,7 @@
             {{ form_label('article', Lang.choice('selfservice.article', 1)) }}
             <div class="input-container">
                 <a href='{{ route("selfservice.operator.article.edit", {
-                    "type": record.article.type.slug,
+                    "type": record.article.type_id,
                     "article": record.article_id
                 }) }}'>
                     {{ record.article.title }}
@@ -44,7 +51,7 @@
         <div class="form-row">
             {{ form_label('text', Lang.get('general.text')) }}
             <div class="input-container">
-                {{ form_redactor('text', '@' ~ trim(str_replace(' ', '', record.author.formatted_name)) ~ ' ') }}
+                {{ form_redactor('text', '<div>@' ~ trim(str_replace(' ', '', record.author.formatted_name)) ~ '&nbsp;</div>') }}
             </div>
         </div>
 
@@ -65,15 +72,32 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
+    <!-- Code Editor -->
+    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
 
-            $('textarea[name=text]').redactor($.Redactor.default_opts);
+            $('textarea[name=text]').redactor(
+                $.extend(
+                    $.Redactor.default_opts,
+                    {
+                        focusEnd: true,
+                        plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
+                    }
+                )
+            );
 
         });
     </script>

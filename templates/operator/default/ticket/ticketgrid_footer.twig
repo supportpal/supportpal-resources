@@ -1,10 +1,10 @@
 <tr>
-    {% if (Auth.guard('operator').user().hasPermission('update.ticket|delete.ticket')) %}
+    {% if (auth_user().hasPermission('update.ticket|delete.ticket')) %}
     <td id="toolbar" class="ticket-options" colspan="{{ totalColumns }}">
         <div class="processing hide">
             <div>{{ Lang.get('general.processing') }}...</div>
         </div>
-        {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+        {% if (auth_user().hasPermission('update.ticket')) %}
             <span class="button-group">
                 <button class="reply-ticket" disabled="disabled"><i class="fa fa-reply"></i> {{ Lang.get('general.reply') }}</button><!--
                 --><button class="take-ticket" disabled="disabled"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
@@ -18,14 +18,14 @@
                 --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-unlink"></i> {{ Lang.get('ticket.unmerge') }}</button>
             </span>
         {% endif %}
-        {% if (Auth.guard('operator').user().hasPermission('delete.ticket')) %}
+        {% if (auth_user().hasPermission('delete.ticket')) %}
             &nbsp;
             <span class="button-group">
                 <button class="delete-ticket" disabled="disabled"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
                 --><button class="block-ticket" disabled="disabled"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
             </span>
         {% endif %}
-        {% if (Auth.guard('operator').user().hasPermission('update.ticket')) %}
+        {% if (auth_user().hasPermission('update.ticket')) %}
         <br />
             <select name="assign" disabled="disabled">
                 <option value="">{{ Lang.get('ticket.assign_operator') }}...</option>
