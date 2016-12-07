@@ -17,13 +17,9 @@ return [
     "type_enabled_desc"         => "Disabling the type will stop it displaying in the frontend.",
     "type_order"                => "You can change the order that the self-service types are displayed to users on the frontend by dragging and dropping the rows.",
 
-    "add_tag"                   => "Add Tag",
-    "add_type"                  => "Add Type",
     "type_view_desc"            => "If your content will contain many categories and be informative like a knowledgebase, we recommend the hierarchical view, whereas if your content is time-related such as announcements or a blog, we recommend the list view.",
     "frontend_icon"             => "Frontend Icon",
     "frontend_icon_desc"        => "Select a default icon to display on the frontend. Alternatively, upload your own icon:",
-
-    "viewing"                   => "Viewing",
 
     "no_categories"             => ":type currently has no categories. Please create one before adding an article.",
     "no_categories_frontend"    => "There are no categories to display.",
@@ -71,7 +67,6 @@ return [
 
     "comment_below_threshold"   => "(Comment below score threshold, click to show)",
     "view_all_replies"          => "View all replies",
-    "add_comment"               => "Add Comment",
     "show_more_comments"        => "Show more comments",
     "highest_rated"             => "Highest Rated",
     "newest"                    => "Newest",
@@ -80,9 +75,6 @@ return [
     "no_articles"               => "No articles.",
 
     "related_articles"          => "Related Articles",
-
-    "add_article"               => "Add Article",
-    "add_category"              => "Add Category",
 
     "rating"                    => "Rating|Ratings",
 
@@ -117,6 +109,19 @@ return [
      */
     "auth_required"             => "Please login or register an account to view the article.",
     "download_auth_required"    => "Please login or register an account to download the article attachment",
-    "auth_required"             => "Please login or register an account to view the article."
+    "auth_required"             => "Please login or register an account to view the article.",
+
+    /*
+     * 2.1.0
+     */
+    "view_articles"             => "View Articles",
+    "view_categories"           => "View Categories",
+    "add_to_another_brand"      => "Add to Another Brand",
+    "select_type"               => "Select Type...",
+    "visibility"                => "Visibility",
+    "reply_to_comment"          => "Reply To Comment",
+    "article_brand_warning"     => "This article exists in a brand that you are not assigned to, any changes you make will also be visible under that brand.",
+    "viewing_article"           => "Viewing Article",
+    "article_count"             => "Article Count",
 
 ];

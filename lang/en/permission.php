@@ -27,7 +27,6 @@ return [
     "user_add"          => "Add Users",
     "user_edit"         => "Edit Users",
     "user_delete"       => "Delete Users",
-    "usercustomfield"   => "Manage Custom Fields",
     "usergroup"         => "Manage User Groups",
     "massemail"         => "Send Mass Email",
     "ldapaccount"       => "Manage LDAP Accounts",
@@ -77,5 +76,17 @@ return [
      */
     // User
     "operator"          => "Manage Operators",
+    
+    /*
+     * 2.1.0
+     */
+    // Core
+    "brand"             => "Manage Brands",
+    "phpinfo"           => "View PHP Information",
+
+    // User
+    "usercustomfield"   => "Manage User Custom Fields",
+    "organisationcustomfield" => "Manage Organisation Custom Fields",
+    "operatorsignature" => "Manage Operator Signatures",
 
 ];

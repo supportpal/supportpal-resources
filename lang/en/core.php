@@ -45,7 +45,6 @@ return [
     "license_valid_ip"          => "License Valid IP(s)",
     "license_valid_domain"      => "License Valid Domain(s)",
     "support_status"            => "Support Status",
-    "support_status_desc"       => "You need an active support subscription in order to get the latest support and updates from SupportPal.",
     "support_expires"           => "Support Expires",
     "version_info"              => "Version Information",
     "installed_version"         => "Installed Version",
@@ -119,7 +118,6 @@ return [
 
     // Modules
     "modules"                   => "Module|Modules",
-    "edit_module"               => "Edit Module",
     "modules_desc"              => "Below is a list of all the available modules, click the edit icon to update the settings for that module.",
     "module_disable"            => "Disabled modules will be removed from the frontend and operator interface.",
 
@@ -220,7 +218,6 @@ return [
     "no_enabled_languages"      => "Failed trying to update the :item. At least one language must be enabled at all times.",
 
     // General Settings
-    "generalsetting_desc"       => "Edit the settings that apply to all of SupportPal. If you wish to edit settings for a specific section, e.g. Tickets, please go to the Modules page and view the module.",
     "website"                   => "Website",
     "locale"                    => "Locale",
     "simpleauth"                => "SimpleAuth",
@@ -246,7 +243,6 @@ return [
     "simpleauth_operators"      => "Allow for Operators",
     "simpleauth_operators_desc" => "Allow operators to login with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
     "frontend_logo"             => "Frontend Logo",
-    "frontend_logo_desc"        => "Change the default logo on the frontend interface. The field can either be an absolute file path, a path relative to the base directory or a direct URL to the image.",
     "base_url"                  => "System URL",
     "base_url_desc"             => "Enter the full web address of your installation, used to generate the URLs that are sent to users.",
     "debug"                     => "Debug",
@@ -282,5 +278,45 @@ return [
     "email_runtime_error"       => "A runtime error occurred while creating the ticket/reply.",
     "email_reply_disabled"      => "User email replies have been disabled for this department.",
     "email_throttled"           => "Too many incoming emails from user. The limit is :max_requests emails every :decay_time minutes.",
+
+    /*
+     * 2.1.0
+     */
+    "generalsetting_desc"       => "Edit the settings that apply to all of SupportPal. If you wish to edit settings for a specific section, e.g. Tickets, open the section in the sidebar to view available settings for that module. Settings related to your brand(s) can be found by clicking Brands in the sidebar.",
+    "brand"                     => "Brand|Brands",
+    "brand_desc"                => "A brand is your customer-facing identity within SupportPal, allowing several channels of communication. Several brands can be operated seamlessly under a single, unified operator panel.",
+    "brand_name"                => "Brand Name",
+    "default_brand"             => "Default Brand",
+    "default_brand_desc"        => "Select the brand that will be used by default when visitors visit the frontend and a matching brand cannot be found.",
+    "brand_name_desc"           => "The name of the brand as seen by end-users.",
+    "brand_enabled_desc"        => "Toggle to enable or disable the brand. Disabled brands cannot be utilised and won't count as part of the brands allowed on your license, disabling can be used to temporarily hide a brand and/or retain information. Deleting a brand will remove all information including users and tickets that are related to it.",
+    "inherit_global_setting"    => "Inherit Global Setting",
+    "brand_date_format_desc"    => "The date format used for this brand's frontend.",
+    "brand_time_format_desc"    => "The time format used for this brand's frontend.",
+    "brand_timezone"            => "Brand Timezone",
+    "brand_timezone_desc"       => "The timezone that is used by default on this brand's frontend, users will have the option to select their own timezone.",
+    "brand_default_lang_desc"   => "The language that is used by default on this brand's frontend.",
+    "brand_lang_toggle_desc"    => "If the language dropdown should show on this brand's frontend.",
+    "brand_groups_desc"         => "Operators in the selected groups will be able to create, update and delete (depending on role permissions) tickets and other content in this brand.",
+    "select_brand"              => "Select a brand...",
+    "add_another_language"      => "Add another language...",
+    "mass_email_brand_desc"     => "Please select which brand the email will be sent from. It will be used to set the sending from name and address, load the correct email template and in the merge fields. If you send to a user group, only users who belong to the selected brand will be emailed.",
+    "brand_limit_exceeded"      => "Your license is only permitted to use :allowed brand(s) simultaneously. To purchase additional brands please visit our client area.",
+    "additional_brands"         => "Additional Brands",
+    "purchase_more"             => "Purchase more",
+    "brand_limit_allowed"       => "Your license is currently permitted to use :allowed brand simultaneously.|Your license is currently permitted to use :allowed brands simultaneously.",
+    "brand_limit_purchase"      => "If this is incorrect, please <strong>reissue</strong> your license at our <a href='http://www.supportpal.com/manage/' target='_blank'>client area</a> and visit the <a href=':route'>License Information</a> page to synchronise your help desk with our license server.<br />To purchase additional brands, please <a href='https://www.supportpal.com/manage/upgrade.php?type=configoptions&id=:id' target='_blank'>upgrade your license</a>.",
+    "support_no_expiry"         => "Your support and updates are valid.",
+    "support_expiry"            => "Your support and updates subscription is valid until :date.",
+    "support_status_desc"       => "Please <a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>renew your support subscription</a> in order to get the latest support and updates from SupportPal.",
+    "ip_ban"                    => "IP Ban|IP Bans",
+    "ip_whitelist"              => "IP Whitelist",
+    "whitelisted_ip"            => "Whitelisted IP",
+    "frontend_logo_desc"        => "Change the default logo on the frontend interface for this brand. The field can either be a path relative to the base directory (we recommend to store your logo in the resources/assets/ folder) or a direct URL to the image.",
+    "license_path"              => "Installation Path",
+    "php_info"                  => "PHP Information",
+    "log"                       => "Log|Logs",
+    "invalid_department_brand"  => "Department is not assigned to ticket brand.",
+    "incoming_rejected"         => "Incoming (Rejected)",
 
 ];

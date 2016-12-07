@@ -98,10 +98,22 @@ return [
     "help_php_extensions"       => "PHP extensions differ depending on your server, your host and other system variable. For assistance installing missing extensions, please contact your hosting provider or server administrator.",
     "help_php_settings"         => "For additional assistance, please read <a target=\"_blank\" href=\"http://docs.supportpal.com/display/DOCS/System+Requirements#SystemRequirements-PHPSettingsPHPSettings\">PHP Settings Help</a>.",
     "disabled_functions"        => "Disabled Functions",
+    "mysql_version_is"          => "Your MySQL Version is :version.",
+    "help_mysql_version"        => "For assistance installing a new version of MySQL please contact your hosting provider or server administrator.",
+    "mysql_version"             => "MySQL Version",
+    "mysql_version_not_found"   => "Not available, found MySQL version: :version",
+    "mysql_server_version"      => "MySQL 5.5.3 or greater (10.x for MariaDB) is required to run SupportPal. Found: ':version'.",
+    "mysql_client_version"      => "MySQL client version 5.5.3 or greater (5.0.9 for MySQLnd) is required to run SupportPal. Found: ':version'.",
 
     /*
      * 2.0.3
      */
     "support_expired_error"     => "An error occurred while contacting the license server with message: ':error'.<br /> Please contact support quoting this message.",
+
+    /*
+     * 2.1.0
+     */
+    "ipv6_failure"              => "If your server has IPv6 networking support, please install the php-sockets extension.",
+    "email_address_desc"        => "Enter your main company email address, this will be set up as the default sending email address and the email address on your first department. You will be able to add other email addresses later.",
 
 ];

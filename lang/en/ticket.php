@@ -2,7 +2,7 @@
 
 return [
 
-	"feedback_question"			=> "Question to be shown to the user.",
+    "feedback_question"			=> "Question to be shown to the user.",
     "open_new"                  => "Open New Ticket",
     "select_department"         => "Select a Department",
     "select_department_desc"    => "Please click on the relevant department for your issue below.",
@@ -13,13 +13,13 @@ return [
     "enter_subject_message"     => "Enter Subject and Message",
     "invalid_user"              => "Please ensure valid user details have been entered to continue.",
 
-	"registered_users"			=> "Registered Users Only",
-	"registered_users_desc"		=> "Toggle to only import tickets from users with an account in the help desk.",
+    "registered_users"			=> "Registered Users Only",
+    "registered_users_desc"		=> "Toggle to only import tickets from users with an account in the help desk.",
 
     "tickets"                   => "Ticket(s)",
     "ticket"                    => "Ticket|Tickets",
     "subject"                   => "Subject",
-	"no_subject"				=> "No Subject",
+    "no_subject"				=> "No Subject",
     "last_action"               => "Last Action",
     "due_time"                  => "Due Time",
     "created_time"              => "Created Time",
@@ -47,7 +47,7 @@ return [
 
     "settings"                  => "Ticket Settings",
 
-	"priority"                  => "Priority|Priorities",
+    "priority"                  => "Priority|Priorities",
 
     "channel"                   => "Channel|Channels",
     "account"                   => "Account|Accounts",
@@ -58,7 +58,7 @@ return [
     "assigned"                  => "Assigned",
 
     "department"                => "Department|Departments",
-	"change_department_order"	=> "Drag the rows to change the order that departments are shown to users when opening a new ticket.",
+    "change_department_order"	=> "Drag the rows to change the order that departments are shown to users when opening a new ticket.",
     "department_order"          => "Department Order",
     "department_applicable"     => "Applicable Departments",
     "department_applicable_desc" => "The departments in which the priority will be available for users to select. Only applies to the frontend, all priorities will be available to operators for all departments.",
@@ -98,7 +98,6 @@ return [
     "department_port"           => "Default values are: 110 for POP3, 995 for secure POP3, 143 for IMAP, and 993 for secure IMAP. Leave blank to use the default value.",
     "department_encryption"     => "Some email providers require SSL or TLS encryption in order to connect, if you are unsure leave this setting as None.",
     "department_delete_mail"    => "If using IMAP, you can choose to not delete emails on the server after they've been imported as tickets.",
-    "another_email"             => "Add Another Email Address",
     "protocol"                  => "Protocol",
     "server"                    => "Mail Server",
     "port"                      => "Port",
@@ -127,7 +126,7 @@ return [
     "new_ticket_reply"          => "New Ticket Reply",
     "new_ticket_opened"         => "New Ticket Opened",
     "reply_to_locked"           => "Reply to Locked Ticket",
-	"waiting_for_response"		=> "Waiting for Response",
+    "waiting_for_response"		=> "Waiting for Response",
     "ticket_auto_closed"        => "Ticket Auto Closed",
     "closed_by_operator"        => "Closed By Operator",
 
@@ -147,11 +146,9 @@ return [
     "form_conditions_desc"      => "Define the ticket conditions for which newly resolved tickets are checked to see if they fall under this form. If a resolved ticket fits multiple forms, it will be selected on the form priority, which can be modified by going to the list of forms and reordering.",
     "form_fields"               => "Form Fields",
     "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here.",
-    "add_field"                 => "Add Field",
-    "add_option"                => "Add Option",
     "response_rate"             => "Response Rate",
     "sent_forms"                => "Sent Feedback Forms",
-	"rating"					=> "Rating",
+    "rating"					=> "Rating",
     "good_ratings"              => "Good Ratings",
     "bad_ratings"               => "Bad Ratings",
     "customer_satisfaction"     => "Customer Satisfaction",
@@ -169,7 +166,7 @@ return [
 
     // Custom fields
     "customfield"               => "Ticket Custom Field|Ticket Custom Fields",
-	"customfield_order"			=> "Drag the rows to change the order that custom fields are shown to users when opening tickets via the web.",
+    "customfield_order"			=> "Drag the rows to change the order that custom fields are shown to users when opening tickets via the web.",
 
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
@@ -196,7 +193,6 @@ return [
     "macro_condition_desc"      => "Define the conditions for which tickets this macro will be available to. By default, with no conditions, it will apply to all tickets.",
     "macro_action"              => "Macro Actions",
     "macro_action_desc"         => "Define actions that are performed out when a macro is carried out. Please ensure actions are valid for the department the ticket is in or else they will be ignored.",
-    "add_action"                => "Add Action",
 
     "from"                      => "From",
     "to"                        => "To",
@@ -207,7 +203,6 @@ return [
 
     // Drafts
     "also_viewing"              => "<strong>:name</strong> also viewing ticket.",
-    "drafting_reply"            => "<strong>:name</strong> started to draft a reply :time:",
     "draft_saved"               => "Draft saved at :time",
     "save_draft"                => "Save Draft",
     "discard_draft"             => "Discard Draft",
@@ -261,7 +256,7 @@ return [
     "back_to_grid"              => "Go Back to Ticket Grid",
     "take"                      => "Take",
     "take_ownership"            => "Take Ownership",
-	"pause_duetime"				=> "Pause Due Time",
+    "pause_duetime"				=> "Pause Due Time",
     "add_to_canned_responses"   => "Add to Canned Responses",
     "visible_to_all_operators"  => "Make visible to all operators",
     "set_status"                => "Set Status",
@@ -279,8 +274,8 @@ return [
     "default_resolve_status"    => "Default Resolved Status",
     "default_resolve_status_desc"=> "Select the default status that is used for tickets that have been resolved.",
 
-	"waiting_response_time"		=> "Waiting for Response Email",
-	"waiting_response_time_desc"=> "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
+    "waiting_response_time"		=> "Waiting for Response Email",
+    "waiting_response_time_desc"=> "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
 
     "close_inactive_tickets"    => "Close Inactive Tickets",
     "close_inactive_tickets_desc"=> "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
@@ -304,8 +299,8 @@ return [
     "default_department"        => "Default Department",
     "default_department_desc"   => "The default department set on all incoming tickets via this channel.",
 
-	"show_related_articles"		=> "Show Related Articles",
-	"show_related_articles_desc" =>	"When the user is typing the subject, they may be shown related articles based on what they have entered. Requires the self-service module to be enabled and MySQL 5.6+.",
+    "show_related_articles"		=> "Show Related Articles",
+    "show_related_articles_desc" =>	"When the user is typing the subject, they may be shown related articles based on what they have entered. Requires the self-service module to be enabled and MySQL 5.6+.",
 
     // Email Channel Settings
     "default_priority"          => "Default Priority",
@@ -344,13 +339,13 @@ return [
     "overdue"                   => "Overdue",
     "unassigned"                => "Unassigned",
 
-	"pause_duetime_desc"		=> "If there is an active SLA plan on this ticket, pause the remaining due time until after the follow up date. The due time will only start again once a reply or note has been added to the ticket (including from the follow up).",
+    "pause_duetime_desc"		=> "If there is an active SLA plan on this ticket, pause the remaining due time until after the follow up date. The due time will only start again once a reply or note has been added to the ticket (including from the follow up).",
     "delete_follow_up"          => "Delete Follow Up",
 
     "add_cc"                    => "Add CC",
     "reply_above_line"          => "Please reply above this line",
 
-	"oauth2_token"              => "OAuth2 Token",
+    "oauth2_token"              => "OAuth2 Token",
     "email_settings"            => "Email Settings",
     "web_settings"              => "Web Settings",
     "split_selected_replies"    => "Split Selected Replies",
@@ -359,42 +354,81 @@ return [
 
     "channel_deactivated"       => "The ticket channel is currently deactivated, a reply cannot be posted.",
 
-	"type_in_tags"				=> "Type in tags",
+    "type_in_tags"				=> "Type in tags",
 
     /*
      * 2.0.1
      */
-	"allowed_files_desc"        => "A list of file extensions, separated by the pipe | character, that are permitted as attachments. For example: txt|png|jpg. To allow all attachments, input: ?.*",
+    "allowed_files_desc"        => "A list of file extensions, separated by the pipe | character, that are permitted as attachments. For example: txt|png|jpg. To allow all attachments, input: ?.*",
 
-	/*
-	 * 2.0.2
-	 */
-	"no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
+    /*
+     * 2.0.2
+     */
+    "no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
     "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
     "opened_by"                 => "(Opened by :name)",
     "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
-	"not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
-	"verbose_email_log_desc"    => "If email collection should be logged on file. We recommend to keep enabled to help with debugging purposes. Five days worth of logs are stored, older log files will be purged automatically by the system.",
+    "not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
+    "verbose_email_log_desc"    => "If email collection should be logged on file. We recommend to keep enabled to help with debugging purposes. Five days worth of logs are stored, older log files will be purged automatically by the system.",
 
-	/*
-	 * 2.0.3
-	 */
-	"department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in, a ticket is not opened if a matching department email address cannot be found. Enabling this setting will mean all emails without a matching department email address are imported as tickets in this department.",
-	"default_open_status_desc"  => "Select the default status that should be automatically set when a user opens or replies to a ticket.",
-	"default_reply_options"		=> "Default Reply Options",
-	"default_reply_options_desc"=> "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
+    /*
+     * 2.0.3
+     */
+    "department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in, a ticket is not opened if a matching department email address cannot be found. Enabling this setting will mean all emails without a matching department email address are imported as tickets in this department.",
+    "default_reply_options"		=> "Default Reply Options",
+    "default_reply_options_desc"=> "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
     "associate_response_tag"    => "Associate canned response with a tag...",
     "canned_response_tags_desc" => "Add tags which may help finding a canned response when replying to a ticket.",
-	"loading_tags"				=> "Loading tags",
-	"append_ip_address"			=> "Append IP Address",
-	"append_ip_address_desc"	=> "Append the IP address of users to their messages when they are opening and replying to tickets from the frontend.",
-	"unassign_operator"			=> "Unassign Operator",
-	"remove_tag"				=> "Remove Tag",
+    "loading_tags"				=> "Loading tags",
+    "append_ip_address"			=> "Append IP Address",
+    "append_ip_address_desc"	=> "Append the IP address of users to their messages when they are opening and replying to tickets from the frontend.",
+    "unassign_operator"			=> "Unassign Operator",
+    "remove_tag"				=> "Remove Tag",
     "message_clipped"           => "[Message Clipped]",
     "view_entire_message"       => "View entire message",
-	"no_custom_fields"          => "No custom fields found. Click <a href=':route'>here</a> to create one.",
+    "no_custom_fields"          => "No custom fields found. Click <a href=':route'>here</a> to create one.",
     "follow_up_active"			=> "A <a class='view-followup' style='text-decoration: underline;'>follow up</a> is currently active on this ticket and will run shortly after <strong>:time</strong>.",
     "disable_user_email_replies" => "Disable User Email Replies",
     "disable_user_email_replies_desc" => "Enable to block email replies from users, and also remove the reply clipping line from outbound ticket emails.",
+
+    /*
+     * 2.1.0
+     */
+    "default_ticket_filter"     => "Default Ticket Filter",
+    "default_ticket_filter_desc" => "The ticket filter that is used by default when clicking the 'Manage Tickets' link. Can be set to 'None', the default option, which will show all unresolved tickets.",
+    "recent_filters"            => "Recent Filters",
+    "inactive_tickets"   	    => "Inactive Tickets",
+    "default_open_status_desc"  => "Select the default status that should be automatically set when a user opens a new ticket or replies to a ticket without an operator response yet.",
+    "default_reply_status"      => "Default Reply Status",
+    "default_reply_status_desc" => "Select the default status that should be automatically set when a user replies to a ticket, only applies after an operator has replied to the ticket.",
+    "drafting_reply"            => "<strong>:name</strong> started to draft a :type :time:",
+    "ticket_reply_order_default" => "System default will use the value that is currently selected in the ticket general settings.",
+    "select_a_parent"           => "Select a parent department...",
+    "select_a_department"       => "Select a department...",
+    "not_assigned_brand"        => "Sorry, you're not permitted to view tickets in this brand. If you think this has been shown in error, please contact your administrator.",
+    "department_operator_desc"  => "You may also assign individual operators to the department. These operators will be in addition to any groups assigned above.",
+    "department_group"          => "Department Groups",
+    "department_group_desc"     => "You may assign whole operator groups to the department, recommended if your list of operators is large and/or changes frequently.",
+    "ticket_other_brands"       => "Tickets in Other Brands",
+    "add_for_department"        => "Add for department...",
+    "record_order"              => "Drag the rows to change the order of records.",
+    "ticket_token"              => "Ticket Token",
+    "reply_all"                 => "Reply All",
+    "reply_without_cc"          => "Reply (without CC)",
+    "open_new_for_user"         => "Open New Ticket For User",
+    "email_accounts"            => "Email Accounts",
+    "add_another_email"         => "Add Another Email Address",
+    "follow_up_date"            => "Follow Up Date",
+    "post_reply"                => "Post Reply",
+    "post_note"                 => "Post Note",
+    "ticket_details"            => "Ticket Details",
+    "organisation_tickets"      => "Organisation Tickets",
+    "manage_tickets"            => "Manage Tickets",
+    "via_channel"               => "via :channel",
+    "department_parent"         => "Department Parent",
+    "department_brands"         => "Department Brands",
+    "email_item"                => "Email :item",
+    "from_name"                 => "From Name",
+    "from_address"              => "From Address"
 
 ];

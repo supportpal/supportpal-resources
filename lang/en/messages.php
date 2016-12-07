@@ -104,4 +104,16 @@ return [
     "queued_emails"         => "Success - The emails will begin being queued and sent shortly.",
     "error_loading_message" => "An error occurred while loading the message. Please try again.",
     "please_refresh"        => "Please refresh the page.",
+    
+    /*
+     * 2.1.0
+     */
+    "unable_to_connect_db"  => "<strong>Service currently unavailable.</strong><br />Unable to connect to the database.",
+    "category_required"     => "The article must belong to one or more categories.",
+    "warning"               => "Warning",
+    "note"                  => "Note",
+    "brand_invalid_dept"    => "The action could not be completed in full. The department could not be updated on some tickets due to their brand.",
+    "template_subject_req"  => "The default e-mail template subject field is required.",
+    "template_contents_req" => "The default e-mail template contents field is required.",
+
 ];

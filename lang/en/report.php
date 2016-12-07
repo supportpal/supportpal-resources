@@ -59,13 +59,21 @@ return [
     "7_plus_day"                => "7+ Days",
     "user_feedback"             => "User Feedback",
     "user_feedback_desc"        => "The feedback provided by users about tickets in a given time period.",
-    "most_active_users"         => "Most Active Users",
-    "most_active_users_desc"    => "This report shows the 10 most active users that have opened the most tickets.",
     "total_users_desc"          => "This report shows how many users there are in the system, split by how many are confirmed and how many aren't.",
     "user_by_country"           => "Users By Country",
     "user_by_country_desc"      => "This report shows the number of users per country, only includes users who have set a country.",
     "user_count"                => "User Count",
     "users_registered"          => "Users Registered",
 
+    /*
+     * 2.1.0
+     */
+    "reports_dashboard"         => "Reports Dashboard",
+    "ticket_by_brand"           => "Tickets by Brand",
+    "ticket_by_brand_desc"      => "The total number of tickets per brand over a given time period.",
+    "ticket_by_user"            => "Tickets by Users",
+    "ticket_by_user_desc"       => "This report shows the number of tickets each user has submitted over a given time period, ordered by most tickets.",
+    "ticket_by_organisation"    => "Tickets by Organisations",
+    "ticket_by_organisation_desc" => "This report shows the number of tickets each organisation (users within the organisation) has submitted over a given time period, ordered by most tickets.",
 
 ];

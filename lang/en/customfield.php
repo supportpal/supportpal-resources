@@ -37,4 +37,9 @@ return [
      * 2.0.3
      */
     "description_desc"          => "The help text that will appear below the custom field and can optionally be left blank.",
+
+    /*
+     * 2.1.0
+     */
+    "brand_desc"                => "Choose which brands the field is available in.",
 ];

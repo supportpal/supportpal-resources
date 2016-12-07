@@ -116,7 +116,6 @@ return [
     "filter_results"            => "Filter Results",
     "anyone"                    => "Anyone",
     "everyone"                  => "Everyone",
-    "every"                     => "Every",
     "text"                      => "Text",
     "attachment"                => "Attachment|Attachments",
     "add_attachment"            => "Add Attachment",
@@ -169,16 +168,13 @@ return [
     "version"                   => "Version",
 
     "and"                       => "and",
-    "at"                        => "at",
     "by"                        => "by",
     "record"                    => "record",
     "views"                     => "views",
-    "is_not_set"                => "is not set",
     "if_exists"                 => "if exists",
     "of"                        => "of",            // Used in group e.g. Last Thursday of November
     "out_of"                    => "out of",
     "to"                        => "to",            // Used in a range e.g. 2 to 5
-    "via"                       => "via",
 
     // Languages
     "language"                  => "Language|Languages",
@@ -222,6 +218,27 @@ return [
     "clear_selected"            => "clear selected",
     "expand_all"                => "Expand All",
     "collapse_all"              => "Collapse All",
-    "show_more"                 => "Show more",
+    "show_more"                 => "Show More",
     "custom_fields"             => "Custom Fields",
+
+    /*
+     * 2.1.0
+     */
+    "recently_viewed"           => "Recently Viewed Tickets",
+    "na"                        => 'N/A',
+    "total"                     => "Total",
+    "disabled"                  => "Disabled",
+    "not_set"                   => "not set",
+    "add_item"                  => "Add :item",
+    "edit_item"                 => "Edit :item",
+    "any"                       => "Any",
+    "module_generalsetting"     => ":module General Settings",
+    "field"                     => "Field",
+    "rule"                      => "Rule",
+    "start_date"                => "Start Date",
+    "end_date"                  => "End Date",
+    "submitted_by"              => "Submitted By",
+    "every_minutes"             => "Every :minutes",
+    "at_time"                   => "at :time",
+
 ];

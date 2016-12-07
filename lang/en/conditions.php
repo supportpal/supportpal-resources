@@ -28,4 +28,10 @@ return [
     "user_full_name"            => "User full name",
     "user_group"                => "User group",
     "user_organisation"         => "User organisation",
+
+    /*
+     * 2.1.0
+     */
+    "ticket_brand"              => "Ticket brand",
+    "user_brand"                => "User brand",
 ];

@@ -100,10 +100,6 @@ return array(
     "system_activity_log"           => "System Activity Log",
     "activity_log"                  => "Activity Log",
 
-    "ban"						    => "Ban|Bans",
-    "whitelist"					    => "Whitelist",
-    "whitelisted"                   => "Whitelisted",
-
     "mass_email"                    => "Send Mass Email",
     "send_email"                    => "Send Email",
     "choose_template"               => "Choose template...",
@@ -178,7 +174,6 @@ return array(
 
     "search_for_user"               => "Search for user...",
     "select_operator"               => "Select an operator...",
-    "select_operators"              => "Select an operator(s)...",
     "select_group"                  => "Select a group...",
 
     "your_ip_has_been_banned"       => "Your IP has been banned.",
@@ -231,5 +226,35 @@ return array(
     "manager_email_notifications_desc" => "If they should receive email notifications of updates to tickets opened by other users in the organisation.",
     "organisation_notifications_desc" => "If you'd like to receive email notifications of updates to tickets opened by other users in your organisation.",
     "select_operator_group_desc"    => "Please select at least one operator group for this operator.",
+    
+    /*
+     * 2.1.0
+     */
+    "organisation_customfield"      => "Organisation Custom Field|Organisation Custom Fields",
+    "recent_users"                  => "Recent Users",
+    "recent_organisations"          => "Recent Organisations",
+    "group_brand_desc"              => "Select which brands the operators in this group will be able to view, create and delete (depending on permissions) tickets and other content.",
+    "select_operators"              => "Select operator(s)...",
+    "select_groups"                 => "Select group(s)...",
+    "group_department_desc"         => "Assign all members of this group to departments, operators can also be assigned individually in the department settings.",
+    "op_settings_group_dept"        => "Assigned to via operator groups:",
+    "op_settings_group_dept_desc"   => "These departments are inherited automatically from the operator groups selected above. To assign via an operator group, edit the operator group or department settings.",
+    "op_settings_individual_dept"   => "Assigned to individually:",
+    "op_settings_individual_dept_desc" => "These departments are in addition to any departments the operator is assigned to via their groups above.",
+    "also_registered_other_brand"   => "This user is also registered in the :brands brand.|This user is also registered in the :brands brands.",
+    "signature"                     => "Signature|Signatures",
+    "signature_desc"                => "Create personal ticket signatures, with the option to customise based on the brand/department of the ticket. The default signature is used when a signature for a specific department and/or brand cannot be found.",
+    "operator_signature"            => "Operator Signature|Operator Signatures",
+    "ticket_signature_desc"         => "Set the operator's default ticket signature.",
+    "operator_signature_desc"       => "Further signatures for specific departments and/or brands can be set in the <a href=':route' target='_blank'>Operator Signatures</a> section.",
+    "view_organisation"             => "View Organisation",
+    "new_owner"                     => "New Owner",
+    "operator_role"                 => "Operator Role|Operator Roles",
+    "manage_users"                  => "Manage Users",
+    "manage_organisations"          => "Manage Organisations",
+    "manage_operators"              => "Manage Operators",
+    "user_profile"                  => "User Profile",
+    "organisation_access_level"     => "Organisation Access Level",
+    "organisation_notifications"    => "Organisation Notifications",
 
 );

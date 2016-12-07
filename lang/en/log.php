@@ -84,7 +84,6 @@ return [
     "ticket_duetime_updated"            => "Updated the due time on ticket #:rel to :new_value.",
     "ticket_duetime_paused"             => "Paused the due time on ticket #:rel until next user reply.",
     "ticket_customfield_updated"        => "Updated custom fields on ticket #:rel.",
-    "ticket_cc_updated"                 => "Updated CC emails on ticket #:rel.",
     "ticket_converted_user"             => "Converted internal ticket #:rel to user ticket.",
     "ticket_converted_internal"         => "Converted user ticket #:rel to internal ticket.",
 
@@ -119,8 +118,6 @@ return [
     "ticket_attachment_deleted"         => "Deleted attachment from ticket #:rel.",
 
     "ticket_throttled"                  => "Rejected new ticket from :rel due to throttling.",
-    
-    "check_email_failed"                => "Error: Failed to check e-mail download accounts. ':rel'.",
 
     /*
      * 2.0.2
@@ -134,5 +131,16 @@ return [
     "selfservice_attachment_saved"      => "Added attachment ':new_value' to article ID :rel.",
     "selfservice_attachment_deleted"    => "Deleted attachment ':new_value' from to article ID :rel.",
     "ticket_unassigned_self"            => "Unassigned self from ticket #:rel.",
+
+    /*
+     * 2.1.0
+     */
+    "ticket_brand_disabled_reply"       => "Reply could not be added due to ticket belonging to a disabled brand #:rel.",
+    "personal_signatures_updated"       => "Updated personal signatures.",
+    "operator_signatures_updated"       => "Updated :rel's signatures.",
+    "check_email_failed"                => "Error: Failed to download email from account :old_value: ':rel'.",
+    "ticket_added_cc"                   => "Email(s) :new_value added to CC address list for ticket #:rel.",
+    "ticket_removed_cc"                 => "Email(s) :old_value removed from CC address list for ticket #:rel.",
+    "invalid_department_brand"          => "Failed to set department to ':new_value' on ticket #:rel, department does not belong to ticket brand.",
 
 ];
