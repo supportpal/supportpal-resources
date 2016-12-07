@@ -44,8 +44,8 @@
     }
 
     $.Redactor.default_opts = {
-        focus: true,
         linebreaks: true,
+        linkSize: 255,
         imageUpload: laroute.route('core.embed.image'),
         uploadImageFields: {
             "_token": $('meta[name=csrf_token]').prop('content')

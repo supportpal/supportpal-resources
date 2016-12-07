@@ -1,0 +1,15 @@
+{% extends 'errors.error' %}
+
+{% block title %}
+    503 - {{ Lang.get('messages.error') }}
+{% endblock %}
+
+{% block header %}
+    {{ Lang.get('messages.error') }} (503)
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ Lang.get('messages.unable_to_connect_db')|raw }}</p>
+
+{% endblock %}

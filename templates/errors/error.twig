@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     
     <title>
-        {% if company is not null %}{{ company }} - {% endif %}
+        {% if brand_name is not empty %}{{ brand_name }} - {% endif %}
         {% block title %}{{ Lang.get('messages.error') }}{% endblock %}
     </title>
 

@@ -36,17 +36,23 @@
             errorClass: 'field-error',
 
             errorPlacement: function(error, element) {
-                var postion = element;
+                var position = element;
 
                 // If it's redactor, codemirror, show/hide button, a checkbox or radio, add after parent
                 if (element.parent('.redactor-box').length || element.parent('.merge-field_container').length ||
                     element.parent('.hideShowPassword-wrapper').length || element.parent('.input-group').length ||
-                    element.prop('type') === 'checkbox' || element.prop('type') === 'radio') {
-                    postion = element.parent();
+                    element.prop('type') === 'checkbox' || element.prop('type') === 'radio'
+                ) {
+                    position = element.parent();
+                }
+
+                // If it's selectize, add after sibling.
+                if (element.next().hasClass('selectize-control')) {
+                    position = element.next();
                 }
 
                 // Show error
-                var displayingError = error.insertAfter(postion);
+                var displayingError = error.insertAfter(position);
 
                 // If the form field is too big, put the error below
                 if ($('.desk_content_padding').isChildOverflowing('#'+displayingError.prop('id'))) {
@@ -74,6 +80,17 @@
                 if (!validator.numberOfInvalids())
                     return;
 
+                // If the error is on another tab, switch to it.
+                if ($(validator.errorList[0].element).parents('.tabContent').length) {
+                    // Get tab ID
+                    var id = $(validator.errorList[0].element).parents('.tabContent').attr('id');
+                    // Get name from ID and click on the tab
+                    if (id.substring(0, 3) == 'tab') {
+                        $('.tabs li#' + id.substring(3)).click();
+                    }
+                }
+
+                // Move towards the first error.
                 $('html, body').animate({
                     scrollTop: $(validator.errorList[0].element).offset().top - 46
                 }, <?php echo Config::get('jsvalidation.duration_animate') ?>);
