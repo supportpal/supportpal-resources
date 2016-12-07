@@ -18,7 +18,7 @@
         {% include 'frontend.' ~ template ~ '.forms.customfields' %}
 
         <div class="form-button">
-            {{ form_submit(Lang.choice('general.submit', 1)) }}
+            {{ form_submit(Lang.get('general.save')) }}
         </div>
 
     {{ form_close() }}

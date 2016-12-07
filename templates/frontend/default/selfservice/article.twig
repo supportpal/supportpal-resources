@@ -13,7 +13,7 @@
 {% block breadcrumb %}
     {{ parent() }}
     <a href="{{ route('selfservice.index', [ type.slug ]) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
-    {{ Lang.get('selfservice.viewing') }} {{ Lang.choice('selfservice.article', 1) }}
+    {{ Lang.get('selfservice.viewing_article') }}
 {% endblock %}
 
 {% block sidebar %}
@@ -48,7 +48,7 @@
             <i class="fa fa-tag"></i>
             <ul class="item-list">
                 {% for tag in article.tags %}
-                <li><a href="{{ route('selfservice.tag', { 'type': article.type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
+                <li><a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
                 {% endfor %}
             </ul>
         </li>
@@ -62,7 +62,7 @@
     <hr />
 
     {# Article content #}
-    <div class="article">{{ Purifier.clean(article.text) }}</div>
+    <div class="article">{{ Purifier.clean(article.text, Config.get('purifier.settings.selfservice')) }}</div>
 
     <!-- Attachments -->
     {% if not article.attachments.isEmpty() %}
@@ -70,7 +70,7 @@
         <ul class="attachments">
             {% for attachment in article.attachments %}
                 <li>
-                    <a href='{{ attachment.download_url }}'>
+                    <a href='{{ attachment.download_url(type) }}'>
                         <i class="fa fa-paperclip"></i>
                         &nbsp;
                         {{ attachment.original_name }}
@@ -86,7 +86,7 @@
     <!-- Rate article -->
     {% if Config.get('settings.ratings_enabled') %}
     <div class="rating-container light right">
-        {% if not rated and (Config.get('settings.rating_post') == '0' or Auth.guard('frontend').check()) %}
+        {% if not rated and (Config.get('settings.rating_post') == '0' or auth_check()) %}
         <span class="rate-article">
             {{ Lang.get('selfservice.article_find_useful') }} &nbsp;
             <a class="rate-article" data-score="1">
@@ -97,7 +97,7 @@
             </a>
         </span>
         {% endif %}
-        {% if Config.get('settings.rating_show') == '0' or Auth.guard('frontend').check() %}
+        {% if Config.get('settings.rating_show') == '0' or auth_check() %}
         <span class="article-rating {% if article.total_rating == 0 or not rated %}hide{% endif %}">
             <span class="positive-users">{{ article.positive_rating }}</span> {{ Lang.get('general.out_of') }} <span class="total-users">{{ article.total_rating }}</span> {{ Lang.get('selfservice.article_found_useful') }}
         </span>
@@ -108,16 +108,16 @@
     <!-- Share -->
     <div class="share-via left">
         <span>{{ Lang.get('general.share_via') }}</span>
-        <a class="email" href='mailto:?subject=&amp;body={{ article.title }} - {{ article.frontend_url }}'>
+        <a class="email" href='mailto:?subject=&amp;body={{ article.title }} - {{ article.frontend_url(type) }}'>
             <i class="fa fa-envelope"></i>
         </a><!--
-        --><a class="twitter" href='http://twitter.com/intent/tweet?text={{ article.title }}&amp;url={{ article.frontend_url }}'>
+        --><a class="twitter" href='http://twitter.com/intent/tweet?text={{ article.title }}&amp;url={{ article.frontend_url(type) }}'>
             <i class="fa fa-twitter"></i>
         </a><!--
-        --><a class="facebook" href='http://www.facebook.com/sharer.php?u={{ article.frontend_url }}'>
+        --><a class="facebook" href='http://www.facebook.com/sharer.php?u={{ article.frontend_url(type) }}'>
             <i class="fa fa-facebook"></i>
         </a><!--
-        --><a class="google" href='https://plus.google.com/share?url={{ article.frontend_url }}'>
+        --><a class="google" href='https://plus.google.com/share?url={{ article.frontend_url(type) }}'>
             <i class="fa fa-google-plus"></i>
         </a>
     </div>
@@ -133,7 +133,7 @@
     {% endif %}
 
     {% if Config.get('settings.comments_enabled') and (article.comments is not empty or
-        Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check()) %}
+        Config.get('settings.comment_write') == 0 or auth_check()) %}
         <hr />
 
         <a name="_comments"></a>
@@ -151,8 +151,8 @@
                 <div class="fail box">{{ Session.get('comment_error') }}</div>
             {% endif %}
 
-            {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}
-                <h3 class="margin0">{{ Lang.get('selfservice.add_comment') }}</h3>
+            {% if Config.get('settings.comment_write') == 0 or auth_check() %}
+                <h3 class="margin0">{{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.comment', 1)}) }}</h3>
                 {% include 'frontend.' ~ template ~ '.selfservice.forms.comment' with { type: type.id } %}
             {% endif %}
 
@@ -177,7 +177,7 @@
 
                 {# Show all the comments #}
                 <div class="commentsBlock">
-                    {% include 'frontend.' ~ template ~ '.selfservice.comment' with { 'comments': article.comments, 'type': type.id, 'article': article.id } %}
+                    {% include 'frontend.' ~ template ~ '.selfservice.comment' with { 'comments': article.comments, 'type': type.id } %}
                 </div>
 
                 {% if comment_total > article['comments']|length %}
@@ -200,8 +200,9 @@
 {% block scripts_footer %}
     <script type="text/javascript">
         // Variables for asset files
-        var articleId = "{{ article.id }}";
-        var loggedIn = {{ Auth.guard('frontend').check() ? 'true' : 'false' }};
+        var articleId = {{ article.id }};
+        var typeId = {{ type.id }};
+        var loggedIn = {{ auth_check() ? 'true' : 'false' }};
         var showRatings = "{{ Config.get('settings.rating_show') }}";
     </script>
 

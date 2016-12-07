@@ -25,7 +25,7 @@
 			<ul class="attachments">
                 {% for attachment in message.attachments %}
 					<li {% if (message.by != 0) %}class="deletable"{% endif %}>
-                        <a href='{{ route('ticket.frontend.attachment.download', { 'hash': attachment.upload_hash, 'ticket': message.ticket.number, 'token': message.ticket.getToken() }) }}'>
+                        <a href='{{ route('ticket.frontend.attachment.download', { 'hash': attachment.upload_hash, 'ticket': message.ticket.number, 'token': message.ticket.token }) }}'>
     						<i class="fa fa-paperclip"></i>
     						&nbsp;
     						{{ attachment.original_name }}

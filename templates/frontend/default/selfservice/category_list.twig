@@ -11,7 +11,7 @@
                 <ul class="catlist">
                     {% for article in category.articles %}
                         <li>
-                            <a href='{{ article.frontend_url }}'>
+                            <a href='{{ article.frontend_url(type) }}'>
                                {{ article.title }}
                             </a>
                         </li>

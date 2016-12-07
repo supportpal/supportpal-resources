@@ -6,6 +6,9 @@ $(document).ready(function() {
     // Enable hide / show password toggle
     callHideShowPassword();
 
+    // Focus the subject box.
+    $('input[name="subject"]').focus();
+
     // Redactor
     $('textarea[name=text]').redactor($.Redactor.default_opts);
 

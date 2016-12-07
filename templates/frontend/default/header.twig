@@ -67,7 +67,7 @@
                 {{ Lang.get('general.home') }}
             </a>
         </li>
-        {% if Auth.guard('frontend').check() %}
+        {% if auth_check() %}
             <li>
                 <a href="{{ route('user.profile') }}">
                     {{ Lang.choice('general.account', 1) }}
@@ -77,6 +77,11 @@
                 <li>
                     <a href="{{ route('user.profile') }}" {% if route starts with 'user.profile' %}class="current"{% endif %}>
                         {{ Lang.get('user.profile') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
+                        {{ Lang.get('user.email_history') }}
                     </a>
                 </li>
                 {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}

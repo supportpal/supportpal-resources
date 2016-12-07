@@ -5,7 +5,7 @@
 {% endif %}
 
     {{ form_hidden('article_id', article['id']) }}
-    {{ form_hidden('type', type) }}
+    {{ form_hidden('type_id', type) }}
     {{ form_hidden('parent_id') }}
 
     <p class="replying-to light hide">
@@ -14,7 +14,7 @@
         {{ form_button(Lang.get('general.cancel'), { 'class': 'cancel-reply' }) }}
     </p>
 
-    {% if not Auth.guard('frontend').check() %}
+    {% if not auth_check() %}
         <div class="form-row">
             {{ form_text('name', null, { 'placeholder': Lang.get('general.name') }) }}
         </div>
@@ -24,13 +24,13 @@
         {{ form_textarea('text', null, { 'size': '50x3', 'placeholder': Lang.choice('selfservice.comment', 1) }) }}
     </div>
 
-    {% if Config.get('settings.comment_captcha') == 2 or (not Auth.guard('frontend').check() and Config.get('settings.comment_captcha') == 1) %}
+    {% if Config.get('settings.comment_captcha') == 2 or (not auth_check() and Config.get('settings.comment_captcha') == 1) %}
         {{ Captcha.getHtml() }}
     {% endif %}
 
     <div class="form-button">
         {{ form_submit(Lang.choice('general.post', 1)) }}
-        {% if Auth.guard('frontend').check() %}
+        {% if auth_check() %}
             &nbsp;&nbsp;&nbsp;
             {{ form_check('notify_reply', 1, true) }}&nbsp; {{ Lang.get('selfservice.receive_notifications') }}
         {% endif %}

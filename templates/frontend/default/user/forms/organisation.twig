@@ -16,7 +16,7 @@
 
     {% if new|default is not empty %}
     <div class="form-row">
-        {{ form_label('access_level', Lang.choice('user.organisation', 1) ~ ' ' ~ Lang.get('user.access_level')) }}
+        {{ form_label('access_level', Lang.get('user.organisation_access_level')) }}
         <div class="input-container">
             {{ form_select('access_level', { 0: Lang.get('user.manager'), 1: Lang.choice('user.user', 1) }, 1) }}<br />
             <span class="light">
@@ -28,7 +28,7 @@
 
     {% if organisation|default is not empty and new is not defined and record.organisation_access_level == 0 %}
         <div class="form-row">
-            {{ form_label('organisation_notifications', Lang.choice('user.organisation', 1) ~ ' ' ~ Lang.get('user.notifications')) }}
+            {{ form_label('organisation_notifications', Lang.get('user.organisation_notifications')) }}
             <div class="input-container">
                 {{ form_check('organisation_notifications', 1, record.organisation_notifications|default is not empty ?
                     record.organisation_notifications : Config.get('settings.organisation_notifications'),

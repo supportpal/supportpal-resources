@@ -9,12 +9,19 @@
 
 {% block content %}
 
-    {{ Lang.get('core.found_results', { 'total': articles|length }) }} '<strong>{{ Input.get('query') }}</strong>'.
+    {{ Lang.get('core.found_results', { 'total': total }) }} '<strong>{{ Input.get('query') }}</strong>'.
 
-    {% if articles is not empty %}
-        <hr />
+    {% for type in types %}
+        {% if type.articles|default is not empty and not type.articles.isEmpty() %}
+            <hr />
 
-        {% include 'frontend.' ~ template ~ '.selfservice.article_list' %}
-    {% endif %}
+            <h3>{{ type.name }}: {{ Lang.choice('selfservice.article', 2) }}</h3>
+
+            {%
+                include 'frontend.' ~ template ~ '.selfservice.article_list'
+                with { 'articles': type.articles, 'type': type, 'noRssFeed': true }
+            %}
+        {% endif %}
+    {% endfor %}
 
 {% endblock %}

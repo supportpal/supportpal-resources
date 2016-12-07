@@ -10,14 +10,14 @@
 
 {% block sidebar %}
     <div class="desk_box ticket-details">
-        <h2>{{ Lang.choice('ticket.ticket', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}</h2>
+        <h2>{{ Lang.get('ticket.ticket_details') }}</h2>
         <div class="form-row">
             <label>{{ Lang.get('general.number') }}</label>
             {{ ticket.number }}
         </div>
         <div class="form-row">
             <label>{{ Lang.choice('ticket.department', 1) }}</label>
-            {{ Purifier.clean(ticket.department.name) }}
+            <span class="ticket-department">{{ Purifier.clean(ticket.department.name) }}</span>
         </div>
         <div class="form-row">
             <label>{{ Lang.choice('general.status', 1) }}</label>
@@ -25,7 +25,7 @@
         </div>
         <div class="form-row">
             <label>{{ Lang.choice('ticket.priority', 1) }}</label>
-            <span class="badge" style="background: {{ ticket.priority.colour }}">{{ ticket.priority.name }}</span>
+            <span class="ticket-priority badge" style="background: {{ ticket.priority.colour }}">{{ ticket.priority.name }}</span>
         </div>
         <div class="form-row">
             <label>{{ Lang.get('ticket.submitted') }}</label>
@@ -33,7 +33,7 @@
         </div>
         <div class="form-row">
             <label>{{ Lang.get('ticket.last_action') }}</label>
-            {{ formatDate(ticket.updated_at) }}
+            <span class="ticket-updated">{{ formatDate(ticket.updated_at) }}</span>
         </div>
     </div>
     {{ parent() }}
@@ -74,7 +74,7 @@
 
     <div class="mobile-ticket-details hide">
         <h2 class="collapsable">
-            {{ Lang.choice('ticket.ticket', 1) ~ ' ' ~ Lang.choice('general.detail', 2) }}
+            {{ Lang.get('ticket.ticket_details') }}
             <span>
                 <i class="fa fa-chevron-up"></i>
             </span>
@@ -152,7 +152,7 @@
             {% include 'frontend.' ~ template ~ '.ticket.forms.message' %}
         </div>
     {% else %}
-        <div class="fail box box-bottom">
+        <div class="ticket-locked fail box box-bottom">
             {{ Lang.get('ticket.error_ticket_locked') }}
         </div>
     {% endif %}
@@ -170,9 +170,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/ticket.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/ticket-print.css') }}">
 
+    <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
+    <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
@@ -187,11 +189,17 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
 
+    <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript">
+        var ticketNumber = "{{ ticket.number }}",
+            closedStatusId = "{{ Config.get('settings.default_resolved_status') }}";
+    </script>
 
     <script src="{{ asset_rev('resources/assets/frontend/js/ticket.js') }}"></script>
 {% endblock %}

@@ -12,10 +12,10 @@
     <h2>{{ Lang.get('user.manage_organisation') }}</h2>
 
     <div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('user.user', 1)|lower }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('user.user', 1), 'UTF-8') }) }}
     </div>
 
     <ul class="desk-tabs">
@@ -31,7 +31,7 @@
         <div id="tabProfile" class="desk-tab">
             <h2 class="tab-title">{{ Lang.get('selfservice.popular_items') }}</h2>
 
-            {{ form_model(record, {'route': 'user.organisation.updateProfile', 'method': 'POST'}) }}
+            {{ form_model(record, {'route': 'user.organisation.updateProfile', 'method': 'POST', 'class': 'validate'}) }}
 
                 {% include 'frontend.' ~ template ~ '.user.forms.organisation_profile' %}
 
@@ -117,7 +117,7 @@
                     <br /><br />
 
                     <div class="form-row">
-                        {{ form_label('owner', Lang.get('general.new') ~ ' ' ~ Lang.get('user.owner')) }}
+                        {{ form_label('owner', Lang.get('user.new_owner')) }}
                         <div class="input-container">
                             {{ form_select('owner', ownerOptions, null,
                                 {'placeholder': Lang.get('user.start_typing_name')}) }}
@@ -137,11 +137,34 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+
+    <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Sweetalert -->
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
+    <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Enable hide/show password toggle
+            callHideShowPassword();
+
+            // Date picker
+            callPikaday();
+        });
+    </script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/organisation.js') }}"></script>
 {% endblock %}

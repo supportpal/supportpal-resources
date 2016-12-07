@@ -5,34 +5,7 @@
         </div>
     </div>
 
-    <div class="form-row">
-        {{ form_label('address', Lang.get('user.address')) }}
-        <div class="input-container">
-            {{ form_text('address', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
-    <div class="form-row">
-        {{ form_label('city', Lang.get('user.city')) }}
-        <div class="input-container">
-            {{ form_text('city', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
-    <div class="form-row">
-        {{ form_label('state', Lang.get('user.state')) }}
-        <div class="input-container">
-            {{ form_text('state', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
-    <div class="form-row">
-        {{ form_label('postcode', Lang.get('user.postcode')) }}
-        <div class="input-container">
-            {{ form_text('postcode', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
+    {% include 'frontend.' ~ template ~ '.forms.customfields' %}
 
     <div class="form-row">
         {{ form_label('country', Lang.get('user.country')) }}
@@ -42,31 +15,15 @@
         </div>
     </div>
 
-    <div class="form-row">
-        {{ form_label('phone', Lang.get('user.phone')) }}
-        <div class="input-container">
-            {{ form_text('phone', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
-    <div class="form-row">
-        {{ form_label('website', Lang.get('user.website')) }}
-        <div class="input-container">
-            {{ form_text('website', null, { 'size': '50%' }) }}
-        </div>
-    </div>
-
     {# Check whether we should allow organisations to change their default language #}
     {% if Config.get('settings.language_frontend_toggle') %}
-
-    <div class="form-row">
-        {{ form_label('language_code', Lang.choice('general.language', 1)) }}
-        <div class="input-container">
-            {{ form_select('language_code', languages,
-                    record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+        <div class="form-row">
+            {{ form_label('language_code', Lang.choice('general.language', 1)) }}
+            <div class="input-container">
+                {{ form_select('language_code', languages,
+                        record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+            </div>
         </div>
-    </div>
-
     {% endif %}
 
     <div class="form-row">

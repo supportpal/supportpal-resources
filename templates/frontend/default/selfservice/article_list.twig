@@ -1,11 +1,8 @@
 {% if not articles.isEmpty() %}
     <ul class="article-list">
     {% for article in articles %}
-        {% if type is not defined %}
-            {% set type = article.type %}
-        {% endif %}
-        <li>
-            <a href='{{ article.frontend_url }}'>
+        <li data-slug="{{ article.slug }}">
+            <a href='{{ article.frontend_url(type) }}'>
                 <h4>{{ article.title }}</h4>
                 <p>{{ article.excerpt }}</p>
             </a>
@@ -28,7 +25,7 @@
                     <i class="fa fa-tag"></i>
                     <ul class="item-list">
                         {% for tag in article.tags %}
-                        <li><a href="{{ route('selfservice.tag', { 'type': article.type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
+                        <li><a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>

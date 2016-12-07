@@ -1,7 +1,7 @@
 </div>
 
 <div id="desk_sidebar" class="right">
-    {% if Auth.guard('frontend').check() %}
+    {% if auth_check() %}
         <div class="desk_box account">
             <img class="avatar left" src="data:image/jpeg;base64, {{ auth_user().avatar }}" />
                     <span class="name">
@@ -26,7 +26,7 @@
                     </a>
                 </li>
 
-                {% if Auth.guard('frontend').check() %}
+                {% if auth_check() %}
                     <li>
                         <a href="{{ route('user.profile') }}">
                             {{ Lang.choice('general.account', 1) }}
@@ -87,7 +87,7 @@
             </ul>
         </div>
 
-        {% if not Auth.guard('frontend').check() %}
+        {% if not auth_check() %}
             <div class="desk_box">
                 <h2>{{ Lang.get('user.login') }}</h2>
                 {{ form_open({ 'url': 'login', 'method': 'post' }) }}
@@ -119,7 +119,7 @@
             <div class="desk_box">
                 <h2 style="float: left; margin: 0 12px 0 0;">{{ Lang.choice('general.language', 1) }}</h2>
                 {{ form_select('language', languages,
-                Auth.guard('frontend').check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+                auth_check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
             </div>
         {% endif %}
 

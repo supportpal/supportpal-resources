@@ -2,7 +2,7 @@
         <div class="language-footer hide">
             {{ Lang.choice('general.language', 1) }}&nbsp;
             {{ form_select('language', languages,
-            Auth.guard('frontend').check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+            auth_check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
         </div>
     {% endif %}
 

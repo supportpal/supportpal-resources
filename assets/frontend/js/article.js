@@ -14,6 +14,7 @@ $(document).ready(function() {
             laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
+                "typeId": typeId,
                 "order": $(this).val(),
             },
             function(response) {
@@ -49,6 +50,7 @@ $(document).ready(function() {
             laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
+                "typeId": typeId,
                 "order": $('.commentOrdering').val(),
                 "last" : $('.commentsBlock > ul.comments > li:last-child').data('id'),
                 "startParent": $this.data('count')
@@ -88,6 +90,7 @@ $(document).ready(function() {
             laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
+                "typeId": typeId,
                 "order": $('.commentOrdering').val(),
                 "parentId": $this.data('parent')
             },

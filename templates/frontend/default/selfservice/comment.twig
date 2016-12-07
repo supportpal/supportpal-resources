@@ -26,12 +26,12 @@
                     <p class="commentText">{{ Purifier.clean(comment['text']) }}</p>
 
                     <div class="commentOptions">
-                        {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}
+                        {% if Config.get('settings.comment_write') == 0 or auth_check() %}
                             <a class="commentReply" data-id="{{ comment['id'] }}">{{ Lang.get('general.reply') }}</a>
                         {% endif %}
 
                         {% if Config.get('settings.comment_ratings') %}
-                            {% if Config.get('settings.comment_write') == 0 or Auth.guard('frontend').check() %}&nbsp;&middot;&nbsp;{% endif %}
+                            {% if Config.get('settings.comment_write') == 0 or auth_check() %}&nbsp;&middot;&nbsp;{% endif %}
                             {% if comment['rating'] is not empty %}
                                 <span class="score">{{ comment['rating'] }}</span>
                             {% else %}

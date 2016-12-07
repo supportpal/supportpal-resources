@@ -48,7 +48,7 @@
 
         {% if ticket.status_id != Config.get('settings.default_resolved_status') %}
         &nbsp;&nbsp;
-            <a href="{{ route('ticket.frontend.ticket.close', [ ticket.number ]) }}{% if Input.get('token') is not empty %}?token={{ Input.get('token') }}{% endif %}" class="button">
+            <a href="{{ route('ticket.frontend.ticket.close', [ ticket.number ]) }}{% if Input.get('token') is not empty %}?token={{ Input.get('token') }}{% endif %}" class="mark-resolved button">
                 {{ Lang.get('ticket.mark_resolved') }}
             </a>
         {% endif %}

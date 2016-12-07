@@ -23,7 +23,7 @@
                 <p>{{ Lang.get('core.submit_ticket_desc') }}</p>
             </div>
 
-            {% if not Auth.guard('frontend').check() and Config.get('channel.web.unauthenticated_users') %}
+            {% if not auth_check() and Config.get('channel.web.unauthenticated_users') %}
             <div class="desk_section">
                 <a href="{{ route('ticket.frontend.track') }}">
                     <img src="{{ asset_rev('resources/assets/frontend/icons/track.png') }}" class="icon left"
@@ -32,7 +32,7 @@
                 <h4><a href="{{ route('ticket.frontend.track') }}">{{ Lang.get('core.track_ticket') }}</a></h4>
                 <p>{{ Lang.get('core.track_ticket_desc') }}</p>
             </div>
-            {% elseif Auth.guard('frontend').check() %}
+            {% elseif auth_check() %}
             <div class="desk_section">
                 <a href="{{ route('ticket.frontend.ticket.index') }}">
                     <img src="{{ asset_rev('resources/assets/frontend/icons/track.png') }}" class="icon left"

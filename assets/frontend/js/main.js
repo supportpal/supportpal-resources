@@ -65,9 +65,20 @@ $(document).ready(function() {
     $(document.body).on('click', 'a[href^=#]', function(event) {
         event.preventDefault();
 
+        // Check if we have a name with an underscore (used in comments)
         var href = $.attr(this, 'href').substr(1),
             $elem = $('[name="_' + $.attr(this, 'href').substr(1) + '"]');
 
+        // If not, check if it's an ID first or a name without an underscore
+        // (normal usage)
+        if ($elem.length === 0) {
+            $elem = $('[id="' + $.attr(this, 'href').substr(1) + '"]');
+            if ($elem.length === 0) {
+                $elem = $('[name="' + $.attr(this, 'href').substr(1) + '"]');
+            }
+        }
+
+        // Only handle it if we have an element
         if (href.length !== 0 && $elem.length !== 0) {
             $('html, body').animate({
                 scrollTop: $elem.offset().top - 25

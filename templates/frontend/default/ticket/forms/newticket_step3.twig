@@ -15,7 +15,7 @@
 
     {{ form_open({ 'route': [ 'ticket.frontend.ticket.storeStep3' ], 'class': 'validate' }) }}
 
-        {% if not Auth.guard('frontend').check() %}
+        {% if not auth_check() %}
             {{ form_hidden('email', email) }}
         {% endif %}
 
@@ -127,7 +127,7 @@
 
         </div>
 
-        {% if Config.get('channel.web.show_captcha') == 2 or (not Auth.guard('frontend').check() and Config.get('channel.web.show_captcha') == 1) %}
+        {% if Config.get('channel.web.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.show_captcha') == 1) %}
             <hr />
 
             <h2>{{ Lang.get('core.captcha') }}</h2>

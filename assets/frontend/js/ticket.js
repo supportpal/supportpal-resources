@@ -1,7 +1,6 @@
 var redactor;
 
 $(document).ready(function() {
-
     // Date picker
     callPikaday();
 
@@ -47,7 +46,7 @@ $(document).ready(function() {
     });
 
     // Redactor
-    redactor = $('textarea[name=text]').redactor($.Redactor.default_opts);
+    redactor = $('textarea[name=text]').redactor($.extend($.Redactor.default_opts, { focus: true }));
 
     // Regex for email
     var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -118,8 +117,13 @@ $(document).ready(function() {
         }
     });
 
+    // Start polling for new replies
+    pollReplies();
 });
 
+/*
+ * Posts message to ticket
+ */
 function saveMessage(form) {
     // Make sure there is a message there
     form.find('textarea[name="text"]').valid();
@@ -142,13 +146,7 @@ function saveMessage(form) {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
 
             // Show new message
-            var message = $(response.data.view).insertAfter($('.message').last());
-
-            // Special effects
-            message.css('border-left','3px solid #a4d0e9');
-            setTimeout(function(){ message.css('border-left','0'); }, 10000);
-            message.css('background','#e5f1f9');
-            setTimeout(function(){ message.css('background',''); }, 10000);
+            showMessage(response.data.view);
 
             // Reset the form
             form.find('textarea[name="text"]').val('').prop('disabled', false);
@@ -178,4 +176,84 @@ function saveMessage(form) {
         // Reset form
         form.find('input[type="submit"]').prop('disabled', false);
     });
+}
+
+var lastReplyPoll;
+
+/*
+ * Poll for new replies
+ */
+function pollReplies() {
+    $.ajax({
+        url: laroute.route('ticket.frontend.message.poll'),
+        data: {
+            ticket_number: ticketNumber,
+            token: $('meta[name="token"]').prop('content'),
+            lastPoll: lastReplyPoll,
+        },
+        success: function (response) {
+            // If there are notifications, show them
+            if (typeof response.data != 'undefined') {
+                if (response.data.messages.length) {
+                    // Add each message
+                    $.each(response.data.messages, function (index, value) {
+                        showMessage(value);
+                    });
+                }
+
+                // Update ticket details
+                if (response.data.details.update) {
+                    // Update sidebar items
+                    $('.ticket-department').text(response.data.details.department);
+                    $('.ticket-status').text(response.data.details.status);
+                    $('.ticket-status').css('background-color', response.data.details.status_colour);
+                    $('.ticket-priority').text(response.data.details.priority);
+                    $('.ticket-priority').css('background-color', response.data.details.priority_colour);
+                    $('.ticket-updated').text(response.data.details.updated_at);
+
+                    // If closed, hide mark as resolved button
+                    if (response.data.details.status_id == closedStatusId) {
+                        $('.mark-resolved').hide();
+                    } else {
+                        $('.mark-resolved').show();
+                    }
+
+                    // If changed to locked or unlocked, refresh page
+                    if (response.data.details.locked) {
+                        if ($('.add-reply').length) {
+                            location.reload();
+                        }
+                    } else {
+                        if ($('.ticket-locked').length) {
+                            location.reload();
+                        }
+                    }
+                }
+            }
+
+            // Update the last poll time
+            lastReplyPoll = response.timestamp;
+        },
+        dataType: "json",
+        complete: function () {
+            // Delay the next poll by 15 seconds
+            pollTimeout = setTimeout(function () {
+                pollReplies();
+            }, 15000);
+        }
+    });
+}
+
+/*
+ * Displays message and highlights it temporarily
+ */
+function showMessage(message) {
+    // Show new message
+    var message = $(message).insertAfter($('.message').last());
+
+    // Special effects
+    message.css('border-left','3px solid #a4d0e9');
+    setTimeout(function(){ message.css('border-left','0'); }, 10000);
+    message.css('background','#e5f1f9');
+    setTimeout(function(){ message.css('background',''); }, 10000);
 }
