@@ -70,7 +70,7 @@
         <ul class="attachments">
             {% for attachment in article.attachments %}
                 <li>
-                    <a href='{{ attachment.download_url(type) }}'>
+                    <a href='{{ attachment.downloadLink(type) }}'>
                         <i class="fa fa-paperclip"></i>
                         &nbsp;
                         {{ attachment.original_name }}
@@ -108,16 +108,16 @@
     <!-- Share -->
     <div class="share-via left">
         <span>{{ Lang.get('general.share_via') }}</span>
-        <a class="email" href='mailto:?subject=&amp;body={{ article.title }} - {{ article.frontend_url(type) }}'>
+        <a class="email" href='mailto:?subject=&amp;body={{ article.title }} - {{ article.frontendUrl(type) }}'>
             <i class="fa fa-envelope"></i>
         </a><!--
-        --><a class="twitter" href='http://twitter.com/intent/tweet?text={{ article.title }}&amp;url={{ article.frontend_url(type) }}'>
+        --><a class="twitter" href='http://twitter.com/intent/tweet?text={{ article.title }}&amp;url={{ article.frontendUrl(type) }}'>
             <i class="fa fa-twitter"></i>
         </a><!--
-        --><a class="facebook" href='http://www.facebook.com/sharer.php?u={{ article.frontend_url(type) }}'>
+        --><a class="facebook" href='http://www.facebook.com/sharer.php?u={{ article.frontendUrl(type) }}'>
             <i class="fa fa-facebook"></i>
         </a><!--
-        --><a class="google" href='https://plus.google.com/share?url={{ article.frontend_url(type) }}'>
+        --><a class="google" href='https://plus.google.com/share?url={{ article.frontendUrl(type) }}'>
             <i class="fa fa-google-plus"></i>
         </a>
     </div>

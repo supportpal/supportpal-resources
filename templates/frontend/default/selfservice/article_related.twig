@@ -8,7 +8,7 @@
                     </li>
                 </ul>
                 <i class="fa fa-file-o left"></i>
-                <a {% if newWindow is defined and newWindow %}target="_blank"{% endif %} href='{{ article.frontend_url(type) }}'>
+                <a {% if newWindow is defined and newWindow %}target="_blank"{% endif %} href='{{ article.frontendUrl(type) }}'>
                     <h4>{{ article.title }}</h4>
                 </a>
             </li>

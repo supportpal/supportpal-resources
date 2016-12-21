@@ -38,6 +38,16 @@
                 </div>
             </div>
 
+            {% if organisationUsers is not empty %}
+            <div class="form-row">
+                {{ form_label('organisationUsers', Lang.get('user.organisation_users')) }}
+                <div class="input-container">
+                    {{ organisationUsers.implode(', ') }}<br />
+                    <span class="light">{{ Lang.get('user.organisation_users_ticket') }}</span>
+                </div>
+            </div>
+            {% endif %}
+
             <div class="form-row">
                 {{ form_label('cc[]', Lang.get('ticket.cc')) }}
                 <div class="input-container">

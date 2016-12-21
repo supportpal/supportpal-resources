@@ -2,7 +2,7 @@
     <ul class="article-list">
     {% for article in articles %}
         <li data-slug="{{ article.slug }}">
-            <a href='{{ article.frontend_url(type) }}'>
+            <a href='{{ article.frontendUrl(type) }}'>
                 <h4>{{ article.title }}</h4>
                 <p>{{ article.excerpt }}</p>
             </a>
