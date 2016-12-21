@@ -71,6 +71,11 @@
     <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            $(document.body).on('delete-successful', '.delete-confirm', function() {
+                // Reload page on deleting brand
+                window.location.reload();
+            });
+
             /**
              * Initialise the filters
              */

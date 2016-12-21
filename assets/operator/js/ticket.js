@@ -166,7 +166,8 @@ function Ticket(parameters)
                 if (is_note) {
                     self.setNoteDraft(null);
                 } else {
-                    $redactor.redactor('insert.set', signature);
+                    $redactor.redactor('insert.set', '');
+                    $redactor.redactor('insert.html', signature, false);
                     self.setMessageDraft(null);
                 }
             }
@@ -976,7 +977,8 @@ $(document).ready(function() {
                     $('#newNote').redactor('insert.set', '');
                     ticket.setNoteDraft(null);
                 } else {
-                    $('#newMessage').redactor('insert.set', signature);
+                    $('#newMessage').redactor('insert.set', '');
+                    $('#newMessage').redactor('insert.html', signature, false);
                     $('#newMessage').redactor('focus.setStart');
                     ticket.setMessageDraft(null);
                 }
@@ -1208,7 +1210,7 @@ $(document).ready(function() {
             // Set the route for the current department
             var route = laroute.route('ticket.operator.department.search', { id: $('select[name="department"]').val() });
 
-            $.get( route, { s: query })
+            $.get( route, { s: query, brand_id: brandId })
                 .done(function(res) { callback(res.data); })
                 .fail(function() { callback(); });
         },

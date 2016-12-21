@@ -190,6 +190,25 @@
         };
 
         /**
+         * Check whether the redactor instance contains {{ operator.signature }} and show a warning.
+         *
+         * @param html
+         */
+        var containsSignature = function (html) {
+
+            // Check if the editor contains {{ operator.signature }}
+            if (/\{\{\s*operator\.signature\s*}}/.test(html)) {
+
+                if (! $('.twig-sig-warning').length) {
+                    redactor.$box.after($('<div class="box bottombox warning twig-sig-warning">'
+                        + Lang.get('core.twig_operator_signature') + '</div>'))
+                }
+            } else {
+                $container.find('.twig-sig-warning').remove();
+            }
+        };
+
+        /**
          * Destroy the merge-field_container when redactor is destroyed.
          *
          * @returns {Function}
@@ -263,9 +282,15 @@
                     $toolbar = $(createToolbar());
                     redactor.$box.siblings(':last').addBack().last().after($toolbar);
 
+                    // Check if the editor contains {{ operator.signature }}.
+                    containsSignature(codeMirror.getValue());
+
                     codeMirror.on('change', function (instance, changeObj) {
                         // Update redactor.
                         redactor.syntax.syncEditor();
+
+                        // Check if the editor contains {{ operator.signature }}.
+                        containsSignature(instance.getValue());
 
                         // Check any twig code exists within HTML nodes or its' attributes.
                         if (containsTwig(instance.getValue())) {
@@ -276,7 +301,7 @@
                             }
                         } else {
                             // Remove warning if it exists
-                            $('.twig-html-warning').remove();
+                            $container.find('.twig-html-warning').remove();
                         }
                     });
 
@@ -325,6 +350,8 @@
                         'template': codeMirror.getValue(),
                         'template_id': redactor.$box.parents('form').data('templateId'),
                         'brand_id': brandId,
+                        'ticket_id': redactor.$box.parents('form').find(':input[name="ticket_id"]').length ?
+                            redactor.$box.parents('form').find(':input[name="ticket_id"]').val() : null,
                         'is_email': (redactor.opts.syntaxEmailTemplate || false) ? 1 : 0
                     }
                 )

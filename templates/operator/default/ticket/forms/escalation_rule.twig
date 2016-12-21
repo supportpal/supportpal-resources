@@ -28,10 +28,9 @@
         </div>
 
         <div class="action" style="display: none" data-action="1">
-            {% set signature = get_signature() %}
             {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
                 rule|default is not empty and rule.action == 1 ? rule.value_text :
-                (signature is not empty ? '<br /><br />' ~ signature : null),
+                '<br /><br />{{ operator.signature }}',
                 {'class': 'text'})
             }}
         </div>

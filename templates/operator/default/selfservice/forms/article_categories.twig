@@ -60,7 +60,7 @@
         <div class="form-row type-url">
             <label>{{ Lang.get('general.url') }}</label>
             <div class="input-container">
-                <a href="{{ record.frontend_url(record_type, true) }}" target="_blank">{{ urldecode(record.frontend_url(record_type, true)) }}</a>
+                <a href="{{ record.frontendUrl(record_type, true) }}" target="_blank">{{ urldecode(record.frontendUrl(record_type, true)) }}</a>
             </div>
         </div>
     {% endif %}

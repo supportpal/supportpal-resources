@@ -63,7 +63,14 @@
             <div class="form-row form-full">
                 {{ form_label('assignedto[]', Lang.get('ticket.assigned_to')) }}
                 <div class="input-container">
-                    {{ form_select('assignedto[]', departmentOperators, department.default_assignedto, { 'multiple': 'multiple' }) }}
+                    <select name="assignedto[]" multiple="multiple">
+                        {% for operator in departmentOperators %}
+                            <option {% if operator.id in department.default_assignedto %}selected="selected"{% endif %}
+                                data-data='{{ operator|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ operator.id }}'>
+                                {{ operator.formatted_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
@@ -109,7 +116,7 @@
                     </div>
 
                     <div class="form-row" style="padding: 0;">
-                        {% set signature = get_signature(brand.id, department.id, user, null, true) %}
+                        {% set signature = auth_user().getSignature(brand.id, department.id).render(brand.id, user) %}
                         {{ form_redactor('text', signature is not empty ? '<br /><br />' ~ signature : null, { 'size': '50x3' }) }}
                     </div>
 

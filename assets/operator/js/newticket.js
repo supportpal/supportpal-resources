@@ -88,7 +88,7 @@ $(document).ready(function() {
                         type: 'GET',
                         dataType: 'json',
                         data: {
-                            brand_id: $brand[0].selectize.getValue(),
+                            brand_id: typeof $brand[0] !== "undefined" ? $brand[0].selectize.getValue() : null,
                             q: query
                         },
                         error: function() {
@@ -175,19 +175,49 @@ $(document).ready(function() {
         // Assigned operators
         $('select[name="assignedto[]"]').selectize({
             plugins: ['remove_button'],
+            valueField: 'id',
+            labelField: 'formatted_name',
+            searchField: [ 'formatted_name', 'email' ],
             delimiter: ',',
             dropdownParent: 'body',
             placeholder: Lang.get('user.select_operators'),
+            render: {
+                item: function(item, escape) {
+                    return '<div class="item">'
+                        + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                        + escape(item.formatted_name)
+                        + '</div>';
+                },
+                option: function(item, escape) {
+                    return '<div>'
+                        + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                        + escape(item.formatted_name)
+                        + '</div>';
+                }
+            },
             onChange: function(value) {
                 if ($.isEmptyObject(value)) {
                     // None assigned, show all
-                    $('#toAddress span').show();
+                    $('#toAddress span').removeClass('hide').show();
                 } else {
                     // Only show those assigned
-                    $('#toAddress span').hide();
+                    $('#toAddress span.operator').addClass('hide');
                     $.each(value, function(index, value) {
-                        $('#toAddress span.operator-' + value).show();
+                        $('#toAddress span.operator-' + value).removeClass('hide');
                     });
+
+                    // Hide the last visible comma if last operator not visible
+                    $('#toAddress span.operator').each(function (index) {
+                        if ($(this).is(':visible') && $(this).prev().prev().is(':visible')) {
+                            $(this).prev().show();
+                        } else {
+                            $(this).prev().hide();
+                        }
+                    });
+                    if ($('#toAddress span.operator:first').is(':visible')&& $('#toAddress span.operator:not(:first)').is(':visible')) {
+                        // Special case when first item is visible and one after but comma is not showing due to above login
+                        $('#toAddress span.operator:first').next().show();
+                    }
                 }
             }
         });

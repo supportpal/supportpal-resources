@@ -62,6 +62,8 @@
 
     <div class="form-container open first">
 
+        {{ form_hidden('ticket_id', ticket.id, { 'disabled': 'disabled' }) }}
+
         <table class="rule-table settings">
             <thead>
                 <tr>

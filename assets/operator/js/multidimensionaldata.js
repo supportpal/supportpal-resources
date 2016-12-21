@@ -4,6 +4,7 @@ $(document).ready(function() {
      */
     var selector = '.add-item-selectize';
     $(selector).selectize({
+        dropdownParent: 'body',
         placeholder: $(selector).attr('title'),
         onChange: function (value) {
             // Add the new DOM within the current tab.

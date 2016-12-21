@@ -203,28 +203,6 @@
 
         <div class="form-container open first">
             <div class="form-row">
-                {{ form_label('notify_ticket_autoclose', Lang.get('ticket.email_auto_close')) }}
-                <div class="input-container">
-                    <input name="notify_ticket_autoclose" value="0" id="notify_ticket_autoclose" type="hidden">
-                    {{ form_check('notify_ticket_autoclose', 1, record|default is not empty and record.exists ? record.notify_ticket_autoclose : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_autoclose' }) }}
-                    <label for="toggle_notify_ticket_autoclose"></label>
-                    <br />
-                    <span class="description">{{ Lang.get('ticket.email_auto_close_desc') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('notify_ticket_closed', Lang.get('ticket.email_closed_by_operator')) }}
-                <div class="input-container">
-                    <input name="notify_ticket_closed" value="0" id="notify_ticket_closed" type="hidden">
-                    {{ form_check('notify_ticket_closed', 1, record|default is not empty and record.exists ? record.notify_ticket_closed : true, { 'class': 'toggle', 'id': 'toggle_notify_ticket_closed' }) }}
-                    <label for="toggle_notify_ticket_closed"></label>
-                    <br />
-                    <span class="description">{{ Lang.get('ticket.email_closed_by_op_desc') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
                 {{ form_label('notify_email_ticket', Lang.get('ticket.email_user_on_email')) }}
                 <div class="input-container">
                     <input name="notify_email_ticket" value="0" id="notify_email_ticket" type="hidden">

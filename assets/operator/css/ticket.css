@@ -112,6 +112,10 @@ span.subject:hover:after {
     max-width: 100%;
 }
 
+.message .text table {
+    float: none;
+}
+
 .message .text table.redactor-table {
     border: none;
     border-collapse: collapse;
@@ -288,6 +292,10 @@ div.collapsed-messages span {
 
 .recipients > div:first-child {
     border-top: 0;
+}
+
+.recipients #toAddress span.operator.hide + span.comma {
+    display: none;
 }
 
 .recipients .add-cc {

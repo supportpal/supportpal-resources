@@ -69,15 +69,19 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                {{ form_label('brand', Lang.choice('core.brand', 2)) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        {{ form_select('brand[]', array_column(Config.get('brand'), 'name', 'id'), groupBrands, {'multiple': 'multiple'}) }}
+            {% if Config.get('brand')|length > 1 %}
+                <div class="form-row">
+                    {{ form_label('brand', Lang.choice('core.brand', 2)) }}
+                    <div class="input-container">
+                        <div class="input-group">
+                            {{ form_select('brand[]', array_column(Config.get('brand'), 'name', 'id'), groupBrands, {'multiple': 'multiple'}) }}
+                        </div>
+                        <span class="description">{{ Lang.get('user.group_brand_desc') }}</span>
                     </div>
-                    <span class="description">{{ Lang.get('user.group_brand_desc') }}</span>
                 </div>
-            </div>
+            {% else %}
+                <input type="hidden" name="brand[]" value="{{ Config.get('brand')|first.id }}" />
+            {% endif %}
 
             <div class="form-row">
                 {{ form_label('department', Lang.choice('ticket.department', 2)) }}

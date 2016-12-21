@@ -135,14 +135,14 @@ $(document).ready(function() {
     });
 
     /*
-     * Add a new e-mail address to the department form
+     * Add a new type selection
      */
-    $('#add-brand').on('click', function() {
+    $('#add-type').on('click', function() {
         article.addNewCategory();
     });
 
     /*
-     * Remove an e-mail address from the DOM
+     * Remove an type selection
      */
     $('#categories').on('click', '.remove-button', function() {
         $(this).parents(article.getClassName()).remove();

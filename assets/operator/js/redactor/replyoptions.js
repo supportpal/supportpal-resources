@@ -203,7 +203,7 @@ $(function() {
 
                     if (response.status == 'success') {
                         // Set text to be inserted
-                        $modal.insert.html(response.data);
+                        $modal.insert.html(response.data, false);
                     }
 
                     $modal.code.sync();
@@ -332,7 +332,7 @@ function addResponsesToList(data, $list) {
             // Add each result to the list
             $list.append('<li class="response-item"><a data-id="' + item.id + '">'
                 + '<span class="title">' + item.name + '</span>'
-                + $tags.html()
+                + '&nbsp;&nbsp;' + $tags.html()
                 + '<div class="description">' + $("<p>").html(item.text).text()
                 + '</div></a></li>');
         });
