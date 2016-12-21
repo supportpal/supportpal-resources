@@ -7,7 +7,7 @@ return [
     "item_updated"                      => "Updated :item :rel.",
     "item_deleted"                      => "Deleted :item :rel.",
 
-	// Custom messages
+    // Custom messages
     "ip_ban_created"                    => "Created new ban on IP :rel.",
     "ip_ban_updated"                    => "Updated ban on IP :rel.",
     "ip_ban_deleted"                    => "Deleted ban on IP :rel.",
@@ -65,7 +65,7 @@ return [
     "ticket_followup_updated"           => "The follow up on ticket #:rel has been updated.",
     "ticket_followup_deleted"           => "The follow up on ticket #:rel has been deleted.",
 
-    "ticket_macro_applied"			    => "The macro :new_value was applied to ticket #:rel.",
+    "ticket_macro_applied"              => "The macro :new_value was applied to ticket #:rel.",
 
     "ticket_message_reply"              => "Posted a new reply to ticket #:rel.",
     "ticket_message_note"               => "Posted a new note to ticket #:rel.",

@@ -94,7 +94,7 @@ return array(
     "customfield"                   => "User Custom Field|User Custom Fields",
     "customfield_order"             => "Drag the rows to change the order custom fields appear to users.",
 
-    "role"               		    => "Role|Roles",
+    "role"                          => "Role|Roles",
 
     "operator_login_log"            => "Operator Login Log",
     "system_activity_log"           => "System Activity Log",
@@ -256,5 +256,7 @@ return array(
     "user_profile"                  => "User Profile",
     "organisation_access_level"     => "Organisation Access Level",
     "organisation_notifications"    => "Organisation Notifications",
+    "organisation_users"            => "Organisation Users",
+    "organisation_users_ticket"     => "Above is a list of your organisation's managers that will be also emailed updates about this ticket.",
 
 );

@@ -116,7 +116,7 @@ return [
      */
     "view_articles"             => "View Articles",
     "view_categories"           => "View Categories",
-    "add_to_another_brand"      => "Add to Another Brand",
+    "add_to_another_type"       => "Add to Another Type",
     "select_type"               => "Select Type...",
     "visibility"                => "Visibility",
     "reply_to_comment"          => "Reply To Comment",

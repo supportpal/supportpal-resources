@@ -207,12 +207,12 @@ return [
     "tour_complete_desc"        => "Thank you for using SupportPal.<br /><br />We now recommend that you follow the getting started guide below to configure your help desk.",
 
     // IP Ban
-    "ip_ban_time_desc"  		=> "If the ban is permanent or temporary.",
+    "ip_ban_time_desc"          => "If the ban is permanent or temporary.",
     "expiry"                    => "Expiry",
     "expired"                   => "Expired",
-    "expiry_time"       		=> "Expiry Time",
-    "expiry_time_desc"  		=> "The time when the ban will expire, if a date is not set or in the past, it will automatically set to 24 hours from now.",
-    "permanent"            		=> "Permanent",
+    "expiry_time"               => "Expiry Time",
+    "expiry_time_desc"          => "The time when the ban will expire, if a date is not set or in the past, it will automatically set to 24 hours from now.",
+    "permanent"                 => "Permanent",
 
     // Languages
     "no_enabled_languages"      => "Failed trying to update the :item. At least one language must be enabled at all times.",
@@ -318,5 +318,6 @@ return [
     "log"                       => "Log|Logs",
     "invalid_department_brand"  => "Department is not assigned to ticket brand.",
     "incoming_rejected"         => "Incoming (Rejected)",
+    "twig_operator_signature"   => "The {{ operator.signature }} merge field will be processed at runtime hence the preview may be incorrect.",
 
 ];
