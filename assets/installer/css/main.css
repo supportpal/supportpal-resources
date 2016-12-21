@@ -261,6 +261,10 @@ textarea {
     width: 100%;
 }
 
+textarea:read-only {
+    color: rgb(84, 84, 84);
+}
+
 input, textarea, select {
     background: #fff;
     border: 1px solid #ccc;
