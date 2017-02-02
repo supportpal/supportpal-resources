@@ -84,7 +84,7 @@ return [
     "default_email_addr"        => "Default Email Address",
     "default_email_addr_desc"   => "The email that will be used in the sender field in most emails sent by the system.",
     "include_operator_name"     => "Include Operator Name",
-    "include_operator_name_desc"=> "Include the operators name in the email 'From' field for ticket reply emails. For example: From: Joe Bloggs (YourCompany Support)",
+    "include_operator_name_desc" => "Include the operators name in the email 'From' field for ticket reply emails. For example: From: Joe Bloggs (YourCompany Support)",
     "include_dept_name"         => "Include Department Name",
     "include_dept_name_desc"    => "Include the department name in the 'From' field of any ticket related emails. Note that this will typically create a new e-mail thread if a given ticket changes departments.",
     "global_email_header"       => "Global Email Header",
@@ -319,5 +319,17 @@ return [
     "invalid_department_brand"  => "Department is not assigned to ticket brand.",
     "incoming_rejected"         => "Incoming (Rejected)",
     "twig_operator_signature"   => "The {{ operator.signature }} merge field will be processed at runtime hence the preview may be incorrect.",
+
+    /*
+     * 2.1.1
+     */
+    "file_manager"              => "Log File Manager",
+    "file_manager_desc"         => "Below you can download or delete the logs that are stored by the system during operation, they can be used for debugging purposes. The log files are automatically cycled, storing only up to the latest 5 days of entries.",
+    "app_logs"                  => "Application Logs",
+    "app_logs_desc"             => "All warnings and errors from general usage of the help desk are logged here. You may be asked to provide one or more of these logs when requesting support.",
+    "email_logs"                => "Email Logs",
+    "email_logs_desc"           => "Details about incoming emails are stored in these files when they are being parsed and imported as tickets.",
+    "query_logs"                => "SQL Query Logs",
+    "query_logs_desc"           => "These logs contain all MySQL queries that are run when utilising the help desk and are only stored when debug mode is enabled.",
 
 ];

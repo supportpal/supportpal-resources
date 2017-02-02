@@ -259,4 +259,14 @@ return array(
     "organisation_users"            => "Organisation Users",
     "organisation_users_ticket"     => "Above is a list of your organisation's managers that will be also emailed updates about this ticket.",
 
+    /*
+     * 2.1.1
+     */
+    "change_password"               => "Change Password",
+    "current_password"              => "Current Password",
+    "new_password"                  => "New Password",
+    "personal_confirm_password"     => "Please confirm your current password to set a new password.",
+    "operator_confirm_password"     => "Please confirm your password to make changes to the operator account.",
+    "login_via_idp"                 => "Login via IdP",
+
 );

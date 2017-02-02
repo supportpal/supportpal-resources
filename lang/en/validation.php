@@ -78,7 +78,7 @@ return [
     "operator_password_length"  => "The password must be equal to or longer than :operator_password_length characters.",
     "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
-    "operator_password_strength"=> "The :attribute must contain: :operator_password_strength.",
+    "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
     "twig_lint"                 => "The :attribute must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
 
     /*
@@ -86,6 +86,11 @@ return [
      */
     "in_array"                  => "The :attribute field does not exist in :other.",
     "logo"                      => "The logo must point to a valid image file (direct URL or relative file path to base directory).",
+
+    /*
+     * 2.1.1
+     */
+    "old_password"              => "The :attribute field is invalid.",
 
     /*
     |--------------------------------------------------------------------------

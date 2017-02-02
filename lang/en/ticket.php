@@ -272,20 +272,20 @@ return [
     "default_open_status"       => "Default Open Status",
 
     "default_resolve_status"    => "Default Resolved Status",
-    "default_resolve_status_desc"=> "Select the default status that is used for tickets that have been resolved.",
+    "default_resolve_status_desc" => "Select the default status that is used for tickets that have been resolved.",
 
-    "waiting_response_time"     => "Waiting for Response Email",
-    "waiting_response_time_desc"=> "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
+    "waiting_response_time"      => "Waiting for Response Email",
+    "waiting_response_time_desc" => "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
 
     "close_inactive_tickets"    => "Close Inactive Tickets",
-    "close_inactive_tickets_desc"=> "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
-    "close_inactive_status_desc"=> "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
+    "close_inactive_tickets_desc" => "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
+    "close_inactive_status_desc" => "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
 
     "ticket_reply_order"        => "Ticket Reply Order",
     "ticket_reply_order_desc"   => "Select the order in which ticket messages are shown, ascending where the latest message is last or descending where the latest message is first.",
 
     "ticket_notes_position"     => "Ticket Notes Position",
-    "ticket_notes_position_desc"=> "Select where in the ticket view that ticket notes are shown.",
+    "ticket_notes_position_desc" => "Select where in the ticket view that ticket notes are shown.",
     "ticket_notes_top_messages" => "At top and in messages",
     "ticket_notes_top"          => "At top only",
     "ticket_notes_messages"     => "In messages only",
@@ -300,7 +300,7 @@ return [
     "default_department_desc"   => "The default department set on all incoming tickets via this channel.",
 
     "show_related_articles"     => "Show Related Articles",
-    "show_related_articles_desc" =>     "When the user is typing the subject, they may be shown related articles based on what they have entered. Requires the self-service module to be enabled and MySQL 5.6+.",
+    "show_related_articles_desc" => "When the user is typing the subject, they may be shown related articles based on what they have entered. Requires the self-service module to be enabled and MySQL 5.6+.",
 
     // Email Channel Settings
     "default_priority"          => "Default Priority",
@@ -376,7 +376,7 @@ return [
      */
     "department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in, a ticket is not opened if a matching department email address cannot be found. Enabling this setting will mean all emails without a matching department email address are imported as tickets in this department.",
     "default_reply_options"     => "Default Reply Options",
-    "default_reply_options_desc"=> "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
+    "default_reply_options_desc" => "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
     "associate_response_tag"    => "Associate canned response with a tag...",
     "canned_response_tags_desc" => "Add tags which may help finding a canned response when replying to a ticket.",
     "loading_tags"              => "Loading tags",
@@ -429,6 +429,15 @@ return [
     "department_brands"         => "Department Brands",
     "email_item"                => "Email :item",
     "from_name"                 => "From Name",
-    "from_address"              => "From Address"
+    "from_address"              => "From Address",
+
+    /*
+     * 2.1.1
+     */
+    "edited_message"            => ":user at :date",
+    "prioritise_reply-to"       => "Prioritise Reply-To",
+    "prioritise_reply-to_desc"  => "Toggle to prioritise the Reply-To header over the From header. If enabled, tickets opened via email will be opened on behalf of the Reply-To name and address.",
+    "note_options"              => "Note Options",
+    "escalation_rules_desc"     => "The below SLA plan escalation rules are scheduled to run after the times listed. These times may change or the rules may be removed if an operator replies to this ticket.",
 
 ];

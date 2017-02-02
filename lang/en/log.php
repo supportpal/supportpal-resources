@@ -143,4 +143,9 @@ return [
     "ticket_removed_cc"                 => "Email(s) :old_value removed from CC address list for ticket #:rel.",
     "invalid_department_brand"          => "Failed to set department to ':new_value' on ticket #:rel, department does not belong to ticket brand.",
 
+    /*
+     * 2.1.1
+     */
+    "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
+
 ];

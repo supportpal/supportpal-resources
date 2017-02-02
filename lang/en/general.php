@@ -241,4 +241,13 @@ return [
     "every_minutes"             => "Every :minutes",
     "at_time"                   => "at :time",
 
+    /*
+     * 2.1.1
+     */
+    "or"                        => "or",
+    "size"                      => "size",
+    "edited"                    => "edited",
+    "scheduled_for"             => "Scheduled For",
+    "drag_and_drop"             => "Drag and drop your attachments here.",
+
 ];

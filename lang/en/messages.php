@@ -73,7 +73,7 @@ return [
     "invalid_captcha"       => "The captcha code entered was invalid or incorrect, please try again.",
     "blocked_as_spam"       => "Your request was detected as spam. Please contact an administrator if you feel this has been shown in error.",
     "account_exists"        => "An active account already exists with this email address. Please login or use the forgotten password feature if you cannot remember your password.",
-    "error_loading_comments"=> "There was a problem loading the comments.",
+    "error_loading_comments" => "There was a problem loading the comments.",
 
     "invalid_auth"          => "Invalid authentication credentials.",
 
@@ -115,5 +115,12 @@ return [
     "brand_invalid_dept"    => "The action could not be completed in full. The department could not be updated on some tickets due to their brand.",
     "template_subject_req"  => "The default e-mail template subject field is required.",
     "template_contents_req" => "The default e-mail template contents field is required.",
+
+    /*
+     * 2.1.1
+     */
+    "upload_error"          => "Failed to upload attachment \":filename\", reason: \":reason\"",
+    "upload_max_size"       => "File must be smaller than :size",
+    "upload_wrong_type"     => "File type is not allowed",
 
 ];

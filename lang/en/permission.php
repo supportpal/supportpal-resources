@@ -89,4 +89,10 @@ return [
     "organisationcustomfield" => "Manage Organisation Custom Fields",
     "operatorsignature" => "Manage Operator Signatures",
 
+    /*
+     * 2.1.1
+     */
+    // Core
+    "logfiles"          => "Manage Log Files",
+
 ];
