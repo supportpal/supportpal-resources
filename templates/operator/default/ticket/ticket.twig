@@ -77,9 +77,12 @@
     </span>
 
     <ul class="tabs">
-      <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
-      <li id="Log">{{ Lang.get('general.log') }}</li>
-      <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
+        <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
+        <li id="Log">{{ Lang.get('general.log') }}</li>
+        <li id="EscalationRules" {% if ticket.sla_plan_id is empty or ticket.escalationrules().count() == 0 %}style="display: none;" {% endif %}>
+            Escalation Rules
+        </li>
+        <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
     </ul>
 
     <div id="tabMessages" class="tabContent">
@@ -114,7 +117,7 @@
 
             {% for message in messages %}
                 {% if message.type == 1 %}
-                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message, 'ticketId': ticket.id } %}
+                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message } %}
                 {% endif %}
             {% endfor %}
 
@@ -126,7 +129,7 @@
 
         {% for message in messages %}
             {% if (Config.get('settings.ticket_notes_position') != 1 or message.type != 1) %}
-                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message, 'ticketId': ticket.id } %}
+                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message } %}
             {% endif %}
         {% endfor %}
 
@@ -155,16 +158,19 @@
     </div>
 
     <div id="tabLog" class="tabContent hide">
-
         {{ log.render()|raw }}
         {{ log.script()|raw }}
+    </div>
 
+    <div id="tabEscalationRules" class="tabContent hide">
+        <span class="description">{{ Lang.get('ticket.escalation_rules_desc') }}</span>
+        <br /><br />
+        {{ escalationRules.render()|raw }}
+        {{ escalationRules.script()|raw }}
     </div>
 
     <div id="tabFollowup" class="tabContent hide">
-
         {% include 'operator.' ~ template ~ '.ticket.forms.followup' %}
-
     </div>
 
 {% endblock %}
@@ -194,10 +200,22 @@
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
 
     <!-- File upload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script type="text/javascript">
+        new FileUpload({
+            $element: $('.message-form .fileupload'),
+            blueimp: {
+                dropZone: $('.message-form').find('.attachment-dragover')
+            }
+        });
+        new FileUpload({
+            $element: $('.notes-form .fileupload'),
+            blueimp: {
+                dropZone: $('.notes-form').find('.attachment-dragover')
+            }
+        });
+    </script>
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
@@ -207,6 +225,11 @@
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset_rev('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Reply options & Redactor plugins -->
+    <script src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/sanitize.js') }}"></script>
 
     <script type="text/javascript">
         var ticketId = "{{ ticket.id }}",
@@ -255,8 +278,6 @@
         }
 
         $(document).ready(function() {
-            // Register redactor on edit messages.
-            redactor($('.edit-message textarea'));
 
             // Register redactor
             $('#newMessage, #newNote').redactor($.extend($.Redactor.default_opts, redactor_config, {
@@ -269,8 +290,6 @@
                     }
                 }
             }));
-
-            $('#newNote').redactor('core.getBox').hide();
 
             // Enable hide/show password toggle
             callHideShowPassword();
@@ -295,6 +314,7 @@
     <script type="text/javascript">
         var ticket = new Ticket("");
     </script>
+
     <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>
 
     <link href="{{ asset_rev('resources/assets/operator/css/ticket-print.css') }}" rel="stylesheet" media="print" type="text/css" />

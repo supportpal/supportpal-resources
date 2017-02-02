@@ -36,7 +36,7 @@
             <div>
                 <label>{{ Lang.choice('user.role', 1) }}:</label>
                 <div>
-                    {{ form_select('sSearch_1', { '-1': Lang.get('general.select_value'), 0: Lang.get('general.system'), '1': Lang.choice('general.operator', 1), 2: Lang.choice('user.user', 1) }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    {{ form_select('sSearch_1', { '-1': Lang.get('general.select_value'), 0: Lang.get('general.system'), '1': Lang.choice('general.operator', 1), 2: Lang.choice('user.user', 1), 3: Lang.get('general.api') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                 </div>
             </div>
             <div>

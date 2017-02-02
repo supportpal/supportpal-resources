@@ -181,6 +181,9 @@ $(document).ready(function() {
         labelField: 'name',
         searchField: 'name',
         create: true,
+        createFilter: function(input) {
+            return input.length <= 45;
+        },
         maxItems: null,
         placeholder: Lang.get("selfservice.associate_tag")
     });

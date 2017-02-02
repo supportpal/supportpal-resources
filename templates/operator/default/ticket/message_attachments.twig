@@ -1,0 +1,20 @@
+{% if not message.attachments.isEmpty() %}
+    <div class="attachments">
+        <h4>{{ message.attachments.count() }} {{ Lang.choice('general.attachment', 2) }}</h4>
+        <ul>
+            {% for attachment in message.attachments %}
+            <li>
+                <i class="fa fa-paperclip"></i>
+                &nbsp;
+                <a href='{{ route('ticket.operator.attachment.download', [ attachment.upload_hash ]) }}'>{{ attachment.original_name }}</a>
+                &nbsp;
+                ({{ attachment.upload.size }})
+                &nbsp;
+                <i class="fa fa-times deleteAttachment"
+                     data-url="{{ route('ticket.operator.attachment.destroy') }}"
+                     data-hash="{{ attachment.upload_hash }}"></i>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

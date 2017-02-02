@@ -1,0 +1,48 @@
+{% extends parent_template %}
+
+{% block scripts_header %}
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('core.file_manager') }}
+{% endblock %}
+
+{% block description %}
+    {{ Lang.get('core.file_manager_desc') }}
+{% endblock %}
+
+{% block content %}
+
+    <hr />
+
+    <h2>{{ Lang.get('core.app_logs') }}</h2>
+    <h3 class="description">{{ Lang.get('core.app_logs_desc') }}</h3>
+
+    {{ appTable.render()|raw }}
+    {{ appTable.script()|raw }}
+
+    <h2>{{ Lang.get('core.email_logs') }}</h2>
+    <h3 class="description">{{ Lang.get('core.email_logs_desc') }}</h3>
+
+    {{ emailTable.render()|raw }}
+    {{ emailTable.script()|raw }}
+
+    <h2>{{ Lang.get('core.query_logs') }}</h2>
+    <h3 class="description">{{ Lang.get('core.query_logs_desc') }}</h3>
+
+    {{ queryTable.render()|raw }}
+    {{ queryTable.script()|raw }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+
+    <!-- Delete button -->
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+{% endblock %}

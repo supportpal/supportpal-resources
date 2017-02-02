@@ -2,6 +2,7 @@
     <td class="rule-action">
         {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][id]', rule|default is not empty ? rule.id : '') }}
         {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][action]', actions, rule|default is not empty ? rule.action : null) }}
+        {% if rule|default is not empty %}<a name="_action-{{ rule.id }}"></a>{% endif %}
     </td>
     
     {% if when|default is not empty %}

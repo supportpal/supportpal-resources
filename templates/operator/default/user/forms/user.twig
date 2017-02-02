@@ -127,7 +127,7 @@
                 $('.access-level').hide();
             }
 
-            $('select[name="organisation"]').selectize({
+            var $organisationSelectize = $('select[name="organisation"]').selectize({
                 valueField: 'id',
                 labelField: 'name',
                 searchField: 'name',
@@ -141,7 +141,8 @@
                         type: 'GET',
                         dataType: 'json',
                         data: {
-                            q: query
+                            q: query,
+                            brand_id: $(':input[name="brand_id"]').val()
                         },
                         error: function() {
                             callback();
@@ -175,7 +176,7 @@
 
             // Show notifications options for managers only
             $('select[name="organisation_access_level"]').change(function() {
-                if ($(this).val() == 1) {
+                if ($(this).val() == 1 || ! $(this).is(':visible')) {
                     $('.organisation-notifications').hide().find(':input').prop('disabled', true);
                 } else {
                     $('.organisation-notifications').show().find(':input').prop('disabled', false);
@@ -305,6 +306,9 @@
                 // Change the custom fields to show when the brand is changed
                 $(':input[name="brand_id"]').on('change', function() {
                     var brandId = $(this).val();
+
+                    // Clear the organisation
+                    $organisationSelectize[0].selectize.clearOptions();
 
                     // Check if each field exists in the currently selected brand
                     $('[data-field]').each(function () {

@@ -172,10 +172,8 @@
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <!-- File upload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
 
     <!-- Pikaday -->
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
@@ -195,89 +193,68 @@
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/datatable/selectall.js') }}"></script>
 
     <script type="text/javascript">
+        // Schedule first grid refresh in 60 seconds.
+        var gridTimeout = setTimeout(function() {
+            refreshGrid();
+        }, 60000);
+
         $(document).ready(function() {
+            // Reference to fileupload.js instance, from mass reply box.
+            var fileUpload;
+
             /**
-             * Handle deleting an attachment on mass reply modal
-             * Overrides the default JS handler for attachments
+             * Mass Reply file uploads.
              */
-            $(document).unbind('click', handleDelete).on('click', '#attached-files .deleteAttachment', function(e) {
-                var url = $(this).data('url');
-                var hash = $(this).data('hash');
-                var $listItem = $(this).parents('li');
+            $(document)
+                .on('click', '.reply-ticket', function () {
+                    fileUpload = new FileUpload({
+                        registerEvents: false
+                    });
+                })
+                .on('click', '.attached-files .deleteAttachment', function(e) {
+                    var url = $(this).data('url');
+                    var hash = $(this).data('hash');
+                    var $listItem = $(this).parents('li');
 
-                // Hide cross
-                $(this).hide();
+                    // Hide cross
+                    $(this).hide();
 
-                // DELETE the file!
-                $.ajax({
-                    url: url,
-                    type: 'DELETE',
-                    data: { 'hash': hash },
-                    success: function(result) {
-                        if (result.success == true
-                            && (typeof $listItem !== 'undefined' && $listItem instanceof jQuery)
-                        ) {
-                            $('div.attachment-details').find('input[name="attachment['+ hash +']"]').remove();
-                            $listItem.remove();
+                    // DELETE the file!
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        data: { 'hash': hash },
+                        success: function(result) {
+                            if (result.success == true
+                                && (typeof $listItem !== 'undefined' && $listItem instanceof jQuery)
+                            ) {
+                                $('div.attachment-details').find('input[name="attachment['+ hash +']"]').remove();
+                                $listItem.remove();
+                            }
+                        },
+                        error: function(result) {
+                            // Show cross again
+                            $(this).show();
                         }
-                    },
-                    error: function(result) {
-                        // Show cross again
-                        $(this).show();
-                    }
+                    });
                 });
-            });
 
             var $datatable = $('.dataTable'),
                 $tfoot = $datatable.find('tfoot');
 
-            /*
-             * Refresh the ticket grid automatically every minute
-             */
-            setInterval(function() {
-                // Disable the grid options (buttons)
-                $('.ticket-options :input').prop('disabled', true);
-
-                // Save the row selection
-                var selection = getSelectedRows();
-                var all_selected = $('input[name="select-all"]').is(':checked');
-
-                // Update the grid
-                $('.dataTable').dataTable().api().ajax.reload(function() {
-                    if (selection !== '') {
-                        // Restore the row selection
-                        var array = selection.split(","); // explode the selected rows
-
-                        // Trigger a row click for each previously selected row, this will trigger the necessary properties
-                        // and events
-                        $.each(array, function(index, item) {
-                            if (item != '') {
-                                $('tr#'+item).trigger('click');
-                            }
-                        });
-
-                        // Re-check the select all checkbox.
-                        if (all_selected) {
-                            $('input[name="select-all"]').prop('checked', true);
-                        }
-                    }
-
-                    // Re-enable the buttons
-                    if ($('tr.selected').length) {
-                        $('.ticket-options :input').prop('disabled', false);
-                    }
-
-                    // Only if in main ticket grid
-                    {% if record|default is empty %}
-                        // Refresh sidebar
-                        refreshSidebar();
-                    {% endif %}
-                }, false);
-            }, 60 * 1000); // Interval in milliseconds - seconds * 1000
+            // Changing order of grid (delay next refresh of grid by 60 seconds)
+            $datatable.on('order.dt', function () {
+                clearTimeout(gridTimeout);
+                gridTimeout = setTimeout(function() {
+                    refreshGrid();
+                }, 60000);
+            });
 
             // Filtering
             $('.update-filtering').click(function() {
-                $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
+                clearTimeout(gridTimeout);
+
+                $datatable.on('preXhr.dt', function ( e, settings, data ) {
                     // DEV-829, remove hardcoded route conditions (?conditions=...)
                     settings.sAjaxSource = '{{ sAjaxSource }}';
 
@@ -286,7 +263,12 @@
                     $.each(conditions, function(index, value) {
                         data[value.name] = value.value;
                     });
-                }).dataTable().api().ajax.reload(function() { });
+                }).dataTable().api().ajax.reload();
+
+                // Delay next refresh of grid by 60 seconds.
+                gridTimeout = setTimeout(function() {
+                    refreshGrid();
+                }, 60000);
             });
 
             // Process reply button
@@ -299,7 +281,7 @@
                         + '<div class="attachment-details">'
                         + '    <input type="hidden" name="attachment[]" disabled="disabled" />'
                         + '</div>'
-                        + '<ul id="attached-files">'
+                        + '<ul class="attached-files">'
                         + '    <li class="hide">'
                         + '        <i class="fa fa-file"></i>'
                         + '        &nbsp;'
@@ -314,22 +296,25 @@
                         + '        </div>'
                         + '    </li>'
                         + '</ul>'
-                        + '<label for="fileupload" class="file-input button" style="margin-top: 15px;">'
+                        + '<label class="file-input button" style="margin-top: 15px;">'
                         + '    <i class="fa fa-paperclip"></i>&nbsp; ' + Lang.get("general.add_attachment")
+                        + '    <input class="fileupload" type="file" name="files[]" data-url="' + laroute.route("ticket.operator.attachment.upload") + '" multiple="multiple">'
                         + '</label>'
-                        + '<input id="fileupload" type="file" name="files[]" data-url="' + laroute.route("ticket.operator.attachment.upload") + '" multiple="multiple">'
                         + '<br /><br />'
-                        + '<strong>' + Lang.get("ticket.reply_options") + '</strong>: &nbsp;&nbsp;&nbsp;'
+                        + '<strong>' + Lang.get("ticket.reply_options") + '</strong>:<br />'
                         + '<label>'
-                        + '    {{ form_check("send_email", 1, true) }}'
-                        + '    ' + Lang.get("user.send_email")
+                        + '    {{ form_check("send_email_to_users", 1, true) }}'
+                        + '    ' + Lang.get("ticket.send_email_to_users")
                         + '</label> &nbsp;&nbsp;&nbsp; <label>'
+                        + '    {{ form_check("send_email_to_operators", 1) }}'
+                        + '    ' + Lang.get("ticket.send_email_to_operators")
+                        + '</label><br /><label>'
                         + '    {{ form_check("take_ownership", 1) }}'
                         + '    ' + Lang.get("ticket.take_ownership")
                         + '</label> &nbsp;&nbsp;&nbsp;'
                         + '{{ form_label("to_status", Lang.get("ticket.set_status")) }} '
                         + '{{ form_select("to_status", statuses) }}'
-                        + '</form><br />',
+                        + '</form>',
                     width: '800',
                     showCancelButton: true,
                     closeOnConfirm: false,
@@ -346,7 +331,7 @@
                         $('input[name^="attachment"]:not(:first)').each(function() {
                             if ((m = re.exec($(this).attr('name'))) !== null && typeof m[1] != 'undefined') {
                                 // Fire AJAX to delete the upload
-                                deleteAttachment('{{ route("ticket.operator.attachment.destroy") }}', m[1]);
+                                FileUpload.deleteAttachment('{{ route("ticket.operator.attachment.destroy") }}', m[1]);
                             }
                         });
                     }
@@ -389,9 +374,7 @@
                     swal(Lang.get('messages.error_created', { 'item': Lang.choice('general.message', 1) }));
                 }).always(function() {
                     // Reload table
-                    $('.dataTable').dataTable()._fnAjaxUpdate();
-                    // Refresh sidebar
-                    refreshSidebar();
+                    refreshGrid();
                 });
             }
 
@@ -479,9 +462,7 @@
                     }
                 ).always(function() {
                     // Reload table
-                    $('.dataTable').dataTable()._fnAjaxUpdate();
-                    // Refresh sidebar
-                    refreshSidebar();
+                    refreshGrid();
                 });
             });
 
@@ -521,11 +502,9 @@
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
                 // Reload table
-                $('.dataTable').dataTable()._fnAjaxUpdate();
+                refreshGrid();
                 // Hide processing
                 $('.ticket-options .processing').hide();
-                // Refresh sidebar
-                refreshSidebar();
             });
         }
 
@@ -552,11 +531,9 @@
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
                 // Reload table
-                $('.dataTable').dataTable()._fnAjaxUpdate();
+                refreshGrid();
                 // Hide processing
                 $('.ticket-options .processing').hide();
-                // Refresh sidebar
-                refreshSidebar();
             });
         }
 
@@ -593,11 +570,9 @@
                 $('.tickets-update.fail').show(500).delay(5000).hide(500);
             }).always(function() {
                 // Reload table
-                $('.dataTable').dataTable()._fnAjaxUpdate();
+                refreshGrid();
                 // Hide processing
                 $('.ticket-options .processing').hide();
-                // Refresh sidebar
-                refreshSidebar();
             });
         }
 
@@ -642,12 +617,61 @@
                         // Close alert
                         swal.closeModal();
                         // Reload table
-                        $('.dataTable').dataTable()._fnAjaxUpdate();
-                        // Refresh sidebar
-                        refreshSidebar();
+                        refreshGrid();
                     });
                 }
             });
+        }
+
+        /*
+         * Refresh the ticket grid automatically every minute
+         */
+        function refreshGrid() {
+            clearTimeout(gridTimeout);
+
+            // Disable the grid options (buttons)
+            $('.ticket-options :input').prop('disabled', true);
+
+            // Save the row selection
+            var selection = getSelectedRows();
+            var all_selected = $('input[name="select-all"]').is(':checked');
+
+            // Update the grid
+            $('.dataTable').dataTable().api().ajax.reload(function() {
+                if (selection !== '') {
+                    // Restore the row selection
+                    var array = selection.split(","); // explode the selected rows
+
+                    // Trigger a row click for each previously selected row, this will trigger the necessary properties
+                    // and events
+                    $.each(array, function(index, item) {
+                        if (item != '') {
+                            $('tr#'+item).trigger('click');
+                        }
+                    });
+
+                    // Re-check the select all checkbox.
+                    if (all_selected) {
+                        $('input[name="select-all"]').prop('checked', true);
+                    }
+                }
+
+                // Re-enable the buttons
+                if ($('tr.selected').length) {
+                    $('.ticket-options :input').prop('disabled', false);
+                }
+
+                // Only if in main ticket grid
+                {% if record|default is empty %}
+                // Refresh sidebar
+                refreshSidebar();
+                {% endif %}
+            }, false);
+
+            // Schedule next grid update in 60 seconds.
+            gridTimeout = setTimeout(function() {
+                refreshGrid();
+            }, 60000);
         }
 
         function refreshSidebar() {

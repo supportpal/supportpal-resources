@@ -1,0 +1,7 @@
+<span class="trimmed">{{ message.excerpt }}</span>
+
+<span class="original {% if message.show_more is empty %}loaded{% endif %}{% if message.clipped %} clipped{% endif %}" style="display:none;">
+    {% if message.show_more is empty %}
+        {{ Purifier.clean(message.text) }}
+    {% endif %}
+</span>

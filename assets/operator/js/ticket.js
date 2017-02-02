@@ -19,6 +19,16 @@ function Ticket(parameters)
     };
 
     /**
+     * If the Datatables have been loaded
+     *
+     * @type {{log: false, escalationRules: false}}
+     */
+    var datatablesLoaded = {
+        'log': false,
+        'escalationRules': false
+    };
+
+    /**
      * Show a success / failure message for a short period.
      */
     var showFeedback = function(failure)
@@ -29,7 +39,7 @@ function Ticket(parameters)
     };
 
     /**
-     * Function to run everytime a store / update message AJAX call is made.
+     * Function to run every time a store / update message AJAX call is made.
      *
      * @param form
      */
@@ -40,7 +50,7 @@ function Ticket(parameters)
         form.find('input[type="submit"]').prop('disabled', false);
 
         // Remove draft related elements
-        $('.draft-success, .discard-draft').hide();
+        form.find('.draft-success, .discard-draft').hide();
 
         // If more than one message, show split ticket button and checkboxes
         if ($('.message').length > 1) {
@@ -50,16 +60,13 @@ function Ticket(parameters)
         // If we have one or more CC email, show the reply-all button, else hide it (if it's there)
         if ($('.cc-emails').is(':visible')) {
             if ($ccSelectize[0].selectize.getValue().length) {
-                $('.recipients').addClass('with-cc');
-                $('.recipients .reply-all').show();
+                $('.reply-form .recipients').addClass('with-cc');
+                $('.reply-form .recipients .reply-all').show();
             } else {
-                $('.recipients').removeClass('with-cc');
-                $('.recipients .reply-all').hide();
+                $('.reply-form .recipients').removeClass('with-cc');
+                $('.reply-form .recipients .reply-all').hide();
             }
         }
-
-        // Update log
-        $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
     };
 
     /**
@@ -148,12 +155,9 @@ function Ticket(parameters)
             showFeedback();
             showMessage(response.data.view);
 
-            // Is it a note?
-            var is_note = parseInt(data[0].value, 10);
-
             $form.trigger(
                 "supportpal.new_message:success",
-                [ is_note, $redactor.parent('.redactor-box').length ? $redactor.redactor('core.getTextarea') : $redactor ]
+                [ $redactor.parent('.redactor-box').length ? $redactor.redactor('core.getTextarea') : $redactor ]
             );
 
             // Only clear the editor if it's a redactor instance
@@ -163,7 +167,7 @@ function Ticket(parameters)
                 $redactor.redactor('core.getTextarea').val('');
 
                 // Only add the signature back to the message reply box (not notes).
-                if (is_note) {
+                if ($form.find('input[name="reply_type"]').val() == '1') {
                     self.setNoteDraft(null);
                 } else {
                     $redactor.redactor('insert.set', '');
@@ -172,9 +176,16 @@ function Ticket(parameters)
                 }
             }
 
+            // If posting a reply to the user, update the status in the notes box.
+            if ($form.find('input[name="reply_type"]').val() == '0') {
+                $('.notes-form').find('select[name="to_status"]').val(
+                    $('.message-form').find('select[name="to_status"]').val()
+                );
+            }
+
             // Clear ticket attachments
-            $('input[name^=attachment]:not(:first)').remove();
-            $('ul#attached-files').find('li:not(:first)').remove();
+            $form.find('input[name^=attachment]:not(:first)').remove();
+            $form.find('ul.attached-files').find('li:not(:first)').remove();
 
             // Redirect to the ticket grid
             if (response.data.redirect !== false) {
@@ -184,6 +195,10 @@ function Ticket(parameters)
             showFeedback(true);
         }).always(function () {
             always_message_handler($form);
+
+            // Update log and escalation rules tables
+            self.updateLogTable();
+            self.updateEscalationsTable();
         });
     };
 
@@ -229,7 +244,140 @@ function Ticket(parameters)
             showFeedback(true);
         }).always(function () {
             always_message_handler($form);
+
+            // Update log table
+            self.updateLogTable();
         });
+    };
+
+    /**
+     * AJAX load a large message into the view.
+     *
+     * @param $messageContainer
+     * @param successCallback
+     */
+    this.loadMessage = function($messageContainer, successCallback)
+    {
+        // This holds the trimmed and original versions of the message.
+        var $text = $messageContainer.find('.text');
+
+        // If we're not currently in the processing of loading the message, and the message has not previously
+        // been fetched then fire an AJAX request to load the message into the DOM.
+        if (! $messageContainer.hasClass('loading') && ! $text.children('.original').hasClass('loaded')) {
+            $messageContainer.find('.text').append(
+                '<span class="loading-text description">'
+                + '<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...'
+                + '</span>'
+            );
+            $messageContainer.addClass('loading');
+
+            $.get(laroute.route('ticket.operator.message.showJson', { id: $messageContainer.data('id') }))
+                .success(function (ajax) {
+                    // Load the message in, it should already be sanitized.
+                    $text.children('.original')
+                        .html(ajax.data.text)
+                        .addClass('loaded');
+
+                    // Load redactor for edit-message if not already loaded
+                    if (! $messageContainer.find('textarea').parents('.redactor-box').length) {
+                        redactor($messageContainer.find('textarea'));
+                    }
+
+                    // Update the edit-message form text too.
+                    $messageContainer.find('form.edit textarea[name="text"]').redactor('code.set', ajax.data.text);
+
+                    // If a callback exists, run it.
+                    typeof successCallback === 'function' && successCallback();
+                })
+                .fail(function () {
+                    swal(Lang.get('messages.error'), Lang.get('messages.error_loading_message'), 'error');
+                })
+                .always(function () {
+                    // Unset loading icon.
+                    $messageContainer.removeClass('loading');
+                    $messageContainer.find('.text .loading-text').remove();
+                });
+        } else {
+            // Message has already been loaded.
+
+            // Run success callback if exists.
+            typeof successCallback === 'function' && successCallback();
+        }
+    };
+
+    /**
+     * Quote the specified message into the active reply box (message or note).
+     *
+     * @param $messageContainer
+     */
+    this.quoteMessage = function($messageContainer)
+    {
+        var message = $messageContainer.find('.text');
+
+        // In case it's a collapsed message, get the original text
+        if (message.children('.original').length) {
+            message = message.children('.original');
+        }
+
+        // Put the HTML in a new container
+        var $currentHtml = $('<div>').append(message.html());
+
+        // Remove any currently quoted section in that message
+        $currentHtml.find('.expandable, .supportpal_quote').remove();
+
+        // Trim and convert break lines
+        message = htmlDecodeWithLineBreaks($currentHtml.html()).trim();
+
+        var length = 100;
+        var finalText = '';
+
+        // Split into lines
+        for (var i = 0; i < message.length; i++) {
+
+            // Trim the string to the maximum length
+            var trimmedString = message.substr(i, length);
+
+            // Check for a line break first
+            var x = Math.min(trimmedString.length, trimmedString.indexOf("\n"));
+
+            if (x >= 0) {
+                // Trim up to the \n
+                trimmedString = trimmedString.substr(0, x);
+            } else if (trimmedString.length == length) {
+                // Re-trim if we are in the middle of a word
+                x = Math.min(trimmedString.length, trimmedString.lastIndexOf(" "));
+                if (x >= 0) {
+                    trimmedString = trimmedString.substr(0, x);
+                }
+            }
+
+            // Progress pointer
+            i += (x >= 0 ? x : length - 1);
+
+            // Add string
+            finalText += '> ' + trimmedString + '<br />';
+
+        }
+
+        // Which textarea is currently active
+        var $textarea;
+        if ($('.reply-type .option.active').data('type')) {
+            $textarea = $('#newNote');
+        } else {
+            $textarea = $('#newMessage');
+        }
+
+        // Insert into the textarea where the cursor/caret currently is, sets to start if not in focus
+        if (!$textarea.redactor('focus.isFocused')) {
+            $textarea.redactor('focus.setStart');
+        }
+
+        $textarea.redactor('insert.html', finalText + '<br />');
+
+        // Scroll to textarea
+        $('html, body').animate({
+            scrollTop: $('.reply-form').offset().top - 25
+        }, 1000);
     };
 
     /**
@@ -336,6 +484,72 @@ function Ticket(parameters)
     {
         return drafts.newNote;
     }
+
+    /**
+     * Get if the ticket log table has been loaded yet.
+     *
+     * @returns {boolean}
+     */
+    this.isLogTableLoaded = function()
+    {
+        return datatablesLoaded.log;
+    }
+
+    /**
+     * Refresh the log datatable if it's been loaded.
+     *
+     * @param {boolean} force
+     */
+    this.updateLogTable = function(force)
+    {
+        force = force || false;
+
+        if (this.isLogTableLoaded() || force) {
+            // Refresh the table
+            $('#tabLog .dataTable').dataTable().api().ajax.reload(function () {
+                datatablesLoaded.log = true;
+            });
+        }
+    }
+
+    /**
+     * Get if the escalations table has been loaded yet.
+     *
+     * @returns {boolean}
+     */
+    this.isEscalationsTableLoaded = function()
+    {
+        return datatablesLoaded.escalationRules;
+    }
+
+    /**
+     * Refresh the escalations rules datatable if it's been loaded.
+     *
+     * @param {boolean} force
+     */
+    this.updateEscalationsTable = function(force)
+    {
+        force = force || false;
+
+        if (this.isEscalationsTableLoaded() || force) {
+            // Refresh the table
+            $('#tabEscalationRules .dataTable').dataTable().api().ajax.reload(function (data) {
+                if (data.iTotalRecords > 0) {
+                    // Show the tab if hidden and update the count of rules
+                    $('.tabs #EscalationRules').show();
+                } else {
+                    // Switch to messages if we're currently on escalation rules
+                    if ($('.tabs #EscalationRules').hasClass('active')) {
+                        $('.tabs #Messages').click();
+                    }
+                    // Hide the tab as no more rules exist
+                    $('.tabs #EscalationRules').hide();
+                }
+
+                datatablesLoaded.escalationRules = true;
+            });
+        }
+    }
 }
 
 $(document).ready(function() {
@@ -354,77 +568,19 @@ $(document).ready(function() {
 
     // Reply type
     $('.reply-type .option').click(function() {
-        // Update reply_type input
-        $('input[name="reply_type"]').val($(this).data('type'));
-
         // Change active option
         $('.reply-type .option.active').removeClass('active');
         $(this).addClass('active');
 
-        // If it's a note, hide the recipients and email user option
+        // Determine whether to show the notes or reply form.
+        var $form = $('.message-form');
         if ($(this).data('type') == 1) {
-            $('#emailToUsers, .recipients').hide();
-
-            // Hide the reply textarea
-            if ($('#newMessage').parent('.redactor-box').length) {
-                // If it's a redactor instance
-                $('#' + $('#newMessage').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
-                $('#newMessage').redactor('core.getBox').hide();
-            } else {
-                // If it's just a textarea
-                $('#newMessage').hide();
-            }
-
-            // Show the notes textarea
-            if ($('#newNote').parent('.redactor-box').length) {
-                // If it's a redactor instance
-                $('#newNote').redactor('core.getBox').show();
-            } else {
-                // If it's just a textarea
-                $('#newNote').show();
-            }
-
-            // Determine whether to show the discard box.
-            if (ticket.getNoteDraft()) {
-                $('.discard-draft').show();
-            } else {
-                $('.discard-draft').hide();
-            }
-
-            // Change submit to show 'Post Note'
-            $('.post-button').val(Lang.get('ticket.post_note'));
-        } else {
-            $('#emailToUsers, .recipients').show();
-            $('#' + $('#newNote').redactor('core.getTextarea').uniqueId().prop('id') + '-error').hide();
-
-            // Show the reply textarea
-            if ($('#newMessage').parent('.redactor-box').length) {
-                // If it's a redactor instance
-                $('#newMessage').redactor('core.getBox').show();
-            } else {
-                // If it's just a textarea
-                $('#newMessage').show();
-            }
-
-            // Hide the notes textarea
-            if ($('#newNote').parent('.redactor-box').length) {
-                // If it's a redactor instance
-                $('#newNote').redactor('core.getBox').hide();
-            } else {
-                // If it's just a textarea
-                $('#newNote').hide();
-            }
-
-            // Determine whether to show the discard box.
-            if (ticket.getMessageDraft()) {
-                $('.discard-draft').show();
-            } else {
-                $('.discard-draft').hide();
-            }
-
-            // Change submit to show 'Post Reply'
-            $('.post-button').val(Lang.get('ticket.post_reply'));
+            $form = $('.notes-form');
         }
+
+        // Show the correct form.
+        $('.message-form, .notes-form').hide();
+        $form.show();
     });
 
     // Process take button
@@ -463,18 +619,34 @@ $(document).ready(function() {
 
     // Toggle edit form
     $(document.body).on('click', '.edit-button', function(event) {
-        var message = $(this).parents('.message');
+        var $message = $(this).parents('.message');
 
         // Don't collapse message if it's currently open
-        if (message.hasClass('collapsible')) {
+        if ($message.hasClass('collapsible')) {
             event.stopPropagation();
         }
 
-        message.find('.text, .edit-message').toggle();
+        if ($message.find('.text .original').hasClass('clipped')) {
+            // Message is too big, so load the "View entire message" window.
+            var url = $message.find('.text .original a.supportpal_clipped_vem').prop('href');
+            window.open(url + '?edit=true');
+        } else {
+            // AJAX load the message if it hasn't already been loaded.
+            var successCallback = function () {
+                // Initialise redactor.
+                if (! $message.find('textarea').parents('.redactor-box').length) {
+                    redactor($message.find('textarea'));
+                }
 
-        // Focus the textarea, when editing the message.
-        if (message.find('.edit-message').is(':visible')) {
-            message.find('textarea:not(.CodeMirror textarea):eq(0)').redactor('focus.setStart');
+                $message.find('.text, .edit-message').toggle();
+
+                // Focus the textarea, when editing the message.
+                if ($message.find('.edit-message').is(':visible')) {
+                    $message.find('textarea:not(.CodeMirror textarea):eq(0)').redactor('focus.setStart');
+                }
+            };
+
+            ticket.loadMessage($message, successCallback);
         }
     });
 
@@ -553,9 +725,16 @@ $(document).ready(function() {
         if (typeof closedStatusId !== 'undefined' && $(this).val() == closedStatusId) {
             // If they closed the ticket, we want to handle this differently...
             ticketAction(laroute.route('ticket.operator.action.close'));
+            $(document).ajaxStop(function () {
+                // Update escalation rules table
+                ticket.updateEscalationsTable();
+            });
         } else {
             updateTicket($(this).serializeArray());
         }
+
+        // Update the status in the notes box.
+        $('.notes-form').find('select[name="to_status"]').val($(this).val());
     });
 
     // Update SLA plan
@@ -567,10 +746,17 @@ $(document).ready(function() {
         function(response) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
-                // Update log
-                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+                // Show escalation rules tabs if we have any
+                if (response.data.escalationrules) {
+                    $('.tabs #EscalationRules').show();
+                } else {
+                    $('.tabs #EscalationRules').hide();
+                }
                 // Update due time
-                $('.edit-duetime').text(response.data);
+                $('.edit-duetime').text(response.data.time);
+                // Update log and escalation rules tables
+                ticket.updateLogTable();
+                ticket.updateEscalationsTable();
             } else {
                 $('.ticket-update.fail').show(500).delay(5000).hide(500);
             }
@@ -603,7 +789,7 @@ $(document).ready(function() {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
-                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+                ticket.updateLogTable();
                 // Update due time and hide form
                 $('.edit-duetime').text(response.data);
                 $('.update-duetime').hide();
@@ -628,14 +814,14 @@ $(document).ready(function() {
     });
 
     // Update message
-    $(document.body).on('submit', '.message-form', function(event) {
+    $(document.body).on('submit', '.message-form, .notes-form', function(event) {
         event.preventDefault();
 
         // If it's an edit or new message
         if ($(this).hasClass('edit')) {
             ticket.updateMessage($(this), $(this).find('textarea:not(.CodeMirror textarea):eq(0)'));
         } else {
-            var selector = $('.reply-type .option.active').data('type') == 1 ? '#newNote' : '#newMessage';
+            var selector = $(this).find('input[name="reply_type"]').val() == 1 ? '#newNote' : '#newMessage';
 
             ticket.createMessage($(this), $(selector));
         }
@@ -701,7 +887,7 @@ $(document).ready(function() {
     }
 
     // Enable button if at least one checkbox ticked
-    $('input.split-ticket').click(function(event) {
+    $(document.body).on('click', 'input.split-ticket', function(event) {
         event.stopPropagation();
 
         // Ensure if notes, any other instances of same message is ticked
@@ -737,7 +923,8 @@ $(document).ready(function() {
 
     // Hide group with split/expand buttons when going to another tab
     $('ul.tabs').on('click', 'li', function() {
-        if ($(this).is('#Messages')) {
+        if ($(this).is('#Messages') && $(window).width() > 720) {
+            // Only show it if window screen is above 720px in width
             $('.messages-button-group').show();
         } else {
             $('.messages-button-group').hide();
@@ -757,45 +944,18 @@ $(document).ready(function() {
         .children('.original, .trimmed').toggle();
 
     // Collapsing or opening message
-    $(document).on('click', '.collapsed, .collapsible .header', function() {
+    $(document).on('click', '#tabMessages .collapsed, #tabMessages .collapsible .header', function() {
         // Get right object
         var $this = $(this);
         if ($this.parents('.collapsible').length) {
             $this = $this.parent();
         }
 
-        // This holds the trimmed and original versions of the message.
-        var $text = $this.find('.text');
-
-        // If we're not currently in the processing of loading the message, and the message has not previously
-        // been fetched then fire an AJAX request to load the message into the DOM.
-        if (! $this.hasClass('loading') && ! $text.children('.original').hasClass('loaded')) {
-            $this.find('.text').append(
-                '<span class="loading-text description">'
-                    + '<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...'
-                + '</span>'
-            );
-            $this.addClass('loading');
-
-            $.get(laroute.route('ticket.operator.message.showJson', { id: $this.data('id') }))
-                .success(function (ajax) {
-                    // Load the message in, it should already be sanitized.
-                    $text.children('.original')
-                        .html(ajax.data.text)
-                        .addClass('loaded');
-                })
-                .fail(function () {
-                    swal(Lang.get('messages.error'), Lang.get('messages.error_loading_message'), 'error');
-                })
-                .always(function () {
-                    // Unset loading icon.
-                    $this.removeClass('loading');
-                    $this.find('.text .loading-text').remove();
-                });
-        }
+        // AJAX load the message into the view.
+        ticket.loadMessage($this);
 
         // Toggle between collapsed and collapsible mode
-        $text.children('.original, .trimmed').toggle();
+        $this.find('.text').children('.original, .trimmed').toggle();
         $this.toggleClass('collapsible collapsed');
     });
 
@@ -864,12 +1024,11 @@ $(document).ready(function() {
     /*
      * Saving drafts automatically
      */
-    function saveDraft(message, is_note) {
-        // Initialise.
-        is_note = is_note || 0;
+    function saveDraft($form, is_note) {
+        var message = $form.find('textarea:not(.CodeMirror textarea):eq(0)').redactor('code.get');
 
         // Update draft message variable
-        if (is_note) {
+        if (is_note == '1') {
             ticket.setNoteDraft(message);
         } else {
             ticket.setMessageDraft(message);
@@ -888,9 +1047,9 @@ $(document).ready(function() {
             success: function(response) {
                 if (typeof response.status !== 'undefined' && response.status == 'success') {
                     // Show saved message
-                    $('.draft-success').text(response.message).show();
+                    $form.find('.draft-success').text(response.message).show();
                     // Show discard button
-                    $('.discard-draft').show();
+                    $form.find('.discard-draft').show();
                 }
             },
             dataType: "json"
@@ -898,39 +1057,44 @@ $(document).ready(function() {
     }
 
     (function autoSaveDraft(pass) {
-        // Only if draft button is available
-        if ($('.save-draft').is(":visible")) {
+        // Only if draft button is available on either reply or note form
+        if ($('.save-draft').length) {
             // Skip first time - redactor changes HTML after page load
             if (pass) {
                 var drafts = ticket.getDrafts();
 
                 // Check both message drafts and note drafts.
                 for (var redactor_id in drafts) {
-                    // skip loop if the property is from prototype
-                    if (!drafts.hasOwnProperty(redactor_id) || $('input[type="submit"].post-button').prop('disabled')) {
-                        continue;
-                    }
+                    var $textarea = $('#'+redactor_id),
+                        $form = $textarea.parents('form');
 
-                    // Get the draft message.
-                    var draftMessage = drafts[redactor_id];
+                    // Only if it's a redactor editor (e.g. not for Twitter replies)
+                    if ($($textarea).siblings('.redactor-editor').length) {
+                        // skip loop if the property is from prototype
+                        if (!drafts.hasOwnProperty(redactor_id) || $form.find('input[type="submit"]').prop('disabled')) {
+                            continue;
+                        }
 
-                    if (draftMessage == null) {
-                        // Save current message
-                        ticket.setDraft(redactor_id, $('#'+redactor_id).redactor('code.get'));
-                    } else {
-                        var currentMessage = $('#'+redactor_id).redactor('code.get');
+                        // Get the draft message.
+                        var draftMessage = drafts[redactor_id];
 
-                        // Check if message has changed
-                        if (ticket.draftHasChanged(redactor_id, currentMessage)) {
-                            // Disable button while saving
-                            $('.save-draft').prop('disabled', true);
+                        if (draftMessage == null) {
+                            // Save current message
+                            ticket.setDraft(redactor_id, $textarea.redactor('code.get'));
+                        } else {
+                            var currentMessage = $textarea.redactor('code.get');
 
-                            // Save draft
-                            var is_note = redactor_id == 'newNote' ? 1 : 0;
-                            saveDraft(currentMessage, is_note);
+                            // Check if message has changed
+                            if (ticket.draftHasChanged(redactor_id, currentMessage)) {
+                                // Disable button while saving
+                                $form.find('.save-draft').prop('disabled', true);
 
-                            // Re-enable button
-                            $('.save-draft').prop('disabled', false);
+                                // Save draft
+                                saveDraft($form, $form.find('input[name="reply_type"]').val());
+
+                                // Re-enable button
+                                $form.find('.save-draft').prop('disabled', false);
+                            }
                         }
                     }
                 }
@@ -953,27 +1117,25 @@ $(document).ready(function() {
 
     // Save draft button
     $('.save-draft').click(function(e) {
-        if ($('.reply-type .active').data('type') == 1) {
-            // Handle notes.
-            saveDraft($('#newNote').redactor('code.get'), 1);
-        } else {
-            // Handle replies to the user.
-            saveDraft($('#newMessage').redactor('code.get'));
-        }
+        var $form = $(this).parents('form'),
+            replyType = $form.find('input[name="reply_type"]').val();
+
+        saveDraft($form, replyType);
     });
 
     // Discard draft button
     $('.discard-draft').click(function() {
         // Post data to perform action
-        $.post(
-            laroute.route('ticket.operator.message.discard'),
-            { ticket_id: ticketId, reply_type: $('.reply-type .active').data('type') },
-        function(response) {
+        var $form = $(this).parents('form'),
+            replyType = $form.find('input[name="reply_type"]').val(),
+            params = { ticket_id: ticketId, reply_type: replyType };
+
+        $.post(laroute.route('ticket.operator.message.discard'), params, function(response) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
 
                 // Clear redactor
-                if ($('.reply-type .active').data('type') == 1) {
+                if (replyType == 1) {
                     $('#newNote').redactor('insert.set', '');
                     ticket.setNoteDraft(null);
                 } else {
@@ -984,7 +1146,7 @@ $(document).ready(function() {
                 }
 
                 // Hide button
-                $('.discard-draft, .draft-success').hide();
+                $form.find('.discard-draft, .draft-success').hide();
             } else {
                 $('.ticket-update.fail').show(500).delay(5000).hide(500);
             }
@@ -1135,6 +1297,9 @@ $(document).ready(function() {
         labelField: 'name',
         searchField: [ 'name' ],
         create: true,
+        createFilter: function(input) {
+            return input.length <= 45;
+        },
         maxItems: null,
         placeholder: Lang.get('ticket.type_in_tags') + '...',
         render: {
@@ -1244,73 +1409,13 @@ $(document).ready(function() {
         // Don't expand or collapse message
         event.stopPropagation();
 
-        // Get the message
-        var message = $(this).parents('.message').find('.text');
+        // Get the message container.
+        var $message = $(this).parents('.message'),
+            callback = function() {
+                ticket.quoteMessage($message);
+            };
 
-        // In case it's a collapsed message, get the original text
-        if (message.children('.original').length) {
-            message = message.children('.original');
-        }
-
-        // Put the HTML in a new container
-        var $currentHtml = $('<div>').append(message.html());
-
-        // Remove any currently quoted section in that message
-        $currentHtml.find('.expandable, .supportpal_quote').remove();
-
-        // Trim and convert break lines
-        message = htmlDecodeWithLineBreaks($currentHtml.html()).trim();
-
-        var length = 100;
-        var finalText = '';
-
-        // Split into lines
-        for (var i = 0; i < message.length; i++) {
-
-            // Trim the string to the maximum length
-            var trimmedString = message.substr(i, length);
-
-            // Check for a line break first
-            var x = Math.min(trimmedString.length, trimmedString.indexOf("\n"));
-
-            if (x >= 0) {
-                // Trim up to the \n
-                trimmedString = trimmedString.substr(0, x);
-            } else if (trimmedString.length == length) {
-                // Re-trim if we are in the middle of a word
-                x = Math.min(trimmedString.length, trimmedString.lastIndexOf(" "));
-                if (x >= 0) {
-                    trimmedString = trimmedString.substr(0, x);
-                }
-            }
-
-            // Progress pointer
-            i += (x >= 0 ? x : length - 1);
-
-            // Add string
-            finalText += '> ' + trimmedString + '<br />';
-
-        }
-
-        // Which textarea is currently active
-        var $textarea;
-        if ($('.reply-type .option.active').data('type')) {
-            $textarea = $('#newNote');
-        } else {
-            $textarea = $('#newMessage');
-        }
-
-        // Insert into the textarea where the cursor/caret currently is, sets to start if not in focus
-        if (!$textarea.redactor('focus.isFocused')) {
-            $textarea.redactor('focus.setStart');
-        }
-
-        $textarea.redactor('insert.html', finalText + '<br />');
-
-        // Scroll to textarea
-        $('html, body').animate({
-            scrollTop: $('.reply-form').offset().top - 25
-        }, 1000);
+        ticket.loadMessage($message, callback);
     });
 
     // Tooltip on status and user groups
@@ -1342,11 +1447,16 @@ $(document).ready(function() {
 
     // It should only show when needed, depending on the ticket replies order
     $(window).scroll(function() {
+        var $form = $('form.message-form:not(.edit)');
+        if ($('.reply-type .option.active').data('type') == 1) {
+            $form = $('form.notes-form');
+        }
+
         // Only do this if the message tab is visible currently
-        if ($('#tabMessages').is(':visible') && $('form.message-form:not(.edit)').is(':visible')) {
+        if ($('#tabMessages').is(':visible') && $form.is(':visible')) {
             var y;
             if (replyOrder == 'ASC') {
-                var y = $(".reply-header").offset().top;
+                y = $(".reply-header").offset().top;
                 // Show until you reach the start of the add reply
                 if ($(this).scrollTop() + $(this).height() < y) {
                     $('.jump-to-reply').fadeIn();
@@ -1355,7 +1465,7 @@ $(document).ready(function() {
                 }
             } else {
                 // Show once you pass the post button
-                y = $('form.message-form:not(.edit)').offset().top + $('form.message-form:not(.edit)').outerHeight(true);
+                y = $form.offset().top + $form.outerHeight(true);
                 if ($(this).scrollTop() > y) {
                     $('.jump-to-reply').fadeIn();
                 } else {
@@ -1375,6 +1485,22 @@ $(document).ready(function() {
     /*
      * END Jump to reply
      */
+
+    // Load ticket log table on clicking tab for first time
+    $(document).on('click','.tabs #Log', function () {
+        if (! ticket.isLogTableLoaded()) {
+            // Load table (force it)
+            ticket.updateLogTable(true);
+        }
+    })
+
+    // Load escalation rules table on clicking tab for first time
+    $(document).on('click','.tabs #EscalationRules', function () {
+        if (! ticket.isEscalationsTableLoaded()) {
+            // Load table (force it)
+            ticket.updateEscalationsTable(true);
+        }
+    })
 });
 
 function htmlDecodeWithLineBreaks(html) {
@@ -1453,7 +1579,7 @@ function updateTicket(data) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+            ticket.updateLogTable();
             // Specific case for updating user
             if (response.message != 'undefined' && response.message == 'ticket_user_updated') {
                 $('.edit-user').text(response.data);
@@ -1486,7 +1612,7 @@ function ticketAction(route, data) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+            ticket.updateLogTable();
             // Poll for new replies and updates
             pollReplies();
         } else {
@@ -1512,7 +1638,7 @@ function changeDepartment(data) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
-                $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+                ticket.updateLogTable();
                 // Poll for new replies and updates
                 pollReplies();
 
@@ -1626,7 +1752,7 @@ function applyMacro(macroId) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
             // Update log
-            $('#tabLog .dataTable').dataTable()._fnAjaxUpdate();
+            ticket.updateLogTable();
             // Poll for new replies and updates
             pollReplies(true);
         } else {
@@ -1710,8 +1836,15 @@ function pollReplies(allMessages) {
                     // Update sidebar items
                     $('.edit-user').html(response.data.details.user);
                     $('select[name="department"]').val(response.data.details.department);
-                    $('select[name="status"]').val(response.data.details.status);
                     $('select[name="priority"]').val(response.data.details.priority);
+
+                    // Update status in sidebar
+                    if ($('select[name="status"]').val() != response.data.details.status) {
+                        $('select[name="status"]').val(response.data.details.status);
+
+                        // Update the status dropdown in the notes box (only if it's changed)
+                        $('.notes-form').find('select[name="to_status"]').val(response.data.details.status);
+                    }
 
                     $tagSelectize[0].selectize.clear(true);
                     $tagSelectize[0].selectize.refreshOptions(false);

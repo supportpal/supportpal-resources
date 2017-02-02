@@ -79,6 +79,19 @@ $(document).ready(function () {
         $('.filters').toggle();
     });
 
+    // Handle anchors on page load
+    if (window.location.hash) {
+        var elem = $('[name="_' + window.location.hash.replace('#', '') + '"]');
+        if (elem.length) {
+            // Scroll to top just in case
+            scroll(0, 0);
+            // Now scroll to anchor
+            $('html, body').animate({
+                scrollTop: elem.offset().top - 25
+            }, 1000);
+        }
+    }
+
     // Responsive datatables
     if ($.fn.dataTable !== undefined) {
         $.extend($.fn.dataTable.defaults, {

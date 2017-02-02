@@ -1,0 +1,24 @@
+<div style="margin-top: 15px;">
+    {{ form_submit(note ? Lang.get('ticket.post_note') : Lang.get('ticket.post_reply'), { 'class': 'right' }) }}
+
+    <span class="reply-buttons">
+        {% if ticket.department_email_id is not empty or note %}
+            <label class="file-input button">
+                <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+
+                <input class="fileupload" type="file" name="files[]"
+                       data-url="{{ route('ticket.operator.attachment.upload') }}" multiple="multiple">
+            </label>
+
+            &nbsp;&nbsp;
+        {% endif %}
+
+        <span class="button-group">
+            {{ form_button('<i class="fa fa-floppy-o"></i> &nbsp;' ~ Lang.get('ticket.save_draft'), { 'class': 'save-draft' }) }}<!--
+            -->{{ form_button('<i class="fa fa-trash-o"></i> &nbsp;' ~ Lang.get('ticket.discard_draft'), { 'class': draft|default is not empty ? 'discard-draft' : 'discard-draft hide' }) }}
+        </span>
+        &nbsp;&nbsp;
+    </span>
+
+    <span class="draft-success description hide"></span>
+</div>

@@ -22,7 +22,7 @@
             </span>
         </div>
     </div>
-    <div class="form-row organisation-notifications {% if not record.exists or record.organisation_access_level == 1 %}hide{% endif %}">
+    <div class="form-row organisation-notifications {% if userOrganisation|default is empty or record.organisation_access_level == 1 %}hide{% endif %}">
         {{ form_label('organisation_notifications', Lang.get('user.notifications')) }}
         <div class="input-container">
             {{ form_check('organisation_notifications', 1, record.organisation_notifications|default is not empty ?

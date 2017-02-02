@@ -525,7 +525,7 @@ div.collapsed-messages span {
     margin-bottom: 0;
 }
 
-#cannedTr {
+.cannedTr {
     line-height: 32px;
     margin-top: 10px;
     padding: 0 8px;

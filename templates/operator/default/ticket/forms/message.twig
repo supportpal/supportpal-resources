@@ -39,7 +39,7 @@
 
         {{ form_hidden('reply_type', 0) }}
 
-        {% include 'operator.' ~ template ~ '.ticket.forms.reply_options' %}
+        {% include 'operator.' ~ template ~ '.ticket.forms.message_reply_options' with { 'note': false } %}
 
         <div class="reply-form">
 
@@ -103,57 +103,35 @@
                     }}
                 {% endif %}
 
-                {# Operator notes #}
-                {{ form_redactor('text', draft_note|default is not empty ? draft_note : null, { "class": "textarea", "size": "50x3", "id": "newNote" }) }}
-
-                {% if ticket.department_email_id is not empty %}
-                    <div class="attachment-details">
-                        <input type="hidden" name="attachment[]" disabled="disabled" />
-                    </div>
-                    <ul id="attached-files">
-                        <li class="hide">
-                            <i class="fa fa-file"></i>
-                            &nbsp;
-                            <span class="information">
-                                <span class="filename ellipsis"></span>
-                                &nbsp;
-                                <span class="filesize"></span>
-                            </span>
-                            <i class="fa fa-times deleteAttachment right hide"></i>
-                            <div class="progress">
-                                <div class="bar"></div>
-                            </div>
-                        </li>
-                    </ul>
-                {% endif %}
-
+                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'note': false } %}
             </div>
 
-            <div style="margin-top: 15px;">
-                {{ form_submit(Lang.get('ticket.post_reply'), { 'class': 'post-button right' }) }}
-
-                <span class="reply-buttons">
-                    {% if ticket.department_email_id is not empty %}
-                        <label for="fileupload" class="file-input button">
-                            <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
-                        </label>
-                        <input id="fileupload" type="file" name="files[]" data-url="{{ route('ticket.operator.attachment.upload') }}" multiple="multiple">
-                        &nbsp;&nbsp;
-                    {% endif %}
-
-                    <span class="button-group">
-                        {{ form_button('<i class="fa fa-floppy-o"></i> &nbsp;' ~ Lang.get('ticket.save_draft'), { 'class': 'save-draft' }) }}<!--
-                        -->{{ form_button('<i class="fa fa-trash-o"></i> &nbsp;' ~ Lang.get('ticket.discard_draft'), {
-                                'class': draft|default is not empty ? 'discard-draft' : 'discard-draft hide'
-                            })
-                        }}
-                    </span>
-                    &nbsp;&nbsp;
-                </span>
-                <span class="draft-success description hide"></span>
-            </div>
-
+            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'note': false } %}
         </div>
+    </form>
 
+    <form class="notes-form validate" style="display: none">
+        {{ form_hidden('reply_type', 1) }}
+
+        {% include 'operator.' ~ template ~ '.ticket.forms.message_reply_options' with { 'note': true } %}
+
+        <div class="reply-form">
+            {{ form_hidden('ticket_id', ticketId) }}
+            {{ form_hidden('reply_all', 1) }}
+
+            <div class="form-row">
+                {{
+                    form_redactor(
+                        'text',
+                        draft_note|default is not empty ? draft_note : null,
+                        { "class": "textarea", "size": "50x3", "id": "newNote" }
+                    )
+                }}
+
+                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'note': true } %}
+            </div>
+
+            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'draft': draft_note, 'note': true } %}
+        </div>
     </form>
 {% endif %}

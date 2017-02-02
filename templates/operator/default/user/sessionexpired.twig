@@ -13,7 +13,7 @@
 
     <div class="white-box">
 
-        {{ Lang.get('user.operator_session_expired') }}
+        {{ message }}
 
         <form action="{{ route('operator.login') }}" method="get">
             {% if Input.has('intended') %}

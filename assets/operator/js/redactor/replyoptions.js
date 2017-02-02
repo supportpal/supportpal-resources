@@ -1,14 +1,4 @@
 $(function() {
-    // Handle switching to ticket reply
-    var $messageForm = $('.message-form');
-    $messageForm.on('click', 'div.option[data-type="0"]', function(e) {
-        $('#emailToUsers').show();
-    });
-    // Handle switching to ticket note
-    $messageForm.on('click', 'div.option[data-type="1"]', function(e) {
-        $('#emailToUsers').hide();
-    });
-
     // Handle expanding each option group
     $(document).on('click', '.option_header', function(e) {
         $(this).next(".option_content").slideToggle(500);
@@ -17,8 +7,7 @@ $(function() {
 
     // Add a new canned response
     $('input[name=add_canned]').change(function() {
-        var $table = $('#cannedTr'),
-            $option = $(this).parents('.option');
+        var $table = $(this).parents('.option').find('.cannedTr');
 
         this.checked ? $table.show() : $table.hide();
     });

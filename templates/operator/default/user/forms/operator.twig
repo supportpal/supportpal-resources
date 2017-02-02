@@ -127,6 +127,17 @@
 
         </div>
 
+        <h2>{{ Lang.get('user.confirm_password') }}</h2>
+        <div class="form-container first">
+            <div class="form-row">
+                {{ form_label('confirm_password', Lang.get('user.confirm_password')) }}
+                <div class="input-container">
+                    {{ form_password('confirm_password', null, {'size': 30}) }}<br />
+                    <span class="description">{{ Lang.get('user.operator_confirm_password') }}</span>
+                </div>
+            </div>
+        </div>
+
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
         </div>

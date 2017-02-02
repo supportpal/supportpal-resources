@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf_token" content="{{ csrf_token() }}" />
     <meta name="date_format" content="{{ convertMomentFormat(Config.get('settings.date_format')) }}" />
+    <meta name="max_file_size" content="{{ max_file_size }}" />
+    <meta name="allowed_files" content="{{ allowed_files }}" />
 
     {% set title = block('title') %}
     <title>{% if title is not empty %}{{ title|raw }} - {% endif %} SupportPal Operator Panel</title>
@@ -36,13 +38,6 @@
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
     <link href="{{ asset_rev('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset_rev('resources/assets/libs/jquery-ui/js/jquery-ui.min.js') }}"></script>
-
-    <!-- Globals -->
-    <script type="text/javascript">
-        // Saving variables for use in asset files
-        var notificationIcon = "{{ asset_rev('resources/assets/operator/images/apple-touch-icon.png') }}";
-        var notificationType = "{{ Config.get('settings.operator' ~ auth_user().id ~ '.display_notifications') }}";
-    </script>
 
     {% block scripts_header %}{% endblock %}
 
@@ -354,6 +349,13 @@
                                                 </a>
                                             </li>
                                         {% endif %}
+                                        {% if auth_user().hasPermission('view.logfiles') %}
+                                            <li aria-haspopup="false">
+                                                <a href="{{ route('core.operator.logfiles.index') }}">
+                                                    {{ Lang.get('core.file_manager') }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
                                         {% if auth_user().hasPermission('view.operatorlog') %}
                                             <li aria-haspopup="false">
                                                 <a href="{{ route('user.operator.operatorloginlog') }}">
@@ -378,7 +380,7 @@
                                         <i class="fa fa-chevron-right"></i>
                                     </a>
                                     <ul>
-                                        {% if auth_user().hasPermission('view.phpinfo') %}
+                                        {% if auth_user().hasPermission('view.phpinfo') and function_exists('phpinfo') %}
                                             <li aria-haspopup="false">
                                                 <a href="{{ route('core.operator.phpinfo') }}">
                                                     {{ Lang.get('core.php_info') }}
@@ -540,6 +542,14 @@
 <link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.buttons.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 <link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.core.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 <script src="{{ asset_rev('resources/assets/operator/js/notification.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+    var notifications = new SupportPalNotifications({
+        type: "{{ Config.get('settings.operator' ~ auth_user().id ~ '.display_notifications') }}",
+        icon: "{{ asset_rev('resources/assets/operator/images/favicon/favicon_space.png') }}",
+        timeout: 15000
+    });
+    notifications.poll();
+</script>
 
 <!-- Pace - AJAX notifications -->
 <script data-pace-options='{ "ajax": { "ignoreURLs": [ "notification", "pollReplies" ] } }'

@@ -94,7 +94,7 @@
             <tr>
                 <td colspan="2">
                     <select class="assign-tags" name="tag[]" multiple="multiple">
-                        {% for tag in ticket.tags %}
+                        {% for tag in ticket.tags.sortBy('name') %}
                             <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.name }}'>
                                 {{ tag.name }}
                             </option>

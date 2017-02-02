@@ -2,97 +2,105 @@
 
 {% block content %}
 
-	<div class="loginBox">
+    <div class="loginBox">
 
-		{{ form_open({ 'route': 'operator.login', 'method': 'post', 'class': 'validate' }) }}
+        {{ form_open({ 'route': 'operator.login', 'method': 'post', 'class': 'validate' }) }}
 
             {% if intended_url is not null %}
-            	{{ form_hidden('intended', intended_url) }}
+                {{ form_hidden('intended', intended_url) }}
             {% endif %}
 
-			<div class="white-box">
+            <div class="white-box">
 
-				{% if Session.has('error') or Session.has('email_error') %}
-					<div class="error">
-						{{ implode('<br /><br />', array_filter([ Session.get('error'), Session.get('email_error') ]))|raw }}
-					</div>
-				{% elseif Session.has('success') %}
-					<div class="success">{{ Session.get('success') }}</div>
-				{% endif %}
+                {% if Session.has('error') or Session.has('email_error') %}
+                    <div class="error">
+                        {{ implode('<br /><br />', array_filter([ Session.get('error'), Session.get('email_error') ]))|raw }}
+                    </div>
+                {% elseif Session.has('success') %}
+                    <div class="success">{{ Session.get('success') }}</div>
+                {% endif %}
 
-				{% if errors|default is not empty and errors.has() %}
-					<div class="error box">
-						<strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-						{% for error in errors.all() %}
-							{{ error }}<br />
-						{% endfor %}
-					</div>
-				{% endif %}
+                {% if errors|default is not empty and errors.has() %}
+                    <div class="error box">
+                        <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+                        {% for error in errors.all() %}
+                            {{ error }}<br />
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-				<div class="form-row">
-					{{ form_text('email', null, Config.get('settings.ldap_enabled', 0)
-						? {'class': 'email', 'placeholder': Lang.get('general.email') ~ '/' ~ Lang.get('general.username')}
-						: {'class': 'email', 'placeholder': Lang.get('general.email')}) }}
-				</div>
-				<div class="form-row">
-					{{ form_password('password', { 'class': 'password', 'placeholder': Lang.get('general.password') }) }}
-				</div>
+                <div class="form-row">
+                    {{ form_text('email', null, Config.get('settings.ldap_enabled', 0)
+                        ? {'class': 'email', 'placeholder': Lang.get('general.email') ~ '/' ~ Lang.get('general.username')}
+                        : {'class': 'email', 'placeholder': Lang.get('general.email')}) }}
+                </div>
+                <div class="form-row">
+                    {{ form_password('password', { 'class': 'password', 'placeholder': Lang.get('general.password') }) }}
+                </div>
 
-				{{ form_submit(Lang.get('user.login')) }}
+                {{ form_submit(Lang.get('user.login')) }}
 
-			</div>
+                {% if SamlAuth.exists('operator') %}
+                    <div class="strike">
+                        <span>{{ Lang.get('general.or') }}</span>
+                    </div>
+                    <input type="button" class="saml" onclick="location.href='{{ route('operator.saml_login') }}';"
+                           value="{{ Lang.get('user.login_via_idp') }}" />
+                {% endif %}
 
-			<span class="left">
-				<label>
-					{{ form_check('remember_me', '1') }} &nbsp; {{ Lang.get('user.remember_me') }}
-				</label>
-			</span>
-			<span class="right">
-				<a class="forgotToggle">{{ Lang.get('user.forgot_password') }}</a>
-			</span>
-			<div class="clear"></div>
+            </div>
 
-		{{ form_close() }}
+            <span class="left">
+                <label>
+                    {{ form_check('remember_me', '1') }} &nbsp; {{ Lang.get('user.remember_me') }}
+                </label>
+            </span>
+            <span class="right">
+                <a class="forgotToggle">{{ Lang.get('user.forgot_password') }}</a>
+            </span>
+            <div class="clear"></div>
 
-	</div>
+        {{ form_close() }}
 
-	<div class="forgotBox">
+    </div>
 
-		<div class="white-box">
+    <div class="forgotBox">
 
-			{{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
+        <div class="white-box">
 
-				<div class="form-row">
-					{{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
-				</div>
-				{{ form_submit(Lang.get('user.reset_password')) }}
+            {{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
 
-			{{ form_close() }}
+                <div class="form-row">
+                    {{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
+                </div>
+                {{ form_submit(Lang.get('user.reset_password')) }}
 
-		</div>
+            {{ form_close() }}
 
-		<a class="forgotToggle">{{ Lang.get('general.cancel') }}</a>
+        </div>
 
-	</div>
+        <a class="forgotToggle">{{ Lang.get('general.cancel') }}</a>
+
+    </div>
 
 {% endblock %}
 
 {% block scripts_footer %}
-	{% if jsValidator|default is not empty %}
-		{{ jsValidator|raw }}
-	{% endif %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
 
     {% if resetValidator|default is not empty %}
         {{ resetValidator|raw }}
     {% endif %}
 
-	<script type="text/javascript">
-	  	$(document).ready(function() {
-		    // Handle forgotten click
-		    $('.forgotToggle').bind('click', function() {
-		        $('.forgotBox, .loginBox').toggle();
-		        $('.forgotBox .email').focus();
-		    });
-	    });
-	</script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Handle forgotten click
+            $('.forgotToggle').bind('click', function() {
+                $('.forgotBox, .loginBox').toggle();
+                $('.forgotBox .email').focus();
+            });
+        });
+    </script>
 {% endblock %}

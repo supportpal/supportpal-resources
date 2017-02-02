@@ -128,6 +128,9 @@
                 labelField: 'name',
                 searchField: 'name',
                 create: true,
+                createFilter: function(input) {
+                    return input.length <= 45;
+                },
                 maxItems: null,
                 placeholder: Lang.get("ticket.associate_response_tag")
             });

@@ -1,8 +1,8 @@
-<form class="message-form edit" data-route="{{ route('ticket.operator.message.update', [ editMessage.id ]) }}">
+<form class="message-form edit" data-route="{{ route('ticket.operator.message.update', [ message.id ]) }}">
 
-    {{ form_hidden('ticket_id', ticketId) }}
+    {{ form_hidden('ticket_id', ticket.id) }}
 
-    {{ form_redactor('text', editMessage.text) }}
+    {{ form_redactor('text', message.text) }}
 
     <br />
 

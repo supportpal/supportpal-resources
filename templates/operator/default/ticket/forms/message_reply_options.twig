@@ -1,21 +1,25 @@
 <div class="reply-box">
     <div class="option_group">
         <div class="option_header">
-            {{ Lang.get('ticket.reply_options') }}
+            {% if note %}
+                {{ Lang.get('ticket.note_options') }}
+            {% else %}
+                {{ Lang.get('ticket.reply_options') }}
+            {% endif %}
             <div class="arrow show960 hide">
                 <i class="fa fa-chevron-up"></i>
             </div>
         </div>
         <div class="option_content hide960">
-            {% if extendedViews['reply_options']|default is not empty %}
+            {% if not note and extendedViews['reply_options']|default is not empty %}
                 {% for view in extendedViews['reply_options'] %}
                     {% include view %}
                 {% endfor %}
             {% endif %}
 
-            {% if ticket.department_email_id is not empty %}
+            {% if not note and ticket.department_email_id is not empty %}
                 {% if toEmails is not empty and (not ticket.internal or ticket.user_id != auth_user().id) %}
-                    <div class="option" id="emailToUsers">
+                    <div class="option">
                         <label>
                             {{ form_check('send_email_to_users', 1, operator.default_reply_options['send_email_to_users']) }}
                             {{ Lang.get('ticket.send_email_to_users') }}
@@ -32,13 +36,13 @@
             </div>
             <div class="option">
                 <label>
-                    {{ form_check('back_to_grid', 1, operator.default_reply_options['back_to_grid']) }}
+                    {{ form_check('back_to_grid', 1, note ? null : operator.default_reply_options['back_to_grid']) }}
                     {{ Lang.get('ticket.back_to_grid') }}
                 </label>
             </div>
             <div class="option">
                 <label>
-                    {{ form_check('take_ownership', 1, operator.default_reply_options['take_ownership']) }}
+                    {{ form_check('take_ownership', 1, note ? null : operator.default_reply_options['take_ownership']) }}
                     {{ Lang.get('ticket.take_ownership') }}
                 </label>
             </div>
@@ -46,7 +50,7 @@
                 and 'now'|date('U') < ticket.due_time %}
                 <div class="option">
                     <label>
-                        {{ form_check('pause_duetime', 1, operator.default_reply_options['pause_duetime']) }}
+                        {{ form_check('pause_duetime', 1, note ? null : operator.default_reply_options['pause_duetime']) }}
                         {{ Lang.get('ticket.pause_duetime') }}
                     </label>
                 </div>
@@ -56,7 +60,7 @@
                     {{ form_check('add_canned', 1) }}
                     {{ Lang.get('ticket.add_to_canned_responses') }}
                 </label>
-                <div id="cannedTr" style="display: none">
+                <div class="cannedTr" style="display: none">
                     <input type="text" name="canned_name" placeholder="{{ Lang.get('general.name') }}" style="width: 100%;" />
                     <br />
                     <label>
@@ -66,33 +70,31 @@
                 </div>
             </div>
             <div class="option">
-                <label for="to_status">{{ Lang.get('ticket.set_status') }}:</label>
-                <select id="to_status" name="to_status">
-                {% for status in statuses %}
-                    {# If the default reply options set status option is set to '-- Unchanged --', keep status as it is, else set that status ID #}
-                    {% if (operator.default_reply_options['to_status'] == 0
-                        and ticket.status.id == status.id) %}
-                        <option value="{{ status.id }}" selected="selected">
-                            {{ status.name }}
-                        </option>
-                    {% elseif (operator.default_reply_options['to_status'] == status.id) %}
-                        <option value="{{ status.id }}" selected="selected">
-                            {{ status.name }}
-                        </option>
-                    {% else %}
-                        <option value="{{ status.id }}">
-                            {{ status.name }}
-                        </option>
-                    {% endif %}
-                {% endfor %}
-                </select>
+                <label>
+                    {{ Lang.get('ticket.set_status') }}:
+                    <select name="to_status">
+                        {% for status in statuses %}
+                            {# If the default reply options set status option is set to '-- Unchanged --', keep status as it is, else set that status ID #}
+                            {% if (operator.default_reply_options['to_status'] == 0 or note)
+                                and ticket.status.id == status.id
+                            %}
+                                <option value="{{ status.id }}" selected="selected">
+                                    {{ status.name }}
+                                </option>
+                            {% elseif not note and operator.default_reply_options['to_status'] == status.id %}
+                                <option value="{{ status.id }}" selected="selected">
+                                    {{ status.name }}
+                                </option>
+                            {% else %}
+                                <option value="{{ status.id }}">
+                                    {{ status.name }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </label>
             </div>
         </div>
     </div>
 
 </div>
-
-<script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
-
-<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
-<script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/sanitize.js') }}"></script>

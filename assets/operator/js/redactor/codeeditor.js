@@ -217,9 +217,11 @@
 
             return function () {
 
-                var $textarea = redactor.$textarea.clone();
+                // Destroy CodeMirror.
+                codeMirror.toTextArea();
 
                 // Move textarea outside merge-field_container
+                var $textarea = redactor.$textarea.clone();
                 $container.before($textarea);
 
                 // Delete merge-field_container
@@ -310,7 +312,7 @@
                     redactor.$box.after($preview.hide());
                 } else {
                     // We need to set an empty jquery object for the below call to function.
-                    $toolbar = $([]);
+                    $container = $toolbar = $preview = $([]);
                 }
 
                 // Register jQuery

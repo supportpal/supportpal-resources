@@ -124,8 +124,52 @@ input[type="button"]:hover, input[type="submit"]:hover {
 	background: #3480B6;
 }
 
+input.saml {
+	background: #777;
+	border-bottom: 2px solid #666;
+	margin: 0;
+}
+
+input.saml:hover {
+	background: #666;
+}
+
 input[type='checkbox'] {
 	margin: 0;
+}
+
+.strike {
+	display: block;
+	margin: 10px 0;
+	overflow: hidden;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.strike > span {
+	color: #999;
+	display: inline-block;
+	position: relative;
+}
+
+.strike > span:before,
+.strike > span:after {
+	background: #eee;
+	content: "";
+	height: 1px;
+	position: absolute;
+	top: 50%;
+	width: 9999px;
+}
+
+.strike > span:before {
+	margin-right: 15px;
+	right: 100%;
+}
+
+.strike > span:after {
+	left: 100%;
+	margin-left: 15px;
 }
 
 /* Errors */

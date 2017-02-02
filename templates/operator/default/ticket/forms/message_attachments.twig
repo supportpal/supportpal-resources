@@ -1,0 +1,24 @@
+{% if ticket.department_email_id is not empty or note %}
+    <div class="attachment-details">
+        <input type="hidden" name="attachment[]" disabled="disabled" />
+    </div>
+    <ul class="attached-files">
+        <li class="hide">
+            <i class="fa fa-file"></i>
+            &nbsp;
+            <span class="information">
+                <span class="filename ellipsis"></span>
+                &nbsp;
+                <span class="filesize"></span>
+            </span>
+            <i class="fa fa-times deleteAttachment right hide"></i>
+            <div class="progress">
+                <div class="bar"></div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="attachment-dragover hide">
+        {{ Lang.get('general.drag_and_drop') }}
+    </div>
+{% endif %}

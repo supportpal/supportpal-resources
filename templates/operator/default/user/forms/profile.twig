@@ -52,6 +52,7 @@
     </div>
     {% endif %}
 
+    {% if showPassword is not defined or showPassword %}
     <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password', Lang.get('general.password')) }}
         <div class="input-container">
@@ -68,6 +69,7 @@
             {{ form_password('password_confirmation') }}
         </div>
     </div>
+    {% endif %}
 
     {% if record.exists and record.confirmed and managing|default is not empty and managing and (operator is not defined or not operator) %}
     <div class="form-row">

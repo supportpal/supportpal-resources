@@ -13,7 +13,7 @@
                 <span class="attachment hide">&nbsp; <i class="fa fa-paperclip"></i></span>
             {% endif %}
             <span class="right">
-                {% if can_update_ticket(auth_user(), message.ticket) %}
+                {% if can_update_ticket(auth_user(), ticket) %}
                     {{ form_check('split', 1, false, { 'class': 'split-ticket hide', 'data-id': message.id }) }} &nbsp;
                     <button class="as-link quoteMessage" data-id="{{ message.id }}">
                         <i class="fa fa-quote-right"></i>
@@ -32,73 +32,54 @@
                     {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
                 {% else %}
                     {{ Lang.choice('user.user', 1) }}
-                {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                {% endif %}
+                &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                {% if editHistory.get(message.id) is not null %}
+                    {% set edit = editHistory.get(message.id) %}
+                    <strong title="{{ Lang.get('ticket.edited_message', {'user': edit.formatName(false), 'date': formatDate(edit.created_at)}) }}">
+                        ({{ Lang.get('general.edited') }})
+                    </strong>
+                {% endif %}
                 &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                 {% if message.emaillog %}
                     <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
                     {% if message.emaillog %}
                     <div class="webui-popover-content form-row recipients email-details">
-                <div>
-                    <label>{{ Lang.get('ticket.to') }}</label>
-                    <div class="input-container">{{ message.emaillog.to|join(', ') }}</div>
-                </div>
+                        <div>
+                            <label>{{ Lang.get('ticket.to') }}</label>
+                            <div class="input-container">{{ message.emaillog.to|join(', ') }}</div>
+                        </div>
                         {% if not message.emaillog.cc is empty %}
-                            <div>
-                        <label>{{ Lang.get('ticket.cc') }}</label>
-                        <div class="input-container">{{ message.emaillog.cc|join(', ') }}</div>
-                    </div>
+                        <div>
+                            <label>{{ Lang.get('ticket.cc') }}</label>
+                            <div class="input-container">{{ message.emaillog.cc|join(', ') }}</div>
+                        </div>
                         {% endif %}
                         <div>
-                    <label>{{ Lang.get('ticket.from') }}</label>
-                    <div class="input-container">
-                        {{ message.emaillog.from_name ~ ' <' ~ message.emaillog.from_address ~ '>' }}
+                            <label>{{ Lang.get('ticket.from') }}</label>
+                            <div class="input-container">
+                                {{ message.emaillog.from_name ~ ' <' ~ message.emaillog.from_address ~ '>' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-container">
+                                <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('core.show_original') }}</a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class="input-container">
-                        <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('core.show_original') }}</a>
-                    </div>
-                </div>
-            </div>
-                {% endif %}
+                    {% endif %}
                 {% endif %}
             </span>
     	</div>
 
     	<div class="text">
-            <span class="trimmed">{{ message.excerpt }}</span>
-
-            <span class="original {% if message.show_more is empty %}loaded{% endif %}" style="display:none;">
-                {% if message.show_more is empty %}
-                    {{ Purifier.clean(message.text) }}
-                {% endif %}
-            </span>
+            {% include 'operator.' ~ template ~ '.ticket.message_text' %}
     	</div>
 
         <div class="edit-message">
-            {% include 'operator.' ~ template ~ '.ticket.forms.edit_message' with { 'editMessage': message, 'ticketId': ticketId } %}
+            {% include 'operator.' ~ template ~ '.ticket.forms.edit_message' %}
         </div>
 
-        {% if not message.attachments.isEmpty() %}
-        <div class="attachments">
-            <h4>{{ message.attachments.count() }} {{ Lang.choice('general.attachment', 2) }}</h4>
-            <ul>
-                {% for attachment in message.attachments %}
-                <li>
-                    <i class="fa fa-paperclip"></i>
-                    &nbsp;
-                    <a href='{{ route('ticket.operator.attachment.download', [ attachment.upload_hash ]) }}'>{{ attachment.original_name }}</a>
-                    &nbsp;
-                    ({{ attachment.upload.size }})
-                    &nbsp;
-                    <i class="fa fa-times deleteAttachment"
-                         data-url="{{ route('ticket.operator.attachment.destroy') }}"
-                         data-hash="{{ attachment.upload_hash }}"></i>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-
+        {% include 'operator.' ~ template ~ '.ticket.message_attachments' %}
     </div>
 {% endif %}
