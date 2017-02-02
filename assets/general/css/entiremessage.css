@@ -1,5 +1,9 @@
 @charset "utf-8";
 
+.header {
+    position: relative;
+}
+
 .left {
     float: left;
 }
@@ -28,8 +32,14 @@
     line-height: 1.7em;
 }
 
-.text {
+.text, .edit-message {
     margin-top: 15px;
     padding: 0 0 20px 68px;
     word-wrap: break-word;
+}
+
+.edit-button {
+    top: 0;
+    position: absolute;
+    right: 0;
 }
