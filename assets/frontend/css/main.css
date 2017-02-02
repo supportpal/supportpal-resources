@@ -833,28 +833,32 @@ table.settings .badge {
     margin-bottom: 0;
 }
 
-#fileupload {
+.fileupload {
     display: none;
 }
 
-ul#attached-files {
-    border: 1px solid #ddd;
-    border-top: 0;
-    border-bottom: 0;
+ul.attached-files {
     list-style: none;
     margin: 0 0 25px;
     padding: 0;
 }
 
-ul#attached-files li {
+ul.attached-files li {
     background: #F3F5F5;
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #e0e0e0;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    margin-top: 7px;
     padding: 5px 12px;
     position: relative;
 }
 
-ul#attached-files .progress {
+ul.attached-files .progress {
     border: 0;
+    -moz-border-radius: 0 0 3px 3px;
+    -webkit-border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px;
     bottom: 0;
     display: block;
     left: 0;
@@ -863,19 +867,19 @@ ul#attached-files .progress {
     width: 100%;
 }
 
-ul#attached-files .progress .bar {
+ul.attached-files .progress .bar {
     background: #2ecc71;
     display: block;
     height: 2px;
     width: 0;
 }
 
-ul#attached-files .deleteAttachment {
+ul.attached-files .deleteAttachment {
     cursor: pointer;
     margin: 3px 0;
 }
 
-ul#attached-files .deleteAttachment:hover {
+ul.attached-files .deleteAttachment:hover {
     color: #000;
 }
 
@@ -883,17 +887,17 @@ h4.attachments-title {
     margin-top: 15px;
 }
 
-.attachments {
+ul.attachments {
     list-style: none;
     margin: 8px 0 0;
     padding: 0;
 }
 
-.attachments li {
+ul.attachments li {
     margin-top: 8px;
 }
 
-.attachments a {
+ul.attachments a {
     background: #f9f9f9;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -902,23 +906,23 @@ h4.attachments-title {
     padding: 4px 10px;
 }
 
-.attachments a:hover {
+ul.attachments a:hover {
     background: #e0e0e0;
     text-decoration: none;
 }
 
-.attachments .deletable a {
+ul.attachments .deletable a {
     -moz-border-radius: 3px 0 0 3px;
     -webkit-border-radius: 3px 0 0 3px;
     border-radius: 3px 0 0 3px;
 }
 
-.attachments .fa {
+ul.attachments .fa {
     color: #454545;
     font-size: 110%;
 }
 
-.attachments .deleteAttachment {
+ul.attachments .deleteAttachment {
     background: #e74c3c;
     -moz-border-radius: 0 3px 3px 0;
     -webkit-border-radius: 0 3px 3px 0;
@@ -929,8 +933,19 @@ h4.attachments-title {
     padding: 10px;
 }
 
-.attachments .deleteAttachment:hover {
+ul.attachments .deleteAttachment:hover {
     background: #c0392b;
+}
+
+.attachment-dragover {
+    background: #ecf0f1;
+    border: 2px dashed #bdc3c7;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #999;
+    margin: 20px 0;
+    padding: 10px 15px;
 }
 
 /* Knowledgebase / Downloads */
@@ -1347,6 +1362,42 @@ button.show-children {
     opacity: 0.6;
 }
 
+/* Single sign-on */
+
+.strike {
+    display: block;
+    margin: 5px 0 10px;
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.strike > span {
+    color: #999;
+    display: inline-block;
+    position: relative;
+}
+
+.strike > span:before,
+.strike > span:after {
+    background: #e5e5e5;
+    content: "";
+    height: 1px;
+    position: absolute;
+    top: 50%;
+    width: 65px;
+}
+
+.strike > span:before {
+    margin-right: 15px;
+    right: 100%;
+}
+
+.strike > span:after {
+    left: 100%;
+    margin-left: 15px;
+}
+
 /* Pikaday */
 
 .pika-button {
@@ -1386,12 +1437,17 @@ button.show-children {
 
 /* Sweetalert2 */
 
+.sweet-alert {
+    font: 13px 'Open Sans', 'Lucida Sans Unicode', 'Lucida Grande', Arial, sans-serif !important;
+}
+
 .sweet-alert hr {
     height: 1px !important;
 }
 
 .sweet-alert button {
-    height: auto !important;
+    line-height: 1em !important;
+    height: 40px !important;
 }
 
 .sweet-alert p {

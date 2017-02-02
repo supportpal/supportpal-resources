@@ -54,10 +54,13 @@ $(document).ready(function() {
     // Handle anchors on page load
     if (window.location.hash) {
         var elem = $('[name="_' + window.location.hash.replace('#', '') + '"]');
-        if (elem) {
+        if (elem.length) {
+            // Scroll to top just in case
+            scroll(0, 0);
+            // Now scroll to anchor
             $('html, body').animate({
                 scrollTop: elem.offset().top - 25
-            }, 500);
+            }, 1000);
         }
     }
 

@@ -1,5 +1,7 @@
 <form class="message-form validate">
 
+    <div class="fail attachment box hide"></div>
+
     {{ form_hidden('ticket_number', ticket.number) }}
     {% if Input.has('token') %}
         {{ form_hidden('token', Input.get('token')) }}
@@ -14,6 +16,7 @@
             </div>
         </div>
     </div>
+
     <div class="form-row form-full">
         {{ form_redactor('text', '', { 'size': '50x3' }) }}
 
@@ -21,7 +24,7 @@
             <input type="hidden" name="attachment[]" disabled="disabled" />
         </div>
 
-        <ul id="attached-files">
+        <ul class="attached-files">
             <li class="hide">
                 <i class="fa fa-file"></i>
                 &nbsp;
@@ -38,10 +41,14 @@
         </ul>
     </div>
 
-    <label for="fileupload" class="button">
+    <div class="attachment-dragover hide">
+        {{ Lang.get('general.drag_and_drop') }}
+    </div>
+
+    <label class="file-input button">
         <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+        <input class="fileupload" type="file" name="files[]" data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
     </label>
-    <input id="fileupload" type="file" name="files[]" data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
 
     <div class="form-button">
         {{ form_submit(Lang.choice('general.post', 1)) }}

@@ -11,7 +11,7 @@
 
     {{ form_model(record, { 'route': [ 'user.profile.update' ], 'method': 'PUT', 'files': true, 'class': 'validate' }) }}
 
-        {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with { 'operator': false } %}
+        {% include 'frontend.' ~ template ~ '.user.forms.user_profile' %}
 
         {% include 'frontend.' ~ template ~ '.user.forms.organisation' %}
 

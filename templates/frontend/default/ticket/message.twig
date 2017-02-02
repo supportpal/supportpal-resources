@@ -21,22 +21,24 @@
 		{{ Purifier.clean(message.text) }}
 
         {% if not message.attachments.isEmpty() %}
-			<h4 class="attachments-title">{{ Lang.choice('general.attachment', 2) }}</h4>
-			<ul class="attachments">
-                {% for attachment in message.attachments %}
-					<li {% if (message.by != 0) %}class="deletable"{% endif %}>
-                        <a href='{{ route('ticket.frontend.attachment.download', { 'hash': attachment.upload_hash, 'ticket': message.ticket.number, 'token': message.ticket.token }) }}'>
-    						<i class="fa fa-paperclip"></i>
-    						&nbsp;
-    						{{ attachment.original_name }}
-    						&nbsp;
-    						<span class="light">({{ attachment.upload.size }})</span>
-                        </a>{% if (message.by != 0) %}<i class="fa fa-times deleteAttachment"
-                               data-url="{{ route('ticket.frontend.attachment.destroy') }}"
-                               data-hash="{{ attachment.upload_hash }}"></i>{% endif %}
-					</li>
-				{% endfor %}
-			</ul>
+			<div class="attachments">
+				<h4 class="attachments-title">{{ Lang.choice('general.attachment', 2) }}</h4>
+				<ul class="attachments">
+					{% for attachment in message.attachments %}
+						<li {% if (message.by != 0) %}class="deletable"{% endif %}>
+							<a href='{{ route('ticket.frontend.attachment.download', { 'hash': attachment.upload_hash, 'ticket': message.ticket.number, 'token': message.ticket.token }) }}'>
+								<i class="fa fa-paperclip"></i>
+								&nbsp;
+								{{ attachment.original_name }}
+								&nbsp;
+								<span class="light">({{ attachment.upload.size }})</span>
+							</a>{% if (message.by != 0) %}<i class="fa fa-times deleteAttachment"
+								   data-url="{{ route('ticket.frontend.attachment.destroy') }}"
+								   data-hash="{{ attachment.upload_hash }}"></i>{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
     	{% endif %}
 
     </div>

@@ -37,7 +37,7 @@
         <li>
             <i class="fa fa-folder-o"></i>
             <ul class="item-list">
-                {% for category in article.categories %}
+                {% for category in article.categories.sortBy('name') %}
                 <li><a href="{{ category.frontend_url }}">{{ category.name }}</a></li>
                 {% endfor %}
             </ul>
@@ -47,7 +47,7 @@
         <li>
             <i class="fa fa-tag"></i>
             <ul class="item-list">
-                {% for tag in article.tags %}
+                {% for tag in article.tags.sortBy('name') %}
                 <li><a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
                 {% endfor %}
             </ul>

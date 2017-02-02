@@ -14,7 +14,7 @@
 
     {{ form_open({'route': [ 'user.organisation.addUser' ], 'method': 'POST', 'class': 'validate'}) }}
 
-        {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with {'operator': false, 'organisation_add': true} %}
+        {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with {'organisation_add': true} %}
 
         {% include 'frontend.' ~ template ~ '.user.forms.organisation' with {'new': true} %}
 

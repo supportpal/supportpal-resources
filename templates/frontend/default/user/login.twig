@@ -3,7 +3,7 @@
 {% block title %}{{ Lang.get('user.login') }}{% endblock %}
 
 {% block breadcrumb %}
-	{{ parent() }}
+    {{ parent() }}
     {{ Lang.get('user.login') }}
 {% endblock %}
 
@@ -11,45 +11,53 @@
 
 <div class="login-container">
 
-	{{ form_open({ 'route': 'user.login', 'method': 'post', 'class': 'validate' }) }}
+    {{ form_open({ 'route': 'user.login', 'method': 'post', 'class': 'validate' }) }}
 
-		{% if intended_url is not null %}
-			{{ form_hidden('back', intended_url) }}
-		{% endif %}
+        {% if intended_url is not null %}
+            {{ form_hidden('back', intended_url) }}
+        {% endif %}
 
-		<div class="form-row form-full">
-			{{ form_label('email', Lang.get('general.email')) }}
-		    {{ form_text('email') }}
-		</div>
-		<div class="form-row form-full">
-			{{ form_label('password', Lang.get('general.password')) }}
-			{{ form_password('password') }}
-		</div>
-		<div class="form-checkbox form-center">
-			{{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
-		</div>
-		<div class="form-button form-center">
-			{{ form_submit(Lang.get('user.login')) }}
-		</div>
+        <div class="form-row form-full">
+            {{ form_label('email', Lang.get('general.email')) }}
+            {{ form_text('email') }}
+        </div>
+        <div class="form-row form-full">
+            {{ form_label('password', Lang.get('general.password')) }}
+            {{ form_password('password') }}
+        </div>
+        <div class="form-checkbox form-center">
+            {{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
+        </div>
+        <div class="form-button form-center">
+            {{ form_submit(Lang.get('user.login')) }}
+        </div>
 
-		<br />
+        <br />
 
-		<div class="textcenter">
-			<a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a>
-			<br /><br />
-	        {% if Config.get('settings.registration_enabled') == 1 %}
-	        	<a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
-	        {% endif %}
-	    </div>
+        <div class="textcenter">
+            <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a>
+            <br /><br />
+            {% if Config.get('settings.registration_enabled') == 1 %}
+                <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
+            {% endif %}
 
-	{{ form_close() }}
+            {% if SamlAuth.exists('frontend') %}
+                <div class="strike" style="margin: 20px 0 25px;">
+                    <span>{{ Lang.get('general.or') }}</span>
+                </div>
+                <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
+                       value="{{ Lang.get('user.login_via_idp') }}" />
+            {% endif %}
+        </div>
+
+    {{ form_close() }}
 
 </div>
 
 {% endblock %}
 
 {% block scripts_footer %}
-	{% if jsValidator|default is not empty %}
-		{{ jsValidator|raw }}
-	{% endif %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
 {% endblock %}

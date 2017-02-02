@@ -38,6 +38,13 @@
                                 {{ Lang.get('user.profile') }}
                             </a>
                         </li>
+                        {% if auth_user().password is not empty %}
+                            <li>
+                                <a href="{{ route('user.change_password') }}" {% if route starts with 'user.change_password' %}class="current"{% endif %}>
+                                    {{ Lang.get('user.change_password') }}
+                                </a>
+                            </li>
+                        {% endif %}
                         <li>
                             <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
                                 {{ Lang.get('user.email_history') }}
@@ -90,28 +97,44 @@
         {% if not auth_check() %}
             <div class="desk_box">
                 <h2>{{ Lang.get('user.login') }}</h2>
-                {{ form_open({ 'url': 'login', 'method': 'post' }) }}
 
-                {{ form_hidden('back', intended_url|default is not empty ? intended_url : Request.url()) }}
+                {% if SamlAuth.exists('frontend') and not SamlAuth.guard('frontend').isDualLogin() %}
+                    <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
+                           value="{{ Lang.get('user.login_via_idp') }}" />
+                {% else %}
+                    {{ form_open({ 'url': 'login', 'method': 'post' }) }}
 
-                {{ form_text('email', null, {'placeholder' : Lang.get('general.email')}) }}
-                {{ form_password('password', {'placeholder' : Lang.get('general.password')}) }}
+                    {{ form_hidden('back', intended_url|default is not empty ? intended_url : Request.url()) }}
 
-                <div class="left" style="margin-top:4px;">
-                    {{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
-                </div>
+                    {{ form_text('email', null, {'placeholder' : Lang.get('general.email')}) }}
+                    {{ form_password('password', {'placeholder' : Lang.get('general.password')}) }}
 
-                {{ form_submit(Lang.get('user.login'), { 'class': 'right' }) }}
+                    <div class="left" style="margin-top:4px;">
+                        {{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
+                    </div>
 
-                <div class="clear"></div>
+                    {{ form_submit(Lang.get('user.login'), { 'class': 'right' }) }}
 
-                <div style="line-height: 25px; text-align:center; padding-top:17px;">
-                    <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a><br />
-                    {% if Config.get('settings.registration_enabled') == 1 %}
-                        <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
-                    {% endif %}
-                </div>
-                {{ form_close() }}
+                    <div class="clear"></div>
+
+                    <div style="line-height: 25px; text-align:center; padding-top:17px;">
+                        <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a><br />
+                        {% if Config.get('settings.registration_enabled') == 1 %}
+                            <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
+                        {% endif %}
+
+
+                        {% if SamlAuth.exists('frontend') %}
+                            <div class="strike">
+                                <span>{{ Lang.get('general.or') }}</span>
+                            </div>
+                            <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
+                                   value="{{ Lang.get('user.login_via_idp') }}" />
+                        {% endif %}
+                    </div>
+
+                    {{ form_close() }}
+                {% endif %}
             </div>
         {% endif %}
 

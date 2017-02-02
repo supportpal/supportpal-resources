@@ -22,7 +22,7 @@
 
         {{ form_open({ 'route': [ 'user.register' ], 'method': 'post', 'files': true, 'class': 'validate' }) }}
 
-            {% include 'frontend.' ~ template ~ '.user.forms.user_profile' with { 'operator': false } %}
+            {% include 'frontend.' ~ template ~ '.user.forms.user_profile' %}
 
             {% include 'frontend.' ~ template ~ '.user.forms.organisation' %}
 

@@ -57,8 +57,6 @@
     <div class="success box ticket-custom hide"></div>
     <div class="fail box ticket-custom hide"></div>
 
-    <div class="fail attachment box hide"></div>
-
     {% if feedbackToken is not null %}
         <div class="feedback options box">
             <p>{{ Lang.get('ticket.feedback_desc') }}</p>
@@ -182,12 +180,13 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
     <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script type="text/javascript">
+        new FileUpload();
+    </script>
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>

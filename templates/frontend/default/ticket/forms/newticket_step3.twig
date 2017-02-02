@@ -94,7 +94,7 @@
                         {% endif %}
                     </div>
 
-                    <ul id="attached-files">
+                    <ul class="attached-files">
                         <li class="hide">
                             <i class="fa fa-file"></i>
                             &nbsp;
@@ -127,11 +127,15 @@
                         {% endif %}
                     </ul>
 
-                    <label for="fileupload" class="button">
+                    <div class="attachment-dragover hide">
+                        {{ Lang.get('general.drag_and_drop') }}
+                    </div>
+
+                    <label class="file-input button">
                         <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
+                        <input class="fileupload" type="file" name="files[]"
+                               data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
                     </label>
-                    <input id="fileupload" type="file" name="files[]"
-                           data-url="{{ route('ticket.frontend.attachment.upload') }}" multiple="multiple">
                 </div>
             </div>
 
@@ -176,12 +180,13 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
     <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.ui.widget.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.iframe-transport.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset_rev('resources/assets/general/js/attachments.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script type="text/javascript">
+        new FileUpload();
+    </script>
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>

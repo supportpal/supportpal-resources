@@ -151,7 +151,7 @@ function saveMessage(form) {
             // Reset the form
             form.find('textarea[name="text"]').val('').prop('disabled', false);
             redactor.redactor('code.set', '');
-            $('#attached-files').find('li:not(:first)').remove();
+            $('.attached-files').find('li:not(:first)').remove();
             $('.attachment-details').find('input[type=hidden][name^="attachment["]:not(:first)').remove();
 
             // Update status
