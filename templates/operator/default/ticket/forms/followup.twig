@@ -126,7 +126,7 @@
                 ajaxType = 'POST';
             {% endif %}
 
-            $(document).on('change', 'input[name="date_type"]', function() {
+            var setDateType = function() {
                 if ($(this).val() == 0) {
                     $('.followup-exact').show().find(':input').prop('disabled', false);
                     $('.followup-difference').hide().find(':input').prop('disabled', 'disabled');
@@ -134,7 +134,9 @@
                     $('.followup-exact').hide().find(':input').prop('disabled', 'disabled');
                     $('.followup-difference').show().find(':input').prop('disabled', false);
                 }
-            });
+            };
+            
+            $(document).on('change', 'input[name="date_type"]', setDateType);
 
             $(document).on('click', '.save-followup', function() {
                 var data = $('.followup-form').serializeArray();
@@ -183,6 +185,7 @@
                         $('tr.rule:visible').remove();
                         // Reset all form values
                         $('.followup-form').trigger("reset");
+                        setDateType.call($('input[name="date_type"]:checked'));
                         // Hide warning message
                         $('.followup-warning').hide();
                         // Change route - so it does save from now on

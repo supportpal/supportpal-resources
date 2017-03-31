@@ -2,30 +2,31 @@
 
 {% block content %}
 
-	<h2>{{ Lang.get('user.two_fa') }}</h2>
+    <h2>{{ Lang.get('user.two_fa') }}</h2>
 
-	<div class="loginBox white-box">
+    <div class="loginBox white-box">
 
-		{{ form_open({ 'route': 'operator.twofa', 'method': 'POST', 'class': 'validate' }) }}
+        {{ form_open({ 'route': 'operator.twofa', 'method': 'POST', 'class': 'validate' }) }}
 
-			{{ form_hidden('user_id', user_id) }}
-			{{ form_hidden('twofa_token', twofa_token) }}
-			{{ form_hidden('intended_url', intended_url) }}
+            {{ form_hidden('user_id', user_id) }}
+            {{ form_hidden('twofa_token', twofa_token) }}
+            {{ form_hidden('intended_url', intended_url) }}
+            {{ form_hidden('remember', remember) }}
 
-			<div class="form-row">
-				{{ form_text('twofa_code', null, {'class': 'twofa-code', 'placeholder': Lang.get('user.two_fa_code')}) }}
-			</div>
+            <div class="form-row">
+                {{ form_text('twofa_code', null, {'class': 'twofa-code', 'placeholder': Lang.get('user.two_fa_code')}) }}
+            </div>
 
-			{{ form_submit(Lang.get('user.login')) }}
+            {{ form_submit(Lang.get('user.login')) }}
 
-		{{ form_close() }}
+        {{ form_close() }}
 
-	</div>
+    </div>
 
 {% endblock %}
 
 {% block scripts_footer %}
-	{% if jsValidator|default is not empty %}
-		{{ jsValidator|raw }}
-	{% endif %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
 {% endblock %}

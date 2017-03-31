@@ -12,6 +12,7 @@ jQuery(function($){
      */
     var xhr;
     var $parent = $('select[name=parent]').selectize({
+        plugins: ['disableDelete'],
         valueField: 'id',
         labelField: 'name',
         searchField: 'name',
@@ -254,6 +255,16 @@ jQuery(function($){
     // Handle consume all already checked when the page loads.
     $('.email-piping').find('input[name$="[consume_all]"]').each(function () {
          setPipingPath(this);
+    });
+
+    // Handle Disable User Replies.
+    $('input[name="disable_user_email_replies"]').on('change', function () {
+        $('#disableRepliesTemplate').toggle();
+    });
+    
+    // Convert email template dropdowns to use selectize.
+    $('.department-templates').find('select').selectize({
+        plugins: ['disableDelete']
     });
 });
 

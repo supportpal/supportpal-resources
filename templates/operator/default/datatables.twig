@@ -7,7 +7,7 @@
     <thead>
     <tr>
         {% for i, c in columns %}
-            <th align="center" valign="middle" class="head{{ i }}">{{ c }}</th>
+            <th align="center" valign="middle" class="head{{ i }}">{{ c|raw }}</th>
         {% endfor %}
     </tr>
     </thead>

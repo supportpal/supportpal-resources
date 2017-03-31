@@ -18,10 +18,28 @@
 
         <h2>{{ Lang.get('user.user_details') }}</h2>
         <div class="form-container first">
-            {% include 'operator.' ~ template ~ '.user.forms.profile' with { 'operator': true, 'managing': true } %}
+            {% set profileParameters = {'operator': true, 'managing': true} %}
+            {% include 'operator.' ~ template ~ '.user.forms.operator_profile' with profileParameters %}
+
+            {% if record.exists and auth_user().password is not empty %}
+                <div class="form-row">
+                    {{ form_label('twofa_enabled', Lang.get('user.two_fa_enabled')) }}
+                    <div class="input-container">
+                        {% if record.twofa_enabled %}
+                            {{ form_check('twofa_enabled', 1, 1, { 'class': 'toggle', 'id': 'toggle_twofa_enabled' }) }}
+                            <label for="toggle_twofa_enabled"></label>
+                        {% else %}
+                            <span class="twofa-enabled" style="color: #c0392b; font-weight: bold;">
+                                {{ Lang.get('general.no') }}
+                            </span><br />
+                            <span class="description">{{ Lang.get('user.two_fa_personal_settings') }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
-        <h2>{{ Lang.get('user.operator_settings') }}</h2>
+        <h2>{{ Lang.get('ticket.settings') }}</h2>
         <div class="form-container first">
             <div class="form-row">
                 {{ form_label('department', Lang.choice('ticket.department', 2)) }}
@@ -57,76 +75,15 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                {{ form_label('default_reply_options', Lang.get('ticket.default_reply_options')) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        <label>
-                            {{ form_check('default_reply_options[send_email_to_users]', 1,
-                                opsetting|default is not empty ? opsetting.default_reply_options['send_email_to_users'] : 1) }}
-                            {{ Lang.get('ticket.send_email_to_users') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('default_reply_options[back_to_grid]', 1,
-                                opsetting|default is not empty ? opsetting.default_reply_options['back_to_grid'] : null) }}
-                            {{ Lang.get('ticket.back_to_grid') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('default_reply_options[take_ownership]', 1,
-                                opsetting|default is not empty ? opsetting.default_reply_options['take_ownership'] : null) }}
-                            {{ Lang.get('ticket.take_ownership') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('default_reply_options[pause_duetime]', 1,
-                                opsetting|default is not empty ? opsetting.default_reply_options['pause_duetime'] : null) }}
-                            {{ Lang.get('ticket.pause_duetime') }}
-                        </label><br />
-                        <label for="to_status">{{ Lang.get('ticket.set_status') }}:</label>
-                        <select id="to_status" name="default_reply_options[to_status]">
-                            <option value="0" {% if opsetting|default is not empty and opsetting.default_reply_options['to_status'] == 0 %}selected="selected"{% endif %}>
-                                -- {{ Lang.get('general.unchanged') }} --
-                            </option>
-                            {% for status in statuses %}
-                                <option value="{{ status.id }}" {% if opsetting|default is not empty and opsetting.default_reply_options['to_status'] == status.id %}selected="selected"{% endif %}>
-                                    {{ status.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <span class="description">
-                        {{
-                            Lang.get('ticket.default_reply_options_desc', {
-                                'reply_option': Lang.get('ticket.send_email_to_operators'),
-                                'department_option': Lang.get('ticket.email_operators')
-                            })
-                        }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('email_notifications', Lang.get('user.email_notifications')) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        <label>
-                            {{ form_check('email_notifications[ticket]', 1, opsetting|default is not empty ? opsetting.email_notifications['ticket'] : true) }} {{ Lang.choice('ticket.ticket', 2) }}
-                        </label><br />
-                        <label>
-                            {{ form_check('email_notifications[login]', 1, opsetting|default is not empty ? opsetting.email_notifications['login'] : true) }} {{ Lang.get('notification.failed_logins') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('email_notifications[comment]', 1, opsetting|default is not empty ? opsetting.email_notifications['comment'] : true) }} {{ Lang.get('notification.new_comments') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('email_notifications[message]', 1, opsetting|default is not empty ? opsetting.email_notifications['message'] : true) }} {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
-                        </label>
-                    </div>
-                    <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
-                </div>
-            </div>
-
+            {% include 'operator.' ~ template ~ '.user.forms.operator_ticket_settings' %}
         </div>
+    
+        <h2>{{ Lang.get('user.notifications') }}</h2>
+        <div class="form-container first">
+            {% include 'operator.' ~ template ~ '.user.forms.operator_notifications' %}
+        </div> 
 
+        {% if auth_user().shouldConfirmPassword() %}
         <h2>{{ Lang.get('user.confirm_password') }}</h2>
         <div class="form-container first">
             <div class="form-row">
@@ -137,6 +94,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}

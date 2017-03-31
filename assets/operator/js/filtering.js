@@ -2,6 +2,11 @@ $(function() {
     // Toggle filtering
     $('.toggle-filtering').click(function() {
         $('.conditiongroup').toggle();
+
+        // If we're toggling to show and it's currently empty, insert new condition
+        if ($('.conditiongroup').is(':visible') && ! $('.conditiongroup .condition:visible').length) {
+            $('.conditiongroup .add-condition').click();
+        }
     });
 
     // Remove any items that have an empty dropdown

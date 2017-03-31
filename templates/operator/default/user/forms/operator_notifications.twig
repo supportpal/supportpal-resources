@@ -1,0 +1,100 @@
+<div class="form-row">
+    {{ form_label('opsettings[email_notifications]', Lang.get('user.email_notifications')) }}
+    <div class="input-container">
+        <div class="input-group">
+            <label>
+                {{ form_check(
+                    'opsettings[email_notifications][ticket]',
+                    1,
+                    record.opsettings['email_notifications']['ticket']|default is not empty
+                        ? record.opsettings['email_notifications']['ticket']
+                        : 1
+                ) }}
+                {{ Lang.choice('ticket.ticket', 2) }}
+            </label><br />
+            <label>
+                {{ form_check(
+                    'opsettings[email_notifications][login]',
+                    1,
+                    record.opsettings['email_notifications']['login']|default is not empty
+                        ? record.opsettings['email_notifications']['login']
+                        : 1
+                ) }}
+                {{ Lang.get('notification.failed_logins') }}
+            </label><br />
+            <label>
+                {{ form_check(
+                    'opsettings[email_notifications][comment]',
+                    1,
+                    record.opsettings['email_notifications']['comment']|default is not empty
+                        ? record.opsettings['email_notifications']['comment']
+                        : 1
+                ) }}
+                {{ Lang.get('notification.new_comments') }}
+            </label><br />
+            <label>
+                {{ form_check(
+                    'opsettings[email_notifications][message]',
+                    1,
+                    record.opsettings['email_notifications']['message']|default is not empty
+                        ? record.opsettings['email_notifications']['message']
+                        : 1
+                ) }}
+                {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
+            </label>
+        </div>
+        <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
+    </div>
+</div>
+
+<div class="form-row">
+    {{ form_label('opsettings[display_notifications]', Lang.get('user.display_notifications')) }}
+    <div class="input-container">
+        <div class="input-group">
+            <label>
+                {% set displayNotifications = record.opsettings['display_notifications'] %}
+                {{ form_radio(
+                    'opsettings[display_notifications]',
+                    1,
+                    displayNotifications is empty or displayNotifications == 1 ? 1 : 0
+                ) }} {{ Lang.get('user.browser_notifications') }}
+                <a class="preview-browser">({{ Lang.get('general.preview') }})</a>
+            </label><br />
+            <label>
+                {{ form_radio('opsettings[display_notifications]', 2) }} {{ Lang.get('user.desktop_notifications') }}
+                <a class="preview-desktop">({{ Lang.get('general.preview') }})</a>
+            </label><br />
+            <label>
+                {{ form_radio('opsettings[display_notifications]', 0) }} {{ Lang.get('general.none') }}
+            </label>
+        </div>
+        <span class="description">{{ Lang.get('user.display_notifications_desc') }}</span>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('input[name="opsettings[display_notifications]"]').on('change', function() {
+            if ($(this).val() == 2) {
+                // Get permission
+                PNotify.desktop.permission();
+            }
+        });
+
+        // Show example browser notification
+        $('.preview-browser').on('click', function() {
+            notifications.showBrowserNotification(
+                Lang.get('notification.new_ticket'),
+                Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' })
+            );
+        });
+
+        // Show example desktop notification
+        $('.preview-desktop').on('click', function() {
+            notifications.showDesktopNotification(
+                Lang.get('notification.new_ticket'),
+                Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' })
+            );
+        });
+    });
+</script>

@@ -33,7 +33,7 @@
                 {% else %}
                     {{ Lang.choice('user.user', 1) }}
                 {% endif %}
-                &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                &nbsp;&middot;&nbsp; {{ timeago(message.created_at) }}
                 {% if editHistory.get(message.id) is not null %}
                     {% set edit = editHistory.get(message.id) %}
                     <strong title="{{ Lang.get('ticket.edited_message', {'user': edit.formatName(false), 'date': formatDate(edit.created_at)}) }}">

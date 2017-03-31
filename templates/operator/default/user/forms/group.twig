@@ -256,7 +256,8 @@
                             dataType: 'json',
                             data: {
                                 q: query,
-                                operator: {% if operator|default is not empty and operator %}1{% else %}0{% endif %}
+                                users: {% if operator|default is not empty and operator %}0{% else %}1{% endif %},
+                                operators: {% if operator|default is not empty and operator %}1{% else %}0{% endif %}
                             },
                             error: function() {
                                 callback();

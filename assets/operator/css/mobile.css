@@ -286,11 +286,11 @@ html {
 	    margin-bottom: 0;
 	}
 
-	.row .item {
+	.row > .item {
 		margin-bottom: 25px;
 	}
 
-	.row .item:last-child {
+	.row > .item:last-child {
 		margin-bottom: 0;
 		padding-right: 25px;
 	}
@@ -330,6 +330,24 @@ html {
 		overflow-y: auto;
 	}
 
+	.department-templates .item50:last-child {
+		padding-right: 0;
+	}
+
+	.department-templates h3 {
+		text-align: left;
+	}
+
+	.department-templates .form-row label {
+		position: static;
+		text-align: left;
+		width: auto;
+	}
+
+	.department-templates .form-row .input-container {
+		margin-left: 0;
+	}
+
 }
 
 /*
@@ -356,6 +374,14 @@ html {
 		position: absolute;
 	}
 
+	.form-container.collapsed label {
+		margin-left: 20px;
+	}
+
+	.form-container.collapsed .description {
+		display: none;
+	}
+
 	ul.tabs {
 		border-bottom: 0;
     }
@@ -380,11 +406,11 @@ html {
         position: static;
     }
 
-    .row .item {
+    .row > .item {
 		padding-right: 0;
 	}
 
-	.row .item:last-child {
+	.row > .item:last-child {
 	    padding: 0;
 	}
 

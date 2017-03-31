@@ -76,6 +76,15 @@
                 </div>
                 {% endif %}
 
+                {% if record.reply_to is not empty %}
+                <div class="form-row">
+                    <label>{{ Lang.get('core.reply_to') }}</label>
+                    <div class="input-container">
+                        {{ record.reply_to }}
+                    </div>
+                </div>
+                {% endif %}
+
                 {% if record.cc is not empty %}
                 <div class="form-row">
                     <label>{{ Lang.get('ticket.cc') }}</label>
@@ -83,6 +92,15 @@
                         {{ implode(", ", record.cc) }}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if record.bcc is not empty %}
+                    <div class="form-row">
+                        <label>{{ Lang.get('ticket.bcc') }}</label>
+                        <div class="input-container">
+                            {{ implode(", ", record.bcc) }}
+                        </div>
+                    </div>
                 {% endif %}
 
             </div>

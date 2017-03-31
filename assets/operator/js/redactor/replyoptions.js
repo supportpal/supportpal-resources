@@ -1,6 +1,54 @@
 $(function() {
+    // Check if send email checkbox should be checked on event based on relevant department email template
+    function handleEmailCheckbox(template, name) {
+        if (template != -1) {
+            $checkboxes[name].checkbox.prop('disabled', false).prop('checked', $checkboxes[name].state);
+            $checkboxes[name].checkbox.parent().attr('title', '');
+        } else {
+            $checkboxes[name].checkbox.prop('checked', false).prop('disabled', true);
+            $checkboxes[name].checkbox.parent().attr('title', Lang.get('ticket.department_template_disabled'));
+        }
+    }
+
+    var $checkboxes = {
+        'user': {'checkbox': $('.message-form .send-user-email input[type="checkbox"]') },
+        'operator_reply': {'checkbox': $('.message-form .send-operators-email input[type="checkbox"]')},
+        'operator_note': {'checkbox': $('.notes-form .send-operators-email input[type="checkbox"]') }
+    };
+
+    $.each($checkboxes, function (index, value) {
+        // Save the state of the checkbox initially and on change
+        value.state = value.checkbox.is(':checked');
+        value.checkbox.on('change', function() {
+            value.state = $(this).is(':checked');
+        });
+
+        // If the checkbox is disabled, uncheck it
+        if (value.checkbox.prop('disabled')) {
+            value.checkbox.prop('checked', false);
+        }
+    });
+
+    // Check if 'send email to user' should show based on ticket status set, message form only
+    $(document).on('change', '.message-form select[name="to_status"]', function () {
+        if ($(this).val() == closedStatusId) {
+            handleEmailCheckbox(departmentTemplates.user_ticket_operatorclose, 'user');
+        } else {
+            handleEmailCheckbox(departmentTemplates.user_ticket_reply, 'user');
+        }
+    });
+
+    // Check if 'send email to operator(s)' should show based on ticket message type
+    $('.reply-type .option').click(function() {
+        if ($(this).data('type') == 0) {
+            handleEmailCheckbox(departmentTemplates.operator_operator_ticket_reply, 'operator_reply');
+        } else {
+            handleEmailCheckbox(departmentTemplates.operator_ticket_note, 'operator_note');
+        }
+    });
+
     // Handle expanding each option group
-    $(document).on('click', '.option_header', function(e) {
+    $(document).on('click', '.option_header', function() {
         $(this).next(".option_content").slideToggle(500);
         $(this).find(".arrow .fa").toggleClass("fa-chevron-down fa-chevron-up");
     });

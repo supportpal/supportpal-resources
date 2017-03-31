@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div>
-                <label>{{ Lang.get('ticket.to') }}:</label>
+                <label>{{ Lang.choice('general.recipients', 2) }}:</label>
                 <div>
                 	{{ form_text('sSearch_1', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                 </div>

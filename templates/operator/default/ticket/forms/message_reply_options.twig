@@ -17,20 +17,22 @@
                 {% endfor %}
             {% endif %}
 
-            {% if not note and ticket.department_email_id is not empty %}
-                {% if toEmails is not empty and (not ticket.internal or ticket.user_id != auth_user().id) %}
-                    <div class="option">
-                        <label>
-                            {{ form_check('send_email_to_users', 1, operator.default_reply_options['send_email_to_users']) }}
-                            {{ Lang.get('ticket.send_email_to_users') }}
-                        </label>
-                    </div>
-                {% endif %}
+            {% if not note and ticket.department_email_id is not empty
+                and toEmails is not empty and (not ticket.internal or ticket.user_id != auth_user().id)
+            %}
+                <div class="send-user-email option">
+                    <label {% if ticket.department.getUserEmailTemplate('ticket_reply') == -1 %}title="{{ Lang.get('ticket.department_template_disabled') }}"{% endif %}>
+                        {{ form_check('send_email_to_users', 1, operator.default_reply_options['send_email_to_users'],
+                            ticket.department.getUserEmailTemplate('ticket_reply') == -1 ? {'disabled': 'disabled'} : {}) }}
+                        {{ Lang.get('ticket.send_email_to_users') }}
+                    </label>
+                </div>
             {% endif %}
-            <div class="option">
-                <label>
+            <div class="send-operators-email option">
+                <label {% if ticket.department.getOperatorEmailTemplate('operator_ticket_reply') == -1 %}title="{{ Lang.get('ticket.department_template_disabled') }}"{% endif %}>
                     {{ form_check('send_email_to_operators', 1, ticket.internal and ticket.user_id == auth_user().id ? true :
-                        ticket.department.notify_operators ? true : false) }}
+                        (ticket.department.notify_operators ? true : false),
+                        ticket.department.getOperatorEmailTemplate('operator_ticket_reply') == -1 ? {'disabled': 'disabled'} : {}) }}
                     {{ Lang.get('ticket.send_email_to_operators') }}
                 </label>
             </div>

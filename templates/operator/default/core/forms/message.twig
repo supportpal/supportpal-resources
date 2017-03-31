@@ -17,7 +17,7 @@
         {% for message in messages %}
         <div class="message clear message-{{ message.id }}">
             <div class="header">
-                {% if message.user_id == auth_user.id %}
+                {% if message.user_id == auth_user().id %}
                     <span class="right">
                         <button class="as-link delete-confirm" data-route="{{ route('core.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
                             <i class="fa fa-times"></i>
@@ -27,8 +27,8 @@
 
                 <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24'
                      alt='Operator' class='avatar left' />
-                <span class="name {% if message.user_id == auth_user.id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
-                <span class="description">{{ formatDate(message.created_at) }}</span>
+                <span class="name {% if message.user_id == auth_user().id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
+                <span class="description">{{ timeago(message.created_at) }}</span>
             </div>
             <div class="text">
                 {{ Purifier.clean(message.message) }}

@@ -129,6 +129,11 @@
             // Expand the filtering box on click
             $(document).on('click', '.conditiongroup-header', function () {
                 $('.filter-conditions').toggle();
+
+                // If we're toggling to show and it's currently empty, insert new condition
+                if ($('.filter-conditions').is(':visible') && ! $('.filter-conditions .condition:visible').length) {
+                    $('.filter-conditions .add-condition').click();
+                }
             });
 
             // Date pickers

@@ -26,6 +26,7 @@ function Article(parameters)
 
         // Initialise the visible type drop-down.
         $('select[name="category['+id+'][type]"]').selectize({
+            plugins: ['disableDelete'],
             onChange: function(value) {
                 // Hide the URL/views for this type
                 this.$input.parents('.form-container').find('.type-url, .type-views').remove();

@@ -82,7 +82,7 @@ var tour = {
             placement: 'right',
             showPrevButton: true,
             xOffset: '20px',
-            yOffset: '-70px',
+            yOffset: '-22px',
             multipage: true,
             onNext: function() {
                 window.location = laroute.route('ticket.operator.department.edit', { department: 0 });
@@ -108,9 +108,8 @@ var tour = {
         {
             title: Lang.get('core.dept_tmpl'),
             content: Lang.get('core.dept_tmpl_desc'),
-            target: 'ticket_opened',
-            placement: 'right',
-            yOffset: '-15px',
+            target: 'department-templates',
+            placement: 'top',
             showPrevButton: true,
             onNext: function() {
                 $('#generalSettingsBox').trigger('click');
@@ -121,8 +120,8 @@ var tour = {
             content: Lang.get('core.schedule_task_desc'),
             target: 'scheduledTaskSetting',
             placement: 'right',
-            yOffset: '-140px',
-            xOffset: '120px',
+            xOffset: '-100px',
+            yOffset: '-18px',
             showPrevButton: true,
             multipage: true,
             onNext: function() {
@@ -152,7 +151,7 @@ var tour = {
             target: 'channelSettings',
             placement: 'right',
             xOffset: '20px',
-            yOffset: '-43px',
+            yOffset: '-22px',
             showPrevButton: true,
             multipage: true,
             onNext: function() {
@@ -188,7 +187,7 @@ var tour = {
             target: 'userHeaderDropdown',
             placement: 'right',
             xOffset: '100px',
-            yOffset: '80px'
+            yOffset: '75px'
         },
         {
             title: Lang.choice('general.operator', 2),
@@ -196,7 +195,7 @@ var tour = {
             target: 'userHeaderDropdown',
             placement: 'right',
             xOffset: '100px',
-            yOffset: '120px',
+            yOffset: '110px',
             onNext: function() {
                 // Open the Tickets drop down in the header
                 $('#ticketHeaderDropdown').addClass('hover');
@@ -220,12 +219,7 @@ var tour = {
             title: Lang.choice('ticket.ticket', 2),
             content: Lang.get('core.ticket_desc2'),
             target: 'openNewTicket',
-            placement: 'bottom',
-            onShow: function() {
-                $('#adjust-columns').focus().effect("highlight", {color: 'rgba(59, 145, 206, 0.57)'}, 3000);
-                $('#filter-columns').focus().effect("highlight", {color: 'rgba(59, 145, 206, 0.57)'}, 3000);
-                $('#order-columns').focus().effect("highlight", {color: 'rgba(59, 145, 206, 0.57)'}, 3000);
-            }
+            placement: 'bottom'
         },
         {
             title: Lang.get('core.ticket_toolbar'),

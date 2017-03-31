@@ -60,7 +60,7 @@ $(document.body).ready(function() {
             if (term.length > 1) {
                 // Only search if term is two characters or more
                 $.ajax({
-                    url: laroute.route('core.operator.search'),
+                    url: laroute.route('core.operator.search_preview'),
                     dataType: "json",
                     data: { query: term },
                     method: 'POST',
@@ -76,7 +76,7 @@ $(document.body).ready(function() {
                                 category: ""
                             });
                         } else {
-                            var link = laroute.route('core.operator.searchresult', { query: encodeURI(term) });
+                            var link = laroute.route('core.operator.search', { query: encodeURI(term) });
                             result.data.push({
                                 id: "",
                                 label: Lang.get('messages.show_all_results'),

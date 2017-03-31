@@ -104,15 +104,24 @@
                             {{ form_label('to', Lang.get('ticket.to')) }}
                             <div class="input-container">
                                 <span id="toAddress">{{ Purifier.clean(toEmails) }}</span>
-                                <a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>
+                                {% if not internal and organisationEmails is empty %}<a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>{% endif %}
                             </div>
                         </div>
-                        <div class="cc-emails hide">
-                            {{ form_label('cc[]', Lang.get('ticket.cc')) }}
-                            <div class="input-container">
-                                {{ form_select('cc[]', [], [], { 'multiple': 'multiple' }) }}
+                        {% if not internal %}
+                            <div class="cc-emails {% if organisationEmails is empty %}hide{% endif %}">
+                                {{ form_label('cc[]', Lang.get('ticket.cc')) }}
+                                <div class="input-container">
+                                    <select name="cc[]" multiple="multiple">
+                                        {% for email in organisationEmails %}
+                                            <option selected="selected" data-data='{{ {'value': email, 'unremovable': true}|json_encode(constant('JSON_FORCE_OBJECT')) }}'
+                                                    value='{{ email }}'>
+                                                {{ email }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="form-row" style="padding: 0;">
@@ -129,20 +138,21 @@
 
                     &nbsp;&nbsp;&nbsp;&nbsp;
 
-                    <span class="input-group" style="display: inline-block; margin-top: 10px; vertical-align: middle;">
-                        <span class="send-user-email">
-                            <label style="font-weight: normal">
-                                {{ form_check('send_user_email', 1, operator.default_reply_options['send_email_to_users']) }}
+                    <span class="input-group" style="display: inline-block; font-weight: normal; margin-top: 10px; vertical-align: middle;">
+                        {% if not internal %}
+                            <label>
+                                {{ form_check('send_user_email', 1, operator.default_reply_options['send_email_to_users'],
+                                    department.getUserEmailTemplate('ticket_opened') == -1 ? {'disabled': 'disabled'} : {}) }}
                                 {{ Lang.get('ticket.send_email_to_users') }}
                             </label>
-                            &nbsp;&nbsp;
-                        </span>
-                        <span class="send-operators-email">
-                            <label style="font-weight: normal">
-                                {{ form_check('send_operators_email', 1, department.notify_operators) }}
-                                {{ Lang.get('ticket.send_email_to_operators') }}
-                            </label>
-                        </span>
+                            &nbsp;
+                        {% endif %}
+                        <label>
+                            {{ form_check('send_operators_email', 1, internal ? 1 : department.notify_operators,
+                                (internal and department.getOperatorEmailTemplate('internal_opened') == -1)
+                                    or (not internal and department.getOperatorEmailTemplate('ticket_opened') == -1) ? {'disabled': 'disabled'} : {}) }}
+                            {{ Lang.get('ticket.send_email_to_operators') }}
+                        </label>
                     </span>
 
                 </div>
@@ -170,7 +180,8 @@
         // Global variables for redactor plugins
         var ticketId = null,
             userId = {{ user }},
-            operatorId = '{{ auth_user().id }}',
+            brandId = {{ brand.id }},
+            operatorId = {{ auth_user().id }},
             internal = {{ internal }};
     </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
@@ -179,6 +190,7 @@
     <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>

@@ -16,22 +16,13 @@
             <li id="Profile" class="active">{{ Lang.get('user.profile') }}</li>
             {% if auth_user().password is not empty %}<li id="ChangePassword">{{ Lang.get('user.change_password') }}</li>{% endif %}
             {% if auth_user().password is not empty %}<li id="TwoFA">{{ Lang.get('user.two_fa') }}</li>{% endif %}
-            <li id="Ticket">{{ Lang.get('user.ticket_settings') }}</li>
+            <li id="Ticket">{{ Lang.get('ticket.settings') }}</li>
             <li id="Notifications">{{ Lang.get('user.notifications') }}</li>
         </ul>
 
         <div id="tabProfile" class="tabContent">
-
-            {% include 'operator.' ~ template ~ '.user.forms.profile' with {'operator': true, 'showPassword': false} %}
-
-            <div class="form-row">
-                {{ form_label('opsettings[template]', Lang.get('user.operator_template')) }}
-                <div class="input-container">
-                    {{ form_select('opsettings[template]', templates, record.opsettings.template|default is not empty
-                        ? record.opsettings.template : Config.get('settings.operator_template')) }}
-                </div>
-            </div>
-
+            {% set profileParameters = {'operator': true, 'showPassword': false} %}
+            {% include 'operator.' ~ template ~ '.user.forms.operator_profile' with profileParameters %}
         </div>
 
         {% if auth_user().password is not empty %}
@@ -74,7 +65,6 @@
                 <div class="fail box twofa-status hide">
                     {{ Lang.get('user.two_fa_incorrect') }}
                 </div>
-
 
                 <div class="form-row">
                     {{ form_label('twofa_enabled', Lang.get('user.two_fa_enabled')) }}
@@ -161,122 +151,11 @@
         {% endif %}
 
         <div id="tabTicket" class="tabContent hide">
-
-            <div class="form-row">
-            	{{ form_label('opsettings[ticket_reply_order]', Lang.get('ticket.ticket_reply_order')) }}
-                <div class="input-container">
-                    {{ form_select('opsettings[ticket_reply_order]', {
-                            0: Lang.get('general.system_default'),
-                            1: Lang.get('general.ascending'),
-                            2: Lang.get('general.descending')
-                        }) }}<br />
-                    <span class="description">{{ Lang.get('ticket.ticket_reply_order_desc') }} {{ Lang.get('ticket.ticket_reply_order_default') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('opsettings[default_ticket_filter]', Lang.get('ticket.default_ticket_filter')) }}
-                <div class="input-container">
-                    {{ form_select('opsettings[default_ticket_filter]',
-                        {0: Lang.get('general.none')} + filters) }}<br />
-                    <span class="description">
-                        {{ Lang.get('ticket.default_ticket_filter_desc') }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('opsettings[default_reply_options]', Lang.get('ticket.default_reply_options')) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        <label>
-                            {{ form_check('opsettings[default_reply_options][send_email_to_users]', 1) }}
-                            {{ Lang.get('ticket.send_email_to_users') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[default_reply_options][back_to_grid]', 1) }}
-                            {{ Lang.get('ticket.back_to_grid') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[default_reply_options][take_ownership]', 1) }}
-                            {{ Lang.get('ticket.take_ownership') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[default_reply_options][pause_duetime]', 1) }}
-                            {{ Lang.get('ticket.pause_duetime') }}
-                        </label><br />
-                        <label for="to_status">{{ Lang.get('ticket.set_status') }}:</label>
-                        <select id="to_status" name="opsettings[default_reply_options][to_status]">
-                            <option value="0" {% if record.opsettings.default_reply_options['to_status'] == 0 %}selected="selected"{% endif %}>
-                                -- {{ Lang.get('general.unchanged') }} --
-                            </option>
-                            {% for status in statuses %}
-                                <option value="{{ status.id }}" {% if record.opsettings.default_reply_options['to_status'] == status.id %}selected="selected"{% endif %}>
-                                    {{ status.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <span class="description">
-                        {{
-                            Lang.get('ticket.default_reply_options_desc', {
-                                'reply_option': Lang.get('ticket.send_email_to_operators'),
-                                'department_option': Lang.get('ticket.email_operators')
-                            })
-                        }}
-                    </span>
-                </div>
-            </div>
-
+            {% include 'operator.' ~ template ~ '.user.forms.operator_ticket_settings' %}
         </div>
 
         <div id="tabNotifications" class="tabContent hide">
-
-            <div class="form-row">
-                {{ form_label('opsettings[email_notifications]', Lang.get('user.email_notifications')) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        <label>
-                            {{ form_check('opsettings[email_notifications][ticket]', 1, record.opsettings['email_notifications']['ticket']) }}
-                            {{ Lang.choice('ticket.ticket', 2) }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[email_notifications][login]', 1, record.opsettings['email_notifications']['login']) }}
-                            {{ Lang.get('notification.failed_logins') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[email_notifications][comment]', 1, record.opsettings['email_notifications']['comment']) }}
-                            {{ Lang.get('notification.new_comments') }}
-                        </label><br />
-                        <label>
-                            {{ form_check('opsettings[email_notifications][message]', 1, record.opsettings['email_notifications']['message']) }}
-                            {{ Lang.choice('general.operator', 1) }} {{ Lang.choice('general.message', 1) }}
-                        </label>
-                    </div>
-                    <span class="description">{{ Lang.get('user.email_notifications_desc') }}</span>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('opsettings[display_notifications]', Lang.get('user.display_notifications')) }}
-                <div class="input-container">
-                    <div class="input-group">
-                        <label>
-                            {{ form_radio('opsettings[display_notifications]', 1) }} {{ Lang.get('user.browser_notifications') }}
-                            <a class="preview-browser">({{ Lang.get('general.preview') }})</a>
-                        </label><br />
-                        <label>
-                            {{ form_radio('opsettings[display_notifications]', 2) }} {{ Lang.get('user.desktop_notifications') }}
-                            <a class="preview-desktop">({{ Lang.get('general.preview') }})</a>
-                        </label><br />
-                        <label>
-                            {{ form_radio('opsettings[display_notifications]', 0) }} {{ Lang.get('general.none') }}
-                        </label>
-                    </div>
-                    <span class="description">{{ Lang.get('user.display_notifications_desc') }}</span>
-                </div>
-            </div>
-
+            {% include 'operator.' ~ template ~ '.user.forms.operator_notifications' %}
         </div>
 
         <hr />

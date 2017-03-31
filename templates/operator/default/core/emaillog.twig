@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div>
-                <label>{{ Lang.get('ticket.to') }}:</label>
+                <label>{{ Lang.choice('general.recipients', 2) }}:</label>
                 <div>
                 	{{ form_text('sSearch_2', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
                 </div>
@@ -86,22 +86,4 @@
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/queryfiltering.js') }}"></script>
-
-    <script type="text/javascript">
-        $(document).tooltip({
-            selector: '[data-toggle="tooltip"]',
-            position: {
-                my: "center bottom-12",
-                at: "center top",
-                using: function( position, feedback ) {
-                    $( this ).css( position );
-                    $( "<div>" )
-                            .addClass( "arrow" )
-                            .addClass( feedback.vertical )
-                            .addClass( feedback.horizontal )
-                            .appendTo( this );
-                }
-            }
-        });
-    </script>
 {% endblock %}

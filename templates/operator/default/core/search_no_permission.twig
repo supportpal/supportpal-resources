@@ -1,0 +1,17 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('core.search_results') }} - '{{ Input.get('query') }}'
+{% endblock %}
+
+{% block content %}
+
+    {% include 'operator.' ~ template ~ '.core.search_tabs' %}
+
+    <div class="fail box">
+        <i class="fa fa-ban left"></i>
+        <span class="title">{{ Lang.get('messages.not_authorised') }}</span><br />
+        {{ Lang.get('messages.not_permitted') }}
+    </div>
+
+{% endblock %}

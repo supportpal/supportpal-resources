@@ -104,6 +104,7 @@
 
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -114,6 +115,7 @@
 
             // Type dropdown
             $('select[name="type_id"]').selectize({
+                plugins: ['disableDelete'],
                 onChange: function(value) {
                     // Only carry on if we have a type
                     if (!value.length) return;
@@ -144,6 +146,7 @@
 
             // Parent dropdown
             var parent = $('select[name="parent_id"]').selectize({
+                plugins: ['disableDelete'],
                 valueField: 'id',
                 labelField: 'name',
                 searchField: 'name',

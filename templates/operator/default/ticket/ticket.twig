@@ -38,15 +38,15 @@
     </h1>
     <h2 class="ticketview">
         {{ Lang.get('general.submitted_by') }}
-        &nbsp;<a href="{{ route('user.operator.user.edit', { 'user': ticket.user.id }) }}">{{ ticket.user.formatted_name }}</a>&nbsp;
-        {{ Lang.get('general.at_time', {'time': formatDate(ticket.created_at)}) }}
+        <a href="{{ route('user.operator.user.edit', { 'user': ticket.user.id }) }}">{{ ticket.user.formatted_name }}</a>
+        {{ timeago(ticket.created_at) }}
     </h2>
 {% endblock %}
 
 {% block content %}
     <div class="warning box followup-warning {% if ticket.followup is empty %}hide{% endif %}">
         <i class="fa fa-clock-o"></i>&nbsp;
-        <span>{{ Lang.get('ticket.follow_up_active', {'time': formatDate(ticket.followup.time)})|raw }}</span>
+        <span>{{ Lang.get('ticket.follow_up_active', {'time': (ticket.followup.time > "now"|date('U') ? timeago(ticket.followup.time) : Lang.get('general.shortly'))})|raw }}</span>
     </div>
 
     {% if feedback|default is not empty and feedback.rating|default is not empty %}
@@ -80,7 +80,7 @@
         <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
         <li id="Log">{{ Lang.get('general.log') }}</li>
         <li id="EscalationRules" {% if ticket.sla_plan_id is empty or ticket.escalationrules().count() == 0 %}style="display: none;" {% endif %}>
-            Escalation Rules
+            {{ Lang.get('ticket.escalation_rule') }}
         </li>
         <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
     </ul>
@@ -181,7 +181,7 @@
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
-    <!-- Datatables -->
+    <!-- Sweetalert -->
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
@@ -238,7 +238,8 @@
             internal = {{ ticket.internal }},
             closedStatusId = {{ Config.get('settings.default_resolved_status') }},
             ticketGridUrl = "{{ Session.get('operator.url.ticketgrid', route('ticket.operator.ticket', manageTicketsParams)) }}",
-            organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}";
+            organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}",
+            departmentTemplates = {{ ticket.department.email_templates|json_encode()|raw }};
 
         var signature = '';
         {% if signature is not empty %}
@@ -307,8 +308,12 @@
     <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/libs/webui-popover/js/jquery.webui-popover.min.js') }}"></script>
+
+    <!-- Remember collapsible side box state -->
+    <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/ticket.js') }}"></script>
     <script type="text/javascript">
@@ -316,6 +321,8 @@
     </script>
 
     <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/general/js/shorten.js') }}"></script>
 
     <link href="{{ asset_rev('resources/assets/operator/css/ticket-print.css') }}" rel="stylesheet" media="print" type="text/css" />
 

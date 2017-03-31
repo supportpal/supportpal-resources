@@ -109,6 +109,7 @@ span.subject:hover:after {
 }
 
 .message .text img, .ticket-draft img {
+    height: auto;
     max-width: 100%;
 }
 
@@ -577,6 +578,23 @@ table.ticket-details .link:hover {
     border-bottom: 1px solid #c0392b;
 }
 
+table.ticket-details .create-new-user {
+    background: #fdf6ea;
+    border: 1px solid #ddd;
+    border-top: 0;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1em;
+    padding: 8px;
+    text-align: center;
+}
+
+table.ticket-details .create-new-user .fa {
+    font-size: 12px;
+}
+
+
 /* New ticket form */
 
 .user-ticket {
@@ -598,7 +616,7 @@ table.ticket-details .link:hover {
     font-weight: bold;
     line-height: 32px;
     margin: 2px 0;
-    width: 100px;
+    width: 110px;
 }
 
 .new-user input {

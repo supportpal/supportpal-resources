@@ -89,7 +89,8 @@ $(document).ready(function() {
                         dataType: 'json',
                         data: {
                             brand_id: typeof $brand[0] !== "undefined" ? $brand[0].selectize.getValue() : null,
-                            q: query
+                            q: query,
+                            operators: 0
                         },
                         error: function() {
                             callback();
@@ -103,50 +104,46 @@ $(document).ready(function() {
 
         // Handle ticket type switching
         $('input[name="internal"]').change(function() {
-            $('.user-ticket').toggle();
+            if ($(this).val() == 1) {
+                $('.user-ticket').hide();
+                $('.user-ticket').find(':input:not([name="user_type"])').prop('disabled', true);
+                $('input[name="user"]').prop('disabled', false);
+            } else {
+                $('.user-ticket').show();
+                $('.user-ticket').find(':input:not([name="user_type"])').prop('disabled', false);
+                $('input[name="user"]').prop('disabled', true);
+            }
 
             // Reset form validation.
             $('form.validate').validate().resetForm();
-
-            // Toggle the disabled attribute.
-            $('.user-ticket, .internal-ticket')
-                .find(':input:not([name="user_type"]):not([name="internal"])')
-                .prop('disabled', function(i, v) { return !v; });
         });
 
         // Handle ticket type switching
         $('input[name="user_type"]').change(function() {
-            $('.new-user, .existing-user').toggle();
+            if ($(this).val() == '0') {
+                $('.existing-user').show();
+                $('.new-user').hide();
+            } else {
+                $('.existing-user').hide();
+                $('.new-user').show();
+            }
 
             // Reset form validation.
             $('form.validate').validate().resetForm();
         });
 
-        if ($('input[name="internal"]:last:checked').length) {
-            $('.user-ticket').hide();
-        } else {
-            $('.user-ticket').show();
-        }
+        // Run the change events on load to ensure right fields are showing/enabled
+        $('input[name="internal"]:checked, input[name="user_type"]:checked').change();
 
-        if ($('input[name="user_type"]:checked').val() == '0') {
-            $('.existing-user').show();
-            $('.new-user').hide();
-        } else {
-            $('.existing-user').hide();
-            $('.new-user').show();
+        // If the brand already has a value, fetch the relevant departments. Usually happens on going back from step 2.
+        if ($brand.length && $brand[0].selectize.getValue() !== '') {
+            $brand[0].selectize.setValue($brand[0].selectize.getValue())
         }
-
     } else {
         // STEP 2
 
         // Focus the subject input box.
         $('input[name="subject"]').focus();
-
-        // Handling internal tickets
-        if (internal) {
-            $('.send-user-email').hide();
-            $('input[name="send_operators_email"]').prop('checked', true);
-        }
 
         // Tags
         $('select[name="tag[]"]').selectize({
@@ -228,7 +225,8 @@ $(document).ready(function() {
         // From email input
         $('select[name="department_email"]').selectize({
             persist: false,
-            dropdownParent: 'body'
+            dropdownParent: 'body',
+            plugins: ['disableDelete']
         });
 
         // Regex for email
@@ -240,6 +238,12 @@ $(document).ready(function() {
             delimiter: ',',
             persist: false,
             dropdownParent: 'body',
+            placeholder: Lang.get('ticket.enter_email_address'),
+            render: {
+                item: function(item, escape) {
+                    return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+                }
+            },
             createFilter: function(input) {
                 var match = input.match(re);
                 if (match) return !this.options.hasOwnProperty(match[0]);
@@ -253,6 +257,19 @@ $(document).ready(function() {
                         text: input
                     };
                 }
+
+                return false;
+            },
+            onDelete: function(input) {
+                var self = this;
+                $.each(input, function(key, value) {
+                    // Delete any items selected that don't have a 'unremovable' class.
+                    if (! $('.cc-emails div[data-value="' + value + '"]').hasClass('unremovable')) {
+                        self.removeItem(value);
+                    }
+                });
+
+                // We handle the deletions above, no need to carry on with deleteSelect()
                 return false;
             }
         });
@@ -260,6 +277,14 @@ $(document).ready(function() {
         // Show CC email input
         $('.add-cc').on('click', function() {
             $('.cc-emails').toggle();
+        });
+
+        // Send email options, uncheck and show tooltip if disabled
+        $.each([ $('input[name="send_user_email"]'), $('input[name="send_operators_email"]') ], function (index, value) {
+            if (value.prop('disabled')) {
+                value.prop('checked', false);
+                value.parent().attr('title', Lang.get('ticket.department_template_disabled'));
+            }
         });
     }
 

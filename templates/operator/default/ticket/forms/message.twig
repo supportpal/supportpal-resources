@@ -47,9 +47,9 @@
             {{ form_hidden('reply_all', 1) }}
 
             {% if ticket.department_email_id is not empty %}
-                <div class="form-row form-full recipients {% if ticket.cc is not empty %}with-cc{% endif %}">
+                <div class="form-row form-full recipients {% if not ticket.internal and (organisationEmails is not empty or ticket.cc is not empty) %}with-cc{% endif %}">
                     <div>
-                        <div class="reply-all {% if ticket.cc is empty %}hide{% endif %}">
+                        <div class="reply-all {% if ticket.internal or (organisationEmails is empty and ticket.cc is empty) %}hide{% endif %}">
                             <div class="button">
                                 <span class="icon">
                                     <i class="fa fa-reply-all" aria-hidden="true"></i>
@@ -78,15 +78,26 @@
                         {{ form_label('to', Lang.get('ticket.to')) }}
                         <div class="input-container">
                             {{ toEmails }}
-                            {% if ticket.cc is empty and not ticket.internal %}<a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>{% endif %}
+                            {% if organisationEmails is empty and ticket.cc is empty and not ticket.internal %}
+                                <a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>
+                            {% endif %}
                         </div>
                     </div>
                     {% if not ticket.internal %}
-                    <div class="cc-emails {% if ticket.cc is empty %}hide{% endif %}">
+                    <div class="cc-emails {% if organisationEmails is empty and ticket.cc is empty %}hide{% endif %}">
                         {{ form_label('cc[]', Lang.get('ticket.cc')) }}
                         <div class="input-container">
-                            {{ form_select('cc[]', ticket.cc is not empty ? array_combine(ticket.cc, ticket.cc) : {},
-                                ticket.cc is not empty ? array_combine(ticket.cc, ticket.cc) : {}, { 'multiple': 'multiple' }) }}
+                            <select name="cc[]" multiple="multiple">
+                                {% for email in organisationEmails %}
+                                    <option selected="selected" data-data='{{ {'value': email, 'unremovable': true}|json_encode(constant('JSON_FORCE_OBJECT')) }}'
+                                            value='{{ email }}'>
+                                        {{ email }}
+                                    </option>
+                                {% endfor %}
+                                {% for email in ticket.cc %}
+                                    <option selected="selected" value='{{ email }}'>{{ email }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     {% endif %}

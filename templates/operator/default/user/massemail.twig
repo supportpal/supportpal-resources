@@ -168,6 +168,7 @@
     <!-- Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
@@ -205,6 +206,7 @@
             // If we have multiple brands
             if ($('select[name="brand_id"]').length) {
                 var $brandSelectize = $('select[name="brand_id"]').selectize({
+                    plugins: ['disableDelete'],
                     placeholder: Lang.get('core.select_brand'),
                     onChange: function (item) {
                         // Set the from name and email based on the brand

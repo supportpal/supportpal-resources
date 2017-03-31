@@ -6,13 +6,23 @@
         {% if auth_user().hasPermission('update.user') %}
             - {{ Lang.get('general.edit_item', {'item': Lang.choice('user.user', 1)}) }}
         {% endif %}
-        &nbsp;
-        <a class="button" href="{{ route('ticket.operator.ticket.createStep1', {'user': record.id}) }}">
-            {{ Lang.get('ticket.open_new') }}
-        </a>
     {% else %}
         {{ Lang.get('general.add_item', {'item': Lang.choice('user.user', 1)}) }}
     {% endif %}
+{% endblock %}
+
+{% block pageTitle %}
+    {% set title %}
+        {{ block('title') }}
+        {% if record|default is not empty and record.exists and auth_user().hasPermission('create.ticket') %}
+            &nbsp;
+            <a class="button" href="{{ route('ticket.operator.ticket.createStep1', {'user': record.id}) }}">
+                {{ Lang.get('ticket.open_new') }}
+            </a>
+        {% endif %}
+    {% endset %}
+
+    {{ parent() }}
 {% endblock %}
 
 {% block content %}

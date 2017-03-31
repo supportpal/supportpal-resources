@@ -28,8 +28,9 @@ $(document).ready(function() {
         } else if ($input.is('select')) {
             $input.val('-1');
         }
-        // Trigger change to reload table
-        $input.change();
+
+        // Trigger input to reload table
+        $input.trigger('input');
     });
 
     $('.datepicker').pikaday({

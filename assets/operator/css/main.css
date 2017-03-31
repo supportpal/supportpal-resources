@@ -63,6 +63,16 @@ hr {
     margin: 25px 0;
 }
 
+pre:not(.moz-signature) {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 90%;
+    margin: 0;
+    padding: 1em;
+    white-space: pre-wrap;
+}
+
 .hide {
     display: none;
 }
@@ -169,7 +179,7 @@ hr {
     margin: 0;
 }
 
-.row .item {
+.row > .item {
     display: inline-block;
     font-size: 13px;
     padding-right: 25px;
@@ -1031,10 +1041,6 @@ ul.dropdown ul li:hover > ul {
     margin-bottom: 0;
 }
 
-#sidebar h3.collapsable div.arrow {
-    margin: 1px 0;
-}
-
 #sidebar .details > div {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1051,6 +1057,7 @@ ul.dropdown ul li:hover > ul {
 }
 
 #sidebar .details ul.recent-tickets {
+    margin-top: 5px;
     white-space: nowrap;
 }
 
@@ -1165,6 +1172,10 @@ ul.dropdown ul li:hover > ul {
 #sidebar .recent-tickets .description {
     line-height: 9px;
     padding-left: 24px;
+}
+
+#sidebar .text-shorten {
+    word-wrap: break-word;
 }
 
 /* Main */
@@ -1345,6 +1356,38 @@ table.settings .description.message-preview {
     height: 22px;
     overflow: hidden;
     position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 95%;
+}
+
+table.settings .ticket-metadata {
+    color: #666;
+    text-align: right;
+}
+
+table.settings .ticket-metadata .fa {
+    font-size: 12px;
+    padding: 0;
+}
+
+table.settings .ticket-metadata .tag {
+    background: #bdc3c7;
+    margin-right: 0;
+    vertical-align: top;
+}
+
+table.settings .ticket-metadata .notes-count {
+    background: #f1c40f;
+}
+
+table.settings .ticket-metadata .messages-count.with-notes {
+    border-radius: 15px 0 0 15px;
+    margin-right: 1px;
+}
+
+table.settings .ticket-metadata .messages-count + .notes-count {
+    border-radius: 0 15px 15px 0;
 }
 
 table.settings td.relative {
@@ -1452,6 +1495,12 @@ ul.tabs li .badge, ul.tabs a .badge {
 
 .remove-button {
     cursor: pointer;
+}
+
+/* Departments */
+
+.department-templates h3 {
+    text-align: center;
 }
 
 /* Filters */
@@ -1698,6 +1747,12 @@ table.dataTable > tbody > tr.child span.dtr-title {
     min-width: 0 !important;
 }
 
+table.dataTable thead .sorting.hide-icon,
+table.dataTable thead .sorting_asc.hide-icon,
+table.dataTable thead .sorting_desc.hide-icon {
+    background-image: none;
+}
+
 /* Overwrite Sweetalert2 */
 
 .sweet-alert {
@@ -1809,6 +1864,10 @@ table.dataTable > tbody > tr.child span.dtr-title {
 
 .redactor-toolbar-tooltip {
     background: #454545 !important;
+}
+
+.redactor-editor pre {
+    margin: 0 !important;
 }
 
 /* Redactor plugin lists */
@@ -1936,12 +1995,12 @@ ul.attached-files .progress .bar {
     width: 0;
 }
 
-ul.attached-files .deleteAttachment {
+ul.attached-files .deleteAttachment, .attachments .deleteAttachment {
     cursor: pointer;
     margin: 5px 0;
 }
 
-ul.attached-files .deleteAttachment:hover {
+ul.attached-files .deleteAttachment:hover, .attachments .deleteAttachment:hover {
     color: #000;
 }
 
@@ -2027,6 +2086,20 @@ ul.attached-files .deleteAttachment:hover {
 .selectize-control.loading::before,
 #main .selectize-control .selectize-input.disabled {
     opacity: 0.8;
+}
+
+.selectize-dropdown-content .optgroup_header {
+    background: #eee;
+    color: #777;
+    padding: 1px 8px 3px;
+}
+
+.selectize-control.plugin-remove_button [data-value].unremovable {
+    padding-right: 6px !important;
+}
+
+.selectize-control.plugin-remove_button [data-value].unremovable .remove {
+    display: none;
 }
 
 .ldap_operator {

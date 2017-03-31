@@ -5,20 +5,17 @@
 {% endblock %}
 
 {% block sidebar %}
-    {% if record is not defined %}
+    {% if not customSearch and record is not defined %}
         {% include 'operator.' ~ template ~ '.ticket.sidebar-grid' %}
     {% endif %}
 {% endblock %}
 
 {% block title %}
-    {% if record|default is not empty %}
-        {% if record.name is not empty %}
-            {{ record.name }} -
-        {% elseif record.formatted_name is not empty %}
-            {{ record.formatted_name }} -
-        {% endif %}
+    {% if title|default is not empty %}
+        {{ title }}
+    {% else %}
+        {{ Lang.choice('ticket.ticket', 2) }}
     {% endif %}
-    {{ Lang.choice('ticket.ticket', 2) }}
 {% endblock %}
 
 {% block content %}
@@ -29,6 +26,8 @@
         {% elseif record.formatted_name is defined %}
             {% include 'operator.' ~ template ~ '.user.forms.user_tabs' %}
         {% endif %}
+    {% elseif customSearch %}
+        {% include 'operator.' ~ template ~ '.core.search_tabs' %}
     {% endif %}
 
     <div class="success box tickets-update hide">
@@ -103,6 +102,10 @@
             <label>
                 {{ form_check('column_status', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['status']) }}
                 {{ Lang.choice('general.status', 1) }}
+            </label> &nbsp;
+            <label>
+                {{ form_check('column_attachments', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['attachments']) }}
+                {{ Lang.choice('general.attachment', 2) }}
             </label> &nbsp;
             <label>
                 {{ form_check('column_subject', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['subject']) }}
@@ -180,6 +183,9 @@
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Remember collapsible side box state -->
+    <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
@@ -465,23 +471,6 @@
                     refreshGrid();
                 });
             });
-
-            // Tooltip on priority, status and user groups
-            $(document).tooltip({
-                selector: '.flag, .statusIcon, .userGroup',
-                position: {
-                    my: "center bottom-12",
-                    at: "center top",
-                    using: function( position, feedback ) {
-                        $( this ).css( position );
-                        $( "<div>" )
-                            .addClass( "arrow" )
-                            .addClass( feedback.vertical )
-                            .addClass( feedback.horizontal )
-                            .appendTo( this );
-                    }
-                }
-            });
         });
 
         function updateTicket(data) {
@@ -686,7 +675,14 @@
                         }
 
                         // Update the sidebar HTML
-                        $('#sidebar').html(newSidebar);
+                        $('#sidebar')
+                            .html(newSidebar)
+                            .trigger('refreshedSidebar');
+                            
+                        // Refresh timeago.
+                        if (typeof timeAgo !== 'undefined') {
+                            timeAgo.render($('time.timeago'));
+                        }
                     }
                 });
         }

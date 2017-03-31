@@ -65,15 +65,6 @@ $(document).ready(function () {
         $this.find('.hide').toggle();
     });
 
-    // For opening/collapsing sidebar boxes
-    $('#sidebar').on('click', 'h3.collapsable', function() {
-        if (!$('#sidebar').hasClass('sidebar-close') || $(window).width() > 960) {
-            $(this).find('.arrow .fa').toggleClass('fa-chevron-down fa-chevron-up');
-            $(this).toggleClass('closed');
-            $(this).next().toggle(500);
-        }
-    });
-
     // Toggle show/hide of the filters area
     $('.filter-results').on('click', function() {
         $('.filters').toggle();
@@ -97,6 +88,11 @@ $(document).ready(function () {
         $.extend($.fn.dataTable.defaults, {
             responsive: true
         });
+    }
+
+    // Time ago.
+    if (typeof timeAgo !== 'undefined') {
+        timeAgo.render($('time.timeago'));
     }
 
     /**

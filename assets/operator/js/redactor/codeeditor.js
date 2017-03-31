@@ -342,18 +342,28 @@
 
                 // If the form has an input called brand_id, use that value else fall back to the
                 // data-brand set on form-row. If nothing is set then it won't be included.
-                var brandId = redactor.$box.parents('form').find(':input[name="brand_id"]').length ?
-                    redactor.$box.parents('form').find(':input[name="brand_id"]').val() :
-                    redactor.$box.parents('.form-row').data('brand');
+                var brandId = redactor.$box.parents('form').find(':input[name="brand_id"]').length
+                    ? redactor.$box.parents('form').find(':input[name="brand_id"]').val()
+                    : redactor.$box.parents('.form-row').data('brand');
+                
+                // Get ticket ID.
+                var ticketId = redactor.$box.parents('form').find(':input[name="ticket_id"]').length
+                    ? redactor.$box.parents('form').find(':input[name="ticket_id"]').val()
+                    : null;
+                
+                // Attempt to get locale.
+                var locale = redactor.$box.parents('.form-container').find(':input[name$="[language]"]').length
+                    ? redactor.$box.parents('.form-container').find(':input[name$="[language]"]').val()
+                    : Lang.locale();
 
                 $.post(
                     laroute.route('core.operator.emailtemplate.preview'),
                     {
                         'template': codeMirror.getValue(),
+                        'locale': locale,
                         'template_id': redactor.$box.parents('form').data('templateId'),
                         'brand_id': brandId,
-                        'ticket_id': redactor.$box.parents('form').find(':input[name="ticket_id"]').length ?
-                            redactor.$box.parents('form').find(':input[name="ticket_id"]').val() : null,
+                        'ticket_id': ticketId,
                         'is_email': (redactor.opts.syntaxEmailTemplate || false) ? 1 : 0
                     }
                 )

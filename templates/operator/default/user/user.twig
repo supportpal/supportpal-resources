@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block title %}
-    {% if operator|default is not empty and operator %}
+    {% if title|default is not empty %}
+        {{ title }}
+    {% elseif operator|default is not empty and operator %}
         {{ Lang.choice("general.operator", 2) }}
     {% else %}
         {{ Lang.choice("user.user", 2) }}
@@ -13,6 +15,10 @@
 {% endblock %}
 
 {% block content %}
+
+    {% if customSearch %}
+        {% include 'operator.' ~ template ~ '.core.search_tabs' %}
+    {% endif %}
 
 	<div class="success box delete hide">
         {% if operator|default is not empty and operator %}
@@ -133,23 +139,6 @@
 
                 // Reset the dropdown to its initial state
                 $('#' + this.id)[0].selectedIndex = 0;
-            });
-
-            // Tooltip on user groups
-            $(document).tooltip({
-                selector: '.userGroup',
-                position: {
-                    my: "center bottom-12",
-                    at: "center top",
-                    using: function( position, feedback ) {
-                        $( this ).css( position );
-                        $( "<div>" )
-                            .addClass( "arrow" )
-                            .addClass( feedback.vertical )
-                            .addClass( feedback.horizontal )
-                            .appendTo( this );
-                    }
-                }
             });
         });
 

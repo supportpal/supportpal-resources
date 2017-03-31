@@ -90,7 +90,6 @@
         </div>
     </div>
 
-
     <div class="form-container collapsed parentToggle {% if record.parent_id != 0 %} hide {% endif %}">
         <div class="arrow">
             <i class="fa fa-chevron-down"></i>
@@ -103,6 +102,23 @@
                 </div>
                 <span class="description">{{ Lang.get('ticket.department_no_format') }}
                     <span class="hide"><br />{{ Lang.get('ticket.ticket_format_desc')|raw }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-container collapsed parentToggle {% if record.parent_id != 0 %} hide {% endif %}">
+        <div class="arrow">
+            <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="form-row">
+            {{ form_label('from_name', Lang.get('ticket.display_name')) }}
+            <div class="input-container">
+                <div class="hide">
+                    {{ form_text('from_name', null, {'style': 'width: 90%;'}) }}
+                </div>
+                <span class="description">{{ Lang.get('ticket.display_name_desc') }}
+                    <span class="hide">{{ Lang.get('ticket.display_name_options')|raw }}</span>
                 </span>
             </div>
         </div>
@@ -203,10 +219,21 @@
 
         <div class="form-container open first">
             <div class="form-row">
+                {{ form_label('notify_frontend_ticket', Lang.get('ticket.email_user_frontend')) }}
+                <div class="input-container">
+                    {{ form_check('notify_frontend_ticket', 1, record|default is not empty and record.exists ? record.notify_frontend_ticket : true,
+                        { 'class': 'toggle', 'id': 'toggle_notify_frontend_ticket' }) }}
+                    <label for="toggle_notify_frontend_ticket"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.email_user_frontend_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
                 {{ form_label('notify_email_ticket', Lang.get('ticket.email_user_on_email')) }}
                 <div class="input-container">
-                    <input name="notify_email_ticket" value="0" id="notify_email_ticket" type="hidden">
-                    {{ form_check('notify_email_ticket', 1, record|default is not empty and record.exists ? record.notify_email_ticket : true, { 'class': 'toggle', 'id': 'toggle_notify_email_ticket' }) }}
+                    {{ form_check('notify_email_ticket', 1, record|default is not empty and record.exists ? record.notify_email_ticket : true,
+                        { 'class': 'toggle', 'id': 'toggle_notify_email_ticket' }) }}
                     <label for="toggle_notify_email_ticket"></label>
                     <br />
                     <span class="description">{{ Lang.get('ticket.email_user_on_email_desc') }}</span>
@@ -232,46 +259,111 @@
             </div>
         </div>
 
-        <h2>{{ Lang.choice('core.email_template', 2) }}</h2>
+        <h2 id="department-templates">{{ Lang.choice('core.email_template', 2) }}</h2>
         <h2 class="description">{{ Lang.get('ticket.email_template_desc') }}</h2>
 
         <div class="form-container open first">
 
-            <div class="form-row">
-                {{ form_label('ticket_opened', Lang.get('ticket.new_ticket_opened')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_opened', ticketOpenedTemplate, record.email_templates['ticket_opened']) }}
+            <div class="department-templates row">
+
+                <div class="item item50">
+                    <h3>{{ Lang.get('core.user_templates') }}</h3>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_opened', Lang.get('ticket.new_ticket_opened')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_opened', emailTemplates['user_ticket_opened'], record.email_templates['user_ticket_opened']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_reply', Lang.get('ticket.new_ticket_reply')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_reply', emailTemplates['user_ticket_reply'], record.email_templates['user_ticket_reply']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_locked', Lang.get('ticket.reply_to_locked')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_locked', emailTemplates['user_ticket_locked'], record.email_templates['user_ticket_locked']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_waitingresponse', Lang.get('ticket.waiting_for_response')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_waitingresponse', emailTemplates['user_ticket_waitingresponse'], record.email_templates['user_ticket_waitingresponse']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_autoclose', Lang.get('ticket.ticket_auto_closed')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_autoclose', emailTemplates['user_ticket_autoclose'], record.email_templates['user_ticket_autoclose']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_ticket_operatorclose', Lang.get('ticket.closed_by_operator')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_operatorclose', emailTemplates['user_ticket_operatorclose'], record.email_templates['user_ticket_operatorclose']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_email_attachmentrejected', Lang.get('ticket.attachment_rejected')) }}
+                        <div class="input-container">
+                            {{ form_select('user_email_attachmentrejected', emailTemplates['user_email_attachmentrejected'], record.email_templates['user_email_attachmentrejected']) }}
+                        </div>
+                    </div>
+                    <div id="disableRepliesTemplate" class="form-row" {% if not record.disable_user_email_replies %}style="display: none"{% endif %}>
+                        {{ form_label('user_ticket_disablereplies', Lang.get('ticket.email_replies_disabled')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_disablereplies', emailTemplates['user_ticket_disablereplies'], record.email_templates['user_ticket_disablereplies']) }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                {{ form_label('ticket_reply', Lang.get('ticket.new_ticket_reply')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_reply', ticketReplyTemplate, record.email_templates['ticket_reply']) }}
+
+                <div class="item item50">
+                    <h3>{{ Lang.get('core.operator_templates') }}</h3>
+                    <div class="form-row">
+                        {{ form_label('operator_ticket_opened', Lang.get('ticket.new_ticket_opened')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_ticket_opened', emailTemplates['operator_ticket_opened'], record.email_templates['operator_ticket_opened']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_internal_opened', Lang.get('ticket.new_internal_ticket')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_internal_opened', emailTemplates['operator_internal_opened'], record.email_templates['operator_internal_opened']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_user_ticket_reply', Lang.get('ticket.user_ticket_reply')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_user_ticket_reply', emailTemplates['operator_user_ticket_reply'], record.email_templates['operator_user_ticket_reply']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_operator_ticket_reply', Lang.get('ticket.operator_ticket_reply')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_operator_ticket_reply', emailTemplates['operator_operator_ticket_reply'], record.email_templates['operator_operator_ticket_reply']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_ticket_note', Lang.get('ticket.new_ticket_note')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_ticket_note', emailTemplates['operator_ticket_note'], record.email_templates['operator_ticket_note']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_assigned', Lang.get('ticket.assigned_to_ticket')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_assigned', emailTemplates['operator_assigned'], record.email_templates['operator_assigned']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('operator_department_changed', Lang.get('ticket.department_changed')) }}
+                        <div class="input-container">
+                            {{ form_select('operator_department_changed', emailTemplates['operator_department_changed'], record.email_templates['operator_department_changed']) }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                {{ form_label('ticket_locked', Lang.get('ticket.reply_to_locked')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_locked', ticketLockedTemplate, record.email_templates['ticket_locked']) }}
-                </div>
-            </div>
-            <div class="form-row">
-                {{ form_label('ticket_waitingresponse', Lang.get('ticket.waiting_for_response')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_waitingresponse', ticketWaitingResponseTemplate, record.email_templates['ticket_waitingresponse']) }}
-                </div>
-            </div>
-            <div class="form-row">
-                {{ form_label('ticket_autoclose', Lang.get('ticket.ticket_auto_closed')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_autoclose', ticketAutoCloseTemplate, record.email_templates['ticket_autoclose']) }}
-                </div>
-            </div>
-            <div class="form-row">
-                {{ form_label('ticket_operatorclose', Lang.get('ticket.closed_by_operator')) }}
-                <div class="input-container">
-                    {{ form_select('ticket_operatorclose', ticketOperatorCloseTemplate, record.email_templates['ticket_operatorclose']) }}
-                </div>
+
             </div>
 
         </div>
@@ -295,4 +387,5 @@
 
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 {% endblock %}

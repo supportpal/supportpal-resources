@@ -3,9 +3,12 @@
 
     {% if filters is not empty and not filters.isEmpty() %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="ticketFiltersSidebox">
             <i class="fa fa-filter icon"></i>
             {{ Lang.choice('ticket.filter', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul class="with-badge tickets">
             {% for filter in filters %}
@@ -22,9 +25,12 @@
     </div>
     {% endif %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="ticketStatusesSidebox">
             <i class="fa fa-circle-o icon"></i>
             {{ Lang.choice('general.status', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul class="with-badge">
             {% for status in obj_statuses %}
@@ -41,9 +47,12 @@
         </ul>
     </div>
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="departmentsSidebox">
             <i class="fa fa-folder icon"></i>
             {{ Lang.choice('ticket.department', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul class="with-badge">
             {% for department in obj_departments %}
@@ -62,9 +71,12 @@
     </div>
     {% if obj_brands|length > 1 %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="brandsSidebox">
             <i class="fa fa-sitemap icon"></i>
             {{ Lang.choice('core.brand', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul class="with-badge">
             {% for brand in obj_brands %}
@@ -83,9 +95,12 @@
     </div>
     {% endif %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="ticketPrioritySidebox">
             <i class="fa fa-flag icon"></i>
             {{ Lang.choice('ticket.priority', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul class="with-badge">
             {% for priority in obj_priorities %}
@@ -103,9 +118,12 @@
     </div>
     {% if obj_tags is not empty and not obj_tags.isEmpty() %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="ticketTagsSidebox">
             <i class="fa fa-tags icon"></i>
             {{ Lang.choice('ticket.tag', 2) }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         {% for tag in obj_tags %}
             <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}"
@@ -115,10 +133,14 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% if not recentActivity.isEmpty() %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="recentActivitySidebox">
             <i class="fa fa-clock-o icon"></i>
             {{ Lang.get('ticket.recent_activity') }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul>
             {% for activity in recentActivity %}
@@ -126,18 +148,20 @@
                 <img src="data:image/png;base64,{{ activity.user.avatar }}" width="21" height="21" alt="{{ activity.user.formatted_name }}"
                     class="avatar" /><strong>{{ activity.user.formatted_name }}</strong><br />
                 {{ Purifier.clean(activity.event) }}
-                <div class="description">{{ prettyDate(activity.created_at) }}</div>
+                <div class="description">{{ timeago(activity.created_at) }}</div>
             </li>
-            {% else %}
-                <li>{{ Lang.get('ticket.no_recent_activity') }}</li>
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
     {% if not activeOperators.isEmpty() %}
     <div class="sidebox">
-        <h3>
+        <h3 class="collapsable" id="activeOperatorsSidebox">
             <i class="fa fa-users icon"></i>
             {{ Lang.get('ticket.active_operators') }}
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
         </h3>
         <ul>
             {% for operator in activeOperators %}

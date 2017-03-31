@@ -189,7 +189,7 @@ function Ticket(parameters)
 
             // Redirect to the ticket grid
             if (response.data.redirect !== false) {
-                window.location.replace(response.data.redirect);
+                window.location.href = response.data.redirect;
             }
         }).fail(function () {
             showFeedback(true);
@@ -592,7 +592,7 @@ $(document).ready(function() {
         ticketAction(laroute.route('ticket.operator.action.close'));
         $(document).ajaxStop(function () {
             // Go back to ticket grid
-            window.location.replace(ticketGridUrl);
+            window.location.href = ticketGridUrl;
         });
     });
     // Process lock button
@@ -600,7 +600,7 @@ $(document).ready(function() {
         ticketAction(laroute.route('ticket.operator.action.lock'));
         $(document).ajaxStop(function () {
             // Go back to ticket grid
-            window.location.replace(ticketGridUrl);
+            window.location.href = ticketGridUrl;
         });
     });
     // Process unlock button
@@ -686,6 +686,7 @@ $(document).ready(function() {
                             $('.message-' + messageId).remove();
                             if (!$('.message').length) {
                                 // No more messages exist, ticket will likely have been deleted, redirect to grid
+                                // We use replace() here as we don't want them to click back to ticket.
                                 window.location.replace(ticketGridUrl);
                             }
                             if (!$('.note').length) {
@@ -753,7 +754,13 @@ $(document).ready(function() {
                     $('.tabs #EscalationRules').hide();
                 }
                 // Update due time
-                $('.edit-duetime').text(response.data.time);
+                $('.edit-duetime').html(response.data.time);
+                // If it says 'set a due time', hide the trash can icon, else show it
+                if (response.data.time == Lang.get('ticket.set_due_time')) {
+                    $('.update-duetime .remove-duetime').hide();
+                } else {
+                    $('.update-duetime .remove-duetime').show();
+                }
                 // Update log and escalation rules tables
                 ticket.updateLogTable();
                 ticket.updateEscalationsTable();
@@ -788,10 +795,8 @@ $(document).ready(function() {
         function(response) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
-                // Update log
-                ticket.updateLogTable();
                 // Update due time and hide form
-                $('.edit-duetime').text(response.data);
+                $('.edit-duetime').html(response.data);
                 $('.update-duetime').hide();
                 // If it says 'set a due time', hide the trash can icon, else show it
                 if (response.data == Lang.get('ticket.set_due_time')) {
@@ -799,6 +804,9 @@ $(document).ready(function() {
                 } else {
                     $('.update-duetime .remove-duetime').show();
                 }
+                // Update log and escalation rules tables
+                ticket.updateLogTable();
+                ticket.updateEscalationsTable();
             } else {
                 $('.ticket-update.fail').show(500).delay(5000).hide(500);
             }
@@ -1162,15 +1170,14 @@ $(document).ready(function() {
 
     // Hide reply all dropdown if clicking outside the reply-all div
     $(document).click(function() {
-        if (! $(event.target).closest('.reply-all').length) {
-            if ($('.reply-all .dropdown').is(":visible")) {
-                $('.reply-all .dropdown').hide();
-            }
-        }
+        $('.reply-all .dropdown:visible').hide();
     });
 
     // Handle reply all button to show dropdown
-    $('.reply-all .button').on('click', function() {
+    $('.reply-all .button').on('click', function(e) {
+        // This stops it closing from the code above.
+        e.stopPropagation();
+
         $(this).parent().find('.dropdown').toggle();
     });
 
@@ -1205,7 +1212,8 @@ $(document).ready(function() {
     // From email input
     $fromSelectize = $('select[name="department_email"]').selectize({
         persist: false,
-        dropdownParent: 'body'
+        dropdownParent: 'body',
+        plugins: ['disableDelete']
     });
 
     // CC email input
@@ -1214,6 +1222,12 @@ $(document).ready(function() {
         delimiter: ',',
         persist: false,
         dropdownParent: 'body',
+        placeholder: Lang.get('ticket.enter_email_address'),
+        render: {
+            item: function(item, escape) {
+                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+            }
+        },
         createFilter: function(input) {
             var match = input.match(re);
             if (match) return !this.options.hasOwnProperty(match[0]);
@@ -1227,6 +1241,19 @@ $(document).ready(function() {
                     text: input
                 };
             }
+
+            return false;
+        },
+        onDelete: function(input) {
+            var self = this;
+            $.each(input, function(key, value) {
+                // Delete any items selected that don't have a 'unremovable' class.
+                if (! $('.cc-emails div[data-value="' + value + '"]').hasClass('unremovable')) {
+                    self.removeItem(value);
+                }
+            });
+
+            // We handle the deletions above, no need to carry on with deleteSelect()
             return false;
         }
     });
@@ -1247,9 +1274,12 @@ $(document).ready(function() {
         valueField: 'id',
         labelField: 'formatted_name',
         searchField: [ 'formatted_name', 'email' ],
-        placeholder: Lang.get('user.search_for_user'),
+        placeholder: Lang.get('user.search_for_user_operator'),
         create: false,
         render: {
+            optgroup_header: function(item, escape) {
+                return '<div class="optgroup_header">' + escape(item.label) + '</div>';
+            },
             option: function(item, escape) {
                 return '<div>' +
                     '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
@@ -1261,18 +1291,19 @@ $(document).ready(function() {
         load: function(query, callback) {
             if (!query.length) return callback();
 
-            var data = { q: query };
+            var self = this;
 
-            if ($('input[name="user_internal"]').is(":checked")) {
-                // If we want it to be internal, show only operators, else users
-                data.operator = true;
-            } else {
-                // User search, only fetch users for this ticket brand
-                data.brand_id = brandId;
-            }
-
-            $.get(laroute.route('user.operator.search'), data)
-                .done(function(res) { callback(res.data); })
+            $.get(laroute.route('user.operator.search'), {
+                    q: query,
+                    brand_id: brandId,
+                    operators: 1
+                })
+                .done(function(res) {
+                    self.addOptionGroup(Lang.choice('user.user', 1), { label: Lang.choice('user.user', 2) });
+                    self.addOptionGroup(Lang.choice('general.operator', 1), { label: Lang.choice('general.operator', 2) });
+                    self.refreshOptions();
+                    callback(res.data);
+                })
                 .fail(function() { callback(); });
         },
         onChange: function(value) {
@@ -1283,9 +1314,76 @@ $(document).ready(function() {
         }
     });
 
-    // If we want to change the ticket type when saving the user, remove all existing options from search
-    $('input[name="user_internal"]').on('change', function() {
-        $userSelectize[0].selectize.clearOptions();
+    $('.create-new-user').click(function() {
+        // Show the alert
+        swal({
+            title: Lang.get('ticket.create_new_user'),
+            html: '<form class="new-user form-row">'
+                    + '<input type="hidden" name="ticket" value="' + ticketId + '" />'
+                    + Lang.get('ticket.create_new_user_desc')
+                    + (internal ? ' ' + Lang.get('ticket.convert_user_ticket_desc') : '')
+                    + '<br /><br />'
+                    + '<div class="input-group">'
+                        + '<label>'
+                            + '<span class="label">' + Lang.get('user.firstname') + '</span>'
+                            + '<input type="text" name="firstname" />'
+                        + '</label><br />'
+                        + '<label>'
+                            + '<span class="label">' + Lang.get('user.lastname') + '</span>'
+                            + '<input type="text" name="lastname" />'
+                        + '</label><br />'
+                        + '<label>'
+                            + '<span class="label">' + Lang.get('general.email') + ' *</span>'
+                            + '<input type="text" name="email" />'
+                        + '</label>'
+                        + (organisationsEnabled ? '<br />'
+                            + '<label>'
+                                + '<span class="label">' + Lang.choice('user.organisation', 1) + '</span>'
+                                + '<input type="text" name="organisation" />'
+                            + '</label>' : '')
+                    + '</div><br /><span class="description">* ' + Lang.get('messages.field_required') + '</span>'
+                + '</form>',
+            showCancelButton: true,
+            confirmButtonText: Lang.get('general.save'),
+            closeOnConfirm: false,
+            allowOutsideClick: false
+        }, function(isConfirm) {
+            if (isConfirm) {
+                // Disable submit button
+                swal.disableButtons();
+
+                // Post destroy data
+                $.ajax({
+                    url: laroute.route('ticket.operator.action.newuser'),
+                    type: 'POST',
+                    data: $('form.new-user').serializeArray(),
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            // We need to update a lot of details on the page. Quick fix, refresh the page.
+                            window.location.reload();
+
+                            swal(
+                                Lang.get('messages.success'),
+                                Lang.get('messages.success_created', { item: Lang.get('general.record') }),
+                                'success'
+                            );
+                        } else {
+                            swal(
+                                Lang.get('messages.error'),
+                                response.message,
+                                'error'
+                            );
+                        }
+                    }
+                }).fail(function() {
+                    swal(
+                        Lang.get('messages.error'),
+                        Lang.get('messages.error_created', { item: Lang.get('general.record') }),
+                        'error'
+                    );
+                });
+            }
+        });
     });
 
     /**
@@ -1418,23 +1516,6 @@ $(document).ready(function() {
         ticket.loadMessage($message, callback);
     });
 
-    // Tooltip on status and user groups
-    $(document).tooltip({
-        selector: '.statusIcon, .userGroup',
-        position: {
-            my: "center bottom-12",
-            at: "center top",
-            using: function( position, feedback ) {
-                $( this ).css( position );
-                $( "<div>" )
-                    .addClass( "arrow" )
-                    .addClass( feedback.vertical )
-                    .addClass( feedback.horizontal )
-                    .appendTo( this );
-            }
-        }
-    });
-
     /*
      * Jump to reply
      */
@@ -1492,7 +1573,7 @@ $(document).ready(function() {
             // Load table (force it)
             ticket.updateLogTable(true);
         }
-    })
+    });
 
     // Load escalation rules table on clicking tab for first time
     $(document).on('click','.tabs #EscalationRules', function () {
@@ -1500,7 +1581,7 @@ $(document).ready(function() {
             // Load table (force it)
             ticket.updateEscalationsTable(true);
         }
-    })
+    });
 });
 
 function htmlDecodeWithLineBreaks(html) {
@@ -1562,6 +1643,9 @@ function showMessage(html) {
 
     // Update editor for editing this new message
     redactor(message.find('textarea'));
+
+    // Handle email details popup if it exists
+    ticket.registerEmailDetails(message.find('.show-email-details'));
 }
 
 function updateTicket(data) {
@@ -1642,23 +1726,26 @@ function changeDepartment(data) {
                 // Poll for new replies and updates
                 pollReplies();
 
-                // Update department emails list
-                var first = null;
-                $fromSelectize[0].selectize.clearOptions();
-                $.each(response.data.emails, function(index, value) {
-                    if (first === null) first = index;
-                    $fromSelectize[0].selectize.addOption({ value: index, text: value });
-                    $fromSelectize[0].selectize.refreshOptions(false);
-                });
-                // Select first option
-                $fromSelectize[0].selectize.addItem(first, true);
+                // If the ticket has a department email dropdown
+                if ($fromSelectize.length) {
+                    // Update department emails list
+                    var first = null;
+                    $fromSelectize[0].selectize.clearOptions();
+                    $.each(response.data.emails, function (index, value) {
+                        if (first === null) first = index;
+                        $fromSelectize[0].selectize.addOption({value: index, text: value});
+                        $fromSelectize[0].selectize.refreshOptions(false);
+                    });
+                    // Select first option
+                    $fromSelectize[0].selectize.addItem(first, true);
+                }
 
                 // Update custom fields
                 if (typeof response.data.customfields != 'undefined') {
                     $('#sidebar .customfields').html(response.data.customfields);
 
                     // Just check to see if we have any custom fields for this department
-                    if ($('#sidebar .customfields').html() == '') {
+                    if ($('#sidebar .customfields').html().trim() == '') {
                         // None - hide custom fields box
                         $('#sidebar .customfields').parents('.sidebox').hide();
                     } else {
@@ -1668,6 +1755,12 @@ function changeDepartment(data) {
                         callHideShowPassword();
                     }
                 }
+
+                // Update department templates.
+                departmentTemplates = response.data.templates;
+                // Force run that code that checks if we can send the email to user/operators, by mocking events.
+                $('.message-form select[name="to_status"]').change();
+                $('.reply-type .option.active').click();
 
                 // Refresh follow up tab
                 refreshFollowUpTab();
@@ -1720,7 +1813,7 @@ function deleteTicket(block) {
                             'success'
                         );
                         // Go back to ticket grid
-                        window.location.replace(ticketGridUrl);
+                        window.location.href = ticketGridUrl;
                     } else {
                         swal(
                             Lang.get('messages.error'),
@@ -1831,7 +1924,7 @@ function pollReplies(allMessages) {
                 }
 
                 // Update ticket details
-                $('.last-action').text(response.data.details.updated_at);
+                $('.last-action').html(response.data.details.updated_at);
                 if (response.data.details.update) {
                     // Update sidebar items
                     $('.edit-user').html(response.data.details.user);
@@ -1863,7 +1956,13 @@ function pollReplies(allMessages) {
                     });
 
                     $('select[name="slaplan"]').val(response.data.details.sla_plan);
-                    $('.edit-duetime').text(response.data.details.due_time);
+                    $('.edit-duetime').html(response.data.details.due_time);
+                    // If it says 'set a due time', hide the trash can icon, else show it
+                    if (response.data.details.due_time == Lang.get('ticket.set_due_time')) {
+                        $('.update-duetime .remove-duetime').hide();
+                    } else {
+                        $('.update-duetime .remove-duetime').show();
+                    }
 
                     // Update reply options status and if closed, hide close button
                     if (response.data.details.status == closedStatusId) {
@@ -1880,6 +1979,10 @@ function pollReplies(allMessages) {
                         $('.lock-ticket').show();
                         $('h1 .fa-lock, .unlock-ticket').hide();
                     }
+
+                    // Update log and escalation rules tables
+                    ticket.updateLogTable();
+                    ticket.updateEscalationsTable();
                 }
 
                 // Update custom fields
@@ -1887,6 +1990,13 @@ function pollReplies(allMessages) {
                     $('#sidebar .customfields').html(response.data.customfields);
                     // Enable hide/show password toggle if needed
                     callHideShowPassword();
+                }
+
+                $('#sidebar').trigger('refreshedSidebar');
+                
+                // Refresh timeago.
+                if (typeof timeAgo !== 'undefined') {
+                    timeAgo.render($('time.timeago'));
                 }
             }
 

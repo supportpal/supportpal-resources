@@ -1,0 +1,10 @@
+<ul class="tabs">
+    <a href="{{ route('core.operator.search', {'query': Input.get('query'), 'tab': 0}) }}"
+            {% if Input.get('tab') == 0 %} class="active"{% endif %}>
+        {{ Lang.choice('ticket.ticket', 2) }}
+    </a>
+    <a href="{{ route('core.operator.search', {'query': Input.get('query'), 'tab': 1}) }}"
+            {% if Input.get('tab') == 1 %} class="active"{% endif %}>
+        {{ Lang.choice('user.user', 2) }}
+    </a>
+</ul>

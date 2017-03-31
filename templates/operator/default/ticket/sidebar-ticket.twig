@@ -9,7 +9,7 @@
     </div>
 
     <div class="sidebox">
-        <h3 class="collapsable">
+        <h3 class="collapsable" id="ticketDetailsSidebox">
             <i class="fa fa-info-circle icon"></i>
             {{ Lang.get('ticket.ticket_details') }}
             <div class="arrow">
@@ -32,9 +32,11 @@
                 </td>
             </tr>
             <tr class="update-user hide">
-                <td colspan="2" style="line-height: 30px;">
+                <td colspan="2">
                     {{ form_select('user') }}
-                    <label>{{ form_checkbox('user_internal', 1, ticket.internal) }} {{ Lang.get('ticket.internal') }}</label>
+                    <div class="create-new-user">
+                        <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
+                    </div>
                 </td>
             </tr>
             {% if Config.get('brand')|length > 1 %}
@@ -132,19 +134,19 @@
             </tr>
             {% endif %}
             <tr>
-                <th>{{ Lang.get('ticket.due_time') }}</th>
+                <th>{{ Lang.get('general.due') }}</th>
                 <td>
                     {% if can_update_ticket(auth_user(), ticket) %}
                         <a class="edit-duetime link">
                             {% if ticket.due_time|default is not empty %}
-                                {{ formatDate(ticket.due_time) }}
+                                {{ format_due_time(ticket.due_time) }}
                             {% else %}
                                 {{ Lang.get('ticket.set_due_time') }}
                             {% endif %}
                         </a>
                     {% else %}
                         {% if ticket.due_time|default is not empty %}
-                            {{ formatDate(ticket.due_time) }}
+                            {{ format_due_time(ticket.due_time) }}
                         {% else %}
                             {{ Lang.get('general.na') }}
                         {% endif %}
@@ -176,7 +178,7 @@
                 <th>{{ Lang.get('ticket.last_action') }}</th>
                 <td>
                     <span class="last-action">
-                        {{ prettyDate(ticket.updated_at) }}
+                        {{ timeago(ticket.updated_at) }}
                     </span>
                 </td>
             </tr>
@@ -192,7 +194,7 @@
         {% include overriddenViews['sidebar-ticket'] %}
     {% else %}
         <div class="sidebox details">
-            <h3 class="collapsable">
+            <h3 class="collapsable" id="userDetailsSidebox">
                 <i class="fa fa-user icon"></i>
                 {{ Lang.get('user.user_details') }}
                 <div class="arrow">
@@ -220,10 +222,10 @@
                     <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}<br />
                     {% if ticket.user.confirmed %}
                         <i class="fa fa-check-square fa-fw"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
-                        <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ prettyDate(ticket.user.created_at) }}<br />
+                        <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ timeago(ticket.user.created_at) }}<br />
 
                         {% if ticket.user.last_active_at > 0 %}
-                            <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ prettyDate(ticket.user.last_active_at) }}<br />
+                            <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ timeago(ticket.user.last_active_at) }}<br />
                         {% endif %}
                     {% else %}
                         <i class="fa fa-square fa-fw"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
@@ -235,6 +237,13 @@
                     <br />
                     {% endif %}
                     <i class="fa fa-globe fa-fw"></i> &nbsp; {{ countries()[ticket.user.country] }}<br />
+                {% endif %}
+
+                {% if ticket.user.notes is not empty %}
+                    <br />
+                    <i class="fa fa-sticky-note"></i> &nbsp; <strong>{{ Lang.choice('general.note', 2) }}</strong>
+                    <br />
+                    <div class="text-shorten">{{ ticket.user.notes|nl2br }}</div>
                 {% endif %}
 
                 {% if userTickets.count() %}
@@ -251,7 +260,7 @@
                             {{ Purifier.clean(str_limit(userTicket.subject, 28, '...')) }}
                         </a>
                         <div class="description">
-                            {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ prettyDate(userTicket.created_at) }}
+                            {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
                         </div>
                     </li>
                     {% endfor %}
@@ -272,7 +281,7 @@
                             {{ Purifier.clean(str_limit(organisationTicket.subject, 28, '...')) }}
                         </a>
                         <div class="description">
-                            {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ prettyDate(organisationTicket.created_at) }}
+                            {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
                         </div>
                     </li>
                     {% endfor %}
@@ -291,7 +300,7 @@
                                     {{ Purifier.clean(str_limit(otherBrandTicket.subject, 28, '...')) }}
                                 </a>
                                 <div class="description">
-                                    {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ prettyDate(otherBrandTicket.created_at) }}
+                                    {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}
                                 </div>
                             </li>
                         {% endfor %}
@@ -303,7 +312,7 @@
 
     {% if not macros.isEmpty() and can_update_ticket(auth_user(), ticket) %}
     <div class="sidebox">
-        <h3 class="collapsable">
+        <h3 class="collapsable" id="ticketMacroSidebox">
             <i class="fa fa-magic icon"></i>
             {{ Lang.choice('ticket.macro', 2) }}
             <div class="arrow">
@@ -319,7 +328,7 @@
     {% endif %}
 
     <div class="sidebox {% if customfields is empty %}hide{% endif %}">
-        <h3 class="collapsable">
+        <h3 class="collapsable" id="ticketCustomfieldSidebox">
             <i class="fa fa-file-text icon"></i>
             {{ Lang.choice('ticket.customfield', 2) }}
             <div class="arrow">
@@ -342,7 +351,7 @@
 
     {% if not activeOperators.isEmpty() %}
     <div class="sidebox">
-        <h3 class="collapsable">
+        <h3 class="collapsable" id="activeOperatorsSidebox">
             <i class="fa fa-users icon"></i>
             {{ Lang.get('ticket.active_operators') }}
             <div class="arrow">
