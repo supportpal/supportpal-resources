@@ -17,7 +17,7 @@
         </div>
         <div class="form-row">
             <label>{{ Lang.choice('ticket.department', 1) }}</label>
-            <span class="ticket-department">{{ Purifier.clean(ticket.department.name) }}</span>
+            <span class="ticket-department">{{ ticket.department.frontend_name }}</span>
         </div>
         <div class="form-row">
             <label>{{ Lang.choice('general.status', 1) }}</label>
@@ -29,11 +29,11 @@
         </div>
         <div class="form-row">
             <label>{{ Lang.get('ticket.submitted') }}</label>
-            {{ formatDate(ticket.created_at) }}
+            {{ timeago(ticket.created_at) }}
         </div>
         <div class="form-row">
             <label>{{ Lang.get('ticket.last_action') }}</label>
-            <span class="ticket-updated">{{ formatDate(ticket.updated_at) }}</span>
+            <span class="ticket-updated">{{ timeago(ticket.updated_at) }}</span>
         </div>
     </div>
     {{ parent() }}
@@ -84,7 +84,7 @@
             </div>
             <div class="form-row">
                 <label>{{ Lang.choice('ticket.department', 1) }}</label>
-                {{ Purifier.clean(ticket.department.name) }}
+                {{ ticket.department.frontend_name }}
             </div>
             <div class="form-row">
                 <label>{{ Lang.choice('general.status', 1) }}</label>
@@ -96,11 +96,11 @@
             </div>
             <div class="form-row">
                 <label>{{ Lang.get('ticket.submitted') }}</label>
-                {{ formatDate(ticket.created_at) }}
+                {{ timeago(ticket.created_at) }}
             </div>
             <div class="form-row">
                 <label>{{ Lang.get('ticket.last_action') }}</label>
-                {{ formatDate(ticket.updated_at) }}
+                <span class="ticket-updated">{{ timeago(ticket.updated_at) }}</span>
             </div>
         </div>
         <hr />
@@ -141,7 +141,7 @@
 
     {% if ticket.locked == 0 %}
         <div class="add-reply">
-            {% if ticket.cc|default is empty %}
+            {% if organisationEmails is empty and ticket.cc is empty %}
                 <a class="button right toggle-cc">
                     {{ Lang.get('ticket.add_cc') }}
                 </a>

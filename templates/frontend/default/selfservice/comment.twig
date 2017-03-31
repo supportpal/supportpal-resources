@@ -13,7 +13,7 @@
                 {% if comment['author']['isOperator'] %}
                     <span class="badge">{{ Lang.get('general.staff') }}</span> &nbsp;
                 {% endif %}
-                <span class="date">{{ prettyDate(comment['created_at']) }}</span>
+                <span class="date">{{ timeago(comment['created_at']) }}</span>
                 <br />
 
                 {% if comment['rating']|default is not empty and comment['rating'] < Config.get('settings.comment_threshold') %}

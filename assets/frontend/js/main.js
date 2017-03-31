@@ -96,6 +96,11 @@ $(document).ready(function() {
         $(this).next().toggle(500);
     });
 
+    // Time ago.
+    if (typeof timeAgo !== 'undefined') {
+        timeAgo.render($('time.timeago'));
+    }
+
     /**
      * Global AJAX setup handler to add the CSRF token to ALL POST requests.
      */

@@ -57,6 +57,12 @@ $(document).ready(function() {
         delimiter: ',',
         persist: false,
         dropdownParent: 'body',
+        placeholder: Lang.get('ticket.enter_email_address'),
+        render: {
+            item: function(item, escape) {
+                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+            }
+        },
         createFilter: function(input) {
             var match = input.match(re);
             if (match) return !this.options.hasOwnProperty(match[0]);
@@ -70,6 +76,19 @@ $(document).ready(function() {
                     text: input
                 };
             }
+
+            return false;
+        },
+        onDelete: function(input) {
+            var self = this;
+            $.each(input, function(key, value) {
+                // Delete any items selected that don't have a 'unremovable' class.
+                if (! $('.cc-emails div[data-value="' + value + '"]').hasClass('unremovable')) {
+                    self.removeItem(value);
+                }
+            });
+
+            // We handle the deletions above, no need to carry on with deleteSelect()
             return false;
         }
     });
@@ -80,13 +99,12 @@ $(document).ready(function() {
         $(this).hide();
     });
 
-    // Update message
-    $('.message-form').submit(function(event) {
-        event.preventDefault();
+    // Backwards compatibility for JS changes in 2.1.2 (DEV-1032), this means the reply form continues to work.
+    $('.message-form').data('ajax', 'ajax');
 
-        if ($(this).valid()) {
-            saveMessage($(this));
-        }
+    // Add Reply.
+    $('.message-form').on('form:submit', function() {
+        saveMessage($(this));
     });
 
     // Update ticket custom fields
@@ -209,7 +227,7 @@ function pollReplies() {
                     $('.ticket-status').css('background-color', response.data.details.status_colour);
                     $('.ticket-priority').text(response.data.details.priority);
                     $('.ticket-priority').css('background-color', response.data.details.priority_colour);
-                    $('.ticket-updated').text(response.data.details.updated_at);
+                    $('.ticket-updated').html(response.data.details.updated_at);
 
                     // If closed, hide mark as resolved button
                     if (response.data.details.status_id == closedStatusId) {
@@ -228,6 +246,11 @@ function pollReplies() {
                             location.reload();
                         }
                     }
+                }
+
+                // Refresh timeago.
+                if (typeof timeAgo !== 'undefined') {
+                    timeAgo.render($('time.timeago'));
                 }
             }
 

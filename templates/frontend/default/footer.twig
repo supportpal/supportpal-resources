@@ -8,8 +8,6 @@
 
 </div>
 
-<script src="{{ asset_rev('resources/assets/frontend/js/main.js')}}" type="text/javascript"></script>
-
 <!-- Laravel Javascript Validation -->
 <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
 
@@ -29,6 +27,12 @@
     laroute.set_routes({{ routeCollection|raw }});
     laroute.set_prefix('{{ Config.get('laroute.prefix', '') }}');
 </script>
+    
+<!-- Timeago.js -->
+<script src="{{ asset_rev('resources/assets/libs/timeago.js/js/timeago.min.js') }}"></script>
+<script src="{{ asset_rev('resources/assets/general/js/main.js') }}"></script>
+
+<script src="{{ asset_rev('resources/assets/frontend/js/main.js')}}" type="text/javascript"></script>
 
 {{ block('scripts_footer') }}
 

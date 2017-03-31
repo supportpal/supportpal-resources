@@ -37,7 +37,7 @@
                             {{ Lang.get('general.staff') }}
                         {% else %}
                             {{ Lang.choice('user.user', 1) }}
-                        {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                        {% endif %} &nbsp;&middot;&nbsp; {{ timeago(message.created_at) }}
                     </span>
                 </div>
 

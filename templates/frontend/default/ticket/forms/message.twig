@@ -1,4 +1,4 @@
-<form class="message-form validate">
+<form class="message-form validate" data-ajax="ajax">
 
     <div class="fail attachment box hide"></div>
 
@@ -7,11 +7,21 @@
         {{ form_hidden('token', Input.get('token')) }}
     {% endif %}
 
-    <div class="form-row form-full recipients {% if ticket.cc|default is empty %}hide{% endif %}">
+    <div class="form-row form-full recipients {% if organisationEmails is empty and ticket.cc is empty %}hide{% endif %}">
         <div class="cc-emails">
             {{ form_label('cc[]', Lang.get('ticket.cc')) }}
             <div class="input-container">
-                {{ form_select('cc[]', ticket.cc, ticket.cc, { 'multiple': 'multiple' }) }}
+                <select name="cc[]" multiple="multiple">
+                    {% for email in organisationEmails %}
+                        <option selected="selected" data-data='{{ {'value': email, 'unremovable': true}|json_encode(constant('JSON_FORCE_OBJECT')) }}'
+                                value='{{ email }}'>
+                            {{ email }}
+                        </option>
+                    {% endfor %}
+                    {% for email in ticket.cc %}
+                        <option selected="selected" value='{{ email }}'>{{ email }}</option>
+                    {% endfor %}
+                </select>
                 <span class="light">{{ Lang.get('ticket.cc_desc') }}</span>
             </div>
         </div>

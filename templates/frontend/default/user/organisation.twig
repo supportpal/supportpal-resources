@@ -31,7 +31,7 @@
         <div id="tabProfile" class="desk-tab">
             <h2 class="tab-title">{{ Lang.get('selfservice.popular_items') }}</h2>
 
-            {{ form_model(record, {'route': 'user.organisation.updateProfile', 'method': 'POST', 'class': 'validate'}) }}
+            {{ form_model(record, {'route': 'user.organisation.updateProfile', 'method': 'POST', 'class': 'validate profile'}) }}
 
                 {% include 'frontend.' ~ template ~ '.user.forms.organisation_profile' %}
 
@@ -66,7 +66,7 @@
                             <td>
                                 <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
                                 &nbsp;
-                                {{ user.formattedname }} <span class="light">{{ '<' ~ user.email ~ '>' }}</span>
+                                {{ user.formattedname }} {% if user.email %}<span class="light">{{ '<' ~ user.email ~ '>' }}</span>{% endif %}
                                 {% if record.isOwner(user.id) %}
                                     &nbsp; <span class="badge">{{ Lang.get('user.owner') }}</span>
                                 {% endif %}
@@ -95,11 +95,14 @@
                 </table>
 
                 <div class="form-button">
-                    {{ form_submit(Lang.get('general.save')) }}
-                    &nbsp;&nbsp;
+                    {% if ownerOptions is not empty %}
+                        {{ form_submit(Lang.get('general.update')) }}&nbsp;&nbsp;
+                    {% endif %}
+                    {% if Config.get('settings.registration_enabled') %}
                     <a href="{{ route('user.organisation.addUser') }}">
                         {{ form_button(Lang.get('user.add_user')) }}
                     </a>
+                    {% endif %}
                 </div>
 
             {{ form_close() }}
@@ -108,7 +111,7 @@
 
                 <hr />
 
-                {{ form_model(record, {'route': 'user.organisation.transferOwnership', 'method': 'POST'}) }}
+                {{ form_model(record, {'route': 'user.organisation.transferOwnership', 'method': 'POST', 'class': 'validate transferOwnership'}) }}
 
                     <h3>{{ Lang.get('user.transfer_ownership') }}</h3>
 
@@ -119,8 +122,14 @@
                     <div class="form-row">
                         {{ form_label('owner', Lang.get('user.new_owner')) }}
                         <div class="input-container">
-                            {{ form_select('owner', ownerOptions, null,
-                                {'placeholder': Lang.get('user.start_typing_name')}) }}
+                            <select name="owner" placeholder="{{ Lang.get('user.start_typing_name') }}">
+                                <option value=''></option>
+                                {% for user in ownerOptions %}
+                                    <option data-data='{{ user|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ user.id }}'>
+                                        {{ user.formatted_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
 
@@ -139,6 +148,9 @@
 {% block scripts_footer %}
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
+    {% endif %}
+    {% if transferValidator|default is not empty %}
+        {{ transferValidator|raw }}
     {% endif %}
 
     <!-- Custom fields -->

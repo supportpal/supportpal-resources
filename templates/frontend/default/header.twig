@@ -14,6 +14,8 @@
     <title>{{ company }} - {% block title %}{{ Lang.get('general.support_portal') }}{% endblock %}</title>
 
     <script src="{{ asset_rev('resources/assets/frontend/js/jquery.min.js') }}" type="text/javascript"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/libs/jquery-ui/js/jquery-ui.min.js') }}"></script>
 
     {{ block('scripts_header') }}
 
@@ -81,6 +83,13 @@
                         {{ Lang.get('user.profile') }}
                     </a>
                 </li>
+                {% if auth_user().password is not empty %}
+                    <li>
+                        <a href="{{ route('user.change_password') }}" {% if route starts with 'user.change_password' %}class="current"{% endif %}>
+                            {{ Lang.get('user.change_password') }}
+                        </a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
                         {{ Lang.get('user.email_history') }}

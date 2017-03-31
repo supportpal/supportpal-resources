@@ -53,7 +53,23 @@ $(document).ready(function() {
     });
 
     $('select[name="owner"]').selectize({
-        sortField: 'text'
+        searchField: [ 'formatted_name', 'email' ],
+        render: {
+            item: function(item, escape) {
+                return '<div class="item">' +
+                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                    escape(item.formatted_name) +
+                    (item.email ? ' <span class="description">' + escape('<' + item.email + '>') + '</span>' : '') +
+                    '</div>';
+            },
+            option: function(item, escape) {
+                return '<div>' +
+                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                    escape(item.formatted_name) +
+                    (item.email ? ' <span class="description">' + escape('<' + item.email + '>') + '</span>' : '') +
+                    '</div>';
+            }
+        }
     });
 
 });
