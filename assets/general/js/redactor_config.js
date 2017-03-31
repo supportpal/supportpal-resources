@@ -44,7 +44,7 @@
     }
 
     $.Redactor.default_opts = {
-        pastePlainText: true,
+        pastePlainText: false,
         linebreaks: true,
         linkSize: 255,
         imageUpload: laroute.route('core.embed.image'),

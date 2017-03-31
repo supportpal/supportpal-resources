@@ -31,7 +31,7 @@
             return false;
         };
 
-        $("<?php echo $validator['selector']; ?>").validate({
+        var validator = $("<?php echo $validator['selector']; ?>").validate({
             errorElement: 'span',
             errorClass: 'field-error',
 
@@ -54,28 +54,58 @@
                 // Show error
                 var displayingError = error.insertAfter(position);
 
-                // If the form field is too big, put the error below
-                if ($('.desk_content_padding').isChildOverflowing('#'+displayingError.prop('id'))) {
+                // If the form field is too big or it's a selectize box, put the error below.
+                if ($('.desk_content_padding').isChildOverflowing('#'+displayingError.prop('id'))
+                    || position.hasClass('selectize-control')
+                ) {
                     displayingError.addClass('field-error-below');
                 }
             },
             highlight: function(element) {
-                $(element).closest('.form-row').addClass('has-error'); // add the Bootstrap error class to the control group
+                // Add the Bootstrap error class to the control group
+                $(element).closest('.form-row').addClass('has-error');
             },
-
-            /*
-             // Uncomment this to mark as validated non required fields
-             unhighlight: function(element) {
-             $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-             },
-             */
+            
             success: function(element) {
-                $(element).closest('.form-row').removeClass('has-error').addClass('has-success'); // remove the Boostrap error class from the control group
+                // Remove the Bootstrap error class from the control group
+                $(element).closest('.form-row').removeClass('has-error').addClass('has-success');
+            },
+            
+            // Custom submit handler.
+            submitHandler: function (form) {
+                $(form).find(':submit').prop('disabled', 'disabled');
+
+                // Validate the form.
+                if (validator.form()) {
+                    // Handle remote validation rules.
+                    if (validator.pendingRequest) {
+                        validator.formSubmitted = true;
+                        return false;
+                    }
+
+                    // Form is valid, trigger form submission event.
+                    $(form).trigger('form:submit');
+
+                    // If the form is marked as using AJAX, then return false to prevent the page refreshing.
+                    if (typeof $(form).data('ajax') !== "undefined") {
+                        return false;
+                    }
+                    
+                    // Submit the form (will cause the page to refresh etc).
+                    form.submit();
+                } else {
+                    $(form).find(':submit').prop('disabled', false);
+                    validator.focusInvalid();
+                    return false;
+                }
             },
 
-            focusInvalid: false, // do not focus the last invalid input
-            <?php if (Config::get('jsvalidation.focus_on_error')): ?>
-            invalidHandler: function(form, validator) {
+            // Do not focus the last invalid input.
+            focusInvalid: false,
+
+            invalidHandler: function(event, validator) {
+                // Enable submit button again (necessary for invalid remote validation).
+                $(this).find(':submit').prop('disabled', false);
 
                 if (!validator.numberOfInvalids())
                     return;
@@ -97,9 +127,14 @@
                 $(validator.errorList[0].element).focus();
 
             },
-            <?php endif; ?>
 
             rules: <?php echo json_encode($validator['rules']); ?>
-        })
-    })
+        });
+        
+        // Element we want to validate might not actually exist.
+        if (typeof validator !== 'undefined') {
+            // Enable custom submit handler.
+            validator.cancelSubmit = true;
+        }
+    });
 </script>

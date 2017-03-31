@@ -5,6 +5,13 @@
                 {!! $options !!}
         );
 
+        // Refresh time ago.
+        if (typeof timeAgo !== 'undefined') {
+            $('#{!! $id !!}').on('draw.dt', function () {
+                timeAgo.render($('time.timeago'));
+            });
+        }
+
         /**
          * Set a global error callback for DataTables. Here we want to gracefully handle
          * any generated errors. These typically occur when the JSON is invalid.

@@ -1,0 +1,17 @@
+{% extends 'errors.error' %}
+
+{% block title %}
+    405 - {{ Lang.get('messages.page_not_found') }}
+{% endblock %}
+
+{% block header %}
+    {{ Lang.get('messages.error') }} (405)
+{% endblock %}
+
+{% block content %}
+
+    <p>{{ Lang.get('messages.cant_find_page') }} {{ Lang.get('messages.please_report') }}</p>
+
+    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ mb_strtolower(Lang.get('general.support_portal'), 'UTF-8') ~ '</a>'})|raw }}</p>
+
+{% endblock %}
