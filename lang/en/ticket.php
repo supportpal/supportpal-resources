@@ -121,8 +121,7 @@ return [
     "email_user_on_email_desc"  => "Select whether users should be notified by email when an email they send results in a new ticket being opened.",
     "email_operators"           => "Notify Operators",
     "email_operators_desc"      => "Select whether to forward operator replies to other operators. By default checks the \"email operators\" option in the operator panel, and will automatically send an email for email replies by operators.",
-    // Department e-mail templates
-    "email_template_desc"       => "You may select an email template other than the default to be sent to the user for any of the actions below. This template will become the default for this department only.",
+    // Department email templates
     "new_ticket_reply"          => "New Ticket Reply",
     "new_ticket_opened"         => "New Ticket Opened",
     "reply_to_locked"           => "Reply to Locked Ticket",
@@ -369,8 +368,6 @@ return [
     "opened_by"                 => "(Opened by :name)",
     "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
     "not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
-    "verbose_email_log_desc"    => "If email collection should be logged on file. We recommend to keep enabled to help with debugging purposes. Five days worth of logs are stored, older log files will be purged automatically by the system.",
-
     /*
      * 2.0.3
      */
@@ -387,9 +384,8 @@ return [
     "message_clipped"           => "[Message Clipped]",
     "view_entire_message"       => "View entire message",
     "no_custom_fields"          => "No custom fields found. Click <a href=':route'>here</a> to create one.",
-    "follow_up_active"          => "A <a class='view-followup' style='text-decoration: underline;'>follow up</a> is currently active on this ticket and will run shortly after <strong>:time</strong>.",
+    "follow_up_active"          => "A <a class='view-followup' style='text-decoration: underline;'>follow up</a> is currently active on this ticket and will run <strong>:time</strong>.",
     "disable_user_email_replies" => "Disable User Email Replies",
-    "disable_user_email_replies_desc" => "Enable to block email replies from users, and also remove the reply clipping line from outbound ticket emails.",
 
     /*
      * 2.1.0
@@ -439,5 +435,35 @@ return [
     "prioritise_reply-to_desc"  => "Toggle to prioritise the Reply-To header over the From header. If enabled, tickets opened via email will be opened on behalf of the Reply-To name and address.",
     "note_options"              => "Note Options",
     "escalation_rules_desc"     => "The below SLA plan escalation rules are scheduled to run after the times listed. These times may change or the rules may be removed if an operator replies to this ticket.",
+
+    /*
+     * 2.1.2
+     */
+    "not_registered_user"       => "Not a registered user. Email channel settings set to only import emails from registered users.",
+    "display_name"              => "Email Display Name",
+    "display_name_desc"         => "Optional, only set to override the display name used on outgoing emails from this department, leave blank otherwise.",
+    "display_name_options"      => "The following Twig variables may be used:<br >{{ brand.name }} - Brand name<br />{{ department.name }} - Department Name<br />{{ department.frontend_name }} - Shows the parent department name, if ticket belongs to a sub-department.<br />{{ operator.formatted_name }} - Operator Name<br /><em>The operator name won't always be available, so wrap it in a 'not empty' conditional i.e. {% if operator is not empty %}{{ operator.formatted_name }}{% endif %}</em>",
+    "attachment_rejected"       => "Attachment Rejected",
+    "enable_subaddresses"       => "Enable Sub-addresses",
+    "enable_subaddresses_desc"  => "Toggle to enable using email sub-addressing for all departments. This will create a unique sub-address for each ticket that is set as the Reply-To address on all outgoing email. Your mail server must be able to handle sub-addressing, additional steps may be required if you are using email piping to ensure emails to these addresses are forwarded correctly. Enabling this will allow you to remove the ticket number from the subject of email templates.",
+    "email_replies_disabled"    => "Email Replies Disabled",
+    "disable_user_email_replies_desc" => "Enable to block email replies from users, and also remove the reply clipping line from outbound ticket emails. By default, the email will be silently ignored, but you can set an email to be sent to the user by changing the selected email template for the 'Email Replies Disabled' option below.",
+    "bcc"                       => "BCC",
+    "assigned_to_ticket"        => "Assigned to Ticket",
+    "user_ticket_reply"         => "User Ticket Reply",
+    "new_internal_ticket"       => "New Internal Ticket",
+    "department_changed"        => "Department Changed",
+    "operator_ticket_reply"     => "Operator Ticket Reply",
+    "new_ticket_note"           => "New Ticket Note",
+    "email_template_desc"       => "You may select an email template other than the default to be sent to the user or operators for any of the actions below. This template will become the default for this department only.",
+    "create_new_user"           => "Create new user",
+    "create_new_user_desc"      => "Create a new user and set them as the user of this ticket.",
+    "convert_user_ticket_desc"  => "The ticket will be converted from an internal to a user ticket.",
+    "user_reply_internal_ticket" => "Not an operator. Only operators can reply to internal tickets.",
+    "enter_email_address"       => "Enter email address...",
+    "email_user_frontend"       => "Email Users on Tickets Opened at Frontend",
+    "email_user_frontend_desc"  => "Select whether users should be notified by email when they open a ticket themselves on the frontend.",
+    "department_template_disabled" => "The relevant department email template is disabled, so this email cannot be sent.",
+    "verbose_email_log_desc"    => "If email collection should be logged on file, recommended to keep disabled unless instructed by support for debugging. Five days worth of logs are stored, older log files will be purged automatically by the system.",
 
 ];

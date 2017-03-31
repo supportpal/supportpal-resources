@@ -62,7 +62,7 @@ return [
 
     "general_error"         => "An error occurred. Please try again.",
 
-    "mailer_error"          => "There was an error sending an e-mail with subject: ':subject'.",
+    "mailer_error"          => "There was an error sending an email with subject: ':subject'.",
 
     "no_results"            => "No results.",
 
@@ -113,8 +113,8 @@ return [
     "warning"               => "Warning",
     "note"                  => "Note",
     "brand_invalid_dept"    => "The action could not be completed in full. The department could not be updated on some tickets due to their brand.",
-    "template_subject_req"  => "The default e-mail template subject field is required.",
-    "template_contents_req" => "The default e-mail template contents field is required.",
+    "template_subject_req"  => "The default email template subject field is required.",
+    "template_contents_req" => "The default email template contents field is required.",
 
     /*
      * 2.1.1
@@ -122,5 +122,10 @@ return [
     "upload_error"          => "Failed to upload attachment \":filename\", reason: \":reason\"",
     "upload_max_size"       => "File must be smaller than :size",
     "upload_wrong_type"     => "File type is not allowed",
+
+    /*
+     * 2.1.2
+     */
+    "field_required"        => "Field is required.",
 
 ];

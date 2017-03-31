@@ -40,7 +40,7 @@ return [
     "organisation_profile_updated"      => "Updated profile of organisation :rel.",
     "organisation_owner_updated"        => "Transferred organisation :rel ownership to :new_value.",
 
-    "user_emailed"                      => "Sent an email to :rel",
+    "user_emailed"                      => "Sent an email to :rel.",
 
     "mass_email_queued"                 => "Queued :new_value emails in batches to be sent.",
     "mass_email_sent"                   => "Sent :new_value emails in queue.",
@@ -64,8 +64,6 @@ return [
     "ticket_followup_set"               => "A follow up has been set up on ticket #:rel.",
     "ticket_followup_updated"           => "The follow up on ticket #:rel has been updated.",
     "ticket_followup_deleted"           => "The follow up on ticket #:rel has been deleted.",
-
-    "ticket_macro_applied"              => "The macro :new_value was applied to ticket #:rel.",
 
     "ticket_message_reply"              => "Posted a new reply to ticket #:rel.",
     "ticket_message_note"               => "Posted a new note to ticket #:rel.",
@@ -147,5 +145,24 @@ return [
      * 2.1.1
      */
     "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
+    
+    /*
+     * 2.1.2
+     */
+    "sent_email_to"                     => "Sent an email with subject ':extra_rel1' to :rel.",
+    "sent_template_email_to"            => "Sent ':extra_rel1' email to :rel.",
+    "sent_ticket_email_to_user"         => "Sent ':extra_rel1' email to user for ticket #:rel.",
+    "sent_email_to_operators"           => "Sent ':extra_rel1' email to operators.",
+    "sent_ticket_email_to_operators"    => "Sent ':extra_rel1' email to operators for ticket #:rel.",
+    "sent_email_to_operator_group"      => "Sent ':extra_rel1' email to operator group ':new_value' for ticket #:rel.",
+    "sent_email_to_user_group"          => "Sent ':extra_rel1' email to user group ':new_value' for ticket #:rel.",
+    "ticket_macro_applied"              => "The macro ':new_value' was ran on ticket #:rel.",
+    "ticket_macro_automatic"            => "The macro ':new_value' automatically ran on ticket #:rel.",
+    "email_template_not_found"          => "Email template ID ':new_value' not found, aborted sending email.",
+    "ticket_duetime_unset"              => "Unset the due time on ticket #:rel.",
+    "private_conversation_started"      => "Started a conversation with :rel.",
+    "private_message_sent"              => "Sent a message to :rel.",
+    "not_imported_replies_disabled"     => "An email :extra_rel1 was received for ticket #:rel, but was not imported as ticket email replies are disabled.",
+    "not_imported_ticket_locked"        => "An email :extra_rel1 was received for ticket #:rel, but was not imported as the ticket is locked.",
 
 ];

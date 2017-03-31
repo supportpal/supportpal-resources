@@ -237,7 +237,7 @@ return [
     "rule"                      => "Rule",
     "start_date"                => "Start Date",
     "end_date"                  => "End Date",
-    "submitted_by"              => "Submitted By",
+    "submitted_by"              => "Submitted by",
     "every_minutes"             => "Every :minutes",
     "at_time"                   => "at :time",
 
@@ -249,5 +249,30 @@ return [
     "edited"                    => "edited",
     "scheduled_for"             => "Scheduled For",
     "drag_and_drop"             => "Drag and drop your attachments here.",
+    
+    /*
+     * 2.1.2
+     */
+    "just_now"                  => "just now",
+    "minutes_ago"               => ":number minute ago|:number minutes ago",
+    "hours_ago"                 => ":number hour ago|:number hours ago",
+    "days_ago"                  => ":number day ago|:number days ago",
+    "months_ago"                => ":number month ago|:number months ago",
+    "years_ago"                 => ":number year ago|:number years ago",
+    "shortly"                   => "shortly",
+    "in_minutes"                => "in :number minute|in :number minutes",
+    "in_hours"                  => "in :number hour|in :number hours",
+    "in_days"                   => "in :number day|in :number days",
+    "in_months"                 => "in :number month|in :number months",
+    "in_years"                  => "in :number year|in :number years",
+    "number_minutes"            => ":number minute|:number minutes",
+    "number_hours"              => ":number hour|:number hours",
+    "number_days"               => ":number day|:number days",
+    "number_months"             => ":number month|:number months",
+    "number_years"              => ":number year|:number years",
+    "recipients"                => "Recipient|Recipients",
+    "posted"                    => "Posted",
+    "locked"                    => "Locked",
+    "draft"                     => "Draft",
 
 ];

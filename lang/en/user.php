@@ -149,7 +149,6 @@ return array(
     "personal_settings"             => "Personal Settings",
     "personal_settings_desc"        => "Update your own profile and modify settings that relate only to your operator account.",
     "two_fa"                        => "Two-Factor Authentication",
-    "ticket_settings"               => "Ticket Settings",
     "notifications"                 => "Notifications",
     "two_fa_success_disabled"       => "Two-factor authentication has successfully been disabled.",
     "two_fa_success_enabled"        => "Two-factor authentication has successfully been enabled.",
@@ -217,7 +216,7 @@ return array(
     "email_per_batch_desc"          => "The number of emails that are sent together at a time.",
     "batch_interval"                => "Batch Interval",
     "batch_interval_desc"           => "The gap between the email batches in minutes, 1 minute is the minimum.",
-    "select_user_groups"            => "Select user/operator groups or type in e-mail addresses...",
+    "select_user_groups"            => "Select user/operator groups or type in email addresses...",
     "mass_email_sending_time"       => "It will take approximately :time to send all emails.",
     "organisations_enabled"         => "Organisations Enabled",
     "organisations_enabled_desc"    => "By default, users can add an organisation to their profile and add other users to that organisation. If you are only dealing with consumers, you can disable the organisation option and hide it from the interface.",
@@ -268,5 +267,11 @@ return array(
     "personal_confirm_password"     => "Please confirm your current password to set a new password.",
     "operator_confirm_password"     => "Please confirm your password to make changes to the operator account.",
     "login_via_idp"                 => "Login via IdP",
+
+    /*
+     * 2.1.2
+     */
+    "search_for_user_operator"      => "Search for user/operator...",
+    "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
 
 );

@@ -17,7 +17,7 @@ return [
     "submit_ticket"             => "Submit Ticket",
     "submit_ticket_desc"        => "Use this form to submit a support ticket to our highly trained staff.",
     "track_ticket"              => "Track a Ticket",
-    "track_ticket_desc"         => "Not Registered? Use your e-mail address and ticket number to track the status of your ticket.",
+    "track_ticket_desc"         => "Not Registered? Use your email address and ticket number to track the status of your ticket.",
     "my_tickets"                => "My Tickets",
     "my_tickets_desc"           => "Track your tickets. You can find both active and previously submitted tickets here.",
     "no_modules"                => "No modules are enabled.",
@@ -62,7 +62,7 @@ return [
     // Spam Rules & Filtering
     "spam_rule"                 => "Spam Rule|Spam Rules",
     "containing_text"           => "Containing Text",
-    "containing_text_desc"      => "Please enter a string (particular word to ban or e-mail address), all strings are case-insenstive. <br />The string can also take advantage of <a href='http://www.regular-expressions.info/'>regular expressions</a>, an example of this would be: 's.{1,}p.{1,}a.{1,}m'. You do not need to worry about delimiters.",
+    "containing_text_desc"      => "Please enter a string (particular word to ban or email address), all strings are case-insenstive. <br />The string can also take advantage of <a href='http://www.regular-expressions.info/'>regular expressions</a>, an example of this would be: 's.{1,}p.{1,}a.{1,}m'. You do not need to worry about delimiters.",
     "ip_filtering"              => "IP Filtering",
     "content_filtering"         => "Content Filtering",
     "filter_description"        => "Please select an appropriate content filter",
@@ -86,7 +86,7 @@ return [
     "include_operator_name"     => "Include Operator Name",
     "include_operator_name_desc" => "Include the operators name in the email 'From' field for ticket reply emails. For example: From: Joe Bloggs (YourCompany Support)",
     "include_dept_name"         => "Include Department Name",
-    "include_dept_name_desc"    => "Include the department name in the 'From' field of any ticket related emails. Note that this will typically create a new e-mail thread if a given ticket changes departments.",
+    "include_dept_name_desc"    => "Include the department name in the 'From' field of any ticket related emails. Note that this will typically create a new email thread if a given ticket changes departments.",
     "global_email_header"       => "Global Email Header",
     "global_email_header_desc"  => "Add a header to all emails sent out by the system. HTML is accepted.",
     "global_email_footer"       => "Global Email Footer",
@@ -182,14 +182,14 @@ return [
     "configure"                 => "Configure Your Help Desk",
     "configure_desc"            => "SupportPal contains a number of settings enabling you to configure the help desk to your own preference.",
     "company_name_desc"         => "Your company name is used for all correspondence with users.",
-    "default_email"             => "Default E-mail Address",
-    "default_email_desc"        => "The default e-mail address to use for all outbound correspondence to users.",
+    "default_email"             => "Default Email Address",
+    "default_email_desc"        => "The default email address to use for all outbound correspondence to users.",
     "dept_settings_desc"        => "We realise that departments within your organisation operate differently. Department settings enable you to override global settings.",
     "department_desc"           => "Departments are just like those within your organisation. Useful for ensuring customer enquiries get to the correct staff member(s) quickly.",
     "department_email"          => "Department Email Addresses",
-    "dept_email_desc"           => "Multiple e-mail addresses can be assigned to a given department. Email collection is performed against the configured addresses to pull e-mails from your customers into the help desk.",
-    "dept_tmpl"                 => "Department E-mail Templates",
-    "dept_tmpl_desc"            => "Sometimes you may wish to change, or completely disable, department e-mail templates. You can define department specific e-mail templates and enable them here.",
+    "dept_email_desc"           => "Multiple email addresses can be assigned to a given department. Email collection is performed against the configured addresses to pull emails from your customers into the help desk.",
+    "dept_tmpl"                 => "Department Email Templates",
+    "dept_tmpl_desc"            => "Sometimes you may wish to change, or completely disable, department email templates. You can define department specific email templates and enable them here.",
     "schedule_task_desc"        => "Scheduled Tasks are used to automate various processes within SupportPal, including email-based ticket collection.",
     "schedule_task_2"           => "Scheduled Tasks require a cron job to be created in order to operate. The interval for each task performed by the cron job can be adjusted via the edit form.",
     "schedule_task_cron"        => "Cron Job",
@@ -331,5 +331,13 @@ return [
     "email_logs_desc"           => "Details about incoming emails are stored in these files when they are being parsed and imported as tickets.",
     "query_logs"                => "SQL Query Logs",
     "query_logs_desc"           => "These logs contain all MySQL queries that are run when utilising the help desk and are only stored when debug mode is enabled.",
+
+    /*
+     * 2.1.2
+     */
+    "reply_to"                  => "Reply To",
+    "and_number_others"         => "and :number other|and :number others",
+    "user_templates"            => "User Templates",
+    "operator_templates"        => "Operator Templates",
 
 ];

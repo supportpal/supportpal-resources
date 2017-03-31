@@ -105,11 +105,11 @@ return [
 
     "custom" => [
         "data.*.subject" => [
-            "required" => "A subject is required for each provided e-mail."
+            "required" => "A subject is required for each provided email."
         ],
         "data.*.contents" => [
-            "required"  => "The content field is required for each provided e-mail.",
-            "twig_lint" => "Each e-mail must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+            "required"  => "The content field is required for each provided email.",
+            "twig_lint" => "Each email must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
         ],
         "roles.*" => [
             "exists" => "The selected role is invalid.",
@@ -134,13 +134,13 @@ return [
             "exists" => "Each template must belong to a valid language.",
         ],
         "template.Default.*.subject" => [
-            "min" => "Each e-mail template subject must be greater than 1 character.",
-            "max" => "Each e-mail template subject must be less than 255 characters.",
+            "min" => "Each email template subject must be greater than 1 character.",
+            "max" => "Each email template subject must be less than 255 characters.",
         ],
         "template.Default.*.contents" => [
-            "required_with" => "Each e-mail template requires content when a subject is present.",
-            "min" => "Each e-mail template must be greater than 1 character.",
-            "twig_lint" => "Each e-mail template must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "required_with" => "Each email template requires content when a subject is present.",
+            "min" => "Each email template must be greater than 1 character.",
+            "twig_lint" => "Each email template must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
         ],
     ],
 
@@ -150,7 +150,7 @@ return [
 	|--------------------------------------------------------------------------
 	|
 	| The following language lines are used to swap attribute place-holders
-	| with something more reader friendly such as E-Mail Address instead
+	| with something more reader friendly such as Email Address instead
 	| of "email". This simply helps us make messages a little cleaner.
 	|
 	*/
