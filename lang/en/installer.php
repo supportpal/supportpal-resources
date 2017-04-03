@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     // Pre installation check
     "requirements_failed"       => "System Requirements Failed",
@@ -116,4 +116,4 @@ return [
     "ipv6_failure"              => "If your server has IPv6 networking support, please install the php-sockets extension.",
     "email_address_desc"        => "Enter your main company email address, this will be set up as the default sending email address and the email address on your first department. You will be able to add other email addresses later.",
 
-];
+);

@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
     /*
      * 2.0.2
      */
@@ -22,4 +22,4 @@ return [
      * 2.0.3
      */
     "update_custom_field"       => "Update ticket custom field value",
-];
+);

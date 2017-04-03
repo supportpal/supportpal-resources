@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "popular_items"             => "Popular Items",
     "type_popular_items"        => ":type: Popular",
@@ -124,4 +124,4 @@ return [
     "viewing_article"           => "Viewing Article",
     "article_count"             => "Article Count",
 
-];
+);

@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "feedback_question"         => "Question to be shown to the user.",
     "open_new"                  => "Open New Ticket",
@@ -466,4 +466,4 @@ return [
     "department_template_disabled" => "The relevant department email template is disabled, so this email cannot be sent.",
     "verbose_email_log_desc"    => "If email collection should be logged on file, recommended to keep disabled unless instructed by support for debugging. Five days worth of logs are stored, older log files will be purged automatically by the system.",
 
-];
+);

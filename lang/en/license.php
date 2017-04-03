@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "license"           => "License",
     "license_key"       => "License Key",
@@ -47,4 +47,4 @@ return [
     "server_response"   => "Server Response",
     "need_to_reissue"   => "You may need to <strong>reissue</strong> the license at our <a href='http://www.supportpal.com/manage/' target='_blank'>client area</a>.",
 
-];
+);

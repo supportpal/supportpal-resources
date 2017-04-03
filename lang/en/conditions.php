@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
     /*
      * 2.0.2
      */
@@ -34,4 +34,4 @@ return [
      */
     "ticket_brand"              => "Ticket brand",
     "user_brand"                => "User brand",
-];
+);

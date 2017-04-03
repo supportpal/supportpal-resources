@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "generalsetting"    => "Update General Settings",
 
@@ -95,4 +95,4 @@ return [
     // Core
     "logfiles"          => "Manage Log Files",
 
-];
+);

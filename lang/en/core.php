@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     // SupportPal
     "product_name"              => "SupportPal",
@@ -340,4 +340,4 @@ return [
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
 
-];
+);

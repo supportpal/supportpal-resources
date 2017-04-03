@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     // Standard messages
     "item_created"                      => "Created new :item :rel.",
@@ -165,4 +165,4 @@ return [
     "not_imported_replies_disabled"     => "An email :extra_rel1 was received for ticket #:rel, but was not imported as ticket email replies are disabled.",
     "not_imported_ticket_locked"        => "An email :extra_rel1 was received for ticket #:rel, but was not imported as the ticket is locked.",
 
-];
+);

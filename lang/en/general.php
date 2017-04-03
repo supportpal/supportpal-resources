@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "clear"                     => "Clear",
     "begin"                     => "Begin",
@@ -275,4 +275,4 @@ return [
     "locked"                    => "Locked",
     "draft"                     => "Draft",
 
-];
+);
