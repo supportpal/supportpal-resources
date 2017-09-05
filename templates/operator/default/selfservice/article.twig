@@ -12,20 +12,17 @@
     {% endif %}
 {% endblock %}
 
-{% if type|default is not empty %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
-         ~ type.brand.name ~
-        "</a>",
-        Lang.choice('selfservice.article', 2)
-    ] %}
-{% else %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        Lang.choice('selfservice.article', 2)
-    ] %}
-{% endif %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% if type|default is not empty %}
+        <a href="{{ route('selfservice.operator.type.index', { 'brand': type.brand_id }) }}">
+            {{ type.brand.name }}
+        </a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% endif %}
+    <strong>{{ Lang.choice('selfservice.article', 2) }}</strong>
+{% endblock %}
 
 {% block content %}
 
@@ -51,14 +48,19 @@
                 <label>{{ Lang.choice('general.category', 1) }}:</label>
                 <div id="filter_category"></div>
             </div>
-            <div>
-                <label>{{ Lang.choice('selfservice.type', 1) }}:</label>
-                <div id="filter_type"></div>
-            </div>
-            <div>
-                <label>{{ Lang.choice('core.brand', 1) }}:</label>
-                <div id="filter_brand"></div>
-            </div>
+            {% if type|default is empty %}
+                {% if Config.get('brand')|length == 1 %}
+                    <div>
+                        <label>{{ Lang.choice('selfservice.type', 1) }}:</label>
+                        <div id="filter_type"></div>
+                    </div>
+                {% else %}
+                    <div>
+                        <label>{{ Lang.choice('core.brand', 1) }}:</label>
+                        <div id="filter_brand"></div>
+                    </div>
+                {% endif %}
+            {% endif %}
             <div>
                 <label>{{ Lang.choice('selfservice.tag', 1) }}:</label>
                 <div id="filter_tag"></div>
@@ -94,12 +96,17 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 1, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_author"},
-                {column_number : 2, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_category"},
-                {column_number : 3, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_type"},
-                {column_number : 4, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_brand"},
-                {column_number : 5, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_tag"},
-                {column_number : 6, column_data_type: "text", filter_container_id: "filter_published"}
+                {column_number : 1, filter_container_id: "filter_author"},
+                {column_number : 2, filter_container_id: "filter_category"},
+                {% if type|default is empty %}
+                    {% if Config.get('brand')|length == 1 %}
+                        {column_number : 3, filter_container_id: "filter_type"},
+                    {% else %}
+                        {column_number : 4, filter_container_id: "filter_brand"},
+                    {% endif %}
+                {% endif %}
+                {column_number : 5, filter_container_id: "filter_tag"},
+                {column_number : 6, filter_container_id: "filter_published"}
             ]);
         });
     </script>

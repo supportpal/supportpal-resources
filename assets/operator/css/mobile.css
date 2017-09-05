@@ -589,6 +589,10 @@ html {
 	    float: none;
 	}
 
+    .form-row.small-selectize .selectize-control, .translatable.small-translatable {
+        width: 100%;
+    }
+
 }
 
 /*

@@ -8,15 +8,17 @@
     {% endif %}
 {% endblock %}
 
-{% set breadcrumb = [
-    Lang.get('selfservice.selfservice'),
-    brand.name,
-    "<a href='" ~ route('selfservice.operator.type.index', { 'brand': record.brand_id }) ~ "'>"
-        ~ Lang.choice('selfservice.type', 2) ~
-    "</a>",
-    record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.type', 1)})
-        : Lang.get('general.add_item', {'item': Lang.choice('selfservice.type', 1)})
-] %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {{ brand.name }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <a href="{{ route('selfservice.operator.type.index', { 'brand': record.brand_id }) }}">{{ Lang.choice('selfservice.type', 2) }}</a>
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <strong>
+        {{ Lang.get(record.exists ? 'general.edit_item' : 'general.add_item', {'item': Lang.choice('selfservice.type', 1)}) }}
+    </strong>
+{% endblock %}
 
 {% block content %}
 
@@ -32,15 +34,15 @@
 
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 30}) }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
             <div class="form-row form-full">
                 {{ form_label('description', Lang.get('general.description')) }}
-                <div class="input-container">
-                    {{ form_text('description') }}
+                <div class="input-container translatable">
+                    {{ form_translatable_text(record, 'description') }}
                 </div>
             </div>
 
@@ -122,4 +124,9 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <!-- Translatable.js dependencies: Selectize -->
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 {% endblock %}

@@ -44,7 +44,13 @@
             <select name="department" disabled="disabled">
                 <option value="">{{ Lang.get('ticket.change_department') }}...</option>
                 {% for department in departments %}
-                    <option value="{{ department.id }}">{{ Purifier.clean(department.name) }}</option>
+                    <option value="{{ department.id }}">
+                        {% if department.dashes|default is not empty %}
+                            {{ department.dashes|raw }}{{ department.name|replace({ (department.dashes): '' }) }}
+                        {% else %}
+                            {{ department.name }}
+                        {% endif %}
+                    </option>
                 {% endfor %}
             </select>
             &nbsp;

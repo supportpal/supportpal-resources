@@ -10,7 +10,7 @@
             })|raw }}
         </div>
         <div class='draft-message box'>
-            {{ Purifier.clean(otherDraft.text) }}
+            {{ otherDraft.purified_text|raw }}
         </div>
 	{% endif %}
 </div>

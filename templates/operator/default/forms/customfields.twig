@@ -2,7 +2,7 @@
     {% if operator|default is not empty %}
         {% set customfield = customfield|merge({'locked': false}) %}
     {% endif %}
-    <div class="form-row" data-field="{{ customfield['id'] }}">
+    <div class="form-row form-customfields" data-field="{{ customfield['id'] }}">
         {{ form_label('customfield[' ~ customfield['id'] ~ ']', customfield['name']) }}
         <div class="input-container">
             {% if customfield['type'] == 0 %}
@@ -57,10 +57,11 @@
             {% elseif customfield['type'] == 6 %}
                 {% if operator|default is not empty %}
                     <input type="password" name="customfield[{{customfield['id']}}]"
-                        value="{% if customfield['value'] is not empty %}{{ customfield['value'] }}{% endif %}" />
+                            autocomplete="new-password"
+                            value="{% if customfield['value'] is not empty %}{{ customfield['value'] }}{% endif %}" />
                 {% else %}
                     {{ form_password('customfield[' ~ customfield['id'] ~ ']',
-                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'}))
+                        (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})|merge({ 'autocomplete': 'new-password', 'size': '50%' }))
                     }} &nbsp; {% if operator|default is empty %}<span class="description">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
                 {% endif %}
 
@@ -83,8 +84,8 @@
                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'})) }}
 
             {% elseif customfield['type'] == 9 %}
-                {{ form_textarea('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                {{ form_redactor('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'rows': 5} : {'rows': 5})) }}
 
             {% elseif customfield['type'] == 10 %}
                 <div class="table">
@@ -108,7 +109,7 @@
                     {% endfor %}
             {% endif %}
             {% if customfield['description'] is not empty %}
-                {% if customfield['type'] != 0 and customfield['type'] != 2 and customfield['type'] != 7 %}
+                {% if customfield['type'] != 0 and customfield['type'] != 2 and customfield['type'] != 7 and customfield['type'] != 9 %}
                     <br />
                 {% endif %}
                 <span class="description">{{ customfield['description'] }}</span>

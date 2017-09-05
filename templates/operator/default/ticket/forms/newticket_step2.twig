@@ -12,11 +12,11 @@
 
         <div class="form-container first">
 
-            {{ form_hidden('user', user) }}
+            {{ form_hidden('user', user.id) }}
             {{ form_hidden('internal', internal) }}
             {{ form_hidden('brand', brand.id) }}
 
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
@@ -125,7 +125,6 @@
                     </div>
 
                     <div class="form-row" style="padding: 0;">
-                        {% set signature = auth_user().getSignature(brand.id, department.id).render(brand.id, user) %}
                         {{ form_redactor('text', signature is not empty ? '<br /><br />' ~ signature : null, { 'size': '50x3' }) }}
                     </div>
 
@@ -179,10 +178,12 @@
 
         // Global variables for redactor plugins
         var ticketId = null,
-            userId = {{ user }},
+            userId = {{ user.id }},
             brandId = {{ brand.id }},
             operatorId = {{ auth_user().id }},
-            internal = {{ internal }};
+            internal = {{ internal }},
+            userLanguage = "{{ user.languageOrDefault() }}",
+            allLanguages = {{ languages|sort|json_encode()|raw }};
     </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
@@ -232,6 +233,7 @@
     </script>
 
     <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>

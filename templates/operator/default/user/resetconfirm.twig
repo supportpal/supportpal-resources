@@ -38,10 +38,10 @@
 				{{ form_hidden('token', Input.get('token')) }}
 
 				<div class="form-row">
-					{{ form_password('password', { 'placeholder': Lang.get('general.password') }) }}
+					{{ form_password('password', { 'placeholder': Lang.get('general.password'), 'autocomplete': 'new-password' }) }}
 				</div>
 				<div class="form-row">
-					{{ form_password('password_confirmation', { 'placeholder': Lang.get('user.confirm_password') }) }}
+					{{ form_password('password_confirmation', { 'placeholder': Lang.get('user.confirm_password'), 'autocomplete': 'new-password' }) }}
 				</div>
 
 				{{ form_submit(Lang.get('general.save')) }}

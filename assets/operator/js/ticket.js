@@ -228,8 +228,9 @@ function Ticket(parameters)
                 return;
             }
 
-            // Hide edit form
-            var message = $(response.data.view).replaceAll($form.parents('.message'));
+            // Replace message view with response (we use the message ID in case it's a note as it could be showing in
+            // two places).
+            var message = $(response.data.view).replaceAll($('.message.message-' + $form.parents('.message').data('id')));
 
             // Show the edited message (otherwise it's collapsed).
             message.click();
@@ -275,8 +276,12 @@ function Ticket(parameters)
                 .success(function (ajax) {
                     // Load the message in, it should already be sanitized.
                     $text.children('.original')
-                        .html(ajax.data.text)
+                        .html(ajax.data.purified_text)
                         .addClass('loaded');
+
+                    // Remove expandable - ONLY when expanding a message.
+                    // We must do this after the content has been made visible to the user!
+                    ticket.removeExpandable($messageContainer);
 
                     // Load redactor for edit-message if not already loaded
                     if (! $messageContainer.find('textarea').parents('.redactor-box').length) {
@@ -284,7 +289,7 @@ function Ticket(parameters)
                     }
 
                     // Update the edit-message form text too.
-                    $messageContainer.find('form.edit textarea[name="text"]').redactor('code.set', ajax.data.text);
+                    $messageContainer.find('form.edit textarea[name="text"]').redactor('code.set', ajax.data.purified_text);
 
                     // If a callback exists, run it.
                     typeof successCallback === 'function' && successCallback();
@@ -299,6 +304,9 @@ function Ticket(parameters)
                 });
         } else {
             // Message has already been loaded.
+
+            // Remove expandable if there's no other text visible.
+            ticket.removeExpandable($messageContainer);
 
             // Run success callback if exists.
             typeof successCallback === 'function' && successCallback();
@@ -548,6 +556,41 @@ function Ticket(parameters)
 
                 datatablesLoaded.escalationRules = true;
             });
+        }
+    };
+
+    /**
+     * Remove expandable if there's no content before it.
+     *
+     * @param $message
+     */
+    this.removeExpandable = function ($message)
+    {
+        var $quote = $message.find('.supportpal_quote:first');
+        if ($quote.length === 0) {
+            return;
+        }
+        
+        var content = false,
+            $original = $message.children('.text').children('.original'),
+            $parent = $quote;
+
+        // Loop backwards from the quote element back up to the original class
+        while (! $parent.is($original)) {
+            $parent = $parent.parent();
+
+            // It needs to check if this container has any visible text in it (but not in invisible elements inside it)
+            // https://stackoverflow.com/questions/1846177/how-do-i-get-just-the-visible-text-with-jquery-or-javascript
+            if ($parent.find('*:not(:has(*)):visible').text().trim().length) {
+                content = true;
+                break;
+            }
+        }
+
+        // If no content found, remove the quote and expand button
+        if (! content) {
+            $quote.removeClass('supportpal_quote');
+            $quote.prev('.expandable').remove();
         }
     }
 }
@@ -950,6 +993,11 @@ $(document).ready(function() {
         .toggleClass('collapsible collapsed')
         .find('.text')
         .children('.original, .trimmed').toggle();
+    
+    // Remove expandable from visible messages.
+    $('.collapsible').each(function () {
+        ticket.removeExpandable($(this)); 
+    });
 
     // Collapsing or opening message
     $(document).on('click', '#tabMessages .collapsed, #tabMessages .collapsible .header', function() {
@@ -1391,7 +1439,7 @@ $(document).ready(function() {
      */
     $tagSelectize = $('.assign-tags').selectize({
         plugins: ['remove_button'],
-        valueField: 'name',
+        valueField: 'original_name',
         labelField: 'name',
         searchField: [ 'name' ],
         create: true,
@@ -1582,6 +1630,96 @@ $(document).ready(function() {
             ticket.updateEscalationsTable(true);
         }
     });
+    
+    /*
+     * FOLLOW UP TAB
+     */
+    
+    // Load follow up tab for the first time.
+    $(document).on('click','.tabs #Followup', function () {
+        // The #FollowUp node will be empty if we haven't loaded it before.
+        if ($('#tabFollowup').is(':empty')) {
+            refreshFollowUpTab();
+        } 
+    });
+
+    // Follow up is active, show the follow up tab.
+    $(document).on('click', '.view-followup', function () {
+        $('li#Followup').click();
+    });
+
+    var setDateType = function() {
+        if ($(this).val() == 0) {
+            $('.followup-exact').show().find(':input').prop('disabled', false);
+            $('.followup-difference').hide().find(':input').prop('disabled', 'disabled');
+        } else {
+            $('.followup-exact').hide().find(':input').prop('disabled', 'disabled');
+            $('.followup-difference').show().find(':input').prop('disabled', false);
+        }
+    };
+
+    $(document).on('change', 'input[name="date_type"]', setDateType);
+
+    $(document).on('click', '.save-followup', function() {
+        var data = $('.followup-form').serializeArray();
+        data.push({ name: 'ticket', value: ticketId });
+
+        // Post updated data
+        $.ajax({
+            url: $('.followup-form').data('uri'),
+            type: $('.followup-form').data('method'),
+            data: data,
+            dataType: 'json'
+        }).done(function(response) {
+            if (response.status == 'success') {
+                $('.ticket-update.success').show(500).delay(5000).hide(500);
+                // Add delete button
+                $('.delete-followup').show();
+                // Hide status/SLA options
+                $('.followup-status, .followup-sla').hide();
+                // Show warning message
+                $('.followup-warning').show().find('span').html(response.message);
+                // Change route - so it does update from now on
+                $('.followup-form').data('uri', laroute.route('ticket.operator.followup.update', { 'followup': ticketId }));
+                $('.followup-form').data('method','PUT');
+            } else {
+                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+            }
+        }).fail(function() {
+            $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        });
+    });
+
+    $(document).on('click', '.delete-followup', function() {
+        // Post delete data
+        $.ajax({
+            url: laroute.route('ticket.operator.followup.destroy', { 'followup': ticketId }),
+            type: 'DELETE',
+            dataType: 'json'
+        }).done(function(response) {
+            if (response.status == 'success') {
+                $('.ticket-update.success').show(500).delay(5000).hide(500);
+                // Hide delete button
+                $('.delete-followup').hide();
+                // Show status/SLA options
+                $('.followup-status, .followup-sla').show();
+                // Remove all current actions
+                $('tr.rule:visible').remove();
+                // Reset all form values
+                $('.followup-form').trigger("reset");
+                setDateType.call($('input[name="date_type"]:checked'));
+                // Hide warning message
+                $('.followup-warning').hide();
+                // Change route - so it does save from now on
+                $('.followup-form').data('uri', laroute.route('ticket.operator.followup.store'));
+                $('.followup-form').data('method', 'POST');
+            } else {
+                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+            }
+        }).fail(function() {
+            $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        });
+    });
 });
 
 function htmlDecodeWithLineBreaks(html) {
@@ -1594,12 +1732,15 @@ function htmlDecodeWithLineBreaks(html) {
 
 function showMessage(html) {
     // Add message to right place
-    var message, code = $(html);
+    var message, place, code = $(html);
 
     // Make the message visible.
     code.removeClass('collapsed').addClass('collapsible');
     code.find('.text').children('.trimmed').hide();
     code.find('.text').children('.original').show();
+    
+    // Remove expandable if appropriate.
+    ticket.removeExpandable(code);
 
     // It's a note
     if (code.hasClass('note')) {
@@ -1610,13 +1751,26 @@ function showMessage(html) {
             if (replyOrder == 'ASC') {
                 if ($('.note')[0]) {
                     // Notes already exist
-                    message = code.insertAfter($('.messages-header').prev('.note').add($('.message').last()));
+                    place = $('.messages-header').prev('.note');
                 } else {
                     // First note at top
-                    message = code.insertAfter($('.notes-header').add($('.message').last()));
+                    place = $('.notes-header');
                 }
+
+                if (notesPosition === 0) {
+                    // Also want to add to end of message area
+                    place = place.add($('.message').last());
+                }
+
+                message = code.insertAfter(place);
             } else {
-                message = code.insertAfter('.notes-header, .messages-header');
+                if (notesPosition === 0) {
+                    // Show in both notes and messages blocks
+                    message = code.insertAfter('.notes-header, .messages-header');
+                } else {
+                    // Only show in notes block
+                    message = code.insertAfter('.notes-header');
+                }
             }
         } else {
             if (replyOrder == 'ASC') {
@@ -1650,6 +1804,7 @@ function showMessage(html) {
 
 function updateTicket(data) {
     // Disable buttons and dropdowns
+    $('.reply-type button:disabled, #sidebar button:disabled, #sidebar select:disabled').data('disabled', true);
     $('.reply-type button, #sidebar button, #sidebar select').prop('disabled', true);
 
     // Add ticket ID
@@ -1680,12 +1835,15 @@ function updateTicket(data) {
         $('.ticket-update.fail').show(500).delay(5000).hide(500);
     }).always(function() {
         // Enable buttons and dropdowns
-        $('.reply-type button, #sidebar button, #sidebar select').prop('disabled', false);
+        $('.reply-type button:not(:data(disabled)), #sidebar button:not(:data(disabled)), #sidebar select:not(:data(disabled))')
+            .prop('disabled', false);
+        $('.reply-type button, #sidebar button, #sidebar select').removeData('disabled');
     });
 }
 
 function ticketAction(route, data) {
     // Disable buttons and dropdowns
+    $('.quick-actions button:disabled, #sidebar button:disabled, #sidebar select:disabled').data('disabled', true);
     $('.quick-actions button, #sidebar button, #sidebar select').prop('disabled', true);
 
     // Post data to perform action
@@ -1706,12 +1864,15 @@ function ticketAction(route, data) {
         $('.ticket-update.fail').show(500).delay(5000).hide(500);
     }).always(function() {
         // Enable buttons and dropdowns
-        $('.quick-actions button, #sidebar button, #sidebar select').prop('disabled', false);
+        $('.quick-actions button:not(:data(disabled)), #sidebar button:not(:data(disabled)), #sidebar select:not(:data(disabled))')
+            .prop('disabled', false);
+        $('.quick-actions button, #sidebar button, #sidebar select').removeData('disabled');
     });
 }
 
 function changeDepartment(data) {
     // Disable buttons and dropdowns
+    $('.quick-actions button:disabled, #sidebar button:disabled, #sidebar select:disabled').data('disabled', true);
     $('.quick-actions button, #sidebar button, #sidebar select').prop('disabled', true);
 
     // Post data to perform action
@@ -1723,6 +1884,17 @@ function changeDepartment(data) {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
                 ticket.updateLogTable();
+                
+                // Update assigned operators and remove operators from the dropdown that are no longer assigned.
+                $assignSelectize[0].selectize.loadedSearches = {};
+                $assignSelectize[0].selectize.setValue(response.data.assigned, true);
+                $.each($assignSelectize[0].selectize.options, function (index, value) {
+                    if ($.inArray(value.id, response.data.assigned) === -1) {
+                        $assignSelectize[0].selectize.removeOption(value.id);
+                    }
+                });
+                $assignSelectize[0].selectize.refreshOptions(false);
+                
                 // Poll for new replies and updates
                 pollReplies();
 
@@ -1751,8 +1923,9 @@ function changeDepartment(data) {
                     } else {
                         // We do - show custom fields box
                         $('#sidebar .customfields').parents('.sidebox').show();
-                        // Enable hide/show password toggle if needed
+                        // Enable hide/show password toggle and textarea redactor if needed
                         callHideShowPassword();
+                        customfieldRedactor();
                     }
                 }
 
@@ -1771,7 +1944,9 @@ function changeDepartment(data) {
         $('.ticket-update.fail').show(500).delay(5000).hide(500);
     }).always(function() {
         // Enable buttons and dropdowns
-        $('.quick-actions button, #sidebar button, #sidebar select').prop('disabled', false);
+        $('.quick-actions button:not(:data(disabled)), #sidebar button:not(:data(disabled)), #sidebar select:not(:data(disabled))')
+            .prop('disabled', false);
+        $('.quick-actions button, #sidebar button, #sidebar select').removeData('disabled');
     });
 }
 
@@ -1844,10 +2019,17 @@ function applyMacro(macroId) {
     function(response) {
         if (response.status == 'success') {
             $('.ticket-update.success').show(500).delay(5000).hide(500);
-            // Update log
-            ticket.updateLogTable();
-            // Poll for new replies and updates
-            pollReplies(true);
+            if (response.data.deleted) {
+                // Deleted ticket - go back to ticket grid
+                setTimeout(function() {
+                    window.location.href = ticketGridUrl;
+                }, 2000);
+            } else {
+                // Update log
+                ticket.updateLogTable();
+                // Poll for new replies and updates
+                pollReplies(true);
+            }
         } else {
             $('.ticket-update.fail').show(500).delay(5000).hide(500);
         }
@@ -1858,7 +2040,7 @@ function applyMacro(macroId) {
 
 function refreshFollowUpTab() {
     // Show loading icon
-    $('form.followup-form').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
+    $('#tabFollowup').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
 
     // Fetch view
     $.get(
@@ -1866,14 +2048,26 @@ function refreshFollowUpTab() {
         function(response) {
             if (response.status == 'success') {
                 // Update form
-                $('form.followup-form').html(response.data);
+                $('#tabFollowup').html(response.data);
+
+                // Initialise date picker.
+                callPikaday();
+
+                // Initialise timepicker.
+                $('.followup-form')
+                    .find('.timepicker')
+                    .timepicker({ 'timeFormat': $('meta[name="time_format"]').prop('content'), 'scrollDefault': 'now' });
+
+                // Handle rules on refreshing tab, this will call code in escalationrule.js
+                $(".rule:first :input").prop('disabled', true);
+                $('.rule').filter(function() { return $(this).css("display") != "none"; }).find('.rule-action select').change();
             } else {
                 // Show message to refresh
-                $('form.followup-form').html(Lang.get('messages.please_refresh'));
+                $('#tabFollowup').html(Lang.get('messages.please_refresh'));
             }
         }, "json").fail(function() {
             // Show message to refresh
-            $('form.followup-form').html(Lang.get('messages.please_refresh'));
+            $('#tabFollowup').html(Lang.get('messages.please_refresh'));
         });
 }
 
@@ -1926,6 +2120,10 @@ function pollReplies(allMessages) {
                 // Update ticket details
                 $('.last-action').html(response.data.details.updated_at);
                 if (response.data.details.update) {
+                    // Update subject
+                    $('.ticket-subject .subject').text(response.data.details.subject);
+                    $('.ticket-subject .edit-subject').val(response.data.details.subject);
+
                     // Update sidebar items
                     $('.edit-user').html(response.data.details.user);
                     $('select[name="department"]').val(response.data.details.department);
@@ -1942,9 +2140,9 @@ function pollReplies(allMessages) {
                     $tagSelectize[0].selectize.clear(true);
                     $tagSelectize[0].selectize.refreshOptions(false);
                     $.each(response.data.details.tags, function(index, value) {
-                        $tagSelectize[0].selectize.addOption({ id: value.id, name: value.name, colour: value.colour, colour_text: value.colour_text });
+                        $tagSelectize[0].selectize.addOption({ id: value.id, name: value.name, original_name: value.original_name, colour: value.colour, colour_text: value.colour_text });
                         $tagSelectize[0].selectize.refreshOptions(false);
-                        $tagSelectize[0].selectize.addItem(value.name, true);
+                        $tagSelectize[0].selectize.addItem(value.original_name, true);
                     });
 
                     $assignSelectize[0].selectize.clear(true);
@@ -1988,8 +2186,9 @@ function pollReplies(allMessages) {
                 // Update custom fields
                 if (typeof response.data.customfields != 'undefined') {
                     $('#sidebar .customfields').html(response.data.customfields);
-                    // Enable hide/show password toggle if needed
+                    // Enable hide/show password toggle and textarea redactor if needed
                     callHideShowPassword();
+                    customfieldRedactor();
                 }
 
                 $('#sidebar').trigger('refreshedSidebar');

@@ -85,26 +85,36 @@
                         </ul>
                     {% endif %}
 
-                    <hr />
+                    <br />
 
                     {{ Lang.get('license.need_to_reissue')|raw }}
 
-                    <hr />
+                    <a href="{{ route('core.operator.dashboard') }}" class="button primary">
+                        {{ Lang.get('general.retry') }}
+                    </a>
 
-                    <h3>{{ Lang.get('license.new_key') }}</h3>
+                    <a class="license-key button">{{ Lang.get('license.enter_new_key') }}</a>
 
-                    <p>{{ Lang.get('license.enter_key') }}</p>
+                    <div class="enter-license" style="display: none;">
+
+                        <hr />
+
+                        <h3>{{ Lang.get('license.new_key') }}</h3>
+
+                        <p>{{ Lang.get('license.enter_key') }}</p>
+
+                        {{ form_open({ 'method': 'POST', 'route': 'core.operator.license.update' }) }}
+
+                            {{ csrf_field() }}
+                            {{ form_text('license_key', null, {'placeholder': Lang.get('license.license_key')}) }}
+
+                            {{ form_submit(Lang.get('license.submit')) }}
+
+                        {{ form_close() }}
+
+                    </div>
 
                 </div>
-
-                {{ form_open({ 'method': 'POST', 'url': route('core.operator.license.update') }) }}
-
-                    {{ csrf_field() }}
-                    {{ form_text('license_key', null, {'placeholder': Lang.get('license.license_key')}) }}
-
-                    {{ form_submit(Lang.get('license.submit')) }}
-
-                {{ form_close() }}
 
             </div>
 
@@ -116,7 +126,17 @@
 
     </div>
 
-    {% block scripts_footer %}{% endblock %}
+    {% block scripts_footer %}
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Handle forgotten click
+                $('.license-key').bind('click', function() {
+                    $('.license-key, .enter-license').toggle();
+                    $('.enter-license input[type=text]').focus();
+                });
+            });
+        </script>
+    {% endblock %}
 
 </body>
 

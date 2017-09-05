@@ -24,15 +24,15 @@
 
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 30}) }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
             <div class="form-row form-full">
                 {{ form_label('description', Lang.get('general.description')) }}
-                <div class="input-container">
-                    {{ form_text('description') }}<br />
+                <div class="input-container translatable">
+                    {{ form_translatable_text(record, 'description') }}<br />
                     <span class="description">{{ Lang.get('customfield.description_desc') }}</span>
                 </div>
             </div>
@@ -74,16 +74,16 @@
 
             </div>
 
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand[]', Lang.choice('core.brand', 2)) }}
                     <div class="input-container">
-                        {{ form_select('brand[]', array_column(Config.get('brand'), 'name', 'id'), recordBrands, {'multiple': 'multiple'}) }}
+                        {{ form_select('brand[]', brand_config(null).pluck('name', 'id'), recordBrands, {'multiple': 'multiple'}) }}
                         <span class="description">{{ Lang.get('customfield.brand_desc') }}</span>
                     </div>
                 </div>
             {% else %}
-                {{ form_hidden('brand[]', Config.get('brand')|first.id) }}
+                {{ form_hidden('brand[]', brand_config(null)|first.id) }}
             {% endif %}
 
             <div class="form-row">
@@ -168,6 +168,9 @@
 
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <!-- Translatable.js dependencies: Selectize -->
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/customfield.js') }}"></script>
 {% endblock %}

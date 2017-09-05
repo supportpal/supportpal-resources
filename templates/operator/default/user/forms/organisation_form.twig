@@ -20,7 +20,7 @@
         <div class="form-container {% if record|default is empty or not record.exists %}first"{% else %}" style="padding-top: 0"{% endif %}>
 
             {% if record.exists %}
-                {% if Config.get('brand')|length > 1 %}
+                {% if brand_count() > 1 %}
                     <div class="form-row">
                         {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                         <div class="input-container">
@@ -30,11 +30,11 @@
                     </div>
                 {% endif %}
             {% else %}
-                {% if Config.get('brand')|length > 1 %}
+                {% if brand_count() > 1 %}
                     <div class="form-row">
                         {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                         <div class="input-container">
-                            {{ form_select('brand_id', array_column(enabledBrands, 'name', 'id'), Config.get('settings.default_brand')) }}
+                            {{ form_select('brand_id', enabledBrands.pluck('name', 'id'), Config.get('settings.default_brand')) }}
                         </div>
                     </div>
                 {% else %}
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="form-row form-full">
+            <div class="form-row form-customfields">
                 {{ form_label('notes', Lang.choice('general.note', 2)) }}
                 <div class="input-container">
                     {{ form_textarea('notes') }}
@@ -106,6 +106,12 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
 
     <script src="{{ asset_rev('resources/assets/operator/js/randomPassword.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>

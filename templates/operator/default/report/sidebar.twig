@@ -9,19 +9,19 @@
             {{ Lang.get('report.reports_dashboard') }}
         </a>
     </div>
-    {% for category, reports in list %}
+    {% for slug, category in list %}
         <div class="sidebox">
             <h3 class="collapsable">
                 <i class="fa fa-bar-chart icon"></i>
-                {{ category }}
+                {{ category.name }}
                 <div class="arrow">
                     <i class="fa fa-chevron-down"></i>
                 </div>
             </h3>
             <ul>
-                {% for item in reports %}
-                <li {% if Request.is("*/" ~ item['slug']) %}class="current"{% endif %}>
-                    <a href="{{ route('report.operator.view', [ category, item['slug'] ]) }}">{{ item['name'] }}</a>
+                {% for item in category.reports %}
+                <li {% if Request.is("*/" ~ slug ~ "/" ~ item['slug']) %}class="current"{% endif %}>
+                    <a href="{{ route('report.operator.view', [ slug, item['slug'] ]) }}">{{ item['name'] }}</a>
                 </li>
                 {% endfor %}
             </ul>

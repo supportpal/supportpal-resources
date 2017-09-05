@@ -26,12 +26,12 @@
     top: 50%;
 }
 
-table.dataTable tbody tr.ticket-viewed {
+table.dataTable tbody tr.ticket-viewed td {
     background: #f9f9f9;
     opacity: 0.8;
 }
 
-table.dataTable tbody tr.ticket-viewed.selected {
+table.dataTable tbody tr.ticket-viewed.selected td {
     background: #fdf6ea;
     opacity: 1;
 }
@@ -108,8 +108,18 @@ span.subject:hover:after {
     display: none;
 }
 
+.message .text .original .row {
+    font-size: 13px;
+}
+.message .text .original .hide {
+    display: block;
+}
+
+.message .text * {
+    height: auto !important;
+}
+
 .message .text img, .ticket-draft img {
-    height: auto;
     max-width: 100%;
 }
 
@@ -138,10 +148,6 @@ span.subject:hover:after {
     display: block;
 }
 
-.message div.expandable {
-    visibility: hidden;
-}
-
 .message div.expandable:before {
     background-color: #f1f1f1;
     border: 1px solid #ddd;
@@ -155,10 +161,12 @@ span.subject:hover:after {
     visibility: visible;
     width: 20px;
 }
+
 .message div.expandable:hover:before {
     background-color: #d8d8d8;
     cursor: pointer;
 }
+
 div.supportpal_quote {
     display: none;
     color: #500050;
@@ -452,6 +460,7 @@ div.collapsed-messages span {
     position: fixed;
     width: 269px;
     z-index: 500;
+    word-wrap: break-word;
 }
 
 .ticket-viewing.box {

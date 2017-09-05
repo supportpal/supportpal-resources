@@ -1,0 +1,15 @@
+{% set attributes = hide|default is not empty ? { 'disabled': 'disabled' } : [] %}
+
+<div class="form-row">
+    {{ form_label(elements.name.name, Lang.get('general.name')) }}
+    <div class="input-container">
+        {{ form_text(elements.name.name, elements.name.value, { 'size': 45 }|merge(attributes)) }}
+    </div>
+</div>
+
+<div class="form-row form-full">
+    {{ form_label(elements.text.name, Lang.choice('ticket.response', 2)) }}
+    <div class="input-container">
+        {{ form_redactor_mf(elements.text.name, elements.text.value, attributes) }}
+    </div>
+</div>

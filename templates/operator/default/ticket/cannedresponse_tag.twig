@@ -14,45 +14,37 @@
 
 {% block content %}
 
-    {% include 'operator.' ~ template ~ '.ticket.cannedresponse_tabs' with { 'isResponses': true } %}
-    
-    <div id="tabResponses" class="tabContent">
+    {% include 'operator.' ~ template ~ '.ticket.cannedresponse_tabs' with { 'isResponses': false } %}
+
+    <div id="tabTags" class="tabContent">
 
         <div class="success box delete hide">
-            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('ticket.cannedresponse', 1), 'UTF-8') }) }}
+            {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('ticket.tag', 1), 'UTF-8') }) }}
         </div>
         <div class="fail box delete hide">
-            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('ticket.cannedresponse', 1), 'UTF-8') }) }}
+            {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('ticket.tag', 1), 'UTF-8') }) }}
         </div>
-    
+
         <div class="grid-options options box">
-            <a href="{{ route('ticket.operator.cannedresponse.create') }}">
-                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.cannedresponse', 1)}) }}
+            <a href="{{ route('ticket.operator.cannedresponse_tag.create') }}">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.tag', 1)}) }}
             </a>
             &nbsp;&nbsp;
             <a class="filter-results">
                 <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
             </a>
-    
+
             <div class="filters hide">
                 <div>
                     <label>{{ Lang.get('general.name') }}:</label>
                     <div id="filter_response_name"></div>
                 </div>
-                <div>
-                    <label>{{ Lang.choice('ticket.tag', 1) }}:</label>
-                    <div id="filter_response_tag"></div>
-                </div>
-                <div>
-                    <label>{{ Lang.get('general.public') }}:</label>
-                    <div id="filter_response_public"></div>
-                </div>
             </div>
         </div>
-    
-        {{ responsesTable.render()|raw }}
-        {{ responsesTable.script()|raw }}
-        
+
+        {{ tagsTable.render()|raw }}
+        {{ tagsTable.script()|raw }}
+
     </div>
 
 {% endblock %}
@@ -75,8 +67,6 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_response_name", filter_type: "text"},
-                {column_number : 1, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_response_tag"},
-                {column_number : 2, filter_container_id: "filter_response_public"}
             ]);
         });
     </script>

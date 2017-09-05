@@ -20,9 +20,10 @@
             </span> &nbsp;
 
             <!-- Only don't show on default brand, -- Any -- department -->
-            {% if brand.id != 'Default' or (brand.id == 'Default' and signature.department.name is not empty) %}
-                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
-            {% endif %}
+            {{ form_button(Lang.get('general.remove'),
+                { 'class': 'remove-button' ~ (brand.id == 'Default' and signature.department.name is empty ? ' hide' : '') }
+            ) }}
+
         </div>
     </div>
 

@@ -1,0 +1,13 @@
+<ul class="tabs">
+    {% if isResponses %}
+        <a href="#" class="active">{{ Lang.choice('ticket.response', 2) }}</a>
+        <a href="{{ route('ticket.operator.cannedresponse_tag.index') }}">
+            {{ Lang.choice('ticket.tag', 2) }}
+        </a>
+    {% else %}
+        <a href="{{ route('ticket.operator.cannedresponse.index') }}">
+            {{ Lang.choice('ticket.response', 2) }}
+        </a>
+        <a href="#" class="active">{{ Lang.choice('ticket.tag', 2) }}</a>
+    {% endif %}
+</ul>

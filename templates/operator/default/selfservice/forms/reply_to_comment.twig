@@ -4,11 +4,13 @@
     {{ Lang.get('selfservice.reply_to_comment') }}
 {% endblock %}
 
-{% set breadcrumb = [
-    Lang.get('selfservice.selfservice'),
-    "<a href='" ~ route('selfservice.operator.comment.index') ~ "'>" ~ Lang.choice('selfservice.comment', 2) ~ "</a>",
-    Lang.get('selfservice.reply_to_comment')
-] %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <a href="{{ route('selfservice.operator.comment.index') }}">{{ Lang.choice('selfservice.comment', 2) }}</a>
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <strong>{{ Lang.get('selfservice.reply_to_comment') }}</strong>
+{% endblock %}
 
 {% block content %}
 
@@ -32,7 +34,7 @@
         <div class="form-row">
             {{ form_label('author', Lang.choice('selfservice.comment', 1)) }}
             <div class="input-container">
-                {{ Purifier.clean(record.text) }}
+                {{ record.purified_text|raw }}
             </div>
         </div>
 

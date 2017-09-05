@@ -12,20 +12,17 @@
     {% endif %}
 {% endblock %}
 
-{% if type|default is not empty %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
-            ~ type.brand.name ~
-        "</a>",
-        Lang.choice('selfservice.category', 2)
-    ] %}
-{% else %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        Lang.choice('selfservice.category', 2)
-    ] %}
-{% endif %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% if type|default is not empty %}
+        <a href="{{ route('selfservice.operator.type.index', { 'brand': type.brand_id }) }}">
+            {{ type.brand.name }}
+        </a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% endif %}
+    <strong>{{ Lang.choice('selfservice.category', 2) }}</strong>
+{% endblock %}
 
 {% block content %}
 

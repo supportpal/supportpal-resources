@@ -2,27 +2,27 @@
     <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
 
     {% if filters is not empty and not filters.isEmpty() %}
-    <div class="sidebox">
-        <h3 class="collapsable" id="ticketFiltersSidebox">
-            <i class="fa fa-filter icon"></i>
-            {{ Lang.choice('ticket.filter', 2) }}
-            <div class="arrow">
-                <i class="fa fa-chevron-down"></i>
-            </div>
-        </h3>
-        <ul class="with-badge tickets">
-            {% for filter in filters %}
-            <li>
-                <a href="{{ route('ticket.operator.ticket') ~ '?filter=' ~ filter.id }}">
-                    <span class="badge right">{{ filter.count }}</span>
-                    <div class="list-item">
-                        {{ filter.name }}
-                    </div>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+        <div class="sidebox">
+            <h3 class="collapsable" id="ticketFiltersSidebox">
+                <i class="fa fa-filter icon"></i>
+                {{ Lang.choice('ticket.filter', 2) }}
+                <div class="arrow">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+            </h3>
+            <ul class="filter-list with-badge tickets">
+                {% for filter in filters %}
+                    <li>
+                        <a href="{{ route('ticket.operator.ticket') ~ '?filter=' ~ filter.id }}">
+                            <span class="badge right hide" data-id="{{ filter.id }}"></span>
+                            <div class="list-item">
+                                {{ filter.name }}
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
     <div class="sidebox">
         <h3 class="collapsable" id="ticketStatusesSidebox">
@@ -32,17 +32,17 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <ul class="with-badge">
+        <ul class="status-list with-badge">
             {% for status in obj_statuses %}
-            <li>
-                <a href="{{ route('ticket.operator.ticket') ~ '?status=' ~ status.id }}">
-                    <span class="badge right">{{ status.count }}</span>
-                    <div class="list-item">
-                        <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
-                        {{ status.name }}
-                    </div>
-                </a>
-            </li>
+                <li>
+                    <a href="{{ route('ticket.operator.ticket') ~ '?status=' ~ status.id }}">
+                        <span class="badge right hide" data-id="{{ status.id }}"></span>
+                        <div class="list-item">
+                            <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
+                            {{ status.name }}
+                        </div>
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     </div>
@@ -54,37 +54,17 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <ul class="with-badge">
+        <ul class="department-list with-badge">
             {% for department in obj_departments %}
-            <li>
-                <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
-                    <span class="badge right">{{ department.count }}</span>
-                    <div class="list-item">
-                        {{ Purifier.clean(department.name) }}
-                    </div>
-                </a>
-            </li>
-            {% else %}
-                {{ Lang.get('general.none') }}
-            {% endfor %}
-        </ul>
-    </div>
-    {% if obj_brands|length > 1 %}
-    <div class="sidebox">
-        <h3 class="collapsable" id="brandsSidebox">
-            <i class="fa fa-sitemap icon"></i>
-            {{ Lang.choice('core.brand', 2) }}
-            <div class="arrow">
-                <i class="fa fa-chevron-down"></i>
-            </div>
-        </h3>
-        <ul class="with-badge">
-            {% for brand in obj_brands %}
                 <li>
-                    <a href="{{ route('ticket.operator.ticket') ~ '?brand=' ~ brand.id }}">
-                        <span class="badge right">{{ brand.count }}</span>
+                    <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
+                        <span class="badge right hide" data-id="{{ department.id }}"></span>
                         <div class="list-item">
-                            {{ brand.name }}
+                            {% if department.dashes|default is not empty %}
+                                {{ department.dashes|raw }}{{ department.name|replace({ (department.dashes): '' }) }}
+                            {% else %}
+                                {{ department.name }}
+                            {% endif %}
                         </div>
                     </a>
                 </li>
@@ -93,6 +73,30 @@
             {% endfor %}
         </ul>
     </div>
+    {% if obj_brands|length > 1 %}
+        <div class="sidebox">
+            <h3 class="collapsable" id="brandsSidebox">
+                <i class="fa fa-sitemap icon"></i>
+                {{ Lang.choice('core.brand', 2) }}
+                <div class="arrow">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+            </h3>
+            <ul class="brand-list with-badge">
+                {% for brand in obj_brands %}
+                    <li>
+                        <a href="{{ route('ticket.operator.ticket') ~ '?brand=' ~ brand.id }}">
+                            <span class="badge right hide" data-id="{{ brand.id }}"></span>
+                            <div class="list-item">
+                                {{ brand.name }}
+                            </div>
+                        </a>
+                    </li>
+                {% else %}
+                    {{ Lang.get('general.none') }}
+                {% endfor %}
+            </ul>
+        </div>
     {% endif %}
     <div class="sidebox">
         <h3 class="collapsable" id="ticketPrioritySidebox">
@@ -102,19 +106,14 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <ul class="with-badge">
+        <div class="priority-list">
             {% for priority in obj_priorities %}
-            <li>
-                <a href="{{ route('ticket.operator.ticket') ~ '?priority=' ~ priority.id }}">
-                    <span class="badge right">{{ priority.count }}</span>
-                    <div class="list-item">
-                        <span class="flag" style="border-color: {{ priority.colour }}; border-right-color: transparent;"></span>&nbsp;
-                        {{ priority.name }}
-                    </div>
+                <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?priority=' ~ priority.id }}"
+                   style="background: {{ priority.colour }}; color: {{ priority.colour_text }};">
+                    {{ priority.name }}
                 </a>
-            </li>
             {% endfor %}
-        </ul>
+        </div>
     </div>
     {% if obj_tags is not empty and not obj_tags.isEmpty() %}
     <div class="sidebox">
@@ -125,12 +124,14 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        {% for tag in obj_tags %}
-            <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}"
-                style="background: {{ tag['colour'] }}; color: {{ tag['colour_text'] }};">
-                {{ tag['name'] }}
-            </a>
-        {% endfor %}
+        <div class="tag-list">
+            {% for tag in obj_tags %}
+                <a class="tag" href="{{ route('ticket.operator.ticket') ~ '?tag=' ~ tag['id'] }}"
+                    style="background: {{ tag['colour'] }}; color: {{ tag['colour_text'] }};">
+                    {{ tag['name'] }}
+                </a>
+            {% endfor %}
+        </div>
     </div>
     {% endif %}
     {% if not recentActivity.isEmpty() %}
@@ -142,15 +143,8 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <ul>
-            {% for activity in recentActivity %}
-            <li class="clear">
-                <img src="data:image/png;base64,{{ activity.user.avatar }}" width="21" height="21" alt="{{ activity.user.formatted_name }}"
-                    class="avatar" /><strong>{{ activity.user.formatted_name }}</strong><br />
-                {{ Purifier.clean(activity.event) }}
-                <div class="description">{{ timeago(activity.created_at) }}</div>
-            </li>
-            {% endfor %}
+        <ul class="recent-activity">
+            <span class="description">{{ Lang.get('general.loading') }}...</span>
         </ul>
     </div>
     {% endif %}
@@ -163,14 +157,8 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <ul>
-            {% for operator in activeOperators %}
-            <li class="clear">
-                <img src="data:image/png;base64,{{ operator.avatar }}" width="21" height="21"
-                     alt="{{ operator.formatted_name }}" class="avatar"/>
-                {{ operator.formatted_name }}
-            </li>
-            {% endfor %}
+        <ul class="active-operators">
+            <span class="description">{{ Lang.get('general.loading') }}...</span>
         </ul>
     </div>
     {% endif %}

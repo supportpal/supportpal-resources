@@ -1,5 +1,11 @@
 {% extends parent_template %}
 
+{% block meta %}
+    {% if download %}
+        <meta http-equiv="refresh" content="2;{{ download.direct_operator_url }}" />
+    {% endif %}
+{% endblock %}
+
 {% block title %}
     (#{{ ticket.number }}) {{ ticket.subject }}
 {% endblock %}
@@ -29,7 +35,13 @@
         <i class="fa fa-question-circle docs-link"></i>
     </a>
     <h1 class="ticket-subject">
-        <span {% if can_update_ticket(auth_user(), ticket) %}class="subject"{% endif %}>{{ ticket.subject }}</span>
+        <span {% if can_update_ticket(auth_user(), ticket) %}class="subject"{% endif %}>
+            {% if ticket.subject|trim is not empty %}
+                {{ ticket.subject }}
+            {% else %}
+                ({{ Lang.get('ticket.no_subject') }})
+            {% endif %}
+        </span>
         {{ form_text('subject', ticket.subject, { 'class': 'edit-subject hide', 'size': '50' }) }}
         {% if ticket.internal %}
             <span class="tag internal">{{ Lang.get('ticket.internal') }}</span>
@@ -82,7 +94,14 @@
         <li id="EscalationRules" {% if ticket.sla_plan_id is empty or ticket.escalationrules().count() == 0 %}style="display: none;" {% endif %}>
             {{ Lang.get('ticket.escalation_rule') }}
         </li>
-        <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
+        {% if auth_user().hasPermission('update.ticket') or ticket.followup is not empty %}
+            <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
+        {% endif %}
+        {% if extendedViews['ticket_tab']|default is not empty %}
+            {% for view in extendedViews['ticket_tab'] %}
+                {% include view %}
+            {% endfor %}
+        {% endif %}
     </ul>
 
     <div id="tabMessages" class="tabContent">
@@ -169,13 +188,23 @@
         {{ escalationRules.script()|raw }}
     </div>
 
-    <div id="tabFollowup" class="tabContent hide">
-        {% include 'operator.' ~ template ~ '.ticket.forms.followup' %}
-    </div>
+    {% if auth_user().hasPermission('update.ticket') or ticket.followup is not empty %}
+        <div id="tabFollowup" class="tabContent hide"></div>
+    {% endif %}
+
+    {% if extendedViews['ticket_tab_content']|default is not empty %}
+        {% for view in extendedViews['ticket_tab_content'] %}
+            {% include view %}
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}
 
 {% block scripts_footer %}
+    <!-- Actions for FollowUp tab -->
+    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
+    
     <!-- Datatables -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
@@ -218,6 +247,7 @@
     </script>
 
     <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
@@ -239,7 +269,9 @@
             closedStatusId = {{ Config.get('settings.default_resolved_status') }},
             ticketGridUrl = "{{ Session.get('operator.url.ticketgrid', route('ticket.operator.ticket', manageTicketsParams)) }}",
             organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}",
-            departmentTemplates = {{ ticket.department.email_templates|json_encode()|raw }};
+            departmentTemplates = {{ ticket.department.email_templates|json_encode()|raw }},
+            userLanguage = "{{ ticket.user.languageOrDefault() }}",
+            allLanguages = {{ languages|sort|json_encode()|raw }};
 
         var signature = '';
         {% if signature is not empty %}

@@ -1,6 +1,6 @@
     {% if operator is not defined or not operator %}
         {% if record.exists %}
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
@@ -10,11 +10,11 @@
                 </div>
             {% endif %}
         {% else %}
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
-                        {{ form_select('brand_id', array_column(enabledBrands, 'name', 'id'), Config.get('settings.default_brand')) }}
+                        {{ form_select('brand_id', enabledBrands.pluck('name', 'id'), Config.get('settings.default_brand')) }}
                     </div>
                 </div>
             {% else %}
@@ -56,7 +56,7 @@
     <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password', Lang.get('general.password')) }}
         <div class="input-container">
-            {{ form_password('password') }}
+            {{ form_password('password', { 'autocomplete': 'new-password' }) }}
             {% if record.password|default is not empty %}
                 &nbsp; <span class="description">({{ Lang.get('general.only_enter_to_change') }})</span>
             {% endif %}
@@ -66,7 +66,7 @@
     <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
         <div class="input-container">
-            {{ form_password('password_confirmation') }}
+            {{ form_password('password_confirmation', { 'autocomplete': 'new-password' }) }}
         </div>
     </div>
     {% endif %}
@@ -153,7 +153,7 @@
     {% endif %}
 
     {% if managing|default is not empty and managing and (operator|default is empty or not operator) %}
-    <div class="form-row">
+    <div class="form-row form-customfields">
         {{ form_label('notes', Lang.choice('general.note', 2)) }}
         <div class="input-container">
             {{ form_textarea('notes') }}

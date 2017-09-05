@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf_token" content="{{ csrf_token() }}" />
     <meta name="date_format" content="{{ convertMomentFormat(Config.get('settings.date_format')) }}" />
+    <meta name="time_format" content="{{ Config.get('settings.time_format') }}" />
     <meta name="max_file_size" content="{{ max_file_size }}" />
     <meta name="allowed_files" content="{{ allowed_files }}" />
+    {% block meta %}{% endblock %}
 
     {% set title = block('title') %}
     <title>{% if title is not empty %}{{ title|raw }} - {% endif %} SupportPal Operator Panel</title>
@@ -238,7 +240,7 @@
                         </a>
                         <ul>
                             {% if auth_user().hasPermission('view.selfservicetype') %}
-                                {% if assignedBrands|length > 1 %}
+                                {% if assignedBrands.count() > 1 %}
                                     <li aria-haspopup="true">
                                         <a class="dropdownmenu">
                                             <i class="fa fa-chevron-right"></i>
@@ -256,7 +258,7 @@
                                     </li>
                                 {% else %}
                                     <li aria-haspopup="false">
-                                        <a href="{{ route('selfservice.operator.type.index', assignedBrands|first.id) }}">
+                                        <a href="{{ route('selfservice.operator.type.index', assignedBrands.first().id) }}">
                                             {{ Lang.choice('selfservice.type', 2) }}
                                         </a>
                                     </li>
@@ -448,17 +450,9 @@
                 {% endif %}
             {% endblock %}
 
-            {% if breadcrumb|default is not empty %}
-                <div class="breadcrumb">
-                    {% for item in breadcrumb %}
-                        {% if not loop.first %}
-                            &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
-                        {% endif %}
-                        {% if loop.last %}<strong>{% endif %}
-                        {{ item|raw }}
-                        {% if loop.last %}</strong>{% endif %}
-                    {% endfor %}
-                </div>
+            {% set breadcrumb = block('breadcrumb') %}
+            {% if breadcrumb is not empty %}
+                <div class="breadcrumb">{{ breadcrumb|raw }}</div>
             {% endif %}
 
             {% set description = block('description') %}

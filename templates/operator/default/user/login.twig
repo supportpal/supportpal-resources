@@ -50,6 +50,7 @@
 
             </div>
 
+        {% if not upgrade_available %}
             <span class="left">
                 <label>
                     {{ form_check('remember_me', '1') }} &nbsp; {{ Lang.get('user.remember_me') }}
@@ -59,29 +60,32 @@
                 <a class="forgotToggle">{{ Lang.get('user.forgot_password') }}</a>
             </span>
             <div class="clear"></div>
+        {% endif %}
 
         {{ form_close() }}
 
     </div>
 
-    <div class="forgotBox">
+    {% if not upgrade_available %}
+        <div class="forgotBox">
 
-        <div class="white-box">
+            <div class="white-box">
 
-            {{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
+                {{ form_open({ 'route': 'operator.reset', 'method': 'post', 'class': 'reset-validate' }) }}
 
-                <div class="form-row">
-                    {{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
-                </div>
-                {{ form_submit(Lang.get('user.reset_password')) }}
+                    <div class="form-row">
+                        {{ form_text('email', null, { 'class': 'email', 'placeholder': Lang.get('general.email') }) }}
+                    </div>
+                    {{ form_submit(Lang.get('user.reset_password')) }}
 
-            {{ form_close() }}
+                {{ form_close() }}
+
+            </div>
+
+            <a class="forgotToggle">{{ Lang.get('general.cancel') }}</a>
 
         </div>
-
-        <a class="forgotToggle">{{ Lang.get('general.cancel') }}</a>
-
-    </div>
+    {% endif %}
 
 {% endblock %}
 

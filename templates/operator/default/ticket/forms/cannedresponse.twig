@@ -20,28 +20,64 @@
         {{ form_open({ 'route': 'ticket.operator.cannedresponse.store', 'class': 'validate' }) }}
     {% endif %}
 
+        <div id="sectionWrapper">
+
+            <h2>{{ Lang.choice('ticket.response', 2) }}</h2>
+            <h2 class="description">{{ Lang.get('ticket.response_desc') }}</h2>
+            
+            {# Required by multidimensionaldata.js #}
+            <div class="tabContent">
+
+                {# Hidden option for multidimensionaldata.js #}
+                {% include 'operator.' ~ template ~ '.ticket.forms.cannedresponse_translation' with { 'hide': true } %}
+        
+                <div class="section-items">
+                    {# Default response #}
+                    <div class="form-container first open">
+                        {%
+                            include 'operator.' ~ template ~ '.ticket.forms.cannedresponse_rows'
+                            with {
+                                'elements': {
+                                    'name': { 'name': 'name', 'value': record.getOriginal('name') },
+                                    'text': { 'name': 'text', 'value': record.getOriginal('text') }
+                                }
+                            }
+                        %}
+                    </div>
+
+                    {# Existing Translations #}
+                    {% for translation in translations %}
+                        {% include 'operator.' ~ template ~ '.ticket.forms.cannedresponse_translation' %}
+                    {% endfor %}
+                </div>
+        
+                <div class="form-container open {% if not availableLanguages|length %}hide{% endif %}">
+                    <div class="form-row small-selectize">
+                        <div class="input-container">
+                            <select name="languages" title="{{ Lang.get('core.add_another_language') }}" class="add-item-selectize">
+                                <option></option>
+                                {% for code, name in availableLanguages %}
+                                    <option value="{{ code }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.get('customfield.options') }}</h2>
+
         <div class="form-container first open">
-
-            <div class="form-row">
-                {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 45}) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('text', Lang.get('ticket.response')) }}
-                <div class="input-container">
-                    {{ form_redactor_mf('text') }}
-                </div>
-            </div>
-
+    
             <div class="form-row">
                 {{ form_label('select', Lang.choice('ticket.tag', 2)) }}
                 <div class="input-container">
                     <select name="tag[]" multiple="multiple">
                         {% for tag in tags %}
-                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.name }}'>
+                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.original_name }}'>
                                 {{ tag.name }}
                             </option>
                         {% endfor %}
@@ -103,7 +139,27 @@
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
     <script type="text/javascript">
+        // List of valid translatable attributes.
+        var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
+        
+        // Redactor options.
+        var opts = {
+            mergeFields: {
+                tickets: true,
+                organisations: '{{ Config.get('settings.organisations_enabled') }}'
+            },
+            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
+        };
+        
+        // Custom attribute mapper for multidimensionaldata.js
+        attributeMapper = function(elem, value, attribute) {
+            var attr = elem.attr(attribute);
+            if (typeof attr !== 'undefined')
+                elem.attr(attribute, translatableAttributes[value][attr.replace(':default', '')]);
+        };
+        
         $(document).ready(function() {
             // Focus the canned response name input box.
             $('input[name="name"]').focus();
@@ -113,18 +169,12 @@
                 persist: false,
                 dropdownParent: 'body'
             })[0].selectize;
-            $('textarea').redactor($.extend($.Redactor.default_opts, {
-                mergeFields: {
-                    tickets: true,
-                    organisations: '{{ Config.get('settings.organisations_enabled') }}'
-                },
-                plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
-            }));
+            $('div.section-items textarea').redactor($.extend($.Redactor.default_opts, opts));
 
             // Tags
             $('select[name="tag[]"]').selectize({
                 plugins: ['remove_button'],
-                valueField: 'id',
+                valueField: 'original_name',
                 labelField: 'name',
                 searchField: 'name',
                 create: true,

@@ -1,26 +1,22 @@
-<form class="followup-form">
+<form class="followup-form" data-method="{{ method }}" data-uri="{{ route }}">
 
     <h2>{{ Lang.choice('general.detail', 2) }}</h2>
 
     <div class="form-row">
         {{ form_label('followup_date', Lang.get('ticket.follow_up_date')) }}
-            <div class="input-container">
-                {{ form_radio('date_type', 0, true) }} {{ Lang.get('ticket.exact_date_time') }} &nbsp;
-                {{ form_radio('date_type', 1) }} {{ Lang.get('ticket.time_from_now') }}
-                <br />
+            <div class="input-container input-group">
+                <label style="line-height: 30px;">{{ form_radio('date_type', 0, true) }} {{ Lang.get('ticket.exact_date_time') }}</label> &nbsp;
+                <label>{{ form_radio('date_type', 1) }} {{ Lang.get('ticket.time_from_now') }}</label>
                 <div class="followup-exact">
-                    {{ Lang.get('general.date') }}: &nbsp;
                     {{ form_text('followup_date', ticket.followup|default is not empty
                                 ? timeWithOffset(ticket.followup.time, false)|date(Config.get('settings.date_format'))
                                 : "now"|date(Config.get('settings.date_format'), getTimezone()),
-                            { 'class': 'datepicker', 'placeholder': '&#xf073;' })
-                    }}<br />
-
-                    {{ Lang.get('general.time') }}: &nbsp;
+                            { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 })
+                    }}
                     {{ form_text('followup_time', ticket.followup|default is not empty
                                 ? timeWithOffset(ticket.followup.time, false)|date('g:ia')
                                 : "now"|date('g:ia', getTimezone()),
-                            { 'class': 'timepicker', 'placeholder': '&#xf017;' })
+                            { 'class': 'timepicker', 'placeholder': '&#xf017;', 'size': 9 })
                     }}
                 </div>
                 <div class="followup-difference hide">
@@ -73,144 +69,32 @@
                 </tr>
             </thead>
             <tbody>
-                {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with {
-                    'tags': tags.pluck('name', 'id'),
-                    'operators': operators.pluck('formatted_name', 'id'),
-                    'departments': departments.pluck('name', 'id'),
-                    'priorities': priorities.pluck('name', 'id'),
-                    'statuses': statuses.pluck('name', 'id'),
-                    'hide': true
-                } %}
+                {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with {'hide': true} %}
 
                 {% if ticket.followup|default is not empty %}
                     {% for count, rule in ticket.followup.actions %}
-                        {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with {
-                            'tags': tags.pluck('name', 'id'),
-                            'operators': operators.pluck('formatted_name', 'id'),
-                            'departments': departments.pluck('name', 'id'),
-                            'priorities': priorities.pluck('name', 'id'),
-                            'statuses': statuses.pluck('name', 'id')
-                        } %}
+                        {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' %}
                     {% endfor %}
                 {% endif %}
             </tbody>
         </table>
 
-        <div class="form-row">
-            {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('general.action', 1)}), { 'class': 'add-rule' }) }}
+        {% if auth_user().hasPermission('update.ticket') %}
+            <div class="form-row">
+                {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('general.action', 1)}), { 'class': 'add-rule' }) }}
+            </div>
+        {% endif %}
+
+    </div>
+
+    {% if auth_user().hasPermission('update.ticket') %}
+        <div class="form-button">
+            {{ form_button(Lang.get('general.save'), { 'class': 'save-followup' }) }}
+            <span>&nbsp;&nbsp;</span>
+            {{ form_button(Lang.get('ticket.delete_follow_up'),
+                ticket.followup|default is not empty ? { 'class': 'delete-followup' } : { 'class': 'delete-followup hide' })
+            }}
         </div>
-
-    </div>
-
-    <div class="form-button">
-        {{ form_button(Lang.get('general.save'), { 'class': 'save-followup' }) }}
-        <span>&nbsp;&nbsp;</span>
-        {{ form_button(Lang.get('ticket.delete_follow_up'),
-            ticket.followup|default is not empty ? { 'class': 'delete-followup' } : { 'class': 'delete-followup hide' })
-        }}
-    </div>
+    {% endif %}
 
 </form>
-
-{% if refresh|default is empty or not refresh %}
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var followUpRoute, ajaxType;
-            {% if ticket.followup|default is not empty %}
-                followUpRoute = laroute.route('ticket.operator.followup.update', { 'followup': ticketId });
-                ajaxType = 'PUT';
-            {% else %}
-                followUpRoute = laroute.route('ticket.operator.followup.store') ;
-                ajaxType = 'POST';
-            {% endif %}
-
-            var setDateType = function() {
-                if ($(this).val() == 0) {
-                    $('.followup-exact').show().find(':input').prop('disabled', false);
-                    $('.followup-difference').hide().find(':input').prop('disabled', 'disabled');
-                } else {
-                    $('.followup-exact').hide().find(':input').prop('disabled', 'disabled');
-                    $('.followup-difference').show().find(':input').prop('disabled', false);
-                }
-            };
-            
-            $(document).on('change', 'input[name="date_type"]', setDateType);
-
-            $(document).on('click', '.save-followup', function() {
-                var data = $('.followup-form').serializeArray();
-                data.push({ name: 'ticket', value: ticketId });
-
-                // Post updated data
-                $.ajax({
-                    url: followUpRoute,
-                    type: ajaxType,
-                    data: data,
-                    dataType: 'json'
-                }).done(function(response) {
-                    if (response.status == 'success') {
-                        $('.ticket-update.success').show(500).delay(5000).hide(500);
-                        // Add delete button
-                        $('.delete-followup').show();
-                        // Hide status/SLA options
-                        $('.followup-status, .followup-sla').hide();
-                        // Show warning message
-                        $('.followup-warning').show().find('span').html(response.message);
-                        // Change route - so it does update from now on
-                        followUpRoute = laroute.route('ticket.operator.followup.update', { 'followup': ticketId });
-                        ajaxType = 'PUT';
-                    } else {
-                        $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                    }
-                }).fail(function() {
-                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                });
-            });
-
-            $(document).on('click', '.delete-followup', function() {
-                // Post delete data
-                $.ajax({
-                    url: laroute.route('ticket.operator.followup.destroy', { 'followup': ticketId }),
-                    type: 'DELETE',
-                    dataType: 'json'
-                }).done(function(response) {
-                    if (response.status == 'success') {
-                        $('.ticket-update.success').show(500).delay(5000).hide(500);
-                        // Hide delete button
-                        $('.delete-followup').hide();
-                        // Show status/SLA options
-                        $('.followup-status, .followup-sla').show();
-                        // Remove all current actions
-                        $('tr.rule:visible').remove();
-                        // Reset all form values
-                        $('.followup-form').trigger("reset");
-                        setDateType.call($('input[name="date_type"]:checked'));
-                        // Hide warning message
-                        $('.followup-warning').hide();
-                        // Change route - so it does save from now on
-                        followUpRoute = laroute.route('ticket.operator.followup.store') ;
-                        ajaxType = 'POST';
-                    } else {
-                        $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                    }
-                }).fail(function() {
-                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                });
-            });
-
-            $(document).on('click', '.view-followup', function() {
-                // Click on the follow up tab
-                $('li#Followup').click();
-            });
-        });
-    </script>
-{% else %}
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // Handle rules on refreshing tab, this will call code in escalationrule.js
-            $(".rule:first :input").prop('disabled', true);
-            $('.rule').filter(function() { return $(this).css("display") != "none"; }).find('.rule-action select').change();
-        });
-    </script>
-{% endif %}

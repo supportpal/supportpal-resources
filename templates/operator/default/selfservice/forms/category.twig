@@ -8,28 +8,22 @@
     {% endif %}
 {% endblock %}
 
-{% if type|default is not empty %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
-            ~ type.brand.name ~
-        "</a>",
-        "<a href='" ~ route('selfservice.operator.category.index', { 'type': type.id }) ~ "'>"
-            ~ type.name ~
-        "</a>",
-        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('general.category', 1)})
-            : Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)})
-    ] %}
-{% else %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.category.index') ~ "'>"
-            ~ Lang.choice('selfservice.category', 2) ~
-        "</a>",
-        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('general.category', 1)})
-            : Lang.get('general.add_item', {'item': Lang.choice('general.category', 1)})
-    ] %}
-{% endif %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% if type|default is not empty %}
+        <a href="{{ route('selfservice.operator.type.index', { 'brand': type.brand_id }) }}">{{ type.brand.name }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+        <a href="{{ route('selfservice.operator.category.index', { 'type': type.id }) }}">{{ type.name }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% else %}
+        <a href="{{ route('selfservice.operator.category.index') }}">{{ Lang.choice('selfservice.category', 2) }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% endif %}
+    <strong>
+        {{ Lang.get(record.exists ? 'general.edit_item' : 'general.add_item', {'item': Lang.choice('general.category', 1)}) }}
+    </strong>
+{% endblock %}
 
 {% block content %}
 
@@ -46,7 +40,7 @@
                 <div class="input-container">
                     <select name="type_id">
                         <option value="">{{ Lang.get('selfservice.select_type') }}</option>
-                        {% for brand in Config.get('brand') %}
+                        {% for brand in brand_config(null) %}
                             {% if auth_user().isAssignedToBrand(brand.id) %}
                                 <optgroup label="{{ brand.name }}">
                                     {% for brand_type in brand.types %}
@@ -63,8 +57,8 @@
 
             <div class="form-row">
                 {{ form_label('text', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 30}) }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
@@ -106,6 +100,9 @@
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
+    <!-- Translatable.js dependencies: Selectize -->
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
+    
     <script type="text/javascript">
         $(document).ready(function() {
             /**

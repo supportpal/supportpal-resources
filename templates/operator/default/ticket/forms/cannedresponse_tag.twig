@@ -1,29 +1,23 @@
 {% extends parent_template %}
 
-{% block title %}
-    {% if record|default is not empty and record.exists %}
-        {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
-    {% else %}
-        {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
-    {% endif %}
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block breadcrumb %}
-    {{ Lang.get('selfservice.selfservice') }}
-    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
-    <a href="{{ route('selfservice.operator.tag.index') }}">{{ Lang.choice('selfservice.tag', 2) }}</a>
-    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
-    <strong>
-        {{ Lang.get(record.exists ? 'general.edit_item' : 'general.add_item', {'item': Lang.choice('selfservice.tag', 1)}) }}
-    </strong>
+{% block title %}
+    {% if record|default is not empty and record.exists %}
+        {{ Lang.get('general.edit_item', {'item': Lang.choice('ticket.canned_response_tag', 1)}) }}
+    {% else %}
+        {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.canned_response_tag', 1)}) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 
     {% if record|default is not empty and record.exists %}
-        {{ form_model(record, { 'route': [ 'selfservice.operator.tag.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
+        {{ form_model(record, { 'route': [ 'ticket.operator.cannedresponse_tag.update', record.id ], 'method': 'PUT', 'class': 'validate' }) }}
     {% else %}
-        {{ form_open({ 'route': 'selfservice.operator.tag.store', 'class': 'validate' }) }}
+        {{ form_open({ 'route': 'ticket.operator.cannedresponse_tag.store', 'class': 'validate' }) }}
     {% endif %}
 
         <div class="form-container first open">

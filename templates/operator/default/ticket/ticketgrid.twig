@@ -89,7 +89,7 @@
             }}
         </span>
 
-        {% include 'operator.' ~ template ~ '.ticket.forms.gridfiltering' %}
+        <form class="conditiongroup hide"></form>
 	</div>
 
     <div class="column-options options box hide">
@@ -125,7 +125,7 @@
                 {{ form_check('column_department', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['department']) }}
                 {{ Lang.choice('ticket.department', 1) }}
             </label> &nbsp;
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <label>
                     {{ form_check('column_brand', 1, Config.get('settings.operator' ~ auth_user().id ~ '.ticket_grid_columns')['brand']) }}
                     {{ Lang.choice('core.brand', 1) }}
@@ -204,6 +204,9 @@
             refreshGrid();
         }, 60000);
 
+        // Force refresh of the sidebar to load the latest counts and store it in local storage
+        refreshSidebar();
+
         $(document).ready(function() {
             // Reference to fileupload.js instance, from mass reply box.
             var fileUpload;
@@ -256,8 +259,39 @@
                 }, 60000);
             });
 
+            // Load grid filtering for the first time.
+            $('.toggle-filtering').on('click', function () {
+                // The #FollowUp node will be empty if we haven't loaded it before.
+                if ($('form.conditiongroup').is(':empty')) {
+                    // Show loading icon
+                    $('form.conditiongroup').html('<div style="padding: 10px;"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+
+                    // Fetch view
+                    $.get(
+                        '{{ route("ticket.operator.ticket.filtering") }}', getUrlVars(),
+                        function(response) {
+                            if (response.status == 'success') {
+                                // Update form
+                                $('form.conditiongroup').html(response.data);
+
+                                // Initialise date picker.
+                                callPikaday();
+
+                                // If we have default conditions
+                                Filtering.initialise();
+                            } else {
+                                // Show message to refresh
+                                $('form.conditiongroup').html('<div style="padding: 10px;">' + Lang.get('messages.please_refresh') + '</div>');
+                            }
+                        }, "json").fail(function() {
+                        // Show message to refresh
+                        $('form.conditiongroup').html('<div style="padding: 10px;">' + Lang.get('messages.please_refresh') + '</div>');
+                    });
+                }
+            });
+
             // Filtering
-            $('.update-filtering').click(function() {
+            $('.conditiongroup').on('click', '.update-filtering', function() {
                 clearTimeout(gridTimeout);
 
                 $datatable.on('preXhr.dt', function ( e, settings, data ) {
@@ -319,7 +353,7 @@
                         + '    ' + Lang.get("ticket.take_ownership")
                         + '</label> &nbsp;&nbsp;&nbsp;'
                         + '{{ form_label("to_status", Lang.get("ticket.set_status")) }} '
-                        + '{{ form_select("to_status", statuses) }}'
+                        + '{{ form_select("to_status", obj_statuses.pluck("name", "id")) }}'
                         + '</form>',
                     width: '800',
                     showCancelButton: true,
@@ -650,11 +684,8 @@
                     $('.ticket-options :input').prop('disabled', false);
                 }
 
-                // Only if in main ticket grid
-                {% if record|default is empty %}
                 // Refresh sidebar
                 refreshSidebar();
-                {% endif %}
             }, false);
 
             // Schedule next grid update in 60 seconds.
@@ -663,28 +694,119 @@
             }, 60000);
         }
 
-        function refreshSidebar() {
-            $.get(laroute.route('ticket.operator.ticket.sidebar'))
-                .success(function (response) {
-                    if (response.status == 'success') {
-                        var newSidebar = $(response.data).html();
+        // Only if in main ticket grid
+        {% if record|default is empty %}
+            var storageName = 'sidebarData';
+            var storageExpiry = 3600000;
 
-                        // In case we're in mobile and they've expanded the sidebar, make sure the new sidebar has same class
-                        if ($('#sidebar .toggle-sidebar').hasClass('fa-angle-double-left')) {
-                            newSidebar.find('.toggle-sidebar').toggleClass('fa-angle-double-right fa-angle-double-left')
-                        }
-
-                        // Update the sidebar HTML
-                        $('#sidebar')
-                            .html(newSidebar)
-                            .trigger('refreshedSidebar');
-                            
-                        // Refresh timeago.
-                        if (typeof timeAgo !== 'undefined') {
-                            timeAgo.render($('time.timeago'));
-                        }
+            // If we have the sidebar data stored in local storage, use that initially before refreshing it
+            getSidebarDataFromStorage();
+            function getSidebarDataFromStorage() {
+                var sidebarData = localStorage.getItem(storageName);
+                if (sidebarData !== null) {
+                    sidebarData = JSON.parse(sidebarData);
+                    if (sidebarData !== 'undefined' && sidebarData.expires !== 'undefined'
+                        && sidebarData.expires < (new Date).getTime() + storageExpiry
+                    ) {
+                        updateSidebar(sidebarData.data);
+                    } else {
+                        localStorage.removeItem(storageName);
                     }
+                }
+            }
+
+            // Fetch the latest sidebar data
+            function refreshSidebar() {
+                // Only run on the main grid and not on search or user/organisation tickets grid
+                {% if not customSearch and record is not defined %}
+                    $.get(laroute.route('ticket.operator.ticket.sidebar'))
+                        .success(function (response) {
+                            if (response.status == 'success') {
+                                // Update the sidebar
+                                updateSidebar(response.data);
+
+                                // Store the latest sidebar data in local storage.
+                                localStorage.setItem(storageName, JSON.stringify({ data: response.data, expires: (new Date).getTime() + storageExpiry }))
+                            }
+                        });
+                {% endif %}
+            }
+
+            // Update the sidebar data
+            function updateSidebar(data) {
+                // Update counts
+                $.each(data.filters, function(key, value) {
+                    updateCount($('ul.filter-list .badge[data-id="' + key + '"]'), value);
                 });
+                $.each(data.obj_statuses, function(key, value) {
+                    updateCount($('ul.status-list .badge[data-id="' + key + '"]'), value);
+                });
+                $.each(data.obj_departments, function(key, value) {
+                    updateCount($('ul.department-list .badge[data-id="' + key + '"]'), value);
+                });
+                $.each(data.obj_brands, function(key, value) {
+                    updateCount($('ul.brand-list .badge[data-id="' + key + '"]'), value);
+                });
+
+                // Update recent activity
+                $('ul.recent-activity').empty();
+                $.each(data.recentActivity, function(key, value) {
+                    $("ul.recent-activity").append('<li class="clear">'
+                        + '<img src="data:image/png;base64,' + value.user.avatar + '" width="21" height="21" alt="'
+                        + value.user.formatted_name + '"' + 'class="avatar" /> <strong>' + value.user.formatted_name
+                        + '</strong><br />' + value.event + '<div class="description">' + value.created_at + '</div>'
+                        + '</li>');
+                });
+                if ($('ul.recent-activity li').length == 0) {
+                    $('ul.recent-activity').parent().hide();
+                } else {
+                    $('ul.recent-activity').parent().show();
+                }
+
+                // Update active operators
+                $('ul.active-operators').empty();
+                var count = 0;
+                $.each(data.activeOperators, function(key, value) {
+                    count++;
+                    $("ul.active-operators").append('<li ' + (count > 10 ? 'class="hide"' : '') + '>' +
+                        '<img src="data:image/png;base64,' + value.avatar
+                        + '" width="21" height="21" alt="' + value.formatted_name + '"'
+                        + 'class="avatar" /> ' + value.formatted_name
+                        + '</li>');
+                });
+                if (count == 0) {
+                    $('ul.active-operators').parent().hide();
+                } else {
+                    $('ul.active-operators').parent().show();
+                }
+
+                // Refresh timeago.
+                if (typeof timeAgo !== 'undefined') {
+                    timeAgo.render($('time.timeago'));
+                }
+            }
+
+            // Update the count in the sidebar for a given badge
+            function updateCount($item, value) {
+                if (value == 0) {
+                    $item.hide();
+                } else {
+                    $item.text(value > 999 ? '999+' : value).show();
+                }
+            }
+        {% endif %}
+
+        // Read a page's GET URL variables and return them as an associative array.
+        function getUrlVars()
+        {
+            var vars = {}, hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
         }
     </script>
 {% endblock %}

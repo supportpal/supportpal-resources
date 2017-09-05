@@ -110,6 +110,9 @@
             <div class="input-container">
                 {% if licenseInformation.supportStatus == 'Active' %}
                     <strong style="color: #27ae60;">{{ licenseInformation.supportStatus }}</strong>
+                    {% if not monthlyProduct %}
+                        &nbsp; ({{ Lang.get('core.renew_support')|raw }})
+                    {% endif %}
                 {% else %}
                     <strong style="color: #e74c3c;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc')|raw }}
                 {% endif %}
