@@ -6,10 +6,15 @@
                 (organisation is not empty and (new is defined or record.organisation.owner_id != record.id))
                     ? { 'disabled': 'disabled', 'size': '30' } : { 'size': '30' }) }}
 
-            {% if organisation|default is not empty and new is not defined and not record.organisation.isOwner(record.id) %}
-                &nbsp; <button class="leave-organisation" type='button'>{{ Lang.get('user.leave_organisation') }}</button>
-            {% elseif organisation|default is not empty and new is not defined and record.organisation.isOwner(record.id) %}
-                &nbsp; <a href="{{ route('user.organisation') }}"><button type='button'>{{ Lang.get('user.manage_organisation') }}</button></a>
+            {% if organisation|default is not empty and new is not defined %}
+                {% if record.organisation.isOwner(record.id) or record.organisation_access_level == 0 %}
+        &nbsp;           <a href="{{ route('user.organisation') }}">
+                        <button type='button'>{{ Lang.get('user.manage_organisation') }}</button>
+                    </a>
+                {% endif %}
+                {% if not record.organisation.isOwner(record.id) or record.organisation.users().count() == 1 %}
+                    &nbsp; <button class="leave-organisation" type='button'>{{ Lang.get('user.leave_organisation') }}</button>
+                {% endif %}
             {% endif %}
         </div>
     </div>

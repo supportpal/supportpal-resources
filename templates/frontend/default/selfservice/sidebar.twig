@@ -5,10 +5,12 @@
             {% for category in categories %}
             <li>
                 <a href="{{ category.frontend_url }}">
-                    {{ Purifier.clean(category.name) }}
                     {% if category.count is not empty %}
                         <span class="badge">{{ category.count }}</span>
                     {% endif %}
+                    <div class="nav-item">
+                        {{ category.name }}
+                    </div>
                 </a>
             </li>
             {% endfor %}

@@ -6,7 +6,7 @@
         {% set customfield = customfield|merge({'locked': 1}) %}
     {% endif %}
 
-    <div class="form-row" data-field="{{ customfield['id'] }}">
+    <div class="form-row form-customfields" data-field="{{ customfield['id'] }}">
         {{ form_label('customfield[' ~ customfield['id'] ~ ']', customfield['name']) }}
         <div class="input-container">
             {% if customfield['type'] == 0 %}
@@ -55,8 +55,9 @@
                     customfield['value'], (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
 
             {% elseif customfield['type'] == 6 %}
+                {# The min-width is required for IE as otherwise password fields look incorrect with hideShowPassword, do not delete! #}
                 {{ form_password('customfield[' ~ customfield['id'] ~ ']',
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'}))
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})|merge({ 'autocomplete': 'new-password', 'style': 'min-width: 300px; width: 50%;' }))
                 }} &nbsp; {% if customfield['value'] is not empty %}<span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
 
             {% elseif customfield['type'] == 7 %}
@@ -73,10 +74,10 @@
 
             {% elseif customfield['type'] == 8 %}
                 {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
-                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'size': '50%'} : {'size': '50%'})) }}
+                    (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'style': 'width: 50%;'} : {'style': 'width: 50%;'})) }}
 
             {% elseif customfield['type'] == 9 %}
-                {{ form_textarea('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                {{ form_redactor('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
                     (customfield['value'] is not empty and customfield['locked'] ? {'rows': 5, 'style': 'width:100%', 'disabled': 'disabled'} : {'rows': 5, 'style': 'width:100%'})) }}
 
             {% elseif customfield['type'] == 10 %}
@@ -102,7 +103,10 @@
                 </div>
             {% endif %}
             {% if customfield['description'] is not empty %}
-                <br /><span class="light">{{ customfield['description'] }}</span>
+                {% if customfield['type'] != 9 %}
+                    <br />
+                {% endif %}
+                <span class="light">{{ customfield['description'] }}</span>
             {% endif %}
         </div>
     </div>

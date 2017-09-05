@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="text">
-		{{ Purifier.clean(message.text) }}
+		{{ message.purified_text|raw }}
 
         {% if not message.attachments.isEmpty() %}
 			<div class="attachments">
@@ -26,7 +26,7 @@
 				<ul class="attachments">
 					{% for attachment in message.attachments %}
 						<li {% if (message.by != 0) %}class="deletable"{% endif %}>
-							<a href='{{ route('ticket.frontend.attachment.download', { 'hash': attachment.upload_hash, 'ticket': message.ticket.number, 'token': message.ticket.token }) }}'>
+							<a href='{{ attachment.direct_frontend_url }}'>
 								<i class="fa fa-paperclip"></i>
 								&nbsp;
 								{{ attachment.original_name }}

@@ -1,0 +1,106 @@
+<ul class="ad_nav">
+    {% if mobile and isModuleEnabled('Selfservice') %}
+        <li class="search">
+            <div class="searchbox">
+                <form name="search" action="{{ route('core.frontend.search') }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                    <input type="text" name="query" placeholder="{{ Lang.get('core.search_placeholder') }}" />
+                </form>
+            </div>
+        </li>
+    {% endif %}
+
+    <li>
+        <a href="{{ route('core.frontend.home') }}" {% if route starts with 'core.frontend.home' %}class="current"{% endif %}>
+            {{ Lang.get('general.home') }}
+        </a>
+    </li>
+
+    {% if auth_check() %}
+        <li>
+            <a href="{{ route('user.profile') }}">
+                {{ Lang.choice('general.account', 1) }}
+            </a>
+        </li>
+        <ul>
+            <li>
+                <a href="{{ route('user.profile') }}" {% if route starts with 'user.profile' %}class="current"{% endif %}>
+                    {{ Lang.get('user.profile') }}
+                </a>
+            </li>
+            {% if auth_user().password is not empty and not auth_user().loggedInViaSSO() %}
+                <li>
+                    <a href="{{ route('user.change_password') }}" {% if route starts with 'user.change_password' %}class="current"{% endif %}>
+                        {{ Lang.get('user.change_password') }}
+                    </a>
+                </li>
+            {% endif %}
+            <li>
+                <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
+                    {{ Lang.get('user.email_history') }}
+                </a>
+            </li>
+            {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
+                <li>
+                    <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
+                        {{ Lang.choice('user.organisation', 1) }}
+                    </a>
+                </li>
+            {% endif %}
+            {% if isModuleEnabled('Ticket') %}
+                <li>
+                    <a href="{{ route('ticket.frontend.ticket.index') }}" {% if route starts with 'ticket.frontend.ticket.index' or route starts with 'ticket.frontend.ticket.show' %}class="current"{% endif %}>
+                        {{ Lang.choice('ticket.ticket', 2) }}
+                    </a>
+                </li>
+            {% endif %}
+            {% if mobile %}
+                <li>
+                    <a href="{{ route('user.logout') }}">
+                        {{ Lang.get('user.logout') }}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    {% else %}
+        {% if mobile %}
+            <li>
+                <a href="{{ route('user.login') }}" {% if route starts with 'user.login' %}class="current"{% endif %}>
+                    {{ Lang.get('user.login') }}
+                </a>
+            </li>
+            {% if Config.get('settings.registration_enabled') == 1 %}
+                <li>
+                    <a href="{{ route('user.register') }}" {% if route starts with 'user.register' %}class="current"{% endif %}>
+                        {{ Lang.get('user.register') }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endif %}
+        {% if isModuleEnabled('Ticket') and Config.get('channel.web.settings.unauthenticated_users') %}
+            <li>
+                <a href="{{ route('ticket.frontend.track') }}" {% if route starts with 'ticket.frontend.track' %}class="current"{% endif %}>
+                    {{ Lang.get('core.track_ticket') }}
+                </a>
+            </li>
+        {% endif %}
+    {% endif %}
+
+    {% if isModuleEnabled('Ticket') %}
+        <li>
+            <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep1' %}class="current"{% endif %}>
+                {{ Lang.get('core.submit_ticket') }}
+            </a>
+        </li>
+    {% endif %}
+
+    {% if isModuleEnabled('Selfservice') %}
+        {% for type in selfserviceTypes %}
+            <li>
+                <a href="{{ route('selfservice.index', { 'type': type.slug }) }}" {% if route starts with 'selfservice' and Request.segment(2) == type.slug %}class="current"{% endif %}>
+                    {{ type.name }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</ul>

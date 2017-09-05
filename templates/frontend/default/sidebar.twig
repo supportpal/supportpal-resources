@@ -19,79 +19,7 @@
 
         <div class="desk_box">
             <h2>{{ Lang.get('general.navigation') }}</h2>
-            <ul class="ad_nav">
-                <li>
-                    <a href="{{ route('core.frontend.home') }}" {% if route starts with 'core.frontend.home' %}class="current"{% endif %}>
-                        {{ Lang.get('general.home') }}
-                    </a>
-                </li>
-
-                {% if auth_check() %}
-                    <li>
-                        <a href="{{ route('user.profile') }}">
-                            {{ Lang.choice('general.account', 1) }}
-                        </a>
-                    </li>
-                    <ul>
-                        <li>
-                            <a href="{{ route('user.profile') }}" {% if route starts with 'user.profile' %}class="current"{% endif %}>
-                                {{ Lang.get('user.profile') }}
-                            </a>
-                        </li>
-                        {% if auth_user().password is not empty %}
-                            <li>
-                                <a href="{{ route('user.change_password') }}" {% if route starts with 'user.change_password' %}class="current"{% endif %}>
-                                    {{ Lang.get('user.change_password') }}
-                                </a>
-                            </li>
-                        {% endif %}
-                        <li>
-                            <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
-                                {{ Lang.get('user.email_history') }}
-                            </a>
-                        </li>
-                        {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
-                            <li>
-                                <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>
-                                    {{ Lang.choice('user.organisation', 1) }}
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% if isModuleEnabled('Ticket') %}
-                            <li>
-                                <a href="{{ route('ticket.frontend.ticket.index') }}" {% if route starts with 'ticket.frontend.ticket.index' or route starts with 'ticket.frontend.ticket.show' %}class="current"{% endif %}>
-                                    {{ Lang.choice('ticket.ticket', 2) }}
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-
-                {% elseif isModuleEnabled('Ticket') and Config.get('channel.web.unauthenticated_users') %}
-                    <li>
-                        <a href="{{ route('ticket.frontend.track') }}" {% if route starts with 'ticket.frontend.track' %}class="current"{% endif %}>
-                            {{ Lang.get('core.track_ticket') }}
-                        </a>
-                    </li>
-                {% endif %}
-
-                {% if isModuleEnabled('Ticket') %}
-                    <li>
-                        <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep1' %}class="current"{% endif %}>
-                            {{ Lang.get('core.submit_ticket') }}
-                        </a>
-                    </li>
-                {% endif %}
-
-                {% if isModuleEnabled('Selfservice') %}
-                    {% for type in selfserviceTypes %}
-                        <li>
-                            <a href="{{ route('selfservice.index', { 'type': type.slug }) }}" {% if route starts with 'selfservice' and Request.segment(1) == type.slug %}class="current"{% endif %}>
-                                {{ type.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                {% endif %}
-            </ul>
+            {% include 'frontend.' ~ template ~ '.navigation' with { 'mobile': false } %}
         </div>
 
         {% if not auth_check() %}
@@ -102,7 +30,7 @@
                     <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
                            value="{{ Lang.get('user.login_via_idp') }}" />
                 {% else %}
-                    {{ form_open({ 'url': 'login', 'method': 'post' }) }}
+                    {{ form_open({ 'route': 'user.login', 'method': 'post' }) }}
 
                     {{ form_hidden('back', intended_url|default is not empty ? intended_url : Request.url()) }}
 
@@ -141,8 +69,15 @@
         {% if Config.get('settings.language_frontend_toggle') == 1 %}
             <div class="desk_box">
                 <h2 style="float: left; margin: 0 12px 0 0;">{{ Lang.choice('general.language', 1) }}</h2>
-                {{ form_select('language', languages,
-                auth_check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+                <select name="language">
+                    {% for code, language in languages %}
+                        <option value="{{ code }}"
+                                {% if code == App.getLocale() %}selected="selected"{% endif %}
+                                {% if attribute(returnTo, code) is defined %}data-return-to="{{ attribute(returnTo, code) }}"{% endif %}>
+                            {{ language }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
         {% endif %}
 

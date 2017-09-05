@@ -1,5 +1,11 @@
 {% extends parent_template %}
 
+{% block meta %}
+    {% if download %}
+        <meta http-equiv="refresh" content="2;{{ download.direct_frontend_url }}" />
+    {% endif %}
+{% endblock %}
+
 {% block title %}{{ ticket.subject }}{% endblock %}
 
 {% block breadcrumb %}
@@ -32,8 +38,8 @@
             {{ timeago(ticket.created_at) }}
         </div>
         <div class="form-row">
-            <label>{{ Lang.get('ticket.last_action') }}</label>
-            <span class="ticket-updated">{{ timeago(ticket.updated_at) }}</span>
+            <label>{{ Lang.get('ticket.last_reply') }}</label>
+            <span class="ticket-updated">{{ timeago(ticket.last_message_time) }}</span>
         </div>
     </div>
     {{ parent() }}
@@ -99,8 +105,8 @@
                 {{ timeago(ticket.created_at) }}
             </div>
             <div class="form-row">
-                <label>{{ Lang.get('ticket.last_action') }}</label>
-                <span class="ticket-updated">{{ timeago(ticket.updated_at) }}</span>
+                <label>{{ Lang.get('ticket.last_reply') }}</label>
+                <span class="ticket-updated">{{ timeago(ticket.last_message_time) }}</span>
             </div>
         </div>
         <hr />
@@ -189,6 +195,7 @@
     </script>
 
     <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>

@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="text">
-                    {{ Purifier.clean(message.text) }}
+                    {{ message.purified_text|raw }}
                 </div>
 
             </div>
