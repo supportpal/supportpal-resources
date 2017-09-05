@@ -51,24 +51,60 @@
                     position = element.next();
                 }
 
+                // If it's got a translatable model, add afterwards.
+                if (element.next().hasClass('fa-globe')) {
+                    position = element.next().next();
+                }
+
                 // Show error
                 var displayingError = error.insertAfter(position);
 
                 // If the form field is too big or it's a selectize box, put the error below.
-                if ($('.desk_content_padding').isChildOverflowing('#'+displayingError.prop('id'))
+                if ($('.desk_content_padding').isChildOverflowing('span[id="' + displayingError.prop('id') + '"]')
                     || position.hasClass('selectize-control')
                 ) {
                     displayingError.addClass('field-error-below');
                 }
             },
-            highlight: function(element) {
+
+            highlight: function(element, errorClass, validClass) {
+                // If there's multiple inputs in the row, add the class to the input instead of the row
+                // Excluding If it's redactor, codemirror, show/hide button, a checkbox or radio
+                var $row = $(element).closest('.form-row'),
+                    $elm = $row.find(':input').length > 1 &&
+                        (! $(element).parent('.redactor-box').length && ! $(element).parent('.merge-field_container').length
+                            && ! $(element).parent('.hideShowPassword-wrapper').length
+                            && ! $(element).parent('.input-group').length && $(element).prop('type') !== 'checkbox'
+                            && $(element).prop('type') !== 'radio'
+                        ) ? $(element) : $row;
+
                 // Add the Bootstrap error class to the control group
-                $(element).closest('.form-row').addClass('has-error');
+                $elm.addClass('has-error');
             },
             
-            success: function(element) {
+            unhighlight: function(element, errorClass, validClass) {
+                // If there's multiple inputs in the row, add the class to the input instead of the row
+                // Excluding If it's redactor, codemirror, show/hide button, a checkbox or radio
+                var $row = $(element).closest('.form-row'),
+                    $elm = $row.find(':input').length > 1 &&
+                        (! $(element).parent('.redactor-box').length && ! $(element).parent('.merge-field_container').length
+                            && ! $(element).parent('.hideShowPassword-wrapper').length
+                            && ! $(element).parent('.input-group').length && $(element).prop('type') !== 'checkbox'
+                            && $(element).prop('type') !== 'radio'
+                        ) ? $(element) : $row;
+
                 // Remove the Bootstrap error class from the control group
-                $(element).closest('.form-row').removeClass('has-error').addClass('has-success');
+                $elm.removeClass('has-error');
+                
+                // Hide error if it's "pending" (remote validation).
+                var describer = $(element).attr( "aria-describedby" );
+                if (describer) {
+                    $row.find('#' + describer.replace(/\s+/g, ", #")).hide();
+                }
+            },
+            
+            success: function (label, element) {
+                //  
             },
             
             // Custom submit handler.
