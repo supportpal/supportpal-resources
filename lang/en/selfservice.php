@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "popular_items"             => "Popular Items",
     "type_popular_items"        => ":type: Popular",
@@ -123,5 +123,11 @@ return [
     "article_brand_warning"     => "This article exists in a brand that you are not assigned to, any changes you make will also be visible under that brand.",
     "viewing_article"           => "Viewing Article",
     "article_count"             => "Article Count",
+    
+    /*
+     * 2.2.0
+     */
+    "article_desc"              => "The article can be written in several languages. The appropriate article will be shown automatically based on the user's language preference.",
+    "no_author"                 => "No Author",
 
-];
+);

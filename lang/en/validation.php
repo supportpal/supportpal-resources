@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     /*
 	|--------------------------------------------------------------------------
@@ -21,12 +21,12 @@ return [
     "alpha_num"                 => "The :attribute may only contain letters and numbers.",
     "array"                     => "The :attribute must be an array.",
     "before"                    => "The :attribute must be a date before :date.",
-    "between"                   => [
+    "between"                   => array(
         "numeric" => "The :attribute must be between :min and :max.",
         "file"    => "The :attribute must be between :min and :max kilobytes.",
         "string"  => "The :attribute must be between :min and :max characters.",
         "array"   => "The :attribute must have between :min and :max items.",
-    ],
+    ),
     "boolean"                   => "The :attribute field must be true or false.",
     "confirmed"                 => "The :attribute confirmation does not match.",
     "date"                      => "The :attribute is not a valid date.",
@@ -40,19 +40,19 @@ return [
     "in"                        => "The selected :attribute is invalid.",
     "integer"                   => "The :attribute must be an integer.",
     "ip"                        => "The :attribute must be a valid IP address.",
-    "max"                       => [
+    "max"                       => array(
         "numeric" => "The :attribute may not be greater than :max.",
         "file"    => "The :attribute may not be greater than :max kilobytes.",
         "string"  => "The :attribute may not be greater than :max characters.",
         "array"   => "The :attribute may not have more than :max items.",
-    ],
+    ),
     "mimes"                     => "The :attribute must be a file of type: :values.",
-    "min"                       => [
+    "min"                       => array(
         "numeric" => "The :attribute must be at least :min.",
         "file"    => "The :attribute must be at least :min kilobytes.",
         "string"  => "The :attribute must be at least :min characters.",
         "array"   => "The :attribute must have at least :min items.",
-    ],
+    ),
     "not_in"                    => "The selected :attribute is invalid.",
     "numeric"                   => "The :attribute must be a number.",
     "regex"                     => "The :attribute format is invalid.",
@@ -63,12 +63,12 @@ return [
     "required_without"          => "The :attribute field is required when :values is not present.",
     "required_without_all"      => "The :attribute field is required when none of :values are present.",
     "same"                      => "The :attribute and :other must match.",
-    "size"                      => [
+    "size"                      => array(
         "numeric" => "The :attribute must be :size.",
         "file"    => "The :attribute must be :size kilobytes.",
         "string"  => "The :attribute must be :size characters.",
         "array"   => "The :attribute must contain :size items.",
-    ],
+    ),
     "unique"                    => "The :attribute has already been taken.",
     "url"                       => "The :attribute format is invalid.",
     "timezone"                  => "The :attribute must be a valid zone.",
@@ -91,6 +91,13 @@ return [
      * 2.1.1
      */
     "old_password"              => "The :attribute field is invalid.",
+    
+    /*
+     * 2.2.0
+     */
+    "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
+    "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
+    "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
 
     /*
     |--------------------------------------------------------------------------
@@ -103,46 +110,46 @@ return [
     |
     */
 
-    "custom" => [
-        "data.*.subject" => [
+    "custom" => array(
+        "data.*.subject" => array(
             "required" => "A subject is required for each provided email."
-        ],
-        "data.*.contents" => [
+        ),
+        "data.*.contents" => array(
             "required"  => "The content field is required for each provided email.",
             "twig_lint" => "Each email must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
-        ],
-        "roles.*" => [
+        ),
+        "roles.*" => array(
             "exists" => "The selected role is invalid.",
-        ],
-        "category.*.type" => [
+        ),
+        "category.*.type" => array(
             "required" => "One or more self-service types must be selected.",
-        ],
-        "category.*.categories" => [
+        ),
+        "category.*.categories" => array(
             'required' => "One or more categories are required when a self-service type has been selected.",
             "exists"   => "One or more of the selected categories is invalid.",
-        ],
-        "brand.*" => [
+        ),
+        "brand.*" => array(
             "exists" => "The selected brand is invalid.",
-        ],
-        "signature.Default.*.department" => [
+        ),
+        "signature.Default.*.department" => array(
             "exists" => "Each signature must belong to a valid department.",
-        ],
-        "signature.Default.*.contents" => [
+        ),
+        "signature.Default.*.contents" => array(
             "twig_lint" => "Each signature must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
-        ],
-        "template.Default.*.language" => [
+        ),
+        "template.Default.*.language" => array(
             "exists" => "Each template must belong to a valid language.",
-        ],
-        "template.Default.*.subject" => [
+        ),
+        "template.Default.*.subject" => array(
             "min" => "Each email template subject must be greater than 1 character.",
             "max" => "Each email template subject must be less than 255 characters.",
-        ],
-        "template.Default.*.contents" => [
+        ),
+        "template.Default.*.contents" => array(
             "required_with" => "Each email template requires content when a subject is present.",
             "min" => "Each email template must be greater than 1 character.",
             "twig_lint" => "Each email template must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
-        ],
-    ],
+        ),
+    ),
 
     /*
 	|--------------------------------------------------------------------------
@@ -155,6 +162,6 @@ return [
 	|
 	*/
 
-    "attributes" => [ ],
+    "attributes" => array(),
 
-];
+);

@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "deleted"               => "Deleted!",
     "success"               => "Success",
@@ -128,4 +128,4 @@ return [
      */
     "field_required"        => "Field is required.",
 
-];
+);

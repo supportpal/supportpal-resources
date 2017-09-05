@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "new_ticket"            => "New Ticket Opened",
     "new_ticket_text"       => "A new ticket #:item has been opened by :name.",
@@ -24,4 +24,4 @@ return [
      */
     "private_message_text"  => ":name has sent you a new <a href=':route'>private message</a>.",
 
-];
+);

@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "report"                    => "Report|Reports",
 
@@ -76,4 +76,4 @@ return [
     "ticket_by_organisation"    => "Tickets by Organisations",
     "ticket_by_organisation_desc" => "This report shows the number of tickets each organisation (users within the organisation) has submitted over a given time period, ordered by most tickets.",
 
-];
+);

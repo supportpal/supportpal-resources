@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     // SupportPal
     "product_name"              => "SupportPal",
@@ -56,7 +56,7 @@ return [
     "token"                     => "Token",
     "regenerate_token"          => "Regenerate token",
     "access_level"              => "Access Level",
-    "read_write"                => "Read &amp; Write",
+    "read_write"                => "Read & Write",
     "read_only"                 => "Read Only",
 
     // Spam Rules & Filtering
@@ -241,7 +241,6 @@ return [
     "simpleauth_key"            => "SimpleAuth Key",
     "simpleauth_key_desc"       => "The key for our single sign on option, minimum 16 characters.",
     "simpleauth_operators"      => "Allow for Operators",
-    "simpleauth_operators_desc" => "Allow operators to login with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
     "frontend_logo"             => "Frontend Logo",
     "base_url"                  => "System URL",
     "base_url_desc"             => "Enter the full web address of your installation, used to generate the URLs that are sent to users.",
@@ -339,5 +338,25 @@ return [
     "and_number_others"         => "and :number other|and :number others",
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
+    
+    /*
+     * 2.2.0
+     */
+    "attachment_size"           => "Cumulative Attachment Size Limit",
+    "attachment_size_desc"      => "The maximum cumulative size of all attachments that are sent in a single email. Available options are K (for Kilobytes) and M (for Megabytes), anything else assumes bytes. Example value: 5M for 5 Megabytes. Set to 0 to not send any attachments by email and require users to download attachments via the help desk.",
+    "attachment_limit_reached"  => "Cumulative file limit reached (:size). Please consider sending files via another medium (such as a download URL).",
+    "upload_unknown_error"      => "The file \":file\" was not uploaded due to a server-side error.",
+    "renew_support"             => "<a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>Renew</a>",
+    "translations"              => "Translations",
+    "no_existing_translations"  => "No existing translations.",
+    "add_translation"           => "Add Translation",
+    "todo_list"                 => "To Do List",
+    "version_check"             => "Version Check",
+    "system_overview"           => "System Overview",
+    "getting_started"           => "Getting Started",
+    "operator_notes"            => "Operator Notes",
+    "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
+    "upgrade_and_reactivate"    => "Upgrade & Reactivate",
+    "upgrade_pending"           => "Upgrade Pending",
 
-];
+);

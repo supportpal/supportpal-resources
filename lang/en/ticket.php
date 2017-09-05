@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "feedback_question"         => "Question to be shown to the user.",
     "open_new"                  => "Open New Ticket",
@@ -170,7 +170,6 @@ return [
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
     "canned_response_category"  => "Canned Response Category|Canned Response Categories",
-    "response"                  => "Response",
     "canned_public_desc"        => "Toggle to only let the canned response be accessible by yourself.",
     "canned_group_desc"         => "If you wish to make the canned response visible to only certain operator groups, leave blank to make visible to all operators.",
 
@@ -466,4 +465,16 @@ return [
     "department_template_disabled" => "The relevant department email template is disabled, so this email cannot be sent.",
     "verbose_email_log_desc"    => "If email collection should be logged on file, recommended to keep disabled unless instructed by support for debugging. Five days worth of logs are stored, older log files will be purged automatically by the system.",
 
-];
+    /*
+     * 2.2.0
+     */
+    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
+    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
+    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
+    "response"                  => "Response|Responses",
+    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
+    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
+    "filter_performance"        => "Performance considerations and recommendations",
+    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
+
+);

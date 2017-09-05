@@ -1,6 +1,6 @@
 <?php
 
-return [
+return array(
 
     "clear"                     => "Clear",
     "begin"                     => "Begin",
@@ -274,5 +274,17 @@ return [
     "posted"                    => "Posted",
     "locked"                    => "Locked",
     "draft"                     => "Draft",
+    
+    /*
+     * 2.2.0
+     */
+    "monday"                    => "Monday",
+    "tuesday"                   => "Tuesday",
+    "wednesday"                 => "Wednesday",
+    "thursday"                  => "Thursday",
+    "friday"                    => "Friday",
+    "saturday"                  => "Saturday",
+    "sunday"                    => "Sunday",
+    "inactive"                  => "Inactive",
 
-];
+);
