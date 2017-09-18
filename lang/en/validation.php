@@ -79,7 +79,7 @@ return array(
     "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
     "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
-    "twig_lint"                 => "The :attribute must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+    "twig_lint"                 => "The :attribute must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
 
     /*
      * 2.1.0
@@ -116,7 +116,7 @@ return array(
         ),
         "data.*.contents" => array(
             "required"  => "The content field is required for each provided email.",
-            "twig_lint" => "Each email must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+            "twig_lint" => "Each email must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
         ),
         "roles.*" => array(
             "exists" => "The selected role is invalid.",
@@ -135,7 +135,7 @@ return array(
             "exists" => "Each signature must belong to a valid department.",
         ),
         "signature.Default.*.contents" => array(
-            "twig_lint" => "Each signature must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each signature must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
         "template.Default.*.language" => array(
             "exists" => "Each template must belong to a valid language.",
@@ -147,7 +147,7 @@ return array(
         "template.Default.*.contents" => array(
             "required_with" => "Each email template requires content when a subject is present.",
             "min" => "Each email template must be greater than 1 character.",
-            "twig_lint" => "Each email template must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each email template must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 

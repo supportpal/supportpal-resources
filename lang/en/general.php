@@ -286,5 +286,6 @@ return array(
     "saturday"                  => "Saturday",
     "sunday"                    => "Sunday",
     "inactive"                  => "Inactive",
+    "run"                       => "Run",
 
 );

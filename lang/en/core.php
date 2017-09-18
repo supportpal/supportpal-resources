@@ -358,5 +358,7 @@ return array(
     "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
     "upgrade_and_reactivate"    => "Upgrade & Reactivate",
     "upgrade_pending"           => "Upgrade Pending",
+    "locale_in_uri"             => "Include Locale in URI",
+    "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
 );

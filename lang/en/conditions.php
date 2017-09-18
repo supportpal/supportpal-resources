@@ -52,4 +52,8 @@ return array(
     "ticket_number"                     => "Ticket number",
     "ticket_reopened_time"              => "Ticket reopened time",
     "ticket_resolved_time"              => "Ticket resolved time",
+    "user_account_active"               => "User account active",
+    "user_country"                      => "User country",
+    "user_language"                     => "User language",
+    "user_timezone"                     => "User timezone",
 );
