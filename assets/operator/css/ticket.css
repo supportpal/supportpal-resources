@@ -577,6 +577,7 @@ table.ticket-details select {
 
 table.ticket-details .selectize-control.multi .selectize-input > div {
     font-weight: normal;
+    word-break: break-all;
 }
 
 table.ticket-details .link {
@@ -603,6 +604,9 @@ table.ticket-details .create-new-user .fa {
     font-size: 12px;
 }
 
+#sidebar a.apply-macro:hover {
+    text-decoration: underline;
+}
 
 /* New ticket form */
 

@@ -1213,7 +1213,31 @@ $(document).ready(function() {
 
     // Apply macro
     $('.apply-macro').on('click', function() {
-        applyMacro($(this).data('macro'));
+        var text = he.encode($(this).text()),
+            description = he.encode($(this).data('description')),
+            data = $(this).data('macro');
+
+        // Show the alert
+        swal({
+            title: Lang.get('ticket.run_macro'),
+            html: Lang.get('ticket.run_macro_desc', {'macro': text, 'description': description}),
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3B91CE",
+            confirmButtonText: Lang.get('general.run'),
+            closeOnConfirm: false
+        }, function(isConfirm) {
+            if (isConfirm) {
+                // Disable submit button
+                swal.disableButtons();
+
+                // Apply macro
+                applyMacro(data);
+
+                // Close modal
+                swal.closeModal();
+            }
+        });
     });
 
     // Hide reply all dropdown if clicking outside the reply-all div
@@ -1450,7 +1474,7 @@ $(document).ready(function() {
         placeholder: Lang.get('ticket.type_in_tags') + '...',
         render: {
             item: function(item, escape) {
-                return '<div class="item" style="background-color: ' + escape(item.colour) + '; color: ' + item.colour_text + '">'
+                return '<div class="item" style="background-color: ' + escape(item.colour) + '; color: ' + escape(item.colour_text) + '">'
                         + escape(item.name)
                     + '</div>';
             },

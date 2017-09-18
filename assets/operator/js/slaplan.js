@@ -24,8 +24,6 @@ $(function() {
 
 function schedules() {
     $select = $('select[name="schedules[]"]').selectize({
-        delimiter: ',',
-        persist: false,
-        dropdownParent: 'body'
+        plugins: ['remove_button']
     });
 }

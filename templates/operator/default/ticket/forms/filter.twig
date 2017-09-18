@@ -122,9 +122,7 @@
         });
         function selectize() {
             $('select[name="usergroups[]"]').selectize({
-                delimiter: ',',
-                persist: false,
-                dropdownParent: 'body'
+                plugins: ['remove_button']
             });
         }
     </script>

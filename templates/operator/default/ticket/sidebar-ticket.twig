@@ -323,7 +323,7 @@
         </h3>
         <div>
             {% for macro in macros %}
-            <a class="apply-macro" data-macro="{{ macro.id }}">{{ macro.name }}</a><br />
+            <a class="apply-macro" data-macro="{{ macro.id }}" data-description="{{ macro.description }}">{{ macro.name }}</a><br />
             {% endfor %}
         </div>
     </div>

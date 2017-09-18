@@ -165,6 +165,19 @@
             </div>
         </div>
 
+        {# Enabled languages #}
+        {% if languages|length == 1 %}
+            <div class="form-row">
+                {{ form_label('include_locale_in_uri', Lang.get('core.locale_in_uri')) }}
+                <div class="input-container">
+                    {% set checked = fields.include_locale_in_uri|default is empty ? 1 : fields.include_locale_in_uri %}
+                    {{ form_check('include_locale_in_uri', 1, checked, { 'class': 'toggle', 'id': 'toggle_include_locale_in_uri' }) }}
+                    <label for="toggle_include_locale_in_uri"></label><br />
+                    <span class="description">{{ Lang.get('core.locale_in_uri_desc') }}</span>
+                </div>
+            </div>
+        {% endif %}
+
     </div>
 
     <div id="tabSimpleAuth" class="tabContent hide">

@@ -165,9 +165,7 @@
             $('input[name="name"]').focus();
 
             var $select = $('select[name="groups[]"]').selectize({
-                delimiter: ',',
-                persist: false,
-                dropdownParent: 'body'
+                plugins: ['remove_button']
             })[0].selectize;
             $('div.section-items textarea').redactor($.extend($.Redactor.default_opts, opts));
 

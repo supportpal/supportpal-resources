@@ -237,6 +237,29 @@
         {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
                 condition|default is not empty and condition.item == 39 ? condition.value : null,
                 { 'data-item': 39, 'data-operator': 2, 'class': 'datepicker hide', 'placeholder': '&#xf073;' }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {
+                    0: Lang.get('general.no'),
+                    1: Lang.get('general.yes')
+                },
+                condition|default is not empty and condition.item == 40 ? condition.value : null,
+                { 'data-item': 40, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {0:  '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + countries(),
+                condition|default is not empty and condition.item == 41 ? condition.value : null,
+                { 'data-item': 41, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {0:  '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + array_column(LanguageFactory.getLanguages(), 'name', 'code'),
+                condition|default is not empty and condition.item == 42 ? condition.value : null,
+                { 'data-item': 42, 'data-operator': 0 }) }}
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {0:  '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + timezones(),
+                condition|default is not empty and condition.item == 43 ? condition.value : null,
+                { 'data-item': 43, 'data-operator': 0 }) }}
     </td>
     <td width="16">
         <i class="fa fa-times right remove-button"></i>

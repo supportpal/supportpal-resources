@@ -15,7 +15,7 @@
                     <li>
                         <a href="{{ route('ticket.operator.ticket') ~ '?filter=' ~ filter.id }}">
                             <span class="badge right hide" data-id="{{ filter.id }}"></span>
-                            <div class="list-item">
+                            <div class="list-item" {% if Input.get('filter', 0) == filter.id|trim %}style="font-weight: bold;"{% endif %}>
                                 {{ filter.name }}
                             </div>
                         </a>
@@ -37,7 +37,7 @@
                 <li>
                     <a href="{{ route('ticket.operator.ticket') ~ '?status=' ~ status.id }}">
                         <span class="badge right hide" data-id="{{ status.id }}"></span>
-                        <div class="list-item">
+                        <div class="list-item" {% if Input.get('status', 0) == status.id|trim %}style="font-weight: bold;"{% endif %}>
                             <span class="statusIcon" style="background: {{ status.colour }};"></span>&nbsp;
                             {{ status.name }}
                         </div>
@@ -59,7 +59,7 @@
                 <li>
                     <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
                         <span class="badge right hide" data-id="{{ department.id }}"></span>
-                        <div class="list-item">
+                        <div class="list-item" {% if Input.get('department', 0) == department.id|trim %}style="font-weight: bold;"{% endif %}>
                             {% if department.dashes|default is not empty %}
                                 {{ department.dashes|raw }}{{ department.name|replace({ (department.dashes): '' }) }}
                             {% else %}
@@ -87,7 +87,7 @@
                     <li>
                         <a href="{{ route('ticket.operator.ticket') ~ '?brand=' ~ brand.id }}">
                             <span class="badge right hide" data-id="{{ brand.id }}"></span>
-                            <div class="list-item">
+                            <div class="list-item" {% if Input.get('brand', 0) == brand.id|trim %}style="font-weight: bold;"{% endif %}>
                                 {{ brand.name }}
                             </div>
                         </a>

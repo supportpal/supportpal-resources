@@ -82,7 +82,8 @@
     <div class="form-row">
         {{ form_label('country', Lang.get('user.country')) }}
         <div class="input-container">
-            {{ form_select('country', countries(), record.country|default is not empty ? record.country : Config.get('settings.default_country')) }}
+            {{ form_select('country', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + countries(),
+                record.exists ? record.country : Config.get('settings.default_country')) }}
         </div>
     </div>
 
@@ -92,7 +93,8 @@
     <div class="form-row">
         {{ form_label('language_code', Lang.choice('general.language', 1)) }}
         <div class="input-container">
-            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+            {{ form_select('language_code', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + languages,
+                record.exists ? record.language_code : LanguageFactory.getOperatorDefault()) }}
         </div>
     </div>
 
@@ -101,7 +103,8 @@
     <div class="form-row">
         {{ form_label('language_code', Lang.choice('general.language', 1)) }}
         <div class="input-container">
-            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+            {{ form_select('language_code', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + languages,
+                record.exists ? record.language_code : LanguageFactory.getUserDefault(Config.get('settings.default_brand'), false)) }}
         </div>
     </div>
 
@@ -110,7 +113,8 @@
     <div class="form-row">
         {{ form_label('timezone', Lang.get('general.timezone')) }}
         <div class="input-container">
-            {{ form_select('timezone', timezones(), record|default is not empty and record.timezone|default is not empty ? record.timezone : Config.get('settings.default_timezone')) }}
+            {{ form_select('timezone', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + timezones(),
+                record.exists ? record.timezone : Config.get('settings.default_timezone')) }}
         </div>
     </div>
 
