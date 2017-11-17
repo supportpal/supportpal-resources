@@ -175,7 +175,7 @@ return array(
     "canned_group_desc"         => "Om du vill att det konserverade svaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
 
     // Filters
-    "filter"                    => "Filter",
+    "filter"                    => "Filter|Filter",
     "filter_condition"          => "Filtervillkor",
     "filter_condition_desc"     => "Definiera ärendevillkoren för vilken ärenden listas under detta filter.",
     "filter_public_desc"        => "Växla för att låta filtret enbart bli åtkomligt av dig själv.",

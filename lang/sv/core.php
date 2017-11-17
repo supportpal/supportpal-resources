@@ -132,10 +132,10 @@ return array(
     "task_failed"               => "Misslyckades med att köra aktiviteten manuellt.",
 
     // Plugins
-    "plugins"                   => "Plugin",
-    "installed_plugins"         => "Installerade plugin",
-    "visit_plugin"              => "Besök pluginsidan",
-    "uninstall_plugin_warning"  => "Avinstallation av pluginet kommer att ta bort alla associerade filer och data. Vi rekommenderar avaktivering av pluginet istället.",
+    "plugins"                   => "Insticksmodul|Insticksmoduler",
+    "installed_plugins"         => "Installerade Insticksmodul",
+    "visit_plugin"              => "Besök Insticksmodulsidan",
+    "uninstall_plugin_warning"  => "Avinstallation av insticksmodulen kommer att ta bort alla associerade filer och data. Vi rekommenderar avaktivering av insticksmodulen istället.",
 
     // Messages
     "last_activity"             => "Senaste aktivitet",
