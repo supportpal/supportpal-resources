@@ -14,7 +14,7 @@ return array(
     */
 
     "accepted"                  => "از :ویژگی مورد پذیرش قرار گرفت.",
-    "active_url"                => "از: این ویژگی یک آدرس معتبر نمی باشد..",
+    "active_url"                => "ز: این ویژگی یک آدرس معتبر نمی باشد..",
     "after"                     => "The :attribute must be a date after :date.",
     "alpha"                     => "از: ویژگی ممکن است تنها شامل حروف باشد.",
     "alpha_dash"                => "از: صفت تنها می تواند شامل حروف، اعداد، و خط تیره باشد.",
@@ -78,8 +78,8 @@ return array(
     "operator_password_length"  => "The password must be equal to or longer than :operator_password_length characters.",
     "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
-    "operator_password_strength"=> "The :attribute must contain: :operator_password_strength.",
-    "twig_lint"                 => "The :attribute must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+    "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
+    "twig_lint"                 => "The :attribute must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
 
     /*
      * 2.1.0
@@ -91,6 +91,13 @@ return array(
      * 2.1.1
      */
     "old_password"              => "The :attribute field is invalid.",
+    
+    /*
+     * 2.2.0
+     */
+    "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
+    "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
+    "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +116,7 @@ return array(
         ),
         "data.*.contents" => array(
             "required"  => "The content field is required for each provided email.",
-            "twig_lint" => "Each email must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+            "twig_lint" => "Each email must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
         ),
         "roles.*" => array(
             "exists" => "The selected role is invalid.",
@@ -128,7 +135,7 @@ return array(
             "exists" => "Each signature must belong to a valid department.",
         ),
         "signature.Default.*.contents" => array(
-            "twig_lint" => "Each signature must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each signature must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
         "template.Default.*.language" => array(
             "exists" => "Each template must belong to a valid language.",
@@ -140,7 +147,7 @@ return array(
         "template.Default.*.contents" => array(
             "required_with" => "Each email template requires content when a subject is present.",
             "min" => "Each email template must be greater than 1 character.",
-            "twig_lint" => "Each email template must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each email template must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 

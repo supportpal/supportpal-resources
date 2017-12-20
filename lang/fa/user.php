@@ -127,7 +127,6 @@ return array(
     "user_reg_captcha"              => "کپچا ثبت نام کاربر",
     "user_reg_captcha_desc"         => "تصویر امینتی برای کاربرانی که به تازگی ثبت نام میکنند نمایش داده شود.",
     "user_name_format"              => "فرمت نام",
-    "user_name_format_desc"         => "The format that is displayed for user and operator names throughout the help desk.",
     "first_last"                    => "اول آخر",
     "last_first"                    => "آخر اول",
     "first_l"                       => "اول L.",
@@ -273,5 +272,11 @@ return array(
      */
     "search_for_user_operator"      => "Search for user/operator...",
     "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
+
+    /*
+     * 2.2.0
+     */
+    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
+    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
 );
