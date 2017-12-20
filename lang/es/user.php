@@ -127,7 +127,6 @@ return array(
     "user_reg_captcha"              => "User Registration Captcha",
     "user_reg_captcha_desc"         => "If the captcha should be shown to new users registering.",
     "user_name_format"              => "Name Format",
-    "user_name_format_desc"         => "The format that is displayed for user and operator names throughout the help desk.",
     "first_last"                    => "First Last",
     "last_first"                    => "Last First",
     "first_l"                       => "First L.",
@@ -273,5 +272,11 @@ return array(
      */
     "search_for_user_operator"      => "Search for user/operator...",
     "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
+
+    /*
+     * 2.2.0
+     */
+    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
+    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
 );

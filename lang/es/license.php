@@ -47,4 +47,9 @@ return array(
     "server_response"   => "Server Response",
     "need_to_reissue"   => "You may need to <strong>reissue</strong> the license at our <a href='http://www.supportpal.com/manage/' target='_blank'>client area</a>.",
 
+    /*
+     * 2.2.0
+     */
+    "enter_new_key"     => "Enter New License Key",
+
 );

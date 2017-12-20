@@ -241,7 +241,6 @@ return array(
     "simpleauth_key"            => "SimpleAuth Key",
     "simpleauth_key_desc"       => "The key for our single sign on option, minimum 16 characters.",
     "simpleauth_operators"      => "Allow for Operators",
-    "simpleauth_operators_desc" => "Allow operators to login with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
     "frontend_logo"             => "Logo Frontend",
     "base_url"                  => "Sistema URL",
     "base_url_desc"             => "Utiliza la URL entera del sistema, será usada para manadarla a los clientes y que hagan login.",
@@ -339,5 +338,27 @@ return array(
     "and_number_others"         => "and :number other|and :number others",
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
+
+    /*
+     * 2.2.0
+     */
+    "attachment_size"           => "Cumulative Attachment Size Limit",
+    "attachment_size_desc"      => "The maximum cumulative size of all attachments that are sent in a single email. Available options are K (for Kilobytes) and M (for Megabytes), anything else assumes bytes. Example value: 5M for 5 Megabytes. Set to 0 to not send any attachments by email and require users to download attachments via the help desk.",
+    "attachment_limit_reached"  => "Cumulative file limit reached (:size). Please consider sending files via another medium (such as a download URL).",
+    "upload_unknown_error"      => "The file \":file\" was not uploaded due to a server-side error.",
+    "renew_support"             => "<a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>Renew</a>",
+    "translations"              => "Translations",
+    "no_existing_translations"  => "No existing translations.",
+    "add_translation"           => "Add Translation",
+    "todo_list"                 => "To Do List",
+    "version_check"             => "Version Check",
+    "system_overview"           => "System Overview",
+    "getting_started"           => "Getting Started",
+    "operator_notes"            => "Operator Notes",
+    "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
+    "upgrade_and_reactivate"    => "Upgrade & Reactivate",
+    "upgrade_pending"           => "Upgrade Pending",
+    "locale_in_uri"             => "Include Locale in URI",
+    "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
 );
