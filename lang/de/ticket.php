@@ -2,15 +2,15 @@
 
 return array(
 
-    "feedback_question"         => "Question to be shown to the user.",
-    "open_new"                  => "Open New Ticket",
-    "select_department"         => "Select a Department",
-    "select_department_desc"    => "Please click on the relevant department for your issue below.",
-    "no_departments"            => "No departments found.",
-    "department_user_details"   => "Department and User Details",
-    "enter_your_details"        => "Enter your details",
-    "enter_ticket_details"      => "Enter Details",
-    "enter_subject_message"     => "Enter Subject and Message",
+    "feedback_question"         => "Frage, die dem Benutzer angezeigt wird.",
+    "open_new"                  => "Ticket erstellen",
+    "select_department"         => "Abteilung wählen",
+    "select_department_desc"    => "Bitte wählen Sie eine passende Abteilung für Ihr Anliegen aus.",
+    "no_departments"            => "Keine Abteilungen gefunden.",
+    "department_user_details"   => "Abteilungen und Kunde",
+    "enter_your_details"        => "Geben Sie Ihre Kontaktdaten ein",
+    "enter_ticket_details"      => "Details",
+    "enter_subject_message"     => "Betreff und Nachricht",
     "invalid_user"              => "Please ensure valid user details have been entered to continue.",
 
     "registered_users"          => "Registered Users Only",
@@ -18,58 +18,58 @@ return array(
 
     "tickets"                   => "Ticket(s)",
     "ticket"                    => "Ticket|Tickets",
-    "subject"                   => "Subject",
-    "no_subject"                => "No Subject",
-    "last_action"               => "Last Action",
-    "due_time"                  => "Due Time",
-    "created_time"              => "Created Time",
-    "submitted"                 => "Submitted",
-    "add_reply"                 => "Add Reply",
-    "ticket_reply"              => "Ticket Reply",
-    "ticket_note"               => "Ticket Note",
-    "ticket_type"               => "Ticket Type",
+    "subject"                   => "Betreff",
+    "no_subject"                => "Betreff fehlt",
+    "last_action"               => "letzte Aktivität",
+    "due_time"                  => "Fertigstellung",
+    "created_time"              => "Erstellungsdatum",
+    "submitted"                 => "Übertragen",
+    "add_reply"                 => "Antwort hinzufügen",
+    "ticket_reply"              => "Ticketanwort",
+    "ticket_note"               => "Ticketnotiz",
+    "ticket_type"               => "Ticketart",
 
-    "user_ticket"               => "User Ticket",
-    "user_ticket_desc"          => "Open new ticket on behalf of a new or existing user.",
-    "existing_user"             => "Existing User",
-    "new_user"                  => "New User",
-    "internal"                  => "Internal",
-    "internal_ticket"           => "Internal Ticket",
-    "internal_ticket_desc"      => "Open a ticket for internal use only. This ticket will be associated with you, rather than a user.",
-    "ticket_opened"             => "Your ticket has successfully been opened.",
-    "enter_user_details"        => "Please enter your details below, or login to your account if you have one.",
-    "already_have_account"      => "You already have an account, please login and then open the ticket. Please use the forgot password feature if you cannot remember your login.",
+    "user_ticket"               => "Benutzerticket",
+    "user_ticket_desc"          => "Ein neues Ticket im Namen eines neuen oder bestehenden Benutzer erstellen.",
+    "existing_user"             => "Bestehender Benutzer",
+    "new_user"                  => "Neuer Benutzer",
+    "internal"                  => "Intern",
+    "internal_ticket"           => "Internes Ticket",
+    "internal_ticket_desc"      => "Erstellt ein Ticket für den internen Gebrauch. Das Ticket wird Ihnen zugewiesen.",
+    "ticket_opened"             => "Ihr Ticket wurde erfolgreich erstellt.",
+    "enter_user_details"        => "Bitte geben Sie Ihre Informationen ein, oder melden sich mit Ihrem bestehenden Konto an.",
+    "already_have_account"      => "Sie haben bereits ein Benutzerkonto. Bitte melden Sie sich mit diesem an und eröffnen dann ein Ticket.",
 
-    "recent_tickets"            => "Recent Tickets",
-    "last_message_text"         => "Last Message Text",
+    "recent_tickets"            => "kürzlich eingereichte Tickets",
+    "last_message_text"         => "Letzte Nachricht",
 
-    "set_due_time"              => "Set a due time",
+    "set_due_time"              => "Fertigstellungsdatum eintragen",
 
-    "settings"                  => "Ticket Settings",
+    "settings"                  => "Ticketeinstellungen",
 
-    "priority"                  => "Priority|Priorities",
+    "priority"                  => "Priorität|Prioritäten",
 
-    "channel"                   => "Channel|Channels",
-    "account"                   => "Account|Accounts",
+    "channel"                   => "Kanal|Kanäle",
+    "account"                   => "Benutzerkonto|Benuterkonten",
 
-    "assign_operator"           => "Assign Operator",
-    "assigned_operator"         => "Assigned Operators",
-    "assigned_to"               => "Assigned To",
-    "assigned"                  => "Assigned",
+    "assign_operator"           => "Mitarbeiter zuweisen",
+    "assigned_operator"         => "zuständiger Mitarbeiter",
+    "assigned_to"               => "zugewiesen an",
+    "assigned"                  => "zugewiesen",
 
-    "department"                => "Department|Departments",
+    "department"                => "Abeiltung|Abteilungen",
     "change_department_order"   => "Drag the rows to change the order that departments are shown to users when opening a new ticket.",
-    "department_order"          => "Department Order",
-    "department_applicable"     => "Applicable Departments",
+    "department_order"          => "Reihenfolge der Abteilungen",
+    "department_applicable"     => "auswählbare Abteilungen",
     "department_applicable_desc" => "The departments in which the priority will be available for users to select. Only applies to the frontend, all priorities will be available to operators for all departments.",
 
     "due_to_be_sent"            => "Due to be sent",
-    "send_now"                  => "Send now",
+    "send_now"                  => "Jetzt senden",
 
-    "tag"                       => "Tag|Tags",
+    "tag"                       => "Stichwort|Stichwörter",
 
-    "track_ticket"              => "Track Ticket",
-    "view_ticket"               => "View Ticket",
+    "track_ticket"              => "Ticket verfolgen",
+    "view_ticket"               => "Ticket anzeigen",
 
     // Recent activity
     "recent_activity"           => "Recent Activity",
@@ -170,6 +170,7 @@ return array(
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
     "canned_response_category"  => "Canned Response Category|Canned Response Categories",
+    "response"                  => "Response",
     "canned_public_desc"        => "Toggle to only let the canned response be accessible by yourself.",
     "canned_group_desc"         => "If you wish to make the canned response visible to only certain operator groups, leave blank to make visible to all operators.",
 
@@ -270,20 +271,20 @@ return array(
     "default_open_status"       => "Default Open Status",
 
     "default_resolve_status"    => "Default Resolved Status",
-    "default_resolve_status_desc" => "Select the default status that is used for tickets that have been resolved.",
+    "default_resolve_status_desc"=> "Select the default status that is used for tickets that have been resolved.",
 
-    "waiting_response_time"      => "Waiting for Response Email",
-    "waiting_response_time_desc" => "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
+    "waiting_response_time"     => "Waiting for Response Email",
+    "waiting_response_time_desc"=> "The time after which users are sent an email on inactive tickets, asking if they consider the ticket to be resolved. Set to 0 to disable this email.",
 
     "close_inactive_tickets"    => "Close Inactive Tickets",
-    "close_inactive_tickets_desc" => "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
-    "close_inactive_status_desc" => "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
+    "close_inactive_tickets_desc"=> "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
+    "close_inactive_status_desc"=> "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
 
     "ticket_reply_order"        => "Ticket Reply Order",
     "ticket_reply_order_desc"   => "Select the order in which ticket messages are shown, ascending where the latest message is last or descending where the latest message is first.",
 
     "ticket_notes_position"     => "Ticket Notes Position",
-    "ticket_notes_position_desc" => "Select where in the ticket view that ticket notes are shown.",
+    "ticket_notes_position_desc"=> "Select where in the ticket view that ticket notes are shown.",
     "ticket_notes_top_messages" => "At top and in messages",
     "ticket_notes_top"          => "At top only",
     "ticket_notes_messages"     => "In messages only",
@@ -372,7 +373,7 @@ return array(
      */
     "department_consume_all"    => "By default, SupportPal has email alias support and will check the TO address on incoming email to see which department the ticket should be opened in, a ticket is not opened if a matching department email address cannot be found. Enabling this setting will mean all emails without a matching department email address are imported as tickets in this department.",
     "default_reply_options"     => "Default Reply Options",
-    "default_reply_options_desc" => "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
+    "default_reply_options_desc"=> "Select the default reply options to be set when opening or replying to a ticket. The ':reply_option' option will be ticked based on the ':department_option' department setting.",
     "associate_response_tag"    => "Associate canned response with a tag...",
     "canned_response_tags_desc" => "Add tags which may help finding a canned response when replying to a ticket.",
     "loading_tags"              => "Loading tags",
@@ -464,19 +465,5 @@ return array(
     "email_user_frontend_desc"  => "Select whether users should be notified by email when they open a ticket themselves on the frontend.",
     "department_template_disabled" => "The relevant department email template is disabled, so this email cannot be sent.",
     "verbose_email_log_desc"    => "If email collection should be logged on file, recommended to keep disabled unless instructed by support for debugging. Five days worth of logs are stored, older log files will be purged automatically by the system.",
-
-    /*
-     * 2.2.0
-     */
-    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
-    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
-    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
-    "response"                  => "Response|Responses",
-    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
-    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
-    "filter_performance"        => "Performance considerations and recommendations",
-    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
-    "run_macro"                 => "Run Macro",
-    "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
 
 );

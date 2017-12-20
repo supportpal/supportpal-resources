@@ -56,4 +56,5 @@ return array(
     "user_country"                      => "User country",
     "user_language"                     => "User language",
     "user_timezone"                     => "User timezone",
+
 );

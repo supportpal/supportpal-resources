@@ -47,4 +47,5 @@ return array(
     "hours_to_be_set"           => "hours to be added to the current time and set as the ticket's new due time.",
     "only_with_due_time"        => "Only applies to tickets with a due time currently set.",
     "set_due_time_desc"         => "Clear the current due time by leaving the field blank. Can also set a due time in the past by using a negative number.",
+
 );
