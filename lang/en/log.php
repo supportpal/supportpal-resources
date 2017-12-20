@@ -145,7 +145,7 @@ return array(
      * 2.1.1
      */
     "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
-    
+
     /*
      * 2.1.2
      */
