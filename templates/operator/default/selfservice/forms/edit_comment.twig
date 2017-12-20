@@ -4,11 +4,13 @@
     {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.comment', 1)}) }}
 {% endblock %}
 
-{% set breadcrumb = [
-    Lang.get('selfservice.selfservice'),
-    "<a href='" ~ route('selfservice.operator.comment.index') ~ "'>" ~ Lang.choice('selfservice.comment', 2) ~ "</a>",
-Lang.get('general.edit_item', {'item': Lang.choice('selfservice.comment', 1)})
-] %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <a href="{{ route('selfservice.operator.comment.index') }}">{{ Lang.choice('selfservice.comment', 2) }}</a>
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <strong>{{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.comment', 1)}) }}</strong>
+{% endblock %}
 
 {% block content %}
 
@@ -40,7 +42,7 @@ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.comment', 1)})
             <div class="form-row">
                 {{ form_label('text', Lang.get('general.text')) }}
                 <div class="input-container">
-                    {{ form_redactor('text', record|default is not empty and record.exists ? record.text
+                    {{ form_redactor('text', record|default is not empty and record.exists ? record.purified_text
                         : '@' ~ trim(str_replace(' ', '', record.author.formatted_name)) ~ ' ') }}
                 </div>
             </div>

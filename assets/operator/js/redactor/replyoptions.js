@@ -31,12 +31,16 @@ $(function() {
 
     // Check if 'send email to user' should show based on ticket status set, message form only
     $(document).on('change', '.message-form select[name="to_status"]', function () {
-        if ($(this).val() == closedStatusId) {
+        if ($(this).val() == closedStatusId && departmentTemplates.user_ticket_reply == -1) {
+            // Only need to check this branch if the reply template is disabled (fallback for operator closed)
             handleEmailCheckbox(departmentTemplates.user_ticket_operatorclose, 'user');
         } else {
             handleEmailCheckbox(departmentTemplates.user_ticket_reply, 'user');
         }
     });
+
+    // Mock a change on the status to have it run the above code
+    $('.message-form select[name="to_status"]').change();
 
     // Check if 'send email to operator(s)' should show based on ticket message type
     $('.reply-type .option').click(function() {
@@ -76,6 +80,7 @@ $(function() {
                 term: $this.val(),
                 tag: $('input[name=cannedResponseTag]').val(),
                 order: $('select[name=cannedResponseOrder]').val(),
+                locale: $('select[name=cannedResponseLang]').val(),
                 start: 0,
                 ticket_id: ticketId,
                 user_id: userId
@@ -111,6 +116,7 @@ $(function() {
                 term: $('input[name=cannedResponseSearch]').val(),
                 tag: $('input[name=cannedResponseTag]').val(),
                 order: $('select[name=cannedResponseOrder]').val(),
+                locale: $('select[name=cannedResponseLang]').val(),
                 start: $list.children('li.response-item').length,
                 ticket_id: ticketId,
                 user_id: userId
@@ -132,6 +138,11 @@ $(function() {
         d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
         document.cookie = "cannedResponseOrder=" + $(this).val() + "; expires="+ d.toUTCString();
 
+        $('input[name=cannedResponseSearch]').trigger('donetyping');
+    });
+
+    // Change language of responses
+    $(document).on('change', 'select[name=cannedResponseLang]', function() {
         $('input[name=cannedResponseSearch]').trigger('donetyping');
     });
 
@@ -162,21 +173,30 @@ $(function() {
                     order = getCookie('cannedResponseOrder');
                 }
 
+                // Create a list of language options for dropdown
+                var languageOptions = '';
+                var languageCount = 0;
+                for (var code in allLanguages) {
+                    languageOptions += '<option value="' + code + '" '
+                        + (userLanguage == code ? 'selected="selected"' : '') + '>' + allLanguages[code] + '</option>';
+                    languageCount++;
+                }
+
                 return String()
-                    + '<span class="cannedResponseOrder description right">'
-                        + Lang.get('general.sort_by') + '&nbsp; '
-                        + '<select name="cannedResponseOrder">'
-                            + '<option value="0" ' + (order == 0 ? 'selected="selected"' : '') + '>' + Lang.get('general.frequently_used') + '</option>'
-                            + '<option value="1" ' + (order == 1 ? 'selected="selected"' : '') + '>' + Lang.get('general.recently_used') + '</option>'
-                            + '<option value="2" ' + (order == 2 ? 'selected="selected"' : '') + '>' + Lang.get('general.recently_created') + '</option>'
-                        + '</select>'
-                    + '</span>'
                     + '<section id="redactor-modal-cannedResponses">'
                         + '<div class="hide720 tags-column right">'
+                            + '<h3>' + Lang.get('general.sort_by') + '</h3>'
+                            + '<select name="cannedResponseOrder">'
+                                + '<option value="0" ' + (order == 0 ? 'selected="selected"' : '') + '>' + Lang.get('general.frequently_used') + '</option>'
+                                + '<option value="1" ' + (order == 1 ? 'selected="selected"' : '') + '>' + Lang.get('general.recently_used') + '</option>'
+                                + '<option value="2" ' + (order == 2 ? 'selected="selected"' : '') + '>' + Lang.get('general.recently_created') + '</option>'
+                            + '</select>'
+                            + (languageCount > 1 ? '<h3>' + Lang.choice('general.language', 1) + '</h3>'
+                                + '<select name="cannedResponseLang">' + languageOptions + '</select>' : '')
                             + '<span class="clear-selected description right hide">' + Lang.get('general.clear_selected') + '</span>'
                             + '<h3>' + Lang.choice('ticket.tag', 2) + '</h3>'
                             + '<input name="cannedResponseTag" type="hidden" value="0" />'
-                            + '<ul id="cannedResponseTags">'
+                            + '<ul id="cannedResponseTags"' + (languageCount > 1 ? ' class="with-language"' : '') + '>'
                                 + '<li class="description"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> ' + Lang.get('ticket.loading_tags') + '...</li>'
                             + '</ul>'
                         + '</div>'
@@ -185,9 +205,9 @@ $(function() {
                             + '<ul id="cannedResponseResults" class="redactor-search hide"></ul>'
                         + '</div>'
                         + '<div class="clear"></div>'
-                        + (cannedResponsePermission ? '<br /><div class="manage-link"><a class="description" target="_blank" href="'
-                        + laroute.route('ticket.operator.cannedresponse.index') + '">' + Lang.get('general.manage') + ' '
-                        + Lang.choice('ticket.cannedresponse', 2) + '</a></div>' : '')
+                        + (cannedResponsePermission ? '<div class="manage-link"><a class="description" target="_blank" href="'
+                            + laroute.route('ticket.operator.cannedresponse.index') + '">' + Lang.get('general.manage') + ' '
+                            + Lang.choice('ticket.cannedresponse', 2) + '</a></div>' : '')
                     + '</section>';
             },
             init: function ()
@@ -231,7 +251,8 @@ $(function() {
                     laroute.route('ticket.operator.cannedresponse.show', { id: id }),
                     {
                         ticket_id: typeof ticketId !== 'undefined' ? ticketId : null,
-                        user_id: typeof userId !== 'undefined' ? userId : null
+                        user_id: typeof userId !== 'undefined' ? userId : null,
+                        locale: $('select[name=cannedResponseLang]').val()
                     },
                 function(response) {
                     // Restore the caret/cursor position
@@ -266,7 +287,12 @@ $(function() {
             $this.addClass('ui-autocomplete-loading');
 
             // Fire the AJAX
-            $.get(laroute.route('selfservice.operator.article.search', {term: $this.val(), brandId: brandId}))
+            $.get(laroute.route('selfservice.operator.article.search', {
+                    term: $this.val(),
+                    brandId: brandId,
+                    userId: userId,
+                    locale: $('.selfServiceLang select').val()
+                }))
                 .done(function (data) {
                     // In case it's searched two requests at once (rare)
                     $list.empty();
@@ -291,12 +317,28 @@ $(function() {
         }
     });
 
+    // Change language of self-service links
+    $(document).on('change', '.selfServiceLang select', function() {
+        $('input[name=selfServiceSearch]').trigger('donetyping');
+    });
+
     $.Redactor.prototype.ssLink = function()
     {
         return {
             getTemplate: function()
             {
+                // Create a list of language options for dropdown
+                var languageOptions = '';
+                var languageCount = 0;
+                for (var code in allLanguages) {
+                    languageOptions += '<option value="' + code + '" '
+                        + (userLanguage == code ? 'selected="selected"' : '') + '>' + allLanguages[code] + '</option>';
+                    languageCount++;
+                }
+
                 return String()
+                    + (languageCount > 1 ? '<span class="selfServiceLang">' + Lang.choice('general.language', 1) + ': '
+                        + '<select>' + languageOptions + '</select></span>' : '')
                 + '<section id="redactor-modal-ssLink">'
                 + '<input type="text" name="selfServiceSearch" placeholder="' + Lang.get('ticket.search_selfservice') + '" />'
                 + '<ul id="selfServiceResults" class="redactor-search hide"></ul>'

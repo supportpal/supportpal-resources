@@ -27,16 +27,16 @@
 
     <div id="tabWebsite" class="tabContent">
 
-        {% if Config.get('brand')|length > 1 %}
+        {% if brand_count() > 1 %}
             <div class="form-row">
                 {{ form_label('default_brand', Lang.get('core.default_brand')) }}
                 <div class="input-container">
-                    {{ form_select('default_brand', array_column(enabledBrands, 'name', 'id')) }}<br />
+                    {{ form_select('default_brand', enabledBrands.pluck('name', 'id')) }}<br />
                     <span class="description">{{ Lang.get('core.default_brand_desc') }}</span>
                 </div>
             </div>
         {% else %}
-            {{ form_hidden('default_brand', Config.get('brand')|first.id) }}
+            {{ form_hidden('default_brand', brand_config(null)|first.id) }}
         {% endif %}
 
         <div class="form-row">
@@ -88,6 +88,14 @@
     </div>
 
     <div id="tabEmail" class="tabContent hide">
+
+        <div class="form-row">
+            {{ form_label('attachment_size', Lang.get('core.attachment_size')) }}
+            <div class="input-container">
+                {{ form_text('attachment_size') }}<br />
+                <span class="description">{{ Lang.get('core.attachment_size_desc') }}</span>
+            </div>
+        </div>
 
         {% if isModuleEnabled('Ticket') %}
             <div class="form-row">
@@ -156,6 +164,19 @@
                 <label>{{ form_radio('language_operator_toggle', 0) }} {{ Lang.get('general.hide') }}</label>
             </div>
         </div>
+
+        {# Enabled languages #}
+        {% if languages|length == 1 %}
+            <div class="form-row">
+                {{ form_label('include_locale_in_uri', Lang.get('core.locale_in_uri')) }}
+                <div class="input-container">
+                    {% set checked = fields.include_locale_in_uri|default is empty ? 1 : fields.include_locale_in_uri %}
+                    {{ form_check('include_locale_in_uri', 1, checked, { 'class': 'toggle', 'id': 'toggle_include_locale_in_uri' }) }}
+                    <label for="toggle_include_locale_in_uri"></label><br />
+                    <span class="description">{{ Lang.get('core.locale_in_uri_desc') }}</span>
+                </div>
+            </div>
+        {% endif %}
 
     </div>
 

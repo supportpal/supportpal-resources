@@ -1,3 +1,10 @@
+// Allow defining your own attribute mapper.
+var attributeMapper = function(elem, value, attribute) {
+    var attr = elem.attr(attribute);
+    if (/\[(Default|\d+)]\[]\[\w+]$/.test(attr))
+        elem.attr(attribute, attr.replace(/\[]/, '[' + value + ']'));
+};
+
 $(document).ready(function() {
     /**
      * Add new item to DOM
@@ -18,20 +25,36 @@ $(document).ready(function() {
             newElem.find('button.remove-button').removeClass('hide');
 
             // Set the language code for all inputs in the new element.
-            newElem.find('input[type="hidden"]').val(value);
+            newElem.find('input[type="hidden"]:not(.mdd-ignore)').val(value);
             newElem.find('.item-type').text(this.options[value].text);
             newElem.find(':input, label').each(function(){
                 var elem = $(this);
-                elem.prop('disabled', false);
-                [ 'name', 'for', 'id' ].map( function(attribute) {
-                    var attr = elem.attr(attribute);
-                    if (/\[(Default|\d+)]\[]\[\w+]$/.test(attr))
-                        elem.attr(attribute, attr.replace(/\[]/, '[' + value + ']'));
-                });
+                if (elem.is(':not(.mdd-ignore)')) {
+                    elem.prop('disabled', false);
+                }
+                [ 'name', 'for', 'id' ].map(attributeMapper.bind(null, elem, value));
             });
 
             // Initialise redactor on new textarea.
-            newElem.find('textarea').redactor($.extend($.Redactor.default_opts, opts));
+            newElem.find('textarea:not(.not-redactor)').redactor($.extend($.Redactor.default_opts, opts));
+            
+            // Initialise file upload.
+            if (typeof FileUpload !== 'undefined' && newElem.find('.fileupload').length > 0) {
+                var settings = {
+                        $element: newElem.find('.fileupload'),
+                        $container: newElem
+                    },
+                    inputName = newElem.find('.attachment-details')
+                        .find('input[type=hidden]')
+                        .prop('name').replace('[]', '');
+                
+                // Fall back to default inputName, if we can't find an element...
+                if (inputName.length !== 0) {
+                    settings.inputName = inputName;
+                }
+                
+                new FileUpload(settings);
+            }
 
             // Append new element to the DOM.
             $container.append(newElem);
@@ -50,7 +73,7 @@ $(document).ready(function() {
 
             // Hide the drop-down if there are no options.
             if (Object.keys(this.options).length === 0) {
-                this.$dropdown.parents('.form-container').hide();
+                this.$input.parents('.form-container').hide();
             }
         }
     });
@@ -72,7 +95,7 @@ $(document).ready(function() {
 
         // Show the language drop-down if there are now options.
         if (Object.keys(selectize.options).length !== 0) {
-            selectize.$dropdown.parents('.form-container').show();
+            $selector.parents('.form-container').show();
         }
 
         // Remove the template.

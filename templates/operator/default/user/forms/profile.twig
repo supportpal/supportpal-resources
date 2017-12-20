@@ -1,6 +1,6 @@
     {% if operator is not defined or not operator %}
         {% if record.exists %}
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
@@ -10,11 +10,11 @@
                 </div>
             {% endif %}
         {% else %}
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row">
                     {{ form_label('brand_id', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
-                        {{ form_select('brand_id', array_column(enabledBrands, 'name', 'id'), Config.get('settings.default_brand')) }}
+                        {{ form_select('brand_id', enabledBrands.pluck('name', 'id'), Config.get('settings.default_brand')) }}
                     </div>
                 </div>
             {% else %}
@@ -56,7 +56,7 @@
     <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password', Lang.get('general.password')) }}
         <div class="input-container">
-            {{ form_password('password') }}
+            {{ form_password('password', { 'autocomplete': 'new-password' }) }}
             {% if record.password|default is not empty %}
                 &nbsp; <span class="description">({{ Lang.get('general.only_enter_to_change') }})</span>
             {% endif %}
@@ -66,7 +66,7 @@
     <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
         <div class="input-container">
-            {{ form_password('password_confirmation') }}
+            {{ form_password('password_confirmation', { 'autocomplete': 'new-password' }) }}
         </div>
     </div>
     {% endif %}
@@ -82,7 +82,8 @@
     <div class="form-row">
         {{ form_label('country', Lang.get('user.country')) }}
         <div class="input-container">
-            {{ form_select('country', countries(), record.country|default is not empty ? record.country : Config.get('settings.default_country')) }}
+            {{ form_select('country', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + countries(),
+                record.exists ? record.country : Config.get('settings.default_country')) }}
         </div>
     </div>
 
@@ -92,7 +93,8 @@
     <div class="form-row">
         {{ form_label('language_code', Lang.choice('general.language', 1)) }}
         <div class="input-container">
-            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+            {{ form_select('language_code', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + languages,
+                record.exists ? record.language_code : LanguageFactory.getOperatorDefault()) }}
         </div>
     </div>
 
@@ -101,7 +103,8 @@
     <div class="form-row">
         {{ form_label('language_code', Lang.choice('general.language', 1)) }}
         <div class="input-container">
-            {{ form_select('language_code', languages, record.language_code|default is not empty ? record.language_code : LanguageFactory.getOperatorDefault()) }}
+            {{ form_select('language_code', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + languages,
+                record.exists ? record.language_code : LanguageFactory.getUserDefault(Config.get('settings.default_brand'), false)) }}
         </div>
     </div>
 
@@ -110,7 +113,8 @@
     <div class="form-row">
         {{ form_label('timezone', Lang.get('general.timezone')) }}
         <div class="input-container">
-            {{ form_select('timezone', timezones(), record|default is not empty and record.timezone|default is not empty ? record.timezone : Config.get('settings.default_timezone')) }}
+            {{ form_select('timezone', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + timezones(),
+                record.exists ? record.timezone : Config.get('settings.default_timezone')) }}
         </div>
     </div>
 
@@ -153,7 +157,7 @@
     {% endif %}
 
     {% if managing|default is not empty and managing and (operator|default is empty or not operator) %}
-    <div class="form-row">
+    <div class="form-row form-customfields">
         {{ form_label('notes', Lang.choice('general.note', 2)) }}
         <div class="input-container">
             {{ form_textarea('notes') }}

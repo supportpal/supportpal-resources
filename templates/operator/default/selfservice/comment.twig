@@ -8,10 +8,11 @@
     {{ Lang.choice('selfservice.comment', 2) }}
 {% endblock %}
 
-{% set breadcrumb = [
-    Lang.get('selfservice.selfservice'),
-    Lang.choice('selfservice.comment', 2)
-] %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <strong>{{ Lang.choice('selfservice.comment', 2) }}</strong>
+{% endblock %}
 
 {% block content %}
 	<div class="success box update hide">

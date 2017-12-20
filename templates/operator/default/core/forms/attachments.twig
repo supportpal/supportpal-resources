@@ -1,8 +1,11 @@
+{% if input_name|default is empty %}
+    {% set input_name = 'attachment' %}
+{% endif %}
 <div class="attachment-details">
-    <input type="hidden" name="attachment[]" disabled="disabled" />
-    {% if Input.old() is not empty and Input.old()['attachment'] is not empty %}
-        {% for hash, file in Input.old()['attachment'] %}
-            <input type="hidden" name="attachment[{{ hash }}]" id="attachment[{{ hash }}]" value="{{ file }}" />
+    <input type="hidden" name="{{ input_name }}[]" disabled="disabled" class="mdd-ignore" />
+    {% if Input.old() is not empty and Input.old()[input_name] is not empty %}
+        {% for hash, file in Input.old()[input_name] %}
+            <input type="hidden" name="{{ input_name }}[{{ hash }}]" id="{{ input_name }}[{{ hash }}]" value="{{ file }}" />
         {% endfor %}
     {% endif %}
 </div>
@@ -37,8 +40,8 @@
                    data-hash="{{ attachment.upload_hash }}"></i>
             </li>
         {% endfor %}
-    {% elseif Input.old() is not empty and Input.old()['attachment'] is not empty %}
-        {% for hash, file in Input.old()['attachment'] %}
+    {% elseif Input.old() is not empty and Input.old()[input_name] is not empty %}
+        {% for hash, file in Input.old()[input_name] %}
             <li>
                 <i class="fa fa-file"></i>
                 &nbsp;

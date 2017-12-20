@@ -124,6 +124,35 @@ input[type="button"]:hover, input[type="submit"]:hover {
 	background: #3480B6;
 }
 
+a.button {
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	background: #777;
+	border: 0;
+	border-bottom: 2px solid #666;
+	color: #fff;
+	font-size: 115%;
+	font-weight: bold;
+	line-height: 23px;
+	margin: 20px 0 0;
+	padding: 10px 15px;
+	width: 100%;
+}
+
+a.button:hover {
+	background: #666;
+}
+
+a.button.primary {
+	background: #3B91CE;
+	border-bottom: 2px solid #3480B6;
+}
+
+a.button.primary:hover {
+	background: #3480B6;
+}
+
 input.saml {
 	background: #777;
 	border-bottom: 2px solid #666;

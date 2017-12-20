@@ -141,7 +141,7 @@
 
         </div>
 
-        {% if Config.get('channel.web.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.show_captcha') == 1) %}
+        {% if Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1) %}
             <hr />
 
             <h2>{{ Lang.get('core.captcha') }}</h2>
@@ -161,7 +161,7 @@
     <script type="text/javascript">
         // If we should attempt to fetch related articles
         var relatedArticlesEnabled;
-        {% if isModuleEnabled('Selfservice') and Config.get('channel.web.show_related_articles') %}
+        {% if isModuleEnabled('Selfservice') and Config.get('channel.web.settings.show_related_articles') %}
             relatedArticlesEnabled = true;
         {% else %}
             relatedArticlesEnabled = false;
@@ -189,6 +189,7 @@
     </script>
 
     <!-- Custom fields -->
+    <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>

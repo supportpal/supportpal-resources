@@ -23,7 +23,7 @@
                     <div class="commentContents">
                 {% endif %}
 
-                    <p class="commentText">{{ Purifier.clean(comment['text']) }}</p>
+                    <p class="commentText">{{ comment['purified_text']|raw }}</p>
 
                     <div class="commentOptions">
                         {% if Config.get('settings.comment_write') == 0 or auth_check() %}

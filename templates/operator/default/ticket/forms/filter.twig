@@ -24,8 +24,8 @@
 
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 30}) }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
@@ -82,6 +82,13 @@
 
     {{ form_close() }}
 
+    <div class="warning box bottombox">
+        <strong>{{ Lang.get('ticket.filter_performance') }}</strong>
+        <ul style="margin-bottom: 0;">
+            {{ Lang.get('ticket.filter_performance_desc')|raw }}
+        </ul>
+    </div>
+
 {% endblock %}
 
 {% block scripts_footer %}
@@ -92,6 +99,9 @@
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+
+    <!-- Translatable.js dependencies: Selectize -->
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -112,9 +122,7 @@
         });
         function selectize() {
             $('select[name="usergroups[]"]').selectize({
-                delimiter: ',',
-                persist: false,
-                dropdownParent: 'body'
+                plugins: ['remove_button']
             });
         }
     </script>

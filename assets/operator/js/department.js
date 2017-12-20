@@ -363,7 +363,7 @@ function updateEmailBrands(context, values)
         if (typeof item.selectize === 'undefined') {
             $(item).empty();
             $.each(options, function (index, value) {
-                $(item).append('<option value="'+value.value +'">'+value.text+'</option>');
+                $(item).append($('<option>', { value: value.value, text: value.text }));
             });
 
             return;

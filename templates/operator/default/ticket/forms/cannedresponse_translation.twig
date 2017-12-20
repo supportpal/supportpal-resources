@@ -1,0 +1,38 @@
+<div class="section-item form-container first open {% if hide|default is not empty %}hide{% endif %}">
+    
+    {# Required by multidimensionaldata.js #}
+    {{ form_hidden('locale', translation.locale|default is empty ? '' : translation.locale, { 'disabled': 'disabled' }) }}
+
+    <div class="form-row form-full {% if not hide and allLanguages[translation.locale] is empty %}hide{% endif %}">
+        <label>{{ Lang.choice('general.language', 1) }}</label>
+        <div class="input-container">
+            <span class="item-type">
+                {% if allLanguages[translation.locale] is not empty %}
+                    {{ allLanguages[translation.locale] }}
+                {% endif %}
+            </span> &nbsp;
+
+            {# Only don't show on default #}
+            {% if hide or allLanguages[translation.locale] is not empty %}
+                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
+            {% endif %}
+        </div>
+    </div>
+
+    {%
+        include 'operator.' ~ template ~ '.ticket.forms.cannedresponse_rows'
+        with {
+            'elements': {
+                'name': {
+                    'name': translation.nameAttr|default is empty ? 'name:default' : translation.nameAttr,
+                    'value': hide|default is not empty ? '' : translation.name
+                },
+                'text':  {
+                    'name': translation.textAttr|default is empty ? 'text:default' : translation.textAttr,
+                    'value': hide|default is not empty ? '' : translation.text
+                },
+            }
+        }
+    %}
+
+</div>

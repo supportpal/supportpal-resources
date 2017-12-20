@@ -147,7 +147,7 @@
                 {{
                     form_password(
                         'emails[' ~ (i is defined ? i : '') ~ '][password]',
-                        {'size': 30}|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                        {'size': 30, 'autocomplete': 'new-password'}|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
                     )
                 }}
                 {% if i|default is not empty %}

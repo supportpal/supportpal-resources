@@ -169,9 +169,7 @@ $(document).ready(function() {
     });
 
     // Initialise redactor.
-    $('textarea[name=text]').redactor($.extend($.Redactor.default_opts, {
-        plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
-    }));
+    $('.section-items').find('textarea[name^="text"]').redactor($.extend($.Redactor.default_opts, opts));
 
     /*
      * Initialise article tags.

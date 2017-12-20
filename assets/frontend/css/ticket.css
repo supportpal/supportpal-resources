@@ -47,6 +47,14 @@
     word-wrap: break-word;
 }
 
+.message .text * {
+    height: auto !important;
+}
+
+.message .text .hide {
+    display: block;
+}
+
 .message .text table {
     border: none;
     border-collapse: collapse;

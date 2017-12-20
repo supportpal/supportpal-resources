@@ -14,8 +14,10 @@
 
         <ul class="tabs">
             <li id="Profile" class="active">{{ Lang.get('user.profile') }}</li>
-            {% if auth_user().password is not empty %}<li id="ChangePassword">{{ Lang.get('user.change_password') }}</li>{% endif %}
-            {% if auth_user().password is not empty %}<li id="TwoFA">{{ Lang.get('user.two_fa') }}</li>{% endif %}
+            {% if auth_user().password is not empty and not auth_user().loggedInViaSSO() %}
+                <li id="ChangePassword">{{ Lang.get('user.change_password') }}</li>
+                <li id="TwoFA">{{ Lang.get('user.two_fa') }}</li>
+            {% endif %}
             <li id="Ticket">{{ Lang.get('ticket.settings') }}</li>
             <li id="Notifications">{{ Lang.get('user.notifications') }}</li>
         </ul>
@@ -25,12 +27,12 @@
             {% include 'operator.' ~ template ~ '.user.forms.operator_profile' with profileParameters %}
         </div>
 
-        {% if auth_user().password is not empty %}
+        {% if auth_user().password is not empty and not auth_user().loggedInViaSSO() %}
             <div id="tabChangePassword" class="tabContent hide">
                 <div class="form-row">
                     {{ form_label('current_password', Lang.get('user.current_password')) }}
                     <div class="input-container">
-                        {{ form_password('current_password') }}<br />
+                        {{ form_password('current_password', { 'autocomplete': 'off' }) }}<br />
                         <span class="description">{{ Lang.get('user.personal_confirm_password') }}</span>
                     </div>
                 </div>
@@ -38,20 +40,18 @@
                 <div class="form-row password-field">
                     {{ form_label('password', Lang.get('user.new_password')) }}
                     <div class="input-container">
-                        {{ form_password('password') }}
+                        {{ form_password('password', { 'autocomplete': 'new-password' }) }}
                     </div>
                 </div>
 
                 <div class="form-row password-field">
                     {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
                     <div class="input-container">
-                        {{ form_password('password_confirmation') }}
+                        {{ form_password('password_confirmation', { 'autocomplete': 'new-password' }) }}
                     </div>
                 </div>
             </div>
-        {% endif %}
 
-        {% if auth_user().password is not empty %}
             <div id="tabTwoFA" class="tabContent hide">
 
                 <div class="success box twofa-status hide">

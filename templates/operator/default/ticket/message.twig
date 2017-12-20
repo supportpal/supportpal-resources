@@ -43,7 +43,6 @@
                 &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                 {% if message.emaillog %}
                     <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
-                    {% if message.emaillog %}
                     <div class="webui-popover-content form-row recipients email-details">
                         <div>
                             <label>{{ Lang.get('ticket.to') }}</label>
@@ -61,13 +60,14 @@
                                 {{ message.emaillog.from_name ~ ' <' ~ message.emaillog.from_address ~ '>' }}
                             </div>
                         </div>
-                        <div>
-                            <div class="input-container">
-                                <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('core.show_original') }}</a>
+                        {% if auth_user().hasPermission('view.emaillog') %}
+                            <div>
+                                <div class="input-container">
+                                    <a href="{{ route('core.operator.emaillog.show', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>
+                                </div>
                             </div>
-                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
                 {% endif %}
             </span>
     	</div>

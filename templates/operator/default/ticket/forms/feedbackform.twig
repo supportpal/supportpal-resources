@@ -24,22 +24,22 @@
 
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name', null, {'size': 30}) }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
             <div class="form-row form-full">
                 {{ form_label('description', Lang.get('general.description')) }}
-                <div class="input-container">
-                    {{ form_text('description') }}
+                <div class="input-container translatable">
+                    {{ form_translatable_text(record, 'description') }}
                 </div>
             </div>
 
             <div class="form-row">
                 {{ form_label('email_template_id', Lang.choice('core.email_template', 1)) }}
                 <div class="input-container">
-                    {{ form_select('email_template_id', templates, 25) }}
+                    {{ form_select('email_template_id', templates, record.email_template_id|default is not empty ? record.email_template_id : 25) }}
                 </div>
             </div>
 
@@ -165,6 +165,11 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- Translatable.js dependencies: Selectize -->
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
+    
     <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/formfield.js') }}"></script>
 

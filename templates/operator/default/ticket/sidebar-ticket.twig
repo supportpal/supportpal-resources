@@ -34,12 +34,14 @@
             <tr class="update-user hide">
                 <td colspan="2">
                     {{ form_select('user') }}
-                    <div class="create-new-user">
-                        <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
-                    </div>
+                    {% if auth_user().hasPermission('create.user') %}
+                        <div class="create-new-user">
+                            <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
+                        </div>
+                    {% endif %}
                 </td>
             </tr>
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
             <tr>
                 <th>{{ Lang.choice('core.brand', 1) }}</th>
                 <td>
@@ -97,7 +99,7 @@
                 <td colspan="2">
                     <select class="assign-tags" name="tag[]" multiple="multiple">
                         {% for tag in ticket.tags.sortBy('name') %}
-                            <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.name }}'>
+                            <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.original_name }}'>
                                 {{ tag.name }}
                             </option>
                         {% endfor %}
@@ -257,7 +259,7 @@
                         <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
                             title="{{ userTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}" target="_blank">
-                            {{ Purifier.clean(str_limit(userTicket.subject, 28, '...')) }}
+                            {{ str_limit(userTicket.subject, 28, '...') }}
                         </a>
                         <div class="description">
                             {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
@@ -278,7 +280,7 @@
                         <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
                             title="{{ organisationTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}" target="_blank">
-                            {{ Purifier.clean(str_limit(organisationTicket.subject, 28, '...')) }}
+                            {{ str_limit(organisationTicket.subject, 28, '...') }}
                         </a>
                         <div class="description">
                             {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
@@ -297,7 +299,7 @@
                                 <span class="statusIcon" style="background: {{ otherBrandTicket.status.colour }};"
                                     title="{{ otherBrandTicket.status.name }}"></span> &nbsp;
                                 <a href="{{ route('ticket.operator.ticket.show', [ otherBrandTicket.id ]) }}" target="_blank">
-                                    {{ Purifier.clean(str_limit(otherBrandTicket.subject, 28, '...')) }}
+                                    {{ str_limit(otherBrandTicket.subject, 28, '...') }}
                                 </a>
                                 <div class="description">
                                     {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}
@@ -321,7 +323,7 @@
         </h3>
         <div>
             {% for macro in macros %}
-            <a class="apply-macro" data-macro="{{ macro.id }}">{{ macro.name }}</a><br />
+            <a class="apply-macro" data-macro="{{ macro.id }}" data-description="{{ macro.description }}">{{ macro.name }}</a><br />
             {% endfor %}
         </div>
     </div>

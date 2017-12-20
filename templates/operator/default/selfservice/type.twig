@@ -8,11 +8,13 @@
     {{ Lang.choice('selfservice.type', 2) }}
 {% endblock %}
 
-{% set breadcrumb = [
-    Lang.get('selfservice.selfservice'),
-    brand.name,
-    Lang.choice('selfservice.type', 2)
-] %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {{ brand.name }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    <strong>{{ Lang.choice('selfservice.type', 2) }}</strong>
+{% endblock %}
 
 {% block content %}
 
@@ -69,7 +71,7 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 2, filter_container_id: "filter_view"}
+                {column_number : 1, filter_container_id: "filter_view"}
             ]);
         });
     </script>

@@ -36,7 +36,8 @@
                 rule.value_id == customfield.id ? json_decode(rule.value_text, true) : null, {'multiple': 'multiple'}) }}
 
         {% elseif customfield.type == 5 %}
-            {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text]', array_column(customfield.options.toArray(), 'value', 'id'), rule.value_id == customfield.id ? rule.value_text : null) }}
+            {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+            {'': Lang.get('general.none')} + array_column(customfield.options.toArray(), 'value', 'id'), rule.value_id == customfield.id ? rule.value_text : null) }}
 
         {% elseif customfield.type == 6 %}
             {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]', rule.value_id == customfield.id ? rule.value_text : null) }}

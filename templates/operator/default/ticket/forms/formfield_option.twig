@@ -1,12 +1,10 @@
-<div class="option input-with-button {% if hide|default is not empty %} hide {% endif %}">
+<div class="option translatable small-translatable {% if hide|default is not empty %}hide{% endif %}">
     {{ form_hidden('options[' ~ (option is defined ? option.id : '') ~ '][id]',
         (option is defined ? option.id : null))
     }}
     {{ form_hidden('options[' ~ (option is defined ? option.id : '') ~ '][field_id]',
         (field is defined ? field.id : null), { 'class': 'field-id' })
     }}
-    {{ form_text('options[' ~ (option is defined ? option.id : '') ~ '][value]',
-        (option is defined and option.value|default is not empty ? option.value : ''))
-    }}&nbsp;
+    {{ form_translatable_text(option, 'value', 'options[' ~ (option is defined ? option.id : '') ~ '][value]') }}&nbsp;
     {{ form_button(Lang.get('general.remove'), { 'class': 'remove-option' }) }}
 </div>

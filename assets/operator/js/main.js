@@ -167,7 +167,7 @@ function addNewItem(className, container) {
         elem.prop('disabled', false);
         [ 'name', 'for', 'id' ].map( function(attribute) {
             var attr = elem.attr(attribute);
-            if (/^\w+\[(\d+)?](\[\w+])?(\[\])?$/.test(attr))
+            if (/^\w+\[(\d+)?](\[[\w:-]+])*(\[\])?$/g.test(attr))
                 elem.attr(attribute, attr.replace(/\[(\d+)?]/, '[' + index + ']'));
         });
     });

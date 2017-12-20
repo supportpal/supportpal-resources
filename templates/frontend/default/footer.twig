@@ -1,8 +1,15 @@
     {% if Config.get('settings.language_frontend_toggle') == 1 %}
         <div class="language-footer hide">
             {{ Lang.choice('general.language', 1) }}&nbsp;
-            {{ form_select('language', languages,
-            auth_check() and auth_user().language_code is not null ? auth_user().language_code : LanguageFactory.getUserDefault()) }}
+            <select name="language">
+                {% for code, language in languages %}
+                    <option value="{{ code }}"
+                        {% if code == App.getLocale() %}selected="selected"{% endif %}
+                        {% if attribute(returnTo, code) is defined %}data-return-to="{{ attribute(returnTo, code) }}"{% endif %}>
+                        {{ language }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
     {% endif %}
 

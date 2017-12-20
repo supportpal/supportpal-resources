@@ -23,7 +23,7 @@
                 <p>{{ Lang.get('core.submit_ticket_desc') }}</p>
             </div>
 
-            {% if not auth_check() and Config.get('channel.web.unauthenticated_users') %}
+            {% if not auth_check() and Config.get('channel.web.settings.unauthenticated_users') %}
             <div class="desk_section">
                 <a href="{{ route('ticket.frontend.track') }}">
                     <img src="{{ asset_rev('resources/assets/frontend/icons/binoculars.png') }}" class="icon left"

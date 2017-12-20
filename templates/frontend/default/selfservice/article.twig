@@ -65,10 +65,10 @@
     <div class="article">{{ Purifier.clean(article.text, Config.get('purifier.settings.selfservice')) }}</div>
 
     <!-- Attachments -->
-    {% if not article.attachments.isEmpty() %}
+    {% if not article.getAttachments().isEmpty() %}
         <h4>{{ Lang.choice('general.attachment', 2) }}</h4>
         <ul class="attachments">
-            {% for attachment in article.attachments %}
+            {% for attachment in article.getAttachments() %}
                 <li>
                     <a href='{{ attachment.downloadLink(type) }}'>
                         <i class="fa fa-paperclip"></i>

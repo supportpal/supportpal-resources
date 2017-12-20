@@ -28,7 +28,7 @@
             }}
         </div>
 
-        <div class="action" style="display: none" data-action="1">
+        <div class="action hide" data-action="1">
             {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
                 rule|default is not empty and rule.action == 1 ? rule.value_text :
                 '<br /><br />{{ operator.signature }}',
@@ -36,7 +36,7 @@
             }}
         </div>
 
-        <div class="action" style="display: none" data-action="2">
+        <div class="action hide" data-action="2">
             {% if tags is not defined or tags is empty %}
                 {{ Lang.get('ticket.no_tags', { 'route': route('ticket.operator.tag.create') })|raw }}
             {% else %}
@@ -46,7 +46,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="3">
+        <div class="action hide" data-action="3">
             {% if operators is not defined or operators is empty %}
                 {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
             {% else %}
@@ -56,17 +56,17 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="4">
+        <div class="action hide" data-action="4">
             {% if tags is not defined or tags is empty %}
                 {{ Lang.get('ticket.no_tags', { 'route': route('ticket.operator.tag.create') })|raw }}
             {% else %}
                 {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
-                    tags, rule|default is not empty and rule.action == 4 ? rule.value_id : null)
+                    {'0': Lang.get('actions.all_tags')} + tags, rule|default is not empty and rule.action == 4 ? rule.value_id : null)
                 }}
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="5">
+        <div class="action hide" data-action="5">
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% else %}
@@ -76,7 +76,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="6">
+        <div class="action hide" data-action="6">
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% else %}
@@ -86,7 +86,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="7">
+        <div class="action hide" data-action="7">
             {% if departments is not defined or departments is empty %}
                 {{ Lang.get('ticket.no_departments_found', { 'route': route('ticket.operator.department.create') })|raw }}
             {% else %}
@@ -96,7 +96,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="8">
+        <div class="action hide" data-action="8">
             {% if priorities is not defined or priorities is empty %}
                 {{ Lang.get('ticket.no_priorities', { 'route': route('ticket.operator.priority.create') })|raw }}
             {% else %}
@@ -106,7 +106,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="9">
+        <div class="action hide" data-action="9">
             {% if statuses is not defined or statuses is empty %}
                 {{ Lang.get('ticket.no_statuses', { 'route': route('ticket.operator.status.create') })|raw }}
             {% else %}
@@ -116,7 +116,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="10">
+        <div class="action hide" data-action="10">
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% elseif operatorGroups is not defined or operatorGroups is empty %}
@@ -134,7 +134,7 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="11">
+        <div class="action hide" data-action="11">
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% elseif userGroups is not defined or userGroups is empty %}
@@ -152,17 +152,17 @@
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="12">
+        <div class="action hide" data-action="12">
             {% if operators is not defined or operators is empty %}
                 {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
             {% else %}
                 {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
-                    operators, rule|default is not empty and rule.action == 12 ? rule.value_id : null)
+                    {'-1': Lang.get('actions.all_assigned_operators')} + operators, rule|default is not empty and rule.action == 12 ? rule.value_id : null)
                 }}
             {% endif %}
         </div>
 
-        <div class="action" style="display: none" data-action="13">
+        <div class="action hide" data-action="13">
             {% if ticketCustomFields is not defined or ticketCustomFields.isEmpty() %}
                 {{ Lang.get('ticket.no_custom_fields', { 'route': route('ticket.operator.customfield.create') })|raw }}
             {% else %}
@@ -171,6 +171,91 @@
                     rule|default is not empty and rule.action == 13 ? rule.value_id : null, {'class': 'value-id'})
                 }} &nbsp;
                 {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule_customfields' with {'customfields': ticketCustomFields} %}
+            {% endif %}
+        </div>
+
+        <div class="action hide" data-action="14">
+            {{ Lang.get('general.na') }}
+            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+        </div>
+
+        <div class="action hide" data-action="15">
+            {{ Lang.get('general.na') }}
+            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+        </div>
+
+        <div class="action hide" data-action="16">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 16 ? rule.value_text : null, {'size': 3})
+            }}&nbsp; {{ Lang.get('actions.hours_to_be_added') }}<br />
+            <span class="description">{{ Lang.get('actions.only_with_due_time') }}</span>
+        </div>
+
+        <div class="action hide" data-action="17">
+            {{ Lang.get('general.na') }}
+            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+        </div>
+
+        <div class="action hide" data-action="18">
+            {{ Lang.get('general.na') }}
+            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+        </div>
+
+        <div class="action hide" data-action="19">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 19 ? rule.value_text : null, {'size': 3})
+            }}&nbsp; {{ Lang.get('actions.hours_to_be_removed') }}<br />
+            <span class="description">{{ Lang.get('actions.only_with_due_time') }}</span>
+        </div>
+
+        <div class="action hide" data-action="20">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 20 ? rule.value_text : null, {'size': 3})
+            }}&nbsp; {{ Lang.get('actions.hours_to_be_set') }}<br />
+            <span class="description">{{ Lang.get('actions.set_due_time_desc') }}</span>
+        </div>
+
+        <div class="action hide" data-action="21">
+            {{ Lang.get('general.na') }}
+            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+        </div>
+
+        <div class="action hide" data-action="22">
+            {% if slaplans is not defined or slaplans is empty %}
+                {{ Lang.get('ticket.no_slaplans', { 'route': route('ticket.operator.slaplan.create') })|raw }}
+            {% else %}
+                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                    {'0': Lang.get('general.none')} + slaplans, rule|default is not empty and rule.action == 22 ? rule.value_id : null)
+                }}
+            {% endif %}
+        </div>
+
+        <div class="action hide" data-action="23">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 23 ? rule.value_text : '{{ ticket.subject }}', {'style': 'width: 100%'})
+            }}
+            <div class="warning box bottombox">
+                {{ Lang.get('actions.subject_placeholder') }}
+            </div>
+        </div>
+
+        <div class="action hide" data-action="24">
+            {% if userGroups is not defined or userGroups is empty %}
+                {{ Lang.get('ticket.no_user_groups', { 'route': route('user.operator.usergroup.create') })|raw }}
+            {% else %}
+                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                    userGroups, rule|default is not empty and rule.action == 24 ? rule.value_id : null)
+                }}
+            {% endif %}
+        </div>
+
+        <div class="action hide" data-action="25">
+            {% if userGroups is not defined or userGroups is empty %}
+                {{ Lang.get('ticket.no_user_groups', { 'route': route('user.operator.usergroup.create') })|raw }}
+            {% else %}
+                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                    userGroups, rule|default is not empty and rule.action == 25 ? rule.value_id : null)
+                }}
             {% endif %}
         </div>
     </td>

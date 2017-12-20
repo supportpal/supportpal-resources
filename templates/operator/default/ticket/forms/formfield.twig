@@ -21,10 +21,12 @@
             }, (field is defined ? field.type : null)) 
         }}
     </td>
-    <td class="field-option">
-        {{ form_text('fields[' ~ (field is defined ? field.id : '') ~ '][name]',
-            (field is defined ? field.name : null), { 'style': 'width: 100%', 'placeholder': Lang.get('ticket.feedback_question') })
-        }}
+    <td class="field-option form-row">
+        <div class="translatable">
+            {{ form_translatable_text(field, 'name', 'fields[' ~ (field is defined ? field.id : '') ~ '][name]',
+                { 'style': 'width: 100%', 'placeholder': Lang.get('ticket.feedback_question') })
+            }}
+        </div>
         <div class="field-option-container">
             {% include 'operator.' ~ template ~ '.ticket.forms.formfield_option' with { 'field': (field is defined ? field : null), 'hide': true } %}
             

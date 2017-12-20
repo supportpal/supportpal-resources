@@ -31,7 +31,7 @@ $(document).ready(function() {
         $.get(route)
             .success(function (ajax) {
                 // Load the message in, it should already be sanitized.
-                $message.find('.text').html(ajax.data.text);
+                $message.find('.text').html(ajax.data.purified_text);
             })
             .fail(function () {
                 swal(Lang.get('messages.error'), Lang.get('messages.error_loading_message'), 'error');

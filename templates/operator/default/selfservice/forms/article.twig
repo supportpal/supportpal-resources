@@ -8,28 +8,22 @@
     {% endif %}
 {% endblock %}
 
-{% if type|default is not empty %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.type.index', { 'brand': type.brand_id }) ~ "'>"
-            ~ type.brand.name ~
-        "</a>",
-        "<a href='" ~ route('selfservice.operator.article.index', { 'type': type.id }) ~ "'>"
-            ~ type.name ~
-        "</a>",
-        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.article', 1)})
-            : Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)})
-    ] %}
-{% else %}
-    {% set breadcrumb = [
-        Lang.get('selfservice.selfservice'),
-        "<a href='" ~ route('selfservice.operator.article.index') ~ "'>"
-            ~ Lang.choice('selfservice.article', 2) ~
-        "</a>",
-        record.exists ? Lang.get('general.edit_item', {'item': Lang.choice('selfservice.article', 1)})
-            : Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)})
-    ] %}
-{% endif %}
+{% block breadcrumb %}
+    {{ Lang.get('selfservice.selfservice') }}
+    &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% if type|default is not empty %}
+        <a href="{{ route('selfservice.operator.type.index', { 'brand': type.brand_id }) }}">{{ type.brand.name }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+        <a href="{{ route('selfservice.operator.article.index', { 'type': type.id }) }}">{{ type.name }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% else %}
+        <a href="{{ route('selfservice.operator.article.index') }}">{{ Lang.choice('selfservice.article', 2) }}</a>
+        &nbsp;&nbsp;<i class="fa fa-chevron-right" aria-hidden="true"></i>&nbsp;&nbsp;
+    {% endif %}
+    <strong>
+        {{ Lang.get(record.exists ? 'general.edit_item' : 'general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
+    </strong>
+{% endblock %}
 
 {% block content %}
 
@@ -45,57 +39,57 @@
         {{ form_open({ 'route': [ 'selfservice.operator.article.store' ], 'class': 'validate', 'id': 'articleForm' }) }}
     {% endif %}
 
-        <div class="form-container first open">
+        <div id="sectionWrapper">
 
-            <div class="form-row form-full">
-                {{ form_label('text', Lang.get('selfservice.title')) }}
-                <div class="input-container">
-                    {{ form_text('title') }}
+            <h2>{{ Lang.choice('selfservice.article', 1) }}</h2>
+            <h2 class="description">{{ Lang.get('selfservice.article_desc') }}</h2>
+
+            {# Required by multidimensionaldata.js #}
+            <div class="tabContent">
+
+                {# Hidden option for multidimensionaldata.js #}
+                {% include 'operator.' ~ template ~ '.selfservice.forms.article_translation' with { 'hide': true } %}
+
+                <div class="section-items">
+                    {# Default article #}
+                    <div class="form-container first open">
+                        {%
+                            include 'operator.' ~ template ~ '.selfservice.forms.article_rows'
+                            with {
+                                'elements': {
+                                    'title': { 'name': 'title', 'value': record.getOriginal('title') },
+                                    'keywords': { 'name': 'keywords', 'value': record.getOriginal('keywords') },
+                                    'excerpt': { 'name': 'excerpt', 'value': record.getOriginal('excerpt') },
+                                    'text': { 'name': 'text', 'value': record.getOriginal('text') },
+                                    'attachments': { 'name': 'attachment', 'value': record.attachments.where('locale', null) },
+                                }
+                            }
+                        %}
+                    </div>
+
+                    {# Existing Translations #}
+                    {% for locale, translation in translations %}
+                        {% include 'operator.' ~ template ~ '.selfservice.forms.article_translation' %}
+                    {% endfor %}
                 </div>
-            </div>
 
-            <div class="form-row form-full">
-                {{ form_label('text', Lang.choice('selfservice.keyword', 2)) }}
-                <div class="input-container">
-                    {{ form_text('keywords') }}
+                <div class="form-container open {% if not availableLanguages|length %}hide{% endif %}">
+                    <div class="form-row small-selectize">
+                        <div class="input-container">
+                            <select name="languages" title="{{ Lang.get('core.add_another_language') }}" class="add-item-selectize">
+                                <option></option>
+                                {% for code, name in availableLanguages %}
+                                    <option value="{{ code }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-row">
-                {{ form_label('textarea', Lang.get('selfservice.excerpt')) }}
-                <div class="input-container">
-                    {{ form_textarea('excerpt', null, { 'style': 'resize: none;', 'rows': 2, 'cols': 40 }) }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('textarea', Lang.choice('selfservice.article', 1)) }}
-                <div class="input-container">
-                    {{ form_redactor('text') }}
-
-                    {% include 'operator.' ~ template ~ '.core.forms.attachments' with {
-                            'route': 'selfservice.operator.attachment',
-                            'downloadRoute': 'selfservice.operator.attachment.download',
-                            'attachments': record.attachments is not empty ? record.attachments : []
-                        }
-                    %}
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('select', Lang.choice('selfservice.tag', 2)) }}
-                <div class="input-container">
-                    <select name="tag[]" multiple="multiple">
-                        {% for tag in tags %}
-                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.name }}'>
-                                {{ tag.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
             </div>
 
         </div>
+
 
         <h2>{{ Lang.choice('selfservice.category', 2) }}</h2>
 
@@ -116,6 +110,25 @@
                     <div class="input-container">
                         {{ form_button(Lang.get('selfservice.add_to_another_type'), { 'id': 'add-type' }) }}
                     </div>
+                </div>
+            </div>
+
+        </div>
+
+        <h2>{{ Lang.choice('selfservice.tag', 2) }}</h2>
+
+        <div class="form-container open first">
+
+            <div class="form-row">
+                {{ form_label('select', Lang.choice('selfservice.tag', 2)) }}
+                <div class="input-container">
+                    <select name="tag[]" multiple="multiple">
+                        {% for tag in tags %}
+                            <option {% if record|default is not empty and record.tags.contains('id', tag.id) %}selected="selected"{% endif %} value='{{ tag.name }}'>
+                                {{ tag.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
@@ -179,7 +192,16 @@
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script type="text/javascript">
-        new FileUpload();
+        $('.article:not(:first)').each(function (index) {
+            new FileUpload({
+                $element: $(this).find('.fileupload'),
+                $container: $(this),
+                inputName: $(this).find('.attachment-details')
+                    .find('input[type=hidden]')
+                    .prop('name')
+                    .replace('[]', '')
+            });
+        });
     </script>
 
     <!-- Selectize -->
@@ -188,4 +210,28 @@
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/article.js') }}"></script>
+    
+    <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script type="text/javascript">
+        // List of valid translatable attributes.
+        var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
+        
+        // Redactor options (used by article.js and multidimensionaldata.js).
+        var opts = {
+            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
+        };
+        
+        // Custom attribute mapper for multidimensionaldata.js
+        attributeMapper = function(elem, value, attribute) {
+            var attr = elem.attr(attribute);
+            if (typeof attr !== 'undefined') {
+                // Special case: attachment:default[] should be transformed to attachment:en[]
+                if (attr === 'attachment:default[]') {
+                    elem.attr(attribute, translatableAttributes[value][attr.replace(':default[]', '')] + "[]");
+                } else {
+                    elem.attr(attribute, translatableAttributes[value][attr.replace(':default', '')]);
+                }
+            }
+        };
+    </script>
 {% endblock %}

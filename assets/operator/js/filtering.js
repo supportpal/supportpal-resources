@@ -1,14 +1,5 @@
-$(function() {
-    // Toggle filtering
-    $('.toggle-filtering').click(function() {
-        $('.conditiongroup').toggle();
-
-        // If we're toggling to show and it's currently empty, insert new condition
-        if ($('.conditiongroup').is(':visible') && ! $('.conditiongroup .condition:visible').length) {
-            $('.conditiongroup .add-condition').click();
-        }
-    });
-
+function Filtering() {};
+Filtering.initialise = function () {
     // Remove any items that have an empty dropdown
     $('.condition:first .condition-value select').each(function() {
         if (!$(this).find('option').length) {
@@ -41,6 +32,20 @@ $(function() {
             });
         });
     }
+};
+
+$(function() {
+    // Toggle filtering
+    $('.toggle-filtering').click(function() {
+        $('.conditiongroup').toggle();
+
+        // If we're toggling to show and it's currently empty, insert new condition
+        if ($('.conditiongroup').is(':visible') && ! $('.conditiongroup .condition:visible').length) {
+            $('.conditiongroup .add-condition').click();
+        }
+    });
+
+    Filtering.initialise();
 
     /*
      * Add filtering condition

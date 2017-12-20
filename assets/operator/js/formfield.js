@@ -15,7 +15,7 @@ $(function() {
         $('.field:last').find('input[name ^=fields][name $="[local_id]"]').val(index);
 
         // Disable first option
-        $('.field:last').find('.option:first :input').prop('disabled', true);
+        $('.field:last').find('.field-option-container > .option:first :input').prop('disabled', true);
 
         // Show table
         $('.field-table').show();
@@ -43,13 +43,13 @@ $(function() {
         if ($(this).val() == '2' || $(this).val() == '4' || $(this).val() == '5' || $(this).val() == '7' || $(this).val() == '10') {
             $this.find('.field-add-option').show();
         } else {
-            $this.find('.field-option-container .option:not(:first)').remove();
+            $this.find('.field-option-container > .option:not(:first)').remove();
             $this.find('.field-add-option').hide();
         }
     });
 
     // Disable first option
-    $('.field').find('.option:first :input').prop('disabled', true);
+    $('.field').find('.field-option-container > .option:first :input').prop('disabled', true);
 
     /**
      * Add a new option to the form
@@ -58,7 +58,7 @@ $(function() {
         var $this = $(this).parents('.field'),
             index = $this.find('.field-local-id').val();
 
-        addNewItem('.option', $this.find('.field-option-container'));
+        addNewItem('.field .field-option-container > .option', $this.find('.field-option-container'));
 
         $this.find('.field-id').val(index);
     });
@@ -69,11 +69,11 @@ $(function() {
     $(document.body).on('click', '.remove-option', function() {
         var $this = $(this).parents('.field');
 
-        $(this).parents('.option').remove();
+        $(this).parents('.field-option-container > .option').remove();
 
         // If it was the last one, add an empty form back in
-        if ($this.find('.option').length == 1) {
-            addNewItem('.option', $this.find('.field-option-container'));
+        if ($this.find('.field-option-container > .option').length === 1) {
+            addNewItem('.field .field-option-container > .option', $this.find('.field-option-container'));
         }
     });
 });

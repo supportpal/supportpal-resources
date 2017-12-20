@@ -16,8 +16,8 @@
 
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container">
-                    {{ form_text('name') }}
+                <div class="input-container translatable small-translatable">
+                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
@@ -45,4 +45,9 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <!-- Translatable.js dependencies: Selectize -->
+    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
+    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 {% endblock %}

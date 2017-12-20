@@ -50,7 +50,7 @@
         <div class="form-row">
             {{ form_label('smtp_password', Lang.get('core.smtp_password')) }}
             <div class="input-container">
-                {{ form_password('smtp_password') }} &nbsp;
+                {{ form_password('smtp_password', { 'autocomplete': 'new-password' }) }} &nbsp;
                 {% if record.smtp_password is not empty %}<span class="description">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
             </div>
         </div>

@@ -13,30 +13,27 @@
     {{ form_model(fields, { 'method': 'PUT', 'route': [ 'user.operator.generalsetting.update' ] }) }}
 
         <ul class="tabs">
-            <li id="System" class="active">{{ Lang.get('general.system') }}</li>
-            <li id="Users">{{ Lang.choice('user.user', 2) }}</li>
+            <li id="Users" class="active">{{ Lang.choice('user.user', 2) }}</li>
             <li id="Operators">{{ Lang.choice('general.operator', 2) }}</li>
             <li id="Organisations">{{ Lang.choice('user.organisation', 2) }}</li>
         </ul>
 
-        <div id="tabSystem" class="tabContent">
+        <div id="tabUsers" class="tabContent">
             <div class="form-row">
                 {{ form_label('user_name_format', Lang.get('user.user_name_format')) }}
                 <div class="input-container">
                     {{ form_select('user_name_format', {
-                            0: Lang.get('user.first_last'),
-                            1: Lang.get('user.last_first'),
-                            2: Lang.get('user.first_l'),
-                            3: Lang.get('user.f_last'),
-                            4: Lang.get('general.first'),
-                            5: Lang.get('general.last')
-                        }) }}<br />
+                        0: Lang.get('user.first_last'),
+                        1: Lang.get('user.last_first'),
+                        2: Lang.get('user.first_l'),
+                        3: Lang.get('user.f_last'),
+                        4: Lang.get('general.first'),
+                        5: Lang.get('general.last')
+                    }) }}<br />
                     <span class="description">{{ Lang.get('user.user_name_format_desc') }}</span>
                 </div>
             </div>
-        </div>
 
-        <div id="tabUsers" class="tabContent hide">
             <div class="form-row">
                 {{ form_label('registration_enabled', Lang.get('user.user_reg_enabled')) }}
                 <div class="input-container">
@@ -111,6 +108,21 @@
         </div>
 
         <div id="tabOperators" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('operator_name_format', Lang.get('user.user_name_format')) }}
+                <div class="input-container">
+                    {{ form_select('operator_name_format', {
+                        0: Lang.get('user.first_last'),
+                        1: Lang.get('user.last_first'),
+                        2: Lang.get('user.first_l'),
+                        3: Lang.get('user.f_last'),
+                        4: Lang.get('general.first'),
+                        5: Lang.get('general.last')
+                    }) }}<br />
+                    <span class="description">{{ Lang.get('user.operator_name_format_desc') }}</span>
+                </div>
+            </div>
+
             <div class="form-row">
                 {{ form_label('toggle_ldap_enabled', Lang.get('user.enable_ldap')) }}
                 <div class="input-container">

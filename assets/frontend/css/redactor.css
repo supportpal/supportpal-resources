@@ -26,6 +26,11 @@
     padding: 15px;
 }
 
+.redactor-editor[contenteditable="false"] {
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+}
+
 .redactor-toolbar {
     background: #fafafa;
     -moz-border-radius: 3px 3px 0 0;
@@ -52,4 +57,45 @@
 
 .redactor-toolbar-tooltip {
     background: #454545;
+}
+
+#redactor-modal-box button {
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    height: auto;
+}
+
+.redactor-editor pre {
+    margin: 0 !important;
+}
+
+.form-customfields .redactor-box {
+    border: 0;
+    margin-bottom: 0;
+}
+
+.form-customfields .redactor-box, .form-customfields .redactor-editor {
+    min-height: 75px;
+}
+
+.form-customfields .redactor-editor {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-top-color: #d0d0d0;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -moz-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .1);
+    -webkit-box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .1);
+    box-shadow: inset 1px 1px 1px rgba(0, 0, 0, .1);
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 1.4em;
+    margin-bottom: 0 !important;
+    padding: 8px !important;
 }

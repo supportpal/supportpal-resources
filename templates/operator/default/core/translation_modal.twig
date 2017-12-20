@@ -1,0 +1,42 @@
+<div class="translatable-modal hide">
+    <div class="header">
+        <h4>{{ Lang.get('core.translations') }}</h4>
+        <i class="fa fa-times close" aria-hidden="true"></i>
+    </div>
+
+    <div class="modal-content">
+        <div class="no-translations {% if all.existing|length %}hide{% endif %}">
+            {{ Lang.get('core.no_existing_translations') }}
+        </div>
+
+        <div class="translations {% if not all.existing|length %}hide{% endif %}">
+            {% for key, translations in all %}
+                <div class="{{ key }}-translations">
+                    {% for translation in translations %}
+                        <div class="translation {% if key == 'missing' %}hide{% endif %}"
+                                data-locale="{{ translation.locale }}"
+                                data-display-name="{{ translation.display_name }}">
+                            <label for="{{ translation.input_name }}">
+                                <span>{{ translation.display_name }}</span>
+                                <i class="fa fa-times remove-translation" aria-hidden="true"></i>
+                            </label>
+                            <input name="{{ translation.input_name }}" type="text" value="{{ translation.value }}"
+                                 {% if key == 'missing' %}disabled="disabled"{% endif %} autocomplete="off" />
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="options" {% if all.missing|length == 0 %}style="display: none"{% endif %}>
+        <select name="translation">
+            <option value>{{ Lang.get('core.add_translation') }}...</option>
+            {% for data in all.missing %}
+                <option value='{{ data.locale }}' data-data="{{ data|json_encode(constant('JSON_FORCE_OBJECT')) }}">
+                    {{ data.display_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

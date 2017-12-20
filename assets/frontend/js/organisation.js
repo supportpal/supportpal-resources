@@ -32,6 +32,14 @@ $(document).ready(function() {
                                 Lang.get('messages.success_deleted', {'item': Lang.choice('user.user', 1)}),
                                 'success'
                             );
+
+                            // Remove option from owner dropdown. We check for length to ensure the dropdown exists, it
+                            // doesn't for normal managers.
+                            if ($ownerSelectize.length !== 0) {
+                                $ownerSelectize[0].selectize.removeOption($this.data('user'));
+                            }
+
+                            // Remove row
                             row.remove();
                         } else {
                             swal(
@@ -52,7 +60,7 @@ $(document).ready(function() {
         });
     });
 
-    $('select[name="owner"]').selectize({
+    var $ownerSelectize = $('select[name="owner"]').selectize({
         searchField: [ 'formatted_name', 'email' ],
         render: {
             item: function(item, escape) {

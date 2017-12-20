@@ -20,6 +20,8 @@ function FileUpload(parameters)
     // Default function arguments.
     var DEFAULT = {
         $element: $('.fileupload'),
+        $container: $('.fileupload').parents('form:visible'),
+        inputName: 'attachment',
         registerEvents: true,
         blueimp: {
             //
@@ -33,7 +35,8 @@ function FileUpload(parameters)
      * Instance variables.
      */
     var total_files_uploaded = 0,
-        MAX_FILE_SIZE = Number($('meta[name="max_file_size"]').prop('content')),
+        cumulative_file_size = 0,
+        MAX_FILE_SIZE = FileUpload.MAX_FILE_SIZE,
         DEFAULT_OPTIONS = {
             singleFileUploads: true,
             acceptFileTypes: new RegExp($('meta[name="allowed_files"]').prop('content'), "i"),
@@ -51,7 +54,7 @@ function FileUpload(parameters)
      */
     var $fileupload = settings.$element.fileupload($.extend({}, DEFAULT_OPTIONS, settings.blueimp, {
         add: function (e, data) {
-            var $container = $(this).parents('form:visible'),
+            var $container = settings.$container,
                 $this = $(this),
                 that = $this.data('blueimp-fileupload') || $this.data('fileupload'),
                 options = that.options;
@@ -84,7 +87,7 @@ function FileUpload(parameters)
                     data.autoUpload !== false
                 ) {
                     // Disable the form submit button, so they can't submit until file upload is complete.
-                    $container.find('input[type=submit]').prop('disabled', 'disabled');
+                    $this.parents('form').find('input[type=submit]').prop('disabled', 'disabled');
 
                     // Submit the request.
                     data.submit();
@@ -94,7 +97,7 @@ function FileUpload(parameters)
                     $.each(data.files, function (index, file) {
                         var error = file.error;
                         if (error) {
-                            handleFailedUpload(data, error);
+                            handleFailedUpload(data, error, $this);
                         }
                     });
                 }
@@ -104,13 +107,37 @@ function FileUpload(parameters)
             var progress = parseInt(data.loaded / data.total * 100, 10);
             $(data.context).find('.bar').css('width', progress + '%');
         },
+        submit: function (e, data) {
+            var $this = $(this),
+                that = $this.data('blueimp-fileupload') || $this.data('fileupload'),
+                options = that.options;
+            
+            // Calculate cumulative size of attachments.
+            $.each(data.files, function (index, file) {
+                cumulative_file_size += file.size;
+                $(data.context).find('.deleteAttachment').data('size', file.size);
+            });
+            
+            // Block upload that exceed the cumulative limit.
+            if (typeof options.cumulativeMaxFileSize !== 'undefined'
+                && cumulative_file_size > options.cumulativeMaxFileSize
+            ) {
+                handleFailedUpload(
+                    data,
+                    Lang.get('core.attachment_limit_reached', { size: MAX_FILE_SIZE.fileSize() }),
+                    $this
+                );
+
+                return false;
+            }
+        },
         done: function (e, data) {
             var $self = $(this);
 
             $.each(data.result, function (index, file) {
                 // The file failed to upload
                 if (file.hasOwnProperty('error')) {
-                    handleFailedUpload(data, file.error);
+                    handleFailedUpload(data, file.error, $self);
                     return true; // continue;
                 }
 
@@ -122,13 +149,12 @@ function FileUpload(parameters)
                 $(data.context).find('.deleteAttachment').data('url', file.delete_url);
 
                 // Create attachment input - we use this to link it to the ticket message
-                var $form = $self.parents('form'),
-                    input = $form.find('input[name="attachment[]"]')
+                var input = settings.$container.find('input[name="' + settings.inputName + '[]"]')
                         .clone()
                         .removeAttr('disabled')
-                        .appendTo( $form.find('.attachment-details') );
-                input.attr('name', 'attachment[' + file.hash + ']');
-                input.attr('id', 'attachment[' + file.hash + ']');
+                        .appendTo( settings.$container.find('.attachment-details') );
+                input.attr('name', settings.inputName + '[' + file.hash + ']');
+                input.attr('id', settings.inputName + '[' + file.hash + ']');
                 input.val(file.filename);
             });
 
@@ -140,7 +166,7 @@ function FileUpload(parameters)
         },
         fail: function (e, data) {
             // This function gets called separately for each upload that fails.
-            handleFailedUpload(data, data.errorThrown);
+            handleFailedUpload(data, data.errorThrown, $(this));
         }
     }));
 
@@ -149,22 +175,28 @@ function FileUpload(parameters)
      *
      * @param data
      * @param message
+     * @param $context jQuery object for the input.fileupload element.
      */
-    var handleFailedUpload = function (data, message) {
+    var handleFailedUpload = function (data, message, $context) {
 
         // Re-enable the form after all files have uploaded.
         if (--total_files_uploaded == 0) {
             // Re-enable the form submit button
-            $fileupload.parents('form').find('input[type=submit]').removeAttr('disabled');
+            $context.parents('form').find('input[type=submit]').removeAttr('disabled');
         }
+        
+        // Decrement cumulative file size count.
+        $.each(data.files, function (index, file) {
+            cumulative_file_size -= file.size;
+        });
 
         // Remove the list item
         $(data.context).remove();
 
         // Add an error box if there is not one there currently
         if (! $('.fail').length) {
-            if ($fileupload.parents('.form-container').length && false) {
-                $fileupload.parents('.form-container').before('<div class="fail box hide"></div>');
+            if ($context.parents('.form-container').length && false) {
+                $context.parents('.form-container').before('<div class="fail box hide"></div>');
             } else {
                 // In case it's not in a form-container
                 $('label.file-input.button').before('<div class="fail box hide" style="margin: 10px 0;"></div>');
@@ -210,6 +242,9 @@ function FileUpload(parameters)
                     if ( $message.find('div.attachments ul li').length == 1) {
                         $message.find('div.attachments').hide();
                     }
+                    
+                    // Decrement cumulative file size.
+                    cumulative_file_size -= $(context).data('size');
                 }
             );
         });
@@ -225,7 +260,11 @@ function FileUpload(parameters)
                 $(this).data('hash'),
                 $(this).parents('li'),
                 function(context) {
-                    $('div.attachment-details').find('input[name="attachment['+ $(context).data().hash +']"]').remove();
+                    settings.$container.find('input[name="' + settings.inputName + '['+ $(context).data().hash +']"]')
+                        .remove();
+
+                    // Decrement cumulative file size.
+                    cumulative_file_size -= $(context).data('size');
                 }
             );
         });
@@ -266,6 +305,11 @@ function FileUpload(parameters)
         registerEvents();
     }
 }
+
+/*
+ * Static FileUpload properties.
+ */
+FileUpload.MAX_FILE_SIZE = Number($('meta[name="max_file_size"]').prop('content'));
 
 /*
  * Static FileUpload functions.

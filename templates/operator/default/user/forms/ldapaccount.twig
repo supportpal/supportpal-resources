@@ -20,7 +20,7 @@
     {% if record|default is not empty and record.exists %}
         {{ form_model(record, {'route': [ 'user.operator.ldapaccount.update', record.id ], 'method': 'PUT', 'class': 'validate'}) }}
     {% else %}
-        {{ form_open({ 'route': 'user.operator.ldapaccount.store' }) }}
+        {{ form_open({ 'route': 'user.operator.ldapaccount.store', 'class': 'validate' }) }}
     {% endif %}
 
         <h2>{{ Lang.get('user.ldap_details') }}</h2>
@@ -99,6 +99,16 @@
                     {{ form_select('groups[]', groups, userGroups is defined ? userGroups : {}, record is defined and record.exists ? {'multiple': 'multiple','disabled': 'disabled'} : {'multiple': 'multiple'}) }}
                 </div>
             </div>
+
+            {% if record|default is empty or not record.exists %}
+                <div class="confirmed-option form-row">
+                    {{ form_label('confirmed', Lang.get('user.account_active')) }}
+                    <div class="input-container">
+                        {{ form_check('confirmed', 1, 1, { 'class': 'toggle', 'id': 'toggle_confirmed' }) }}
+                        <label for="toggle_confirmed"></label>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         <div class="form-button">
@@ -145,6 +155,9 @@
                     }
                 },
                 onItemAdd: function(value, $item) {
+                    // Hide and disable the confirmed option
+                    $('.confirmed-option').hide().find('input').prop('disabled', true);
+
                     // Load the operator details into the form
                     var operator = $item.data('data');
 
@@ -199,6 +212,9 @@
                 var $selector = $(':input[name="groups[]"]')[0].selectize;
                 $selector.clear(true);
                 $selector.enable();
+
+                // Show and enable the confirmed option
+                $('.confirmed-option').show().find('input').prop('disabled', false);
             });
         });
     </script>

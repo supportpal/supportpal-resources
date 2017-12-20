@@ -18,7 +18,7 @@ ul.dashboardStats li {
 	line-height: 1.2em;
 	padding: 0 10px;
 	text-align: center;
-	width: 25%;
+	width: 33%;
 }
 
 ul.dashboardStats li:last-child {
@@ -85,18 +85,4 @@ ul.dashboardStats li .number {
 
 .table-buttons div.dt-buttons {
 	float: none !important;
-}
-
-/* Feedback */
-
-.satisfaction {
-	font-size: 2.5em;
-	line-height: 1.25em;
-	padding: 15px 0;
-	text-align: center;
-}
-
-.satisfaction-percentage {
-	font-size: 1.2em;
-	font-weight: 600;
 }

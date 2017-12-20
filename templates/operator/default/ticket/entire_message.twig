@@ -59,7 +59,7 @@
             </div>
 
             <div class="text" {% if edit %}style="display: none"{% endif %}>
-                {{ Purifier.clean(message.text) }}
+                {{ message.purified_text|raw }}
             </div>
 
             {% if can_update_ticket(auth_user(), ticket) %}

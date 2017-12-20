@@ -15,7 +15,7 @@
         <h2>{{ Lang.get('ticket.department_user_details') }}</h2>
 
         <div class="form-container first">
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
                 <div class="form-row small-selectize">
                     {{ form_label('brand', Lang.choice('core.brand', 1)) }}
                     <div class="input-container">
@@ -30,13 +30,13 @@
                     </div>
                 </div>
             {% else %}
-                <input type="hidden" name="brand" value="{{ Config.get('brand')|first.id }}" />
+                <input type="hidden" name="brand" value="{{ brand_config(null)|first.id }}" />
             {% endif %}
 
             <div class="form-row small-selectize">
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
-                    {% if Config.get('brand')|length > 1 and user is empty %}
+                    {% if brand_count() > 1 and user is empty %}
                         {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
                     {% else %}
                         {{ form_select('department', departments) }}
@@ -44,18 +44,28 @@
                 </div>
             </div>
         </div>
-        <div class="form-container ticket-type {% if Config.get('brand')|length > 1 and user is empty %}hide{% endif %}">
+        <div class="form-container ticket-type {% if brand_count() > 1 and user is empty %}hide{% endif %}">
             <div class="form-row">
                 {{ form_label('internal', Lang.get('ticket.ticket_type')) }}
                 <div class="input-container">
                     <div class="input-group">
                         <label>{{ form_radio('internal', 0, true) }} {{ Lang.get('ticket.user_ticket') }}</label> -
-                        <span class="description">{{ Lang.get('ticket.user_ticket_desc') }}</span><br />
+                        <span class="description">
+                            {% if auth_user().hasPermission('create.user') %}
+                                {{ Lang.get('ticket.user_ticket_desc') }}
+                            {% else %}
+                                {{ Lang.get('ticket.user_ticket_existing_desc') }}
+                            {% endif %}
+                        </span><br />
 
                         <div class="user-ticket">
-                            <label>{{ form_radio('user_type', 0, true) }} {{ Lang.get('ticket.existing_user') }}</label>
-                            &nbsp;&nbsp;
-                            <label>{{ form_radio('user_type', 1) }} {{ Lang.get('ticket.new_user') }}</label>
+                            {% if auth_user().hasPermission('create.user') %}
+                                <label>{{ form_radio('user_type', 0, true) }} {{ Lang.get('ticket.existing_user') }}</label>
+                                &nbsp;&nbsp;
+                                <label>{{ form_radio('user_type', 1) }} {{ Lang.get('ticket.new_user') }}</label>
+                            {% else %}
+                                {{ form_hidden('user_type', 0) }}
+                            {% endif %}
 
                             <div class="existing-user" id="existing-user">
                                 <select name="user">
@@ -67,27 +77,29 @@
                                 </select>
                             </div>
 
-                            <div class="new-user hide">
-                                <label>
-                                    <span class="label">{{ Lang.get('user.firstname') }}</span>
-                                    {{ form_text('user_firstname') }}
-                                </label><br />
-                                <label>
-                                    <span class="label">{{ Lang.get('user.lastname') }}</span>
-                                    {{ form_text('user_lastname') }}
-                                </label><br />
-                                <label>
-                                    <span class="label">{{ Lang.get('general.email') }}</span>
-                                    {{ form_text('user_email') }}
-                                </label>
-                                {% if Config.get('settings.organisations_enabled') %}
-                                    <br />
+                            {% if auth_user().hasPermission('create.user') %}
+                                <div class="new-user hide">
                                     <label>
-                                        <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
-                                        {{ form_text('user_organisation') }}
-                                    </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
-                                {% endif %}
-                            </div>
+                                        <span class="label">{{ Lang.get('user.firstname') }}</span>
+                                        {{ form_text('user_firstname') }}
+                                    </label><br />
+                                    <label>
+                                        <span class="label">{{ Lang.get('user.lastname') }}</span>
+                                        {{ form_text('user_lastname') }}
+                                    </label><br />
+                                    <label>
+                                        <span class="label">{{ Lang.get('general.email') }}</span>
+                                        {{ form_text('user_email') }}
+                                    </label>
+                                    {% if Config.get('settings.organisations_enabled') %}
+                                        <br />
+                                        <label>
+                                            <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
+                                            {{ form_text('user_organisation') }}
+                                        </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="internal-ticket">
@@ -102,7 +114,7 @@
         </div>
 
         <div class="form-button continue-button">
-            {{ form_submit(Lang.get('general.continue'), Config.get('brand')|length > 1 and user is empty ? {'disabled': 'disabled'} : {}) }}
+            {{ form_submit(Lang.get('general.continue'), brand_count() > 1 and user is empty ? {'disabled': 'disabled'} : {}) }}
         </div>
 
     {{ form_close() }}

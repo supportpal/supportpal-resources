@@ -22,15 +22,15 @@
 
         <div class="form-row">
             {{ form_label('name', Lang.get('general.name')) }}
-            <div class="input-container">
-                {{ form_text('name', null, {'size': 30}) }}
+            <div class="input-container translatable small-translatable">
+                {{ form_translatable_text(record, 'name') }}
             </div>
         </div>
 
         <div class="form-row form-full">
             {{ form_label('description', Lang.get('general.description')) }}
-            <div class="input-container">
-                {{ form_text('description') }}
+            <div class="input-container translatable">
+                {{ form_translatable_text(record, 'description') }}
             </div>
         </div>
 
@@ -54,10 +54,11 @@
                     {% if permissions[id] is not empty %}
                         <h3>{{ name }}</h3>
                         <div class="input-group row">
-                            {% for key,permission in permissions[id] %}
+                            {% for key, permission in permissions[id] %}
                                 <div  class="item item25">
                                     <label>
-                                        {{ form_check('permission[' ~ key ~ ']', true, in_array(key, rolePermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                        {{ form_check('permission[' ~ key ~ ']', true, in_array(key, rolePermissions),
+                                            record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
                                         {{ Lang.get('permission.' ~ permission) }}
                                     </label>
                                 </div>
@@ -72,25 +73,47 @@
                 {% if plugins|default is not empty %}
                     <h3>{{ Lang.choice('core.plugins', 2) }}</h3>
                     <div class="input-group row">
-                        {% for key,name in plugins %}
+                        {% for key, name in plugins %}
                             <div  class="item item25">
                                 <label>
-                                    {{ form_check('plugin[' ~ key ~ ']', true, in_array(key, pluginPermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                    {{ form_check('plugin[' ~ key ~ ']', true, in_array(key, pluginPermissions),
+                                        record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
                                     {{ name }}
                                 </label>
                             </div>
                         {% endfor %}
                     </div>
                     <div class="clear"></div>
+
+                    {% if permissions['plugin'] is not empty %}
+                        {% for key, name in plugins %}
+                            {% if permissions['plugin'][key] is not empty %}
+                                <h3>{{ name }}</h3>
+                                <div class="input-group row">
+                                    {% for key, permission in permissions['plugin'][key] %}
+                                        <div  class="item item25">
+                                            <label>
+                                                {{ form_check('permission[' ~ key ~ ']', true, in_array(key, rolePermissions),
+                                                    record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                                {{ Lang.get(permission) }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="clear"></div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 {% endif %}
 
                 {% if widgets|default is not empty %}
                     <h3>{{ Lang.choice('core.widget', 2) }}</h3>
                     <div class="input-group row">
-                        {% for key,name in widgets %}
+                        {% for key, name in widgets %}
                             <div  class="item item25">
                                 <label>
-                                    {{ form_check('widget[' ~ key ~ ']', true, in_array(key, widgetPermissions), record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
+                                    {{ form_check('widget[' ~ key ~ ']', true, in_array(key, widgetPermissions),
+                                        record.exists and record.id == 1 ? {'disabled': 'disabled'} : {}) }}
                                     {{ name }}
                                 </label>
                             </div>
@@ -116,6 +139,9 @@
 
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+
+    <!-- Translatable.js dependencies: Selectize -->
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {

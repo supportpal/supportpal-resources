@@ -31,7 +31,7 @@
                 <label>{{ Lang.get('general.name') }}:</label>
                 <div id="filter_name"></div>
             </div>
-            {% if Config.get('brand')|length > 1 %}
+            {% if brand_count() > 1 %}
             <div>
                 <label>{{ Lang.choice('core.brand', 1) }}:</label>
                 <div id="filter_brand"></div>
@@ -63,7 +63,7 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {% if Config.get('brand')|length > 1 %}
+                {% if brand_count() > 1 %}
                     {column_number : 1, filter_container_id: "filter_brand"}
                 {% endif %}
             ]);

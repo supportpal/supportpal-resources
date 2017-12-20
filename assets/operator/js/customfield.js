@@ -1,23 +1,32 @@
 jQuery(function($){
 
-    $(".option:first :input").prop('disabled', true);
+    /**
+     * Class name for addNewItem() function.
+     * We specify that we want only children of .customfield-options of class .option, otherwise it matches other
+     * elements with class .option (for example: selectize).
+     *
+     * @type {string}
+     */
+    var className = '.customfield-options > .option';
+
+    $(className + ":first :input").prop('disabled', true);
 
     /**
      * Add a new option to the form
      */
     $('.add-option').on('click', function() {
-        addNewItem('.option');
+        addNewItem(className);
     });
 
     /**
      * Remove an option from the DOM
      */
     $(document.body).on('click', '.remove-option', function() {
-        $(this).parents('.option').remove();
+        $(this).parents(className).remove();
 
         // If it was the last one, add an empty form back in
-        if ($('.option').length == 1) {
-            addNewItem('.option');
+        if ($(className).length == 1) {
+            addNewItem(className);
         }
     });
 
@@ -28,8 +37,8 @@ jQuery(function($){
         // If checklist, multiple options, options or radio
         if ($(this).val() == '2' || $(this).val() == '4' || $(this).val() == '5' || $(this).val() == '7') {
             $('.customfield-options').show();
-            if ($('.option').length == 1) {
-                addNewItem('.option');
+            if ($(className).length == 1) {
+                addNewItem(className);
             }
         } else {
             $('.customfield-options').hide();
