@@ -127,7 +127,6 @@ return array(
     "user_reg_captcha"              => "Captcha",
     "user_reg_captcha_desc"         => "Bei der Registrierung muss ein Captcha bestätigt werden.",
     "user_name_format"              => "Namensformat",
-    "user_name_format_desc"         => "Das Format in dem Benutzer- und Mitarbeiternamen im HelpDesk angezeigt werden.",
     "first_last"                    => "Vorname",
     "last_first"                    => "Nachname",
     "first_l"                       => "First L.",
@@ -273,5 +272,11 @@ return array(
      */
     "search_for_user_operator"      => "Search for user/operator...",
     "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
+
+    /*
+     * 2.2.0
+     */
+    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
+    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
 );

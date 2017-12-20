@@ -241,7 +241,6 @@ return array(
     "simpleauth_key"            => "SimpleAuth-Schlüssel",
     "simpleauth_key_desc"       => "Der Single-Sign-On Schlüssel. Mindestlänge 16 Zeichen.",
     "simpleauth_operators"      => "Für Mitarbeiter aktivieren",
-    "simpleauth_operators_desc" => "Mitarbeiter können sich per SimpleAuth im System anmelden.",
     "frontend_logo"             => "Frontend-Logo",
     "base_url"                  => "System-URL",
     "base_url_desc"             => "Geben Sie vollständige Adresse des Systems an.",
@@ -278,9 +277,10 @@ return array(
     "email_runtime_error"       => "Ein System-Fehler ist aufgetreten während das Ticket / die Antwort erstellt werden sollte.",
     "email_reply_disabled"      => "E-Mails an Benutzer wurde für diese Abteilung deaktiviert.",
     "email_throttled"           => "Dieser Benutzer hat in kurzer Zeit viele E-Mails an das System gesendet. Es sind :max_requests E-Mails alle :decay_time minutes erlaubt.",
+    
     /*
-         * 2.1.0
-         */
+     * 2.1.0
+     */
     "generalsetting_desc"       => "Edit the settings that apply to all of SupportPal. If you wish to edit settings for a specific section, e.g. Tickets, open the section in the sidebar to view available settings for that module. Settings related to your brand(s) can be found by clicking Brands in the sidebar.",
     "brand"                     => "Brand|Brands",
     "brand_desc"                => "A brand is your customer-facing identity within SupportPal, allowing several channels of communication. Several brands can be operated seamlessly under a single, unified operator panel.",
@@ -338,5 +338,27 @@ return array(
     "and_number_others"         => "and :number other|and :number others",
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
+
+    /*
+     * 2.2.0
+     */
+    "attachment_size"           => "Cumulative Attachment Size Limit",
+    "attachment_size_desc"      => "The maximum cumulative size of all attachments that are sent in a single email. Available options are K (for Kilobytes) and M (for Megabytes), anything else assumes bytes. Example value: 5M for 5 Megabytes. Set to 0 to not send any attachments by email and require users to download attachments via the help desk.",
+    "attachment_limit_reached"  => "Cumulative file limit reached (:size). Please consider sending files via another medium (such as a download URL).",
+    "upload_unknown_error"      => "The file \":file\" was not uploaded due to a server-side error.",
+    "renew_support"             => "<a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>Renew</a>",
+    "translations"              => "Translations",
+    "no_existing_translations"  => "No existing translations.",
+    "add_translation"           => "Add Translation",
+    "todo_list"                 => "To Do List",
+    "version_check"             => "Version Check",
+    "system_overview"           => "System Overview",
+    "getting_started"           => "Getting Started",
+    "operator_notes"            => "Operator Notes",
+    "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
+    "upgrade_and_reactivate"    => "Upgrade & Reactivate",
+    "upgrade_pending"           => "Upgrade Pending",
+    "locale_in_uri"             => "Include Locale in URI",
+    "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
 );

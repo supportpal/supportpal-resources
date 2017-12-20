@@ -1,6 +1,7 @@
 <?php
 
 return array(
+
     /*
      * 2.0.2
      */
@@ -34,4 +35,27 @@ return array(
      */
     "ticket_brand"              => "Ticket brand",
     "user_brand"                => "User brand",
+
+    /*
+     * 2.2.0
+     */
+    "hours_since_last_reply"            => "Hours since last reply",
+    "hours_since_last_reply_exc_notes"  => "Hours since last reply (excluding notes)",
+    "hours_until_due"                   => "Hours until due",
+    "last_ticket_replier_exc_notes"     => "Last ticket replier (excluding notes)",
+    "ticket_department_email"           => "Ticket department email",
+    "ticket_has_attachments"            => "Ticket has attachments",
+    "ticket_has_drafts"                 => "Ticket has drafts",
+    "ticket_locked"                     => "Ticket locked",
+    "ticket_merged"                     => "Ticket merged",
+    "ticket_message_count_exc_notes"    => "Ticket message count (excluding notes)",
+    "ticket_note_count"                 => "Ticket note count",
+    "ticket_number"                     => "Ticket number",
+    "ticket_reopened_time"              => "Ticket reopened time",
+    "ticket_resolved_time"              => "Ticket resolved time",
+    "user_account_active"               => "User account active",
+    "user_country"                      => "User country",
+    "user_language"                     => "User language",
+    "user_timezone"                     => "User timezone",
+
 );

@@ -116,7 +116,6 @@ return array(
     "filter_results"            => "Ergebnisse filtern",
     "anyone"                    => "Jeder",
     "everyone"                  => "Jeder",
-    "every"                     => "Jedes",
     "text"                      => "Text",
     "attachment"                => "Anhang|Anhänge",
     "add_attachment"            => "Anhang hinzufügen",
@@ -275,5 +274,18 @@ return array(
     "posted"                    => "Posted",
     "locked"                    => "Locked",
     "draft"                     => "Draft",
+
+    /*
+     * 2.2.0
+     */
+    "monday"                    => "Monday",
+    "tuesday"                   => "Tuesday",
+    "wednesday"                 => "Wednesday",
+    "thursday"                  => "Thursday",
+    "friday"                    => "Friday",
+    "saturday"                  => "Saturday",
+    "sunday"                    => "Sunday",
+    "inactive"                  => "Inactive",
+    "run"                       => "Run",
 
 );
