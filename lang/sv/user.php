@@ -127,7 +127,6 @@ return array(
     "user_reg_captcha"              => "Användarregistreringscaptcha",
     "user_reg_captcha_desc"         => "Om captchan ska synas för nya användare vid registrering.",
     "user_name_format"              => "Namnformat",
-    "user_name_format_desc"         => "Det format som användar- och operatörnamn visas i helpdesken.",
     "first_last"                    => "För efter",
     "last_first"                    => "Efter för",
     "first_l"                       => "För e.",
@@ -273,5 +272,11 @@ return array(
      */
     "search_for_user_operator"      => "Sök efter användare/operatör...",
     "two_fa_personal_settings"      => "Operatören kan aktivera 2FA i sina personliga inställningar.",
+
+    /*
+     * 2.2.0
+     */
+    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
+    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
 );

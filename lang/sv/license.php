@@ -47,4 +47,9 @@ return array(
     "server_response"   => "Serversvar",
     "need_to_reissue"   => "Du kanske behöver <strong>återutfärda</strong> licensen i vårat <a href='http://www.supportpal.com/manage/' target='_blank'>kundområde</a>.",
 
+    /*
+     * 2.2.0
+     */
+    "enter_new_key"     => "Ange nu lincens nyckel",
+
 );

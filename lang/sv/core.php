@@ -241,7 +241,6 @@ return array(
     "simpleauth_key"            => "SimpleAuth-nyckel",
     "simpleauth_key_desc"       => "Nyckeln för vår \"single sign on\"-inställning, minst 16 tecken.",
     "simpleauth_operators"      => "Tillåt för operatörer",
-    "simpleauth_operators_desc" => "Tillåt operatörer att logga in med SimpleAuth. Vi rekommenderar att ha det avaktiverat så länge du inte använder det för detta syfte.",
     "frontend_logo"             => "Framsidans logotyp",
     "base_url"                  => "System-URL",
     "base_url_desc"             => "Skriv in den fulla webbadressen för din installation. Används för att generera URL:er som skickas till användare.",
@@ -339,5 +338,27 @@ return array(
     "and_number_others"         => "och :number andra",
     "user_templates"            => "Användarmall",
     "operator_templates"        => "Operatörsmallar",
+
+    /*
+     * 2.2.0
+     */
+    "attachment_size"           => "Begränsning av sammanlagd storlek på bifogade filer",
+    "attachment_size_desc"      => "The maximum cumulative size of all attachments that are sent in a single email. Available options are K (for Kilobytes) and M (for Megabytes), anything else assumes bytes. Example value: 5M for 5 Megabytes. Set to 0 to not send any attachments by email and require users to download attachments via the help desk.",
+    "attachment_limit_reached"  => "Cumulative file limit reached (:size). Please consider sending files via another medium (such as a download URL).",
+    "upload_unknown_error"      => "The file \":file\" was not uploaded due to a server-side error.",
+    "renew_support"             => "<a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>Renew</a>",
+    "translations"              => "Översättning",
+    "no_existing_translations"  => "Översättning saknas.",
+    "add_translation"           => "Lägg till översättning",
+    "todo_list"                 => "Att göra lista",
+    "version_check"             => "Kontrollera uppdateringar",
+    "system_overview"           => "Systemöversikt",
+    "getting_started"           => "Här börjar vi",
+    "operator_notes"            => "Operatörsnoteringar",
+    "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
+    "upgrade_and_reactivate"    => "Uppgradera och återaktivera",
+    "upgrade_pending"           => "Väntande uppdatering",
+    "locale_in_uri"             => "Inkludera språkval i URL",
+    "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
 );

@@ -170,7 +170,6 @@ return array(
     // Canned responses
     "cannedresponse"            => "Konserverat svar|Konserverade svar",
     "canned_response_category"  => "Konserverat svar-kategori|Konserverat svar-kategorier",
-    "response"                  => "Svar",
     "canned_public_desc"        => "Växla för att låta konserverade svar bara vara tillgängliga för dig själv.",
     "canned_group_desc"         => "Om du vill att det konserverade svaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
 
@@ -368,6 +367,7 @@ return array(
     "opened_by"                 => "(Öppnat av :name)",
     "remote_email_piping_desc"  => "Ladda ner <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>fjärre-postpipingskriptet</a> och följ <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>dokumentationen</a> för att konfigurera det på din e-postserver.",
     "not_assigned_department"   => "Du har inte behörighet att titta på ärenden i :department-avdelningen. Om du tror att du felaktigt har fått detta felmeddelande, kontakta din administratör.",
+
     /*
      * 2.0.3
      */
@@ -465,5 +465,19 @@ return array(
     "email_user_frontend_desc"  => "Ange om användare blir notifierade via e-post om de öppnar ett eget ärende via framsidan.",
     "department_template_disabled" => "Den relevanta avdelningens e-postmall är avaktiverad så denn e-post kunde inte skickas.",
     "verbose_email_log_desc"    => "Om e-postsamlingen skall loggas till fil. Rekommenderas att hålla avaktiverad såvida man inte blivit instruerad av support för debugging. Fem dagars loggar sparas, äldre tas bort automatiskt av systemet.",
+
+    /*
+     * 2.2.0
+     */
+    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
+    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
+    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
+    "response"                  => "Response|Responses",
+    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
+    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
+    "filter_performance"        => "Performance considerations and recommendations",
+    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
+    "run_macro"                 => "Run Macro",
+    "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
 
 );

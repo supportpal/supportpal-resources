@@ -165,4 +165,11 @@ return array(
     "not_imported_replies_disabled"     => "E-post :extra_rel1 togs emot för ärendet #:rel men importerades inte då e-postsvar är avaktiverat.",
     "not_imported_ticket_locked"        => "E-post :extra_rel1 togs emot för ärendet #:rel men importerades inte då ärendet är låst.",
 
+    /*
+     * 2.2.0
+     */
+    "ticket_user_added_to_group"        => "Ärendetsanvändare lagd till grupp :new_value.",
+    "ticket_user_removed_from_group"    => "Ärendetsanvändare bortagen från grupp :old_value.",
+    "email_on_behalf"                   => "Vidaresänt :extra_rel2 för ':extra_rel1' räkning, i ärednde #:rel.",
+
 );

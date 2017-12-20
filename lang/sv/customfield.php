@@ -42,4 +42,5 @@ return array(
      * 2.1.0
      */
     "brand_desc"                => "Välj vilka varumärken fältet är tillgängligt för.",
+
 );

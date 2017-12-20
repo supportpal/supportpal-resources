@@ -3,15 +3,15 @@
 return array(
 
     /*
-	|--------------------------------------------------------------------------
-	| Validation Language Lines
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines contain the default error messages used by
-	| the validator class. Some of these rules have multiple versions such
-	| as the size rules. Feel free to tweak each of these messages here.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Validation Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines contain the default error messages used by
+    | the validator class. Some of these rules have multiple versions such
+    | as the size rules. Feel free to tweak each of these messages here.
+    |
+    */
 
     "accepted"                  => ":attribute måste accepteras.",
     "active_url"                => ":attribute är inte en giltig URL.",
@@ -79,7 +79,7 @@ return array(
     "json"                      => ":attribute måste vara giltig JSON.",
     "user_password_strength"    => ":attribute måste innehålla: :user_password_strength.",
     "operator_password_strength" => ":attribute måste innehålla: :operator_password_strength.",
-    "twig_lint"                 => ":attribute måste vara giltig <a href='http://twig.sensiolabs.org/doc/templates.html'>twig-syntax</a>.",
+    "twig_lint"                 => ":attribute måste vara giltig twig-syntax http://twig.sensiolabs.org/doc/templates.html",
 
     /*
      * 2.1.0
@@ -91,6 +91,13 @@ return array(
      * 2.1.1
      */
     "old_password"              => ":attributefältet är ogiltigt.",
+
+    /*
+     * 2.2.0
+     */
+    "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
+    "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
+    "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +116,7 @@ return array(
         ),
         "data.*.contents" => array(
             "required"  => "Innehållsfältet krävs för varje e-post.",
-            "twig_lint" => "Varje e-post måste vara giltig <a href='http://twig.sensiolabs.org/doc/templates.html'>twig-syntax</a>.",
+            "twig_lint" => "Varje e-post måste vara giltig twig-syntax http://twig.sensiolabs.org/doc/templates.html",
         ),
         "roles.*" => array(
             "exists" => "Den valda rollen är ogiltig.",
@@ -128,7 +135,7 @@ return array(
             "exists" => "Varje signatur must tillhöra en tillåten avdelning.",
         ),
         "signature.Default.*.contents" => array(
-            "twig_lint" => "Varje signatur måste vara en giltig <a href='http://twig.sensiolabs.org/doc/templates.html'>twig-syntax</a>."
+            "twig_lint" => "Varje signatur måste vara en giltig twig-syntax http://twig.sensiolabs.org/doc/templates.html"
         ),
         "template.Default.*.language" => array(
             "exists" => "Varje mall måste tillhöra ett giltigt språk.",
@@ -140,20 +147,20 @@ return array(
         "template.Default.*.contents" => array(
             "required_with" => "Varje e-postmall kräver innehåll när ett ämne finns.",
             "min" => "Varje e-postmall måste vara längre än 1 tecken.",
-            "twig_lint" => "Varje e-postmall måste vara giltig <a href='http://twig.sensiolabs.org/doc/templates.html'>twig-syntax</a>."
+            "twig_lint" => "Varje e-postmall måste vara giltig twig-syntax http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 
     /*
-	|--------------------------------------------------------------------------
-	| Custom Validation Attributes
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines are used to swap attribute place-holders
-	| with something more reader friendly such as Email Address instead
-	| of "email". This simply helps us make messages a little cleaner.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Custom Validation Attributes
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used to swap attribute place-holders
+    | with something more reader friendly such as Email Address instead
+    | of "email". This simply helps us make messages a little cleaner.
+    |
+    */
 
     "attributes" => array(),
 

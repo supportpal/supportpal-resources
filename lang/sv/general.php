@@ -270,9 +270,22 @@ return array(
     "number_days"               => ":number dag|:number dagar",
     "number_months"             => ":number månad|:number månader",
     "number_years"              => ":number år|:number år",
-    "recipients"                => "Mottagare",
+    "recipients"                => "Mottagare|Mottagare",
     "posted"                    => "Postad",
     "locked"                    => "Låst",
     "draft"                     => "Utkast",
+
+    /*
+     * 2.2.0
+     */
+    "monday"                    => "Måndag",
+    "tuesday"                   => "Tisdag",
+    "wednesday"                 => "Onsdag",
+    "thursday"                  => "Torsdag",
+    "friday"                    => "Fredag",
+    "saturday"                  => "Lördag",
+    "sunday"                    => "Söndag",
+    "inactive"                  => "Inaktiv",
+    "run"                       => "Kör",
 
 );
