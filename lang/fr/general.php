@@ -274,5 +274,18 @@ return array(
     "posted"                    => "Posted",
     "locked"                    => "Locked",
     "draft"                     => "Draft",
+    
+    /*
+     * 2.2.0
+     */
+    "monday"                    => "Monday",
+    "tuesday"                   => "Tuesday",
+    "wednesday"                 => "Wednesday",
+    "thursday"                  => "Thursday",
+    "friday"                    => "Friday",
+    "saturday"                  => "Saturday",
+    "sunday"                    => "Sunday",
+    "inactive"                  => "Inactive",
+    "run"                       => "Run",
 
 );

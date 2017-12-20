@@ -42,4 +42,5 @@ return array(
      * 2.1.0
      */
     "brand_desc"                => "Choisir les marques où ce champ doit être disponible.",
+
 );

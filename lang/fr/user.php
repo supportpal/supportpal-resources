@@ -127,7 +127,6 @@ return array(
     "user_reg_captcha"              => "Enregistrement Client Captcha",
     "user_reg_captcha_desc"         => "Si le captcha devrait être montré aux nouveaux Clients enregistrement.",
     "user_name_format"              => "Format Nom",
-    "user_name_format_desc"         => "Le format qui est affiché pour les noms des Clients et des Collaborateurs à travers le help desk.",
     "first_last"                    => "Premier Dernier",
     "last_first"                    => "Dernier Premier",
     "first_l"                       => "Premier D.",
@@ -149,7 +148,6 @@ return array(
     "personal_settings"             => "Paramètres personnels",
     "personal_settings_desc"        => "Mettre à jour votre propre profil et modifier les paramètres qui se rapportent uniquement à votre compte du Collaborateur",
     "two_fa"                        => "Authentification à deux facteurs",
-    "ticket_settings"               => "Paramètres des questions",
     "notifications"                 => "Notifications",
     "two_fa_success_disabled"       => "L'authentification à deux facteurs a bien été désactivé.",
     "two_fa_success_enabled"        => "L'authentification à deux facteurs a bien été activé.",
@@ -274,5 +272,11 @@ return array(
      */
     "search_for_user_operator"      => "Search for user/operator...",
     "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
+
+    /*
+     * 2.2.0
+     */
+    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
+    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
 );

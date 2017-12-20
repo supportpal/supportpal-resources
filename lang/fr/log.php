@@ -65,8 +65,6 @@ return array(
     "ticket_followup_updated"           => "Le suivi sur le ticket #:rel a été mis à jour.",
     "ticket_followup_deleted"           => "Le suivi sur le ticket #:rel a été supprimé.",
 
-    "ticket_macro_applied"              => "Le macro :new_value a été appliqué sur le ticket #:rel.",
-
     "ticket_message_reply"              => "Nouvelle réponse posté sur ticket #:rel.",
     "ticket_message_note"               => "Nouvelle note posté sur ticket #:rel.",
     "ticket_message_updated"            => "Mise à jour message sur ticket #:rel.",
@@ -166,5 +164,12 @@ return array(
     "private_message_sent"              => "Sent a message to :rel.",
     "not_imported_replies_disabled"     => "An email :extra_rel1 was received for ticket #:rel, but was not imported as ticket email replies are disabled.",
     "not_imported_ticket_locked"        => "An email :extra_rel1 was received for ticket #:rel, but was not imported as the ticket is locked.",
+
+    /*
+     * 2.2.0
+     */
+    "ticket_user_added_to_group"        => "Ticket user added to user group :new_value.",
+    "ticket_user_removed_from_group"    => "Ticket user removed from user group :old_value.",
+    "email_on_behalf"                   => "Forwarded :extra_rel2 on behalf of ':extra_rel1' in ticket #:rel.",
 
 );

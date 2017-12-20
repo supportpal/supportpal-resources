@@ -121,8 +121,7 @@ return array(
     "email_user_on_email_desc"  => "Sélectionnez si les clients doivent être informés par courriel lorsqu'un email ils envoient des résultats dans un nouveau ticket étant ouvert.",
     "email_operators"           => "Notifier opérateurs",
     "email_operators_desc"      => "Indiquez si vous souhaitez transmettre les réponses de l'opérateur à d'autres opérateurs. Vérifie par défaut les opérateurs de messagerie option dans le panneau de commande, et enverra automatiquement un e-mail pour les réponses par courriel par les opérateurs.",
-    // Department e-mail templates
-    "email_template_desc"       => "Vous pouvez sélectionner un modèle de courriel autre que le défaut d'être envoyé au client pour l'une des actions ci-dessous. Ce modèle deviendra la valeur par défaut pour seulement ce département.",
+    // Department email templates
     "new_ticket_reply"          => "Nouvelle réponse à une question",
     "new_ticket_opened"         => "Nouvelle question ouverte",
     "reply_to_locked"           => "Réponse à une question bloquée",
@@ -171,7 +170,6 @@ return array(
     // Canned responses
     "cannedresponse"            => "Réponses pré-enregistrée|Réponses pré-enregistrées",
     "canned_response_category"  => "Catégorie de la réponse pré-enregistrée|Catégories des réponses pré-enregistrées",
-    "response"                  => "Réponse",
     "canned_public_desc"        => "Basculer pour laisser seulement la réponse pré-définiee soit accessible par vous-même.",
     "canned_group_desc"         => "Si vous souhaitez faire la réponse pré-définiee visible seulement à certains groupes d'opérateurs, laisser en blanc pour rendre visible à tous les opérateurs.",
 
@@ -274,18 +272,18 @@ return array(
     "default_resolve_status"    => "Statut non résolu par défaut",
     "default_resolve_status_desc" => "Sélectionnez l'état par défaut qui est utilisé pour les tickets qui ont été résolus.",
 
-	"waiting_response_time"		   => "En attente de réponse Email ",
-	"waiting_response_time_desc"   => "Le temps après les clients reçoivent un e-mail sur les tickets inactifs, en demandant si ils considèrent le ticket comme résolu. Mettre à 0 pour désactiver cet e-mail. ",
+    "waiting_response_time"      => "En attente de réponse Email",
+    "waiting_response_time_desc" => "Le temps après les clients reçoivent un e-mail sur les tickets inactifs, en demandant si ils considèrent le ticket comme résolu. Mettre à 0 pour désactiver cet e-mail. ",
 
     "close_inactive_tickets"    => "Fermer questions inactives",
-    "close_inactive_tickets_desc"=> "Le temps au bout duquel les tickets inactifs sont automatiquement fermés, mis à 0 pour ne jamais fermer automatiquement des tickets.",
-    "close_inactive_status_desc"=> "Fermer automatiquement les tickets qui sont devenus inactifs sans suivi du client (défini par le nombre de jours depuis la dernière réponse par un collaborateur dans les paramètres généraux de ticket).",
+    "close_inactive_tickets_desc" => "Le temps au bout duquel les tickets inactifs sont automatiquement fermés, mis à 0 pour ne jamais fermer automatiquement des tickets.",
+    "close_inactive_status_desc" => "Fermer automatiquement les tickets qui sont devenus inactifs sans suivi du client (défini par le nombre de jours depuis la dernière réponse par un collaborateur dans les paramètres généraux de ticket).",
 
     "ticket_reply_order"        => "Ordre de réponse des questions",
     "ticket_reply_order_desc"   => "Sélectionnez l'ordre dans lequel les messages de tickets sont présentés, par ordre croissant, où le dernier message est le dernier ou descendant où le dernier message est le premier.",
 
     "ticket_notes_position"     => "Ticket Position des Remarques",
-    "ticket_notes_position_desc"=> "Sélectionnez où dans le ticket ces notes sont affichées.",
+    "ticket_notes_position_desc" => "Sélectionnez où dans le ticket ces notes sont affichées.",
     "ticket_notes_top_messages" => "En haut et dans les messages",
     "ticket_notes_top"          => "En haut seulement",
     "ticket_notes_messages"     => "Dans les messages seulement",
@@ -369,7 +367,6 @@ return array(
     "opened_by"                 => "(Ouverte par :nom)",
     "remote_email_piping_desc"  => "Télécharger le <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>email distant script de tuyauterie</a> et suivre le <a href = 'http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target ='_blank'>documentation</a> sur la configuration sur votre serveur de messagerie.", 
     "not_assigned_department"   => "Désolé, vous n'êtes pas autorisé à voir les tickets dans le :department Département. Si vous pensez que cela a été démontré dans l'erreur, s'il vous plaît contactez votre administrateur. ", 
-    "verbose_email_log_desc"    => "Si la collecte des emails doit être sauvegarder dans un fichier. Nous vous recommandons de garder activé pour aider à des fins de débogage. Cinq jours de dollars de journaux sont stockés, les fichiers journaux plus anciens seront éliminés automatiquement par le système.",
 
     /*
      * 2.0.3
@@ -389,7 +386,6 @@ return array(
     "no_custom_fields"          => "Aucun champs personnalisés trouvés. Cliquez <a href=':route'>ici</a> pour en créer un.",
     "follow_up_active"          => "Un <a class='view-followup' style='text-decoration :underline;'>suivi</a> est actuellement actif sur ce ticket et se déroulera peu après <strong>:time </strong>",
     "disable_user_email_replies" => "Désactiver les réponses du client",
-    "disable_user_email_replies_desc" => "Activer pour bloquer réponses email des clients, et supprimer également la ligne de réponse des e-mails des tickets sortants.",
 
     /*
      * 2.1.0
@@ -469,5 +465,19 @@ return array(
     "email_user_frontend_desc"  => "Select whether users should be notified by email when they open a ticket themselves on the frontend.",
     "department_template_disabled" => "The relevant department email template is disabled, so this email cannot be sent.",
     "verbose_email_log_desc"    => "If email collection should be logged on file, recommended to keep disabled unless instructed by support for debugging. Five days worth of logs are stored, older log files will be purged automatically by the system.",
+
+    /*
+     * 2.2.0
+     */
+    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
+    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
+    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
+    "response"                  => "Response|Responses",
+    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
+    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
+    "filter_performance"        => "Performance considerations and recommendations",
+    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
+    "run_macro"                 => "Run Macro",
+    "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
 
 );

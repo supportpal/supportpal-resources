@@ -124,4 +124,10 @@ return array(
     "viewing_article"           => "Visionnement article",
     "article_count"             => "Décompte des articles",
 
+    /*
+     * 2.2.0
+     */
+    "article_desc"              => "The article can be written in several languages. The appropriate article will be shown automatically based on the user's language preference.",
+    "no_author"                 => "No Author",
+
 );

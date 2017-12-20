@@ -3,15 +3,15 @@
 return array(
 
     /*
-	|--------------------------------------------------------------------------
-	| Validation Language Lines
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines contain the default error messages used by
-	| the validator class. Some of these rules have multiple versions such
-	| as the size rules. Feel free to tweak each of these messages here.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Validation Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines contain the default error messages used by
+    | the validator class. Some of these rules have multiple versions such
+    | as the size rules. Feel free to tweak each of these messages here.
+    |
+    */
 
     "accepted"                  => "Le :attribute est pas une URL valide.",
     "active_url"                => "The :attribute is not a valid URL.",
@@ -79,7 +79,7 @@ return array(
     "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
     "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
-    "twig_lint"                 => "The :attribute must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+    "twig_lint"                 => "The :attribute must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
 
     /*
      * 2.1.0
@@ -91,6 +91,13 @@ return array(
      * 2.1.1
      */
     "old_password"              => "The :attribute field is invalid.",
+
+    /*
+     * 2.2.0
+     */
+    "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
+    "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
+    "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
 
     /*
     |--------------------------------------------------------------------------
@@ -105,11 +112,11 @@ return array(
 
     "custom" => array(
         "data.*.subject" => array(
-            "required" => "A subject is required for each provided e-mail."
+            "required" => "A subject is required for each provided email."
         ),
         "data.*.contents" => array(
-            "required"  => "The content field is required for each provided e-mail.",
-            "twig_lint" => "Each e-mail must be valid <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>.",
+            "required"  => "The content field is required for each provided email.",
+            "twig_lint" => "Each email must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
         ),
         "roles.*" => array(
             "exists" => "The selected role is invalid.",
@@ -122,13 +129,13 @@ return array(
             "exists"   => "One or more of the selected categories is invalid.",
         ),
         "brand.*" => array(
-            "exists" => "La marque sélectionnée est invalide.",
+            "exists" => "The selected brand is invalid.",
         ),
         "signature.Default.*.department" => array(
             "exists" => "Chaque signature doit être associée à un département valide.",
         ),
         "signature.Default.*.contents" => array(
-            "twig_lint" => "Chaque signature doit être valide <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each signature must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
         "template.Default.*.language" => array(
             "exists" => "Chaque gabarit doit être associé à un langage valide.",
@@ -140,20 +147,20 @@ return array(
         "template.Default.*.contents" => array(
             "required_with" => "Chaque gabarit de courriel requiert du contenu quand un sujet est fourni.",
             "min" => "Chaque gabarit de courriel doit être plus long qu'un caractère.",
-            "twig_lint" => "Chaque gabarit de courriel doit être valide <a href='http://twig.sensiolabs.org/doc/templates.html'>twig syntax</a>."
+            "twig_lint" => "Each email template must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 
     /*
-	|--------------------------------------------------------------------------
-	| Custom Validation Attributes
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines are used to swap attribute place-holders
-	| with something more reader friendly such as E-Mail Address instead
-	| of "email". This simply helps us make messages a little cleaner.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Custom Validation Attributes
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used to swap attribute place-holders
+    | with something more reader friendly such as Email Address instead
+    | of "email". This simply helps us make messages a little cleaner.
+    |
+    */
 
     "attributes" => array(),
 

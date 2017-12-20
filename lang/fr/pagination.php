@@ -2,7 +2,7 @@
 
 return array(
 
-    "précédent" => "&laquo; Précédent",
-    "suivant"     => "Suivant &raquo;",
+    "previous" => "&laquo; Précédent",
+    "next"     => "Suivant &raquo;",
 
 );

@@ -118,7 +118,6 @@ return array(
 
     // Modules
     "modules"                   => "Module|Modules",
-    "edit_module"               => "Editer Module",
     "modules_desc"              => "Voici une liste de tous les modules disponibles, cliquez sur l'icône de modification pour mettre à jour les paramètres de ce module.",
     "module_disable"            => "Modules désactivés seront supprimés de l'interface et de l'interface de l'opérateur.",
 
@@ -219,7 +218,6 @@ return array(
     "no_enabled_languages"      => "Échec de mise à jour le :item. Au moins une langue doit être activé à tout moment.",
 
     // General Settings
-    "generalsetting_desc"       => "Modifiez les paramètres applicables à l'ensemble des SupportPal. Si vous souhaitez modifier les paramètres d'une section spécifique, par exemple Les tickets, s'il vous plaît aller à la page Modules et afficher le module.",
     "website"                   => "Site web",
     "locale"                    => "Langue",
     "simpleauth"                => "SimpleAuth",
@@ -243,9 +241,7 @@ return array(
     "simpleauth_key"            => "SimpleAuth Key",
     "simpleauth_key_desc"       => "La clé pour notre authentification (single sign on option), minimum de 16 caractères.",
     "simpleauth_operators"      => "Autoriser pour les opérateurs",
-    "simpleauth_operators_desc" => "Permettre aux opérateurs de se connecter avec SimpleAuth, nous vous recommandons de désactivér, sauf si vous utilisez spécifiquement à cette fin.",
     "frontend_logo"             => "Frontend Logo",
-    "frontend_logo_desc"        => "Changer le logo par défaut sur l'interface frontend. Le champ peut être soit un chemin de fichier absolu, un chemin relatif au répertoire de base ou une URL directe à l'image.",
     "base_url"                  => "Système URL",
     "base_url_desc"             => "Entrez l'adresse Web complète de votre installation, utilisé pour générer les URL qui sont envoyés aux utilisateurs.",
     "debug"                     => "Déboguer",
@@ -285,6 +281,7 @@ return array(
     /*
      * 2.1.0
      */
+    "generalsetting_desc"       => "Edit the settings that apply to all of SupportPal. If you wish to edit settings for a specific section, e.g. Tickets, open the section in the sidebar to view available settings for that module. Settings related to your brand(s) can be found by clicking Brands in the sidebar.",
     "brand"                     => "Marque|Marques",
     "brand_desc"                => "A brand is your customer-facing identity within SupportPal, allowing several channels of communication. Several brands can be operated seamlessly under a single, unified operator panel.",
     "brand_name"                => "Nom de la marque",
@@ -341,5 +338,27 @@ return array(
     "and_number_others"         => "and :number other|and :number others",
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
+    
+    /*
+     * 2.2.0
+     */
+    "attachment_size"           => "Cumulative Attachment Size Limit",
+    "attachment_size_desc"      => "The maximum cumulative size of all attachments that are sent in a single email. Available options are K (for Kilobytes) and M (for Megabytes), anything else assumes bytes. Example value: 5M for 5 Megabytes. Set to 0 to not send any attachments by email and require users to download attachments via the help desk.",
+    "attachment_limit_reached"  => "Cumulative file limit reached (:size). Please consider sending files via another medium (such as a download URL).",
+    "upload_unknown_error"      => "The file \":file\" was not uploaded due to a server-side error.",
+    "renew_support"             => "<a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>Renew</a>",
+    "translations"              => "Translations",
+    "no_existing_translations"  => "No existing translations.",
+    "add_translation"           => "Add Translation",
+    "todo_list"                 => "To Do List",
+    "version_check"             => "Version Check",
+    "system_overview"           => "System Overview",
+    "getting_started"           => "Getting Started",
+    "operator_notes"            => "Operator Notes",
+    "simpleauth_operators_desc" => "Allow operators to log in and out with SimpleAuth, we recommend to keep this disabled unless you are specifically using it for this purpose.",
+    "upgrade_and_reactivate"    => "Upgrade & Reactivate",
+    "upgrade_pending"           => "Upgrade Pending",
+    "locale_in_uri"             => "Include Locale in URI",
+    "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
 );
