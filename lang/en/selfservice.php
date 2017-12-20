@@ -123,7 +123,7 @@ return array(
     "article_brand_warning"     => "This article exists in a brand that you are not assigned to, any changes you make will also be visible under that brand.",
     "viewing_article"           => "Viewing Article",
     "article_count"             => "Article Count",
-    
+
     /*
      * 2.2.0
      */
