@@ -47,4 +47,5 @@ return array(
     "hours_to_be_set"           => "timmar att addera till nuvarande tid och sätts som förfallotid.",
     "only_with_due_time"        => "Appliceras endast till ärenden med förfallotid.",
     "set_due_time_desc"         => "Lämna tomt för att ta bort förfallotiden. Med ett negativt nummer sätts förfallotiden i dåtid",
+
 );

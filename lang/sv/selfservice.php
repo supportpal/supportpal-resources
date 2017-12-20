@@ -123,7 +123,6 @@ return array(
     "article_brand_warning"     => "Denna artikel existerar i ett varumärke som du inte tillhör. De ändringar du gör kommer också att bli synliga för det varumärket.",
     "viewing_article"           => "Tittar på artikel",
     "article_count"             => "Artikelantal",
-
     
     /*
      * 2.2.0

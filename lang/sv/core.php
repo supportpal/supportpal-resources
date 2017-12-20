@@ -340,7 +340,6 @@ return array(
     "user_templates"            => "Användarmall",
     "operator_templates"        => "Operatörsmallar",
 
-
     /*
      * 2.2.0
      */
@@ -362,4 +361,5 @@ return array(
     "upgrade_pending"           => "Väntande uppdatering",
     "locale_in_uri"             => "Inkludera språkval i URL",
     "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
+
 );

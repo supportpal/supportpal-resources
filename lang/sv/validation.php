@@ -91,7 +91,6 @@ return array(
      * 2.1.1
      */
     "old_password"              => ":attributefältet är ogiltigt.",
-
     
     /*
      * 2.2.0
