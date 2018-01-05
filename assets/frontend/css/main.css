@@ -1483,6 +1483,36 @@ button.show-children {
     color: #999;
 }
 
+.sweet-alert .confirm {
+    background: rgb(48, 133, 214);
+    margin-top: 5px;
+}
+.sweet-alert .cancel {
+    background: rgb(170, 170, 170);
+    margin-top: 5px;
+}
+
+.sweet-alert button.confirm[disabled] {
+    margin-bottom: 4px !important;
+    margin-top: 5px !important;
+    overflow: hidden;
+}
+
+.delete-modal .warning-box {
+    background: #fcf9e5;
+    color: #9F6000;
+    font-size: 90%;
+    font-weight: bold;
+    margin: 7px -20px 15px;
+    padding: 6px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.delete-modal button.disabled {
+    display: none !important;
+}
+
 /* jQuery validation */
 
 .has-error label {

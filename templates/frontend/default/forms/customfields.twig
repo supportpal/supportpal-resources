@@ -6,7 +6,14 @@
         {% set customfield = customfield|merge({'locked': 1}) %}
     {% endif %}
 
-    <div class="form-row form-customfields" data-field="{{ customfield['id'] }}">
+    {% set attributes = { 'data-depends-on': customfield.depends_on_option_id } %}
+    <div class="form-row form-customfields"
+         data-field="{{ customfield['id'] }}"
+         data-locked="{{ customfield['value'] is not empty and customfield['locked'] }}"
+         data-dependent-children="{{ customfield.children|json_encode }}"
+         data-depends-on-option="{{ customfield.depends_on_option_id }}"
+         {% if customfield.depends_on_option_id and not customfield.parent_selected %}style="display: none"{% endif %}>
+        
         {{ form_label('customfield[' ~ customfield['id'] ~ ']', customfield['name']) }}
         <div class="input-container">
             {% if customfield['type'] == 0 %}
@@ -25,10 +32,12 @@
                 </label>
 
             {% elseif customfield['type'] == 1 %}
-                {{ form_checkbox('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
+                {{ form_check('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
                      (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
 
             {% elseif customfield['type'] == 2 %}
+                {# Filler value for when the checklist is submitted with no values, do not delete! #}
+                <input type="hidden" name="customfield[{{ customfield['id'] }}][]" value="0" />
                 {% for key, option in customfield['options'] %}
                     <label>
                         {{ form_checkbox('customfield[' ~ customfield['id'] ~ '][]', key,
@@ -75,10 +84,12 @@
             {% elseif customfield['type'] == 8 %}
                 {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'style': 'width: 50%;'} : {'style': 'width: 50%;'})) }}
+                {% if customfield['value'] is not null and customfield['encrypted'] %}&nbsp; <span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
 
             {% elseif customfield['type'] == 9 %}
                 {{ form_redactor('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
                     (customfield['value'] is not empty and customfield['locked'] ? {'rows': 5, 'style': 'width:100%', 'disabled': 'disabled'} : {'rows': 5, 'style': 'width:100%'})) }}
+                {% if customfield['value'] is not null and customfield['encrypted'] %}&nbsp; <span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
 
             {% elseif customfield['type'] == 10 %}
                 <div class="table">

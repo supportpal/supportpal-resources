@@ -161,7 +161,7 @@ function saveMessage(form) {
         dataType: 'json'
     }).done(function(response) {
         if (response.status == 'success') {
-            $('.ticket-update.success').show(500).delay(5000).hide(500);
+            $('.ticket-reply.success').show(500).delay(5000).hide(500);
 
             // Show new message
             showMessage(response.data.view);
@@ -176,18 +176,18 @@ function saveMessage(form) {
             $('.ticket-status').text(response.data.status_name);
             $('.ticket-status').css("background-color", response.data.status_colour);
         } else {
-            if (typeof response.message != 'undefined') {
+            if (typeof response.message != 'undefined' && response.message != '') {
                 // Custom message
                 $('.ticket-custom.fail').text(response.message).show(500).delay(5000).hide(500);
             } else {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                $('.ticket-reply.fail').show(500).delay(5000).hide(500);
             }
             // Re-enable textarea
             form.find('textarea[name="text"]').prop('disabled', false);
         }
     }).fail(function() {
         // Show error
-        $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        $('.ticket-reply.fail').show(500).delay(5000).hide(500);
         // Re-enable textarea
         form.find('textarea[name="text"]').prop('disabled', false);
     }).always(function() {

@@ -1,7 +1,15 @@
 <form class="message-form validate" data-ajax="ajax">
 
-    <div class="fail attachment box hide"></div>
+    <div class="success box ticket-reply hide">
+        {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
+    </div>
+    <div class="fail box ticket-reply hide">
+        {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
+    </div>
+    <div class="fail box ticket-custom hide"></div>
+    <div class="fail box attachment hide"></div>
 
+    {{ form_hidden('send_email_to_users', 1) }}
     {{ form_hidden('ticket_number', ticket.number) }}
     {% if Input.has('token') %}
         {{ form_hidden('token', Input.get('token')) }}

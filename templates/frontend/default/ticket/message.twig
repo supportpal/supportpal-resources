@@ -34,6 +34,8 @@
 								<span class="light">({{ attachment.upload.size }})</span>
 							</a>{% if (message.by != 0) %}<i class="fa fa-times deleteAttachment"
 								   data-url="{{ route('ticket.frontend.attachment.destroy') }}"
+								   data-token="{{ Input.get('token', '') }}"
+								   data-attachment-id="{{ attachment.id }}"
 								   data-hash="{{ attachment.upload_hash }}"></i>{% endif %}
 						</li>
 					{% endfor %}

@@ -182,5 +182,12 @@
         });
     </script>
 
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript">
+        deleteAlert.translationKeys.title = 'user.remove_from';
+        deleteAlert.translationKeys.warning = 'user.remove_from_warn';
+        deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+        deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+    </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/organisation.js') }}"></script>
 {% endblock %}
