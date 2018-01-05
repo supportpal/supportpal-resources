@@ -12,6 +12,10 @@
 
     {{ form_open({'route': [ 'ticket.operator.ticket.storeStep1' ], 'class': 'step1 validate'}) }}
 
+        {% if Input.has('link_message') or Input.old('link_message') %}
+            <input type="hidden" name="link_message" value="{{ Input.get('link_message', Input.old('link_message')) }}" />
+        {% endif %}
+
         <h2>{{ Lang.get('ticket.department_user_details') }}</h2>
 
         <div class="form-container first">
@@ -22,7 +26,8 @@
                         <select name="brand">
                             <option></option>
                             {% for brand in assignedBrands %}
-                            <option value="{{ brand.id }}" {% if user is not empty and user.brand_id == brand.id %}selected="selected"{% endif %}>
+                            {% set brandSelected = (user is not empty and user.brand_id == brand.id) or (selected_brand == brand.id) %}
+                            <option value="{{ brand.id }}" {% if brandSelected %}selected="selected"{% endif %}>
                                 {{ brand.name }}
                             </option>
                             {% endfor %}
@@ -36,15 +41,17 @@
             <div class="form-row small-selectize">
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
-                    {% if brand_count() > 1 and user is empty %}
+                    {% if brand_count() > 1 and selected_brand is not empty %}
+                        {{ form_select('department', departments, selected_department) }}
+                    {% elseif brand_count() > 1 and user is empty %}
                         {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
                     {% else %}
-                        {{ form_select('department', departments) }}
+                        {{ form_select('department', departments, selected_department) }}
                     {% endif %}
                 </div>
             </div>
         </div>
-        <div class="form-container ticket-type {% if brand_count() > 1 and user is empty %}hide{% endif %}">
+        <div class="form-container ticket-type {% if brand_count() > 1 and user is empty and selected_brand is empty %}hide{% endif %}">
             <div class="form-row">
                 {{ form_label('internal', Lang.get('ticket.ticket_type')) }}
                 <div class="input-container">
@@ -114,7 +121,7 @@
         </div>
 
         <div class="form-button continue-button">
-            {{ form_submit(Lang.get('general.continue'), brand_count() > 1 and user is empty ? {'disabled': 'disabled'} : {}) }}
+            {{ form_submit(Lang.get('general.continue'), brand_count() > 1 and user is empty and selected_brand is empty ? {'disabled': 'disabled'} : {}) }}
         </div>
 
     {{ form_close() }}

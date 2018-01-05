@@ -1058,9 +1058,14 @@ ul.dropdown ul li:hover > ul {
     text-decoration: underline;
 }
 
-#sidebar .details ul.recent-tickets {
+#sidebar ul.recent-tickets {
     margin-top: 5px;
     white-space: nowrap;
+}
+
+#sidebar ul.recent-tickets li {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #sidebar ul {
@@ -1138,8 +1143,13 @@ ul.dropdown ul li:hover > ul {
 }
 
 #sidebar .badge {
+    padding: 2px 7px;
+}
+
+#sidebar .badge.right {
     padding: 7px;
 }
+
 
 #sidebar .form-row label {
     display: block;
@@ -1537,6 +1547,10 @@ ul.tabs li .badge, ul.tabs a .badge {
     margin-top: 8px;
 }
 
+.field-option-container > .option .translatable-modal {
+    left: 22px;
+}
+
 .satisfaction {
     font-size: 2.5em;
     line-height: 1.25em;
@@ -1611,6 +1625,51 @@ ul.feedbackStats li .number {
 
 .role-options .row .item25 {
     margin-bottom: 5px;
+}
+
+/* Custom Fields */
+
+.customfield-options .form-row.option {
+    padding-bottom: 0;
+}
+
+.ui-sortable .fa-bars {
+    cursor: move;
+}
+
+.ui-sortable .ui-state-highlight {
+    background: #F9F9F9;
+    border: 1px dashed #DFE5E6;
+    height: 30px;
+    margin-top: 8px;
+}
+
+.customfield-options .ui-state-highlight {
+    height: 31px;
+    margin-top: 10px;
+    margin-left: 200px;
+}
+
+/* Actions */
+
+.rule td.rule-drag,
+.rule td.rule-delete {
+    padding: 0;
+}
+
+.form-container.is-sortable {
+    position: relative;
+    overflow: hidden;
+}
+
+.rule.ui-sortable-helper td {
+    border-bottom: 0;
+    visibility: hidden;
+}
+
+.rule.ui-sortable-helper td.rule-drag,
+.rule.ui-sortable-helper td.rule-action {
+    visibility: visible;
 }
 
 /* Ticket Redactor Plugins (Canned Responses / Self-Service) */
@@ -1832,7 +1891,6 @@ table.dataTable .truncated-text:before {
 .sweet-alert {
     border: 5px solid #888;
     font-family: inherit !important;
-    overflow-y: hidden !important;
     z-index: 1000 !important;
 }
 
@@ -1867,9 +1925,11 @@ table.dataTable .truncated-text:before {
 
 .sweet-alert .confirm {
     background: rgb(48, 133, 214);
+    margin-top: 5px;
 }
 .sweet-alert .cancel {
     background: rgb(170, 170, 170);
+    margin-top: 5px;
 }
 
 .sweet-alert .faded-cancel {
@@ -1880,6 +1940,27 @@ table.dataTable .truncated-text:before {
 .sweet-alert .faded-cancel:hover {
     opacity: 1.0;
     filter: alpha(opacity=100);
+}
+
+.sweet-alert button.confirm[disabled] {
+    margin-bottom: 4px !important;
+    margin-top: 5px !important;
+    overflow: hidden;
+}
+
+.delete-modal .warning-box {
+    background: #fcf9e5;
+    color: #9F6000;
+    font-size: 90%;
+    font-weight: bold;
+    margin: 7px -20px 15px;
+    padding: 6px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.delete-modal button.disabled {
+    display: none !important;
 }
 
 /* Overwrite Minicolors */

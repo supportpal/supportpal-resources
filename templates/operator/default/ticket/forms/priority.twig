@@ -40,10 +40,15 @@
                 {{ form_label('depts', Lang.get('ticket.department_applicable')) }}
                 <div class="input-container">
                     <div class="input-group">
-                    {% for department in departments %}
-                        {{ form_checkbox('depts[]', department['id'], in_array(department['id'], recordDepts, true)) }}
-                        {{ Purifier.clean(department['name']) }}<br />
-                    {% endfor %}
+                        <div class="description">
+                            <button class="as-link check_all">{{ Lang.get('general.check_all') }}</button>
+                            &nbsp;|&nbsp;
+                            <button class="as-link uncheck_all">{{ Lang.get('general.uncheck_all') }}</button>
+                        </div>
+                        {% for department in departments %}
+                            {{ form_checkbox('depts[]', department['id'], in_array(department['id'], recordDepts, true)) }}
+                            {{ Purifier.clean(department['name']) }}<br />
+                        {% endfor %}
                     </div>
                     <span class="description">{{ Lang.get('ticket.department_applicable_desc') }}</span>
                 </div>

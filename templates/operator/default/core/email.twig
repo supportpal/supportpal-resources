@@ -13,6 +13,9 @@
 
     <!-- jQuery -->
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
+    
+    <!-- Font awesome -->
+    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
 <body style="margin: 25px;">
@@ -110,6 +113,26 @@
             <div class="desk_content_padding" style="padding: 25px;">
                 {{ Purifier.clean(record.contents) }}
             </div>
+            
+            {% if record.attachments.count() > 0 %}
+                <div class="email_attachments">
+                    <h2>{{ Lang.choice('general.attachment', 2) }}</h2>
+
+                    <div class="desk_content_padding" style="padding: 25px;">
+                        {% for attachment in record.attachments %}
+                            <div class="email_attachment">
+                                <span style="background: #f5f5f5; display: inline-block; margin-top: 2px; padding: 5px 12px;">
+                                    {{ attachment.filename }}
+                                    &nbsp;<span style="color:#999;">({{ attachment.size }})</span> &nbsp;
+                                    <a class="delete-attachment" title="{{ Lang.get('general.delete') }}" data-url="{{ route('core.operator.emailqueueattachment.destroy', {'queueId': record.id, 'attachmentId': attachment.id }) }}">
+                                        <i class='fa fa-times'></i>
+                                    </a>
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
 
             {% if record.raw is not empty %}
             <a href="{{ route('core.operator.email.log.raw', [ record.id ]) }}" class="button">
@@ -125,6 +148,32 @@
         $(document).ready(function() {
             // Open links in a new window/tab
             $('.desk_content_padding a').attr('target', '_blank');
+            
+            // Delete attachment.
+            $(document).on('click', '.delete-attachment', function (e) {
+                e.preventDefault();
+                
+                var $this = $(this);
+
+                $.ajax({
+                    url: $(this).data('url'),
+                    type: 'DELETE',
+                    data: { '_token': '{{ csrf_token() }}' }
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $this.parent('span').parent().remove();
+
+                        // If we've deleted all the attachments, then hide the attachments section.
+                        if ($('.email_attachment').length === 0) {
+                            $('.email_attachments').remove();
+                        }
+                    } else {
+                        alert($('{{ Lang.get('messages.not_logged_exception')|raw }}').text());
+                    }
+                }).fail(function () {
+                    alert($('{{ Lang.get('messages.not_logged_exception')|raw }}').text());
+                });
+            });
         });
     </script>
 

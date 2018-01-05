@@ -24,6 +24,11 @@
     {{ form_label('opsettings[default_reply_options]', Lang.get('ticket.default_reply_options')) }}
     <div class="input-container">
         <div class="input-group">
+            <div class="description">
+                <button class="as-link check_all">{{ Lang.get('general.check_all') }}</button>
+                &nbsp;|&nbsp;
+                <button class="as-link uncheck_all">{{ Lang.get('general.uncheck_all') }}</button>
+            </div>
             <label>
                 {{ form_check(
                     'opsettings[default_reply_options][send_email_to_users]',

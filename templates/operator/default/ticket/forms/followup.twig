@@ -56,19 +56,20 @@
 
     <h2>{{ Lang.choice('general.action', 2) }}</h2>
 
-    <div class="form-container open first">
+    <div class="form-container open first is-sortable">
 
         {{ form_hidden('ticket_id', ticket.id, { 'disabled': 'disabled' }) }}
 
         <table class="rule-table settings">
             <thead>
                 <tr>
+                    <th width="14"></th>
                     <th>{{ Lang.choice('general.action', 1) }}</th>
                     <th>{{ Lang.get('general.value') }}</th>
-                    <th></th>
+                    <th width="14"></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="sortable">
                 {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with {'hide': true} %}
 
                 {% if ticket.followup|default is not empty %}

@@ -4,6 +4,9 @@
     {% if download %}
         <meta http-equiv="refresh" content="2;{{ download.direct_operator_url }}" />
     {% endif %}
+    
+    <meta name="notes-url-id" content="{{ notesUrlId }}" />
+    <meta name="messages-url-id" content="{{ messagesUrlId }}" />
 {% endblock %}
 
 {% block title %}
@@ -28,6 +31,43 @@
 
 {% block precontent %}
     {% include 'operator.' ~ template ~ '.ticket.also_viewing' %}
+
+    <div class="quick-actions">
+        <span class="button-group messages-button-group right hide480">
+            {{ form_button('<i class="fa fa-expand"></i> ' ~ Lang.get('general.expand_all'), { 'class': 'expand-messages hide' }) }}<!--
+            -->{{ form_button('<i class="fa fa-compress"></i> ' ~ Lang.get('general.collapse_all'), { 'class': 'collapse-messages hide' }) }}<!--
+            {% if can_update_ticket(auth_user(), ticket) %}
+                --><span class="split-ticket-button hide"><!--
+                    -->{{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ], 'style': 'display: inline-block;' }) }}<!--
+                    -->{{ form_button('<i class="fa fa-columns"></i> ' ~ Lang.get('ticket.split_selected_replies'), { 'disabled': 'disabled' }) }}<!--
+                    -->{{ form_close() }}<!--
+                --></span><!--
+            {% endif %}
+            --><span class="jump-to-reply hide">{{ form_button('<i class="fa fa-arrow-up"></i> ' ~ Lang.get('general.reply')) }}</span>
+        </span>
+
+        <span class="button-group">
+            {% if not in_array(auth_user().id, ticket.assigned.pluck('id').all()) %}
+            <button class="take-ticket"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
+            {% else %}
+                <!--
+            {% endif %}
+            --><button class="close-ticket {% if ticket.status_id == Config.get('settings.default_resolved_status') %}hide{% endif %}"><i class="fa fa-check"></i> {{ Lang.get('general.close') }}</button><!--
+            --><button class="lock-ticket {% if ticket.locked %}hide{% endif %}"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
+            --><button class="unlock-ticket {% if not ticket.locked %}hide{% endif %}"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
+        </span>
+        {% if (auth_user().hasPermission('delete.ticket')) %}
+            &nbsp;&nbsp;&nbsp;
+            <span class="button-group">
+                <button class="delete-ticket" type="button"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
+                {% if not ticket.internal %}
+                    --><button class="block-ticket" type="button"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
+                {% else %}
+                    -->
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block pageTitle %}
@@ -73,21 +113,6 @@
         </div>
     {% endif %}
 
-    <span class="button-group messages-button-group right hide720">
-        {{ form_button('<i class="fa fa-expand"></i> ' ~ Lang.get('general.expand_all'),
-            { 'class': 'expand-messages hide' }) }}<!--
-        -->{{ form_button('<i class="fa fa-compress"></i> ' ~ Lang.get('general.collapse_all'),
-            { 'class': 'collapse-messages hide' }) }}<!--
-        {% if can_update_ticket(auth_user(), ticket) %}
-            -->{{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ], 'style': 'display: inline-block;' }) }}
-                {{ form_button('<i class="fa fa-columns"></i> ' ~ Lang.get('ticket.split_selected_replies'),
-                    { 'disabled': 'disabled', 'class': 'split-ticket hide' }) }}
-            {{ form_close() }}
-        {% else %}
-            -->
-        {% endif %}
-    </span>
-
     <ul class="tabs">
         <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
         <li id="Log">{{ Lang.get('general.log') }}</li>
@@ -105,10 +130,6 @@
     </ul>
 
     <div id="tabMessages" class="tabContent">
-        <div class="jump-to-reply hide">
-            {{ form_button('<i class="fa fa-arrow-up"></i> ' ~ Lang.get('general.reply')) }}
-        </div>
-
         {% if Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 2
                 or (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 0
                     and Config.get('settings.ticket_reply_order') == 1)
@@ -136,7 +157,7 @@
 
             {% for message in messages %}
                 {% if message.type == 1 %}
-                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message } %}
+                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message, 'message_url_id': notesUrlId|replace({ '%ID%': message.id }) } %}
                 {% endif %}
             {% endfor %}
 
@@ -148,7 +169,7 @@
 
         {% for message in messages %}
             {% if (Config.get('settings.ticket_notes_position') != 1 or message.type != 1) %}
-                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message } %}
+                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message, 'message_url_id': messagesUrlId|replace({ '%ID%': message.id }) } %}
             {% endif %}
         {% endfor %}
 
@@ -202,7 +223,7 @@
 
 {% block scripts_footer %}
     <!-- Actions for FollowUp tab -->
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
     
     <!-- Datatables -->
@@ -234,14 +255,24 @@
     <script type="text/javascript">
         new FileUpload({
             $element: $('.message-form .fileupload'),
+            $container: $('.message-form'),
             blueimp: {
                 dropZone: $('.message-form').find('.attachment-dragover')
             }
         });
         new FileUpload({
             $element: $('.notes-form .fileupload'),
+            $container: $('.notes-form'),
             blueimp: {
                 dropZone: $('.notes-form').find('.attachment-dragover')
+            }
+        });
+        var forwardFileUpload = new FileUpload({
+            $element: $('.forward-form .fileupload'),
+            $container: $('.forward-form'),
+            blueimp: {
+                cumulativeMaxFileSize: {{ cumulative_attachment_limit }},
+                dropZone: $('.forward-form').find('.attachment-dragover')
             }
         });
     </script>
@@ -261,6 +292,8 @@
     <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/sanitize.js') }}"></script>
 
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    
     <script type="text/javascript">
         var ticketId = "{{ ticket.id }}",
             userId = "{{ ticket.user_id }}",
@@ -289,7 +322,8 @@
         {% endif %}
         var notesPosition = {{ Config.get('settings.ticket_notes_position') }};
 
-        var cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
+        var tagPermission = {% if auth_user().hasPermission('create.tickettag') %}1{% else %}0{% endif %},
+            cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
 
         // Initialise redactor.
         var redactor_config = {
@@ -313,7 +347,7 @@
         $(document).ready(function() {
 
             // Register redactor
-            $('#newMessage, #newNote').redactor($.extend($.Redactor.default_opts, redactor_config, {
+            $('#newMessage, #newNote, #newForward').redactor($.extend($.Redactor.default_opts, redactor_config, {
                 changeCallback: function() {
                     var id = this.$textarea.prop('id');
 
@@ -349,7 +383,8 @@
 
     <script src="{{ asset_rev('resources/assets/operator/js/ticket.js') }}"></script>
     <script type="text/javascript">
-        var ticket = new Ticket("");
+        var ticket = new Ticket(""),
+            timeTrackingEnabled = {{ timeTrackingEnabled }};
     </script>
 
     <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>

@@ -36,7 +36,7 @@
                 ({{ attachment.upload.size }})
                 &nbsp;
                 <i class="fa fa-times deleteAttachment"
-                   data-url="{{ route(route ~ ".destroy") }}"
+                   {% if deleteFromServer is not defined or deleteFromServer %}data-url="{{ route(route ~ ".destroy") }}"{% endif %}
                    data-hash="{{ attachment.upload_hash }}"></i>
             </li>
         {% endfor %}
@@ -49,7 +49,7 @@
                     <span class="filename ellipsis">{{ file }}</span>
                 </span>
                 <i class="fa fa-times deleteAttachment right"
-                    data-url="{{ route(route ~ ".destroy") }}"
+                   {% if deleteFromServer is not defined or deleteFromServer %}data-url="{{ route(route ~ ".destroy") }}"{% endif %}
                     data-hash="{{ hash }}"></i>
                 <div class="progress">
                     <div class="bar"></div>

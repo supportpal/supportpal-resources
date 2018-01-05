@@ -21,6 +21,9 @@ $(function() {
         $('.field-table').show();
         // Show remove condition button
         $('.field .remove-button').show();
+        
+        // Enable sortable.
+        initSortable($('.field:last').find('.sortable'));
     });
 
     /**
@@ -61,6 +64,9 @@ $(function() {
         addNewItem('.field .field-option-container > .option', $this.find('.field-option-container'));
 
         $this.find('.field-id').val(index);
+
+        // Refresh the sortable option.
+        $(this).find("#sortable").sortable("refresh");
     });
 
     /**
@@ -75,7 +81,26 @@ $(function() {
         if ($this.find('.field-option-container > .option').length === 1) {
             addNewItem('.field .field-option-container > .option', $this.find('.field-option-container'));
         }
+
+        // Refresh the sortable option.
+        $(this).find(".sortable").sortable("refresh");
     });
+
+    /**
+     * Create a new sortable instance.
+     *
+     * @param $selector
+     */
+    function initSortable($selector)
+    {
+        return $selector.sortable({
+            placeholder: "ui-state-highlight",
+            handle: ".handle"
+        });
+    }
+    
+    // Order existing options.
+    initSortable($('.sortable'));
 });
 
 /**

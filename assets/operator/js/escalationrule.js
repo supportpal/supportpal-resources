@@ -104,6 +104,9 @@ $(function() {
             .find(':input').prop('disabled', true);
 
         $('.rule:last .rule-action select').change();
+
+        // Refresh the sortable option.
+        $("#sortable").sortable("refresh");
     });
 
     /**
@@ -111,6 +114,21 @@ $(function() {
      */
     $(document.body).on('click', '.remove-button', function() {
         $(this).parents('tr').remove();
+
+        // Refresh the sortable option.
+        $("#sortable").sortable("refresh");
+    });
+
+    /**
+     * Order escalation rules.
+     */
+    $("#sortable").sortable({
+        placeholder: "ui-state-highlight",
+        handle: ".handle",
+        start: function(event, ui) {
+            // Undo styling set by jqueryUI
+            ui.helper.css("height", "auto").css("width", "auto");
+        }
     });
 
     function redactor(element) {

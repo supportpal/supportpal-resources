@@ -14,8 +14,9 @@
             </span>
             &nbsp;
             <span class="button-group">
-                <button class="merge-ticket" disabled="disabled"><i class="fa fa-link"></i> {{ Lang.get('ticket.merge') }}</button><!--
-                --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-unlink"></i> {{ Lang.get('ticket.unmerge') }}</button>
+                <button class="link-ticket" disabled="disabled"><i class="fa fa-link"></i> {{ Lang.get('general.link') }}</button><!--
+                --><button class="merge-ticket" disabled="disabled"><i class="fa fa-compress"></i> {{ Lang.get('ticket.merge') }}</button><!--
+                --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-expand"></i> {{ Lang.get('ticket.unmerge') }}</button>
             </span>
         {% endif %}
         {% if (auth_user().hasPermission('delete.ticket')) %}

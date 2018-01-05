@@ -1,8 +1,8 @@
 {% if overriddenViews|default is not empty and overriddenViews['message']|default is not empty %}
     {% include overriddenViews['message'] %}
 {% else %}
-    <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% endif %} clear collapsed"
-         data-id="{{ message.id }}">
+    <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% elseif message.type == 2 %}forward{% endif %} clear collapsed"
+         data-id="{{ message.id }}" id="{{ message_url_id }}" data-url="{{ route('ticket.operator.ticket.show', ticket.id) }}#{{ message_url_id }}">
 
     	<div class="header">
     		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
@@ -18,20 +18,59 @@
                     <button class="as-link quoteMessage" data-id="{{ message.id }}">
                         <i class="fa fa-quote-right"></i>
                     </button> &nbsp;&nbsp;
-                    <button class="as-link edit-button">
-                        <i class="fa fa-pencil"></i>
-                    </button> &nbsp;&nbsp;
-                    <button class="as-link delete-confirm" data-route="{{ route('ticket.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
-                        <i class="fa fa-times"></i>
-                    </button>
+                    <span class="message-actions dropdown-container">
+                        <div class="main-action edit-button">
+                            <span class="icon">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </span>
+                        </div><!--
+                        --><div class="button">
+                            <span class="icon">
+                            </span>
+                            <span class="pointer">
+                                <i class="fa fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="dropdown hide">
+                            <ul>
+                                <li>
+                                    <a class="link-message">{{ Lang.get('ticket.copy_link') }}</a>
+                                </li>
+                                <li>
+                                    <a class="forward-message">{{ Lang.get('ticket.forward_message') }}</a>
+                                </li>
+                                <li>
+                                    <a class="forward-from-here">{{ Lang.get('ticket.forward_from_here') }}</a>
+                                </li>
+                                <li>
+                                    <a class="link-ticket" data-href="{{ route('ticket.operator.ticket.createStep1', {'link_message': message.id}) }}">
+                                        {{ Lang.get('ticket.create_linked_ticket') }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="delete-confirm" data-route="{{ route('ticket.operator.message.destroy', [ message.id ]) }}" data-id="{{ message.id }}">
+                                        {{ Lang.get('ticket.delete_message') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
                 {% endif %}
             </span><br />
     		<span class="description">
-                {% if message.by == 0 %}
-                    {{ Lang.get('general.staff') }}
-                    {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
+                {% if message.type == 2 %}
+                    {{ Lang.get('ticket.forwarded_to') }} <strong>{{ message.getForwardRecipients() }}</strong>
+                    {% set emaillog = message.emaillog.where('type', 0).first() %}
+                    {% if emaillog is not empty %}
+                        &nbsp;(<a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>)
+                    {% endif %}
                 {% else %}
-                    {{ Lang.choice('user.user', 1) }}
+                    {% if message.by == 0 %}
+                        {{ Lang.get('general.staff') }}
+                        {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
+                    {% else %}
+                        {{ Lang.choice('user.user', 1) }}
+                    {% endif %}
                 {% endif %}
                 &nbsp;&middot;&nbsp; {{ timeago(message.created_at) }}
                 {% if editHistory.get(message.id) is not null %}
@@ -41,29 +80,30 @@
                     </strong>
                 {% endif %}
                 &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
-                {% if message.emaillog %}
+                {% set emaillog = message.emaillog.where('type', 1).first() %}
+                {% if emaillog is not empty %}
                     <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
                     <div class="webui-popover-content form-row recipients email-details">
                         <div>
                             <label>{{ Lang.get('ticket.to') }}</label>
-                            <div class="input-container">{{ message.emaillog.to|join(', ') }}</div>
+                            <div class="input-container">{{ emaillog.to|join(', ') }}</div>
                         </div>
-                        {% if not message.emaillog.cc is empty %}
+                        {% if not emaillog.cc is empty %}
                         <div>
                             <label>{{ Lang.get('ticket.cc') }}</label>
-                            <div class="input-container">{{ message.emaillog.cc|join(', ') }}</div>
+                            <div class="input-container">{{ emaillog.cc|join(', ') }}</div>
                         </div>
                         {% endif %}
                         <div>
                             <label>{{ Lang.get('ticket.from') }}</label>
                             <div class="input-container">
-                                {{ message.emaillog.from_name ~ ' <' ~ message.emaillog.from_address ~ '>' }}
+                                {{ emaillog.from_name ~ ' <' ~ emaillog.from_address ~ '>' }}
                             </div>
                         </div>
                         {% if auth_user().hasPermission('view.emaillog') %}
                             <div>
                                 <div class="input-container">
-                                    <a href="{{ route('core.operator.emaillog.show', [ message.emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>
+                                    <a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>
                                 </div>
                             </div>
                         {% endif %}

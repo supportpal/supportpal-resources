@@ -179,7 +179,7 @@ $(document).ready(function() {
         valueField: 'id',
         labelField: 'name',
         searchField: 'name',
-        create: true,
+        create: tagPermission ? true : false,
         createFilter: function(input) {
             return input.length <= 45;
         },

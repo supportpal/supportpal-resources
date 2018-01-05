@@ -55,37 +55,24 @@
             </div>
         </div>
 
-        {% if record.parent_id != 0 %}
-            <div class="form-row parentToggle hide">
-        {% else %}
-            <div class="form-row parentToggle">
-        {% endif %}
-            {{ form_label('public', Lang.get('general.public')) }}
-            <div class="input-container">
-                {{ form_check('public', 1, record|default is not empty and record.exists ? record.public : true, { 'class': 'toggle', 'id': 'toggle_public' }) }}
-                <label for="toggle_public"></label>
-                <br />
-                <span class="description">{{ Lang.get('ticket.department_public_desc') }}</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-container collapsed">
-        <div class="arrow">
-            <i class="fa fa-chevron-down"></i>
-        </div>
-        <div class="form-row" id="departmentSettings">
-            {{ form_label('dept_priorities', Lang.get('ticket.department_priority')) }}
-            <div class="input-container">
-                <div class="hide">
-                    <div class="input-group">
-                        {% for priority in priorities %}
-                            {{ form_checkbox('dept_priorities[]', priority.id, in_array(priority.id, recordPriorities, true)) }}
-                            {{ priority.name }}<br />
-                        {% endfor %}
-                    </div>
+        <div class="parentToggle {% if record.parent_id != 0 %}hide{% endif %}">
+            <div class="form-row">
+                {{ form_label('public', Lang.get('general.public')) }}
+                <div class="input-container">
+                    {{ form_check('public', 1, record|default is not empty and record.exists ? record.public : true, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                    <label for="toggle_public"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.department_public_desc') }}</span>
                 </div>
-                <span class="description">{{ Lang.get('ticket.department_priority_desc') }}</span>
+            </div>
+            
+            <div class="form-row">
+                {{ form_label('registered_only', Lang.get('ticket.registered_users')) }}
+                <div class="input-container">
+                    {{ form_check('registered_only', 1, null, { 'class': 'toggle', 'id': 'toggle_registered_only' }) }}
+                    <label for="toggle_registered_only"></label><br />
+                    <span class="description">{{ Lang.get('ticket.registered_users_desc') }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -107,19 +94,27 @@
         </div>
     </div>
 
-    <div class="form-container collapsed parentToggle {% if record.parent_id != 0 %} hide {% endif %}">
+    <div class="form-container collapsed">
         <div class="arrow">
             <i class="fa fa-chevron-down"></i>
         </div>
-        <div class="form-row">
-            {{ form_label('from_name', Lang.get('ticket.display_name')) }}
+        <div class="form-row" id="departmentSettings">
+            {{ form_label('dept_priorities', Lang.get('ticket.department_priority')) }}
             <div class="input-container">
                 <div class="hide">
-                    {{ form_text('from_name', null, {'style': 'width: 90%;'}) }}
+                    <div class="input-group">
+                        <div class="description">
+                            <button class="as-link check_all">{{ Lang.get('general.check_all') }}</button>
+                            &nbsp;|&nbsp;
+                            <button class="as-link uncheck_all">{{ Lang.get('general.uncheck_all') }}</button>
+                        </div>
+                        {% for priority in priorities %}
+                            {{ form_checkbox('dept_priorities[]', priority.id, in_array(priority.id, recordPriorities, true)) }}
+                            {{ priority.name }}<br />
+                        {% endfor %}
+                    </div>
                 </div>
-                <span class="description">{{ Lang.get('ticket.display_name_desc') }}
-                    <span class="hide">{{ Lang.get('ticket.display_name_options')|raw }}</span>
-                </span>
+                <span class="description">{{ Lang.get('ticket.department_priority_desc') }}</span>
             </div>
         </div>
     </div>
@@ -259,6 +254,23 @@
             </div>
         </div>
 
+        <div class="form-container collapsed parentToggle {% if record.parent_id != 0 %} hide {% endif %}">
+            <div class="arrow">
+                <i class="fa fa-chevron-down"></i>
+            </div>
+            <div class="form-row">
+                {{ form_label('from_name', Lang.get('ticket.display_name')) }}
+                <div class="input-container">
+                    <div class="hide">
+                        {{ form_text('from_name', null, {'style': 'width: 90%;'}) }}
+                    </div>
+                    <span class="description">{{ Lang.get('ticket.display_name_desc') }}
+                        <span class="hide">{{ Lang.get('ticket.display_name_options')|raw }}</span>
+                </span>
+                </div>
+            </div>
+        </div>
+
         <h2 id="department-templates">{{ Lang.choice('core.email_template', 2) }}</h2>
         <h2 class="description">{{ Lang.get('ticket.email_template_desc') }}</h2>
 
@@ -275,9 +287,15 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        {{ form_label('user_ticket_reply', Lang.get('ticket.new_ticket_reply')) }}
+                        {{ form_label('user_ticket_reply', Lang.get('ticket.new_operator_reply')) }}
                         <div class="input-container">
                             {{ form_select('user_ticket_reply', emailTemplates['user_ticket_reply'], record.email_templates['user_ticket_reply']) }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {{ form_label('user_user_ticket_reply', Lang.get('ticket.new_user_reply')) }}
+                        <div class="input-container">
+                            {{ form_select('user_user_ticket_reply', emailTemplates['user_user_ticket_reply'], record.email_templates['user_user_ticket_reply']) }}
                         </div>
                     </div>
                     <div class="form-row">
@@ -314,6 +332,12 @@
                         {{ form_label('user_ticket_disablereplies', Lang.get('ticket.email_replies_disabled')) }}
                         <div class="input-container">
                             {{ form_select('user_ticket_disablereplies', emailTemplates['user_ticket_disablereplies'], record.email_templates['user_ticket_disablereplies']) }}
+                        </div>
+                    </div>
+                    <div id="registeredOnlyTemplate" class="form-row" {% if not record.registered_only %}style="display: none"{% endif %}>
+                        {{ form_label('user_ticket_registeredonly', Lang.get('ticket.registered_users')) }}
+                        <div class="input-container">
+                            {{ form_select('user_ticket_registeredonly', emailTemplates['user_ticket_registeredonly'], record.email_templates['user_ticket_registeredonly']) }}
                         </div>
                     </div>
                 </div>

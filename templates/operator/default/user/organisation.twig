@@ -22,22 +22,12 @@
 	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('user.organisation', 1)}) }}
 	    </a>
 	    &nbsp;&nbsp;
-        <a class="filter-results">
-            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        <a class="toggle-filtering">
+            <i class="fa fa-filter"></i>&nbsp;
+            {{ Lang.get('general.filter_results') }}
         </a>
 
-        <div class="filters hide">
-            <div>
-                <label>{{ Lang.get('general.name') }}:</label>
-                <div id="filter_name"></div>
-            </div>
-            {% if brand_count() > 1 %}
-            <div>
-                <label>{{ Lang.choice('core.brand', 1) }}:</label>
-                <div id="filter_brand"></div>
-            </div>
-            {% endif %}
-        </div>
+        {% include 'operator.' ~ template ~ '.ticket.forms.gridfiltering' %}
 	</div>
 
 	{{ table.render()|raw }}
@@ -54,19 +44,26 @@
 	<link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 	<script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-	<!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/filtering.css') }}">
+
     <script type="text/javascript">
         $(document).ready(function() {
-            /**
-             * Initialise the filters
-             */
-            oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {% if brand_count() > 1 %}
-                    {column_number : 1, filter_container_id: "filter_brand"}
-                {% endif %}
-            ]);
+            // Filtering
+            $('.update-filtering').click(function() {
+                $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
+                    // Add conditions to parameters
+                    var conditions = $(".conditiongroup").serializeArray();
+                    $.each(conditions, function(index, value) {
+                        data[value.name] = value.value;
+                    });
+                }).dataTable().api().ajax.reload();
+            });
         });
     </script>
 {% endblock %}

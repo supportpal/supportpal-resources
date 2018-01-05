@@ -185,6 +185,10 @@
                 </td>
             </tr>
         </table>
+        <br />
+        <div class="linked-tickets-list">
+            {% include 'operator.' ~ template ~ '.ticket.linked' %}
+        </div>
     </div>
     {% if extendedViews['sidebar-ticket'] is not empty %}
         {% for view in extendedViews['sidebar-ticket'] %}
@@ -245,7 +249,7 @@
                     <br />
                     <i class="fa fa-sticky-note"></i> &nbsp; <strong>{{ Lang.choice('general.note', 2) }}</strong>
                     <br />
-                    <div class="text-shorten">{{ ticket.user.notes|nl2br }}</div>
+                    <div class="text-shorten">{{ Purifier.clean(ticket.user.notes) }}</div>
                 {% endif %}
 
                 {% if userTickets.count() %}
@@ -259,7 +263,7 @@
                         <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
                             title="{{ userTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}" target="_blank">
-                            {{ str_limit(userTicket.subject, 28, '...') }}
+                            {{ userTicket.subject }}
                         </a>
                         <div class="description">
                             {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
@@ -280,7 +284,7 @@
                         <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
                             title="{{ organisationTicket.status.name }}"></span> &nbsp;
                         <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}" target="_blank">
-                            {{ str_limit(organisationTicket.subject, 28, '...') }}
+                            {{ organisationTicket.subject }}
                         </a>
                         <div class="description">
                             {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
@@ -299,7 +303,7 @@
                                 <span class="statusIcon" style="background: {{ otherBrandTicket.status.colour }};"
                                     title="{{ otherBrandTicket.status.name }}"></span> &nbsp;
                                 <a href="{{ route('ticket.operator.ticket.show', [ otherBrandTicket.id ]) }}" target="_blank">
-                                    {{ str_limit(otherBrandTicket.subject, 28, '...') }}
+                                    {{ otherBrandTicket.subject }}
                                 </a>
                                 <div class="description">
                                     {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}

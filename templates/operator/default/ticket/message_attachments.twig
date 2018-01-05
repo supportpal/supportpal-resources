@@ -12,6 +12,8 @@
                 &nbsp;
                 <i class="fa fa-times deleteAttachment"
                      data-url="{{ route('ticket.operator.attachment.destroy') }}"
+                     data-attachment-id="{{ attachment.id }}"
+                     data-size="{{ attachment.upload.getOriginal('size') }}"
                      data-hash="{{ attachment.upload_hash }}"></i>
             </li>
             {% endfor %}

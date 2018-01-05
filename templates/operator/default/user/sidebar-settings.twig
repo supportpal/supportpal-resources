@@ -39,13 +39,13 @@
 
         {% if auth_user().hasPermission('view.organisationcustomfield') %}
             <li {% if route starts with 'user.operator.organisationcustomfield' %}class="current"{% endif %}>
-                <a href="{{ route('user.operator.organisationcustomfield') }}">{{ Lang.choice("user.organisation_customfield", 2) }}</a>
+                <a href="{{ route('user.operator.organisationcustomfield.index') }}">{{ Lang.choice("user.organisation_customfield", 2) }}</a>
             </li>
         {% endif %}
 
         {% if auth_user().hasPermission('view.usercustomfield') %}
             <li {% if route starts with 'user.operator.customfield' %}class="current"{% endif %}>
-                <a href="{{ route('user.operator.customfield') }}">{{ Lang.choice("user.customfield", 2) }}</a>
+                <a href="{{ route('user.operator.customfield.index') }}">{{ Lang.choice("user.customfield", 2) }}</a>
             </li>
         {% endif %}
 

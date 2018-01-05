@@ -191,6 +191,7 @@
     <!-- Attachments JS -->
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         $('.article:not(:first)').each(function (index) {
             new FileUpload({
@@ -209,6 +210,9 @@
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
+    <script type="text/javascript">
+        var tagPermission = {% if auth_user().hasPermission('create.selfservicetag') %}1{% else %}0{% endif %};
+    </script>
     <script src="{{ asset_rev('resources/assets/operator/js/article.js') }}"></script>
     
     <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
@@ -220,7 +224,7 @@
         var opts = {
             plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
         };
-        
+
         // Custom attribute mapper for multidimensionaldata.js
         attributeMapper = function(elem, value, attribute) {
             var attr = elem.attr(attribute);

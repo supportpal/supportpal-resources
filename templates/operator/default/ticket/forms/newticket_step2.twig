@@ -15,6 +15,18 @@
             {{ form_hidden('user', user.id) }}
             {{ form_hidden('internal', internal) }}
             {{ form_hidden('brand', brand.id) }}
+            {% if link_message is not empty %}
+                <input type="hidden" name="link_message" value="{{ link_message }}" />
+            {% endif %}
+            
+            {% if linked_ticket is not empty %}
+                <div class="form-row">
+                    {{ form_label('linked_ticket', Lang.get('ticket.linked_tickets')) }}
+                    <div class="input-container">
+                        <a href="{{ linked_ticket.operator_url }}" target="_blank">#{{ linked_ticket.number }}</a>
+                    </div>
+                </div>
+            {% endif %}
 
             {% if brand_count() > 1 %}
                 <div class="form-row">
@@ -131,7 +143,8 @@
                     {% include 'operator.' ~ template ~ '.core.forms.attachments' with {
                             'route': 'ticket.operator.attachment',
                             'downloadRoute': 'ticket.operator.attachment.download',
-                            'attachments': []
+                            'attachments': [],
+                            'deleteFromServer': link_message|default is not empty ? false : true
                         }
                     %}
 
@@ -175,6 +188,9 @@
     <script type="text/javascript">
         // Routes
         var embedImageRoute = laroute.route('core.embed.image');
+        
+        // Tag permissions (for newticket.js).
+        var tagPermission = {% if auth_user().hasPermission('create.tickettag') %}1{% else %}0{% endif %};
 
         // Global variables for redactor plugins
         var ticketId = null,
@@ -210,6 +226,7 @@
     <!-- Attachments JS -->
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         new FileUpload();
     </script>
@@ -220,6 +237,7 @@
     <script type="text/javascript">
         // Initialise redactor.
         var cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
+
         var redactor_config = {
             plugins: [
                 'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'cannedResponses',

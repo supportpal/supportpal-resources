@@ -1,4 +1,7 @@
 <div class="form-row option {% if hide|default is not empty %}hide{% endif %}">
+    <label>
+        <i class="fa fa-bars fa-lg handle" aria-hidden="true"></i>
+    </label>
     <div class="input-container translatable small-translatable">
         {{ form_hidden('options[' ~ (key is defined ? key : '') ~ '][id]', option is defined ? option.id : null) }}
         {{ form_translatable_text(option, 'value', 'options[' ~ (key is defined ? key : '') ~ '][value]') }}

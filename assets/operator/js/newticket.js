@@ -136,7 +136,7 @@ $(document).ready(function() {
         $('input[name="internal"]:checked, input[name="user_type"]:checked').change();
 
         // If the brand already has a value, fetch the relevant departments. Usually happens on going back from step 2.
-        if ($brand.length && $brand[0].selectize.getValue() !== '') {
+        if ($brand.length && $brand[0].selectize.getValue() !== '' && $department[0].selectize.getValue() === '') {
             $brand[0].selectize.setValue($brand[0].selectize.getValue())
         }
     } else {
@@ -151,7 +151,7 @@ $(document).ready(function() {
             valueField: 'name',
             labelField: 'name',
             searchField: 'name',
-            create: true,
+            create: tagPermission ? true : false,
             createFilter: function(input) {
                 return input.length <= 45;
             },

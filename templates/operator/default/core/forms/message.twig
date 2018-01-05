@@ -25,8 +25,7 @@
                     </span>
                 {% endif %}
 
-                <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24'
-                     alt='Operator' class='avatar left' />
+                <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24' alt='{{ Lang.choice('user.operator', 1) }}' class='avatar left' />
                 <span class="name {% if message.user_id == auth_user().id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
                 <span class="description">{{ timeago(message.created_at) }}</span>
             </div>
@@ -39,7 +38,7 @@
 
     <h2>{{ Lang.get('general.reply') }}</h2>
 
-    {{ form_open({ 'method': 'PUT', 'route': [ 'core.operator.message.update', conversation_id ] }) }}
+    {{ form_open({ 'method': 'PUT', 'route': [ 'core.operator.message.update', conversation_id ], 'class': 'validate' }) }}
         {{ form_hidden('conversation_id', conversation_id) }}
 
         {{ form_redactor('message', null, { 'size': '50x3' }) }}
@@ -52,6 +51,10 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+    
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- Sweetalert -->
@@ -70,6 +73,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
             $('textarea').redactor($.extend($.Redactor.default_opts, {
@@ -87,18 +92,10 @@
                 var messageId = $(this).data('id');
 
                 // Show the alert
-                swal({
-                    title: Lang.get('messages.are_you_sure'),
-                    text: Lang.get('messages.warn_delete'),
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#e74c3c",
-                    confirmButtonText: Lang.get('messages.yes_im_sure'),
-                    closeOnConfirm: false
-                }, function(isConfirm) {
+                swal(deleteAlert.getDefaultOpts('{{ Lang.choice('general.message', 1) }}'), function(isConfirm) {
                     if (isConfirm) {
                         // Disable submit button
-                        swal.disableButtons();
+                        deleteAlert.disableButtons();
                         // Delete record and reload table if successful
                         $.ajax({
                             url: deleteRoute,

@@ -1,30 +1,6 @@
 {% if not ticket.channel.enabled %}
     <div class="fail box">{{ Lang.get('ticket.channel_deactivated') }}</div>
 {% else %}
-    <div class="quick-actions right">
-        <span class="button-group">
-            {% if not in_array(auth_user().id, ticket.assigned.pluck('id').all()) %}
-                <button class="take-ticket"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
-            {% else %}
-                <!--
-            {% endif %} 
-            --><button class="close-ticket {% if ticket.status_id == Config.get('settings.default_resolved_status') %}hide{% endif %}"><i class="fa fa-check"></i> {{ Lang.get('general.close') }}</button><!--
-            --><button class="lock-ticket {% if ticket.locked %}hide{% endif %}"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
-            --><button class="unlock-ticket {% if not ticket.locked %}hide{% endif %}"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
-        </span>
-        {% if (auth_user().hasPermission('delete.ticket')) %}
-            &nbsp;&nbsp;&nbsp;
-            <span class="button-group">
-                <button class="delete-ticket" type="button"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
-                {% if not ticket.internal %}
-                    --><button class="block-ticket" type="button"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
-                {% else %}
-                    -->
-                {% endif %}
-            </span>
-        {% endif %}
-    </div>
-
     <div class="reply-type">
         <div class="option active" data-type="0">
             <i class="fa fa-reply"></i> &nbsp; {{ Lang.get('ticket.ticket_reply') }}
@@ -32,6 +8,10 @@
         &nbsp;
         <div class="option" data-type="1">
             <i class="fa fa-sticky-note"></i> &nbsp; {{ Lang.get('ticket.ticket_note') }}
+        </div>
+        &nbsp;
+        <div class="option {% if draft_forward is empty %}fresh{% endif %}" data-type="2">
+            <i class="fa fa-mail-forward"></i> &nbsp; {{ Lang.get('ticket.forward') }}
         </div>
     </div>
 
@@ -49,7 +29,7 @@
             {% if ticket.department_email_id is not empty %}
                 <div class="form-row form-full recipients {% if not ticket.internal and (organisationEmails is not empty or ticket.cc is not empty) %}with-cc{% endif %}">
                     <div>
-                        <div class="reply-all {% if ticket.internal or (organisationEmails is empty and ticket.cc is empty) %}hide{% endif %}">
+                        <div class="reply-all dropdown-container {% if ticket.internal or (organisationEmails is empty and ticket.cc is empty) %}hide{% endif %}">
                             <div class="button">
                                 <span class="icon">
                                     <i class="fa fa-reply-all" aria-hidden="true"></i>
@@ -106,7 +86,7 @@
 
             <div class="form-row">
                 {% if draft|default is not empty %}
-                    {{ form_redactor('text', draft, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
+                    {{ form_redactor('text', draft.text, { "class": "textarea", "size": "50x3", "id": "newMessage" }) }}
                 {% else %}
                     {{ form_redactor('text',
                         signature is not empty ? '<br /><br />' ~ signature : null,
@@ -114,10 +94,10 @@
                     }}
                 {% endif %}
 
-                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'note': false } %}
+                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket } %}
             </div>
 
-            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'note': false } %}
+            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'submit_name': Lang.get('ticket.post_reply') } %}
         </div>
     </form>
 
@@ -134,15 +114,104 @@
                 {{
                     form_redactor(
                         'text',
-                        draft_note|default is not empty ? draft_note : null,
+                        draft_note|default is not empty ? draft_note.text : null,
                         { "class": "textarea", "size": "50x3", "id": "newNote" }
                     )
                 }}
 
-                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'note': true } %}
+                {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'allow_attachments': true } %}
             </div>
 
-            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'draft': draft_note, 'note': true } %}
+            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'draft': draft_note, 'allow_attachments': true, 'submit_name': Lang.get('ticket.post_note') } %}
+        </div>
+    </form>
+    
+    <form class="forward-form validate" style="display: none">
+        {{ form_hidden('reply_type', 2) }}
+
+        {% include 'operator.' ~ template ~ '.ticket.forms.message_reply_options' with { 'forward': true } %}
+
+        <div class="reply-form">
+            {{ form_hidden('ticket_id', ticketId) }}
+            {{ form_hidden('reply_all', 1) }}
+
+            <div class="form-row form-full recipients">
+                <div>
+                    {{ form_label('from_address', Lang.get('ticket.from')) }}
+                    <div class="input-container">
+                        {{ form_select('from_address', fromEmails|merge({'me': auth_user().formatted_name ~ ' <' ~ auth_user().email ~ '>'}),
+                            draft_forward is not empty ? draft_forward.extra.from_address : ticket.department_email_id)
+                        }}
+                    </div>
+                </div>
+                <div>
+                    {{ form_label('to_address[]', Lang.get('ticket.to')) }}
+                    <div class="input-container">
+                        {% if draft_forward is empty or draft_forward.extra.bcc_address is empty %}
+                            <a class="add-bcc">{{ Lang.get('ticket.add_bcc') }}</a>
+                        {% endif %}
+                        {% if draft_forward is empty or draft_forward.extra.cc_address is empty %}
+                            <a class="add-cc">{{ Lang.get('ticket.add_cc') }}</a>
+                        {% endif %}
+                        <select name="to_address[]" multiple="multiple">
+                            {% if draft_forward is not empty %}
+                                {% for address in draft_forward.extra.to_address %}
+                                    <option value="{{ address }}" selected="selected">{{ address }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="cc-emails {% if draft_forward is empty or draft_forward.extra.cc_address is empty %}hide{% endif %}">
+                    {{ form_label('cc_address[]', Lang.get('ticket.cc')) }}
+                    <div class="input-container">
+                        <select name="cc_address[]" multiple="multiple">
+                            {% if draft_forward is not empty %}
+                                {% for address in draft_forward.extra.cc_address %}
+                                    <option value="{{ address }}" selected="selected">{{ address }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="bcc-emails {% if draft_forward is empty or draft_forward.extra.bcc_address is empty %}hide{% endif %}">
+                    {{ form_label('bcc_address[]', Lang.get('ticket.bcc')) }}
+                    <div class="input-container">
+                        <select name="bcc_address[]" multiple="multiple">
+                            {% if draft_forward is not empty %}
+                                {% for address in draft_forward.extra.bcc_address %}
+                                    <option value="{{ address }}" selected="selected">{{ address }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    {{ form_label('subject', Lang.get('ticket.subject')) }}
+                    <div class="input-container">
+                        {{ form_text('subject', draft_forward is not empty ? draft_forward.extra.subject : 'FW: ' ~ ticket.subject) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{
+                    form_redactor(
+                        'text',
+                        draft_forward is not empty ? draft_forward.text : null,
+                        { "class": "textarea", "size": "50x3", "id": "newForward" }
+                    )
+                }}
+
+                {% if cumulative_attachment_limit != 0 %}
+                    {% set allow_attachments = true %}
+                    {% include 'operator.' ~ template ~ '.ticket.forms.message_attachments' with { 'ticket': ticket, 'allow_attachments': true } %}
+                {% else %}
+                    {% set allow_attachments = false %}
+                {% endif %}
+            </div>
+
+            {% include 'operator.' ~ template ~ '.ticket.forms.message_submit' with { 'draft': draft_forward, 'allow_attachments': allow_attachments, 'submit_name': Lang.get('ticket.forward') } %}
         </div>
     </form>
 {% endif %}

@@ -50,8 +50,8 @@
                         {{ Lang.choice('user.user', 1) }}
                     {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
                     &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
-                    {% if message.emaillog %}
-                        <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.id ]) }}" class="show-original description">
+                    {% if message.emaillog.count() %}
+                        <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.first().id ]) }}" class="show-original description">
                             ({{ Lang.get('core.show_original') }})
                         </a>
                     {% endif %}

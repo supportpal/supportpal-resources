@@ -1,7 +1,9 @@
 <div class="reply-box">
     <div class="option_group">
         <div class="option_header">
-            {% if note %}
+            {% if forward %}
+                {{ Lang.get('ticket.forward_options') }}
+            {% elseif note %}
                 {{ Lang.get('ticket.note_options') }}
             {% else %}
                 {{ Lang.get('ticket.reply_options') }}
@@ -11,13 +13,13 @@
             </div>
         </div>
         <div class="option_content hide960">
-            {% if not note and extendedViews['reply_options']|default is not empty %}
+            {% if not forward and not note and extendedViews['reply_options']|default is not empty %}
                 {% for view in extendedViews['reply_options'] %}
                     {% include view %}
                 {% endfor %}
             {% endif %}
 
-            {% if not note and ticket.department_email_id is not empty
+            {% if not forward and not note and ticket.department_email_id is not empty
                 and toEmails is not empty and (not ticket.internal or ticket.user_id != auth_user().id)
             %}
                 <div class="send-user-email option">
@@ -28,6 +30,7 @@
                     </label>
                 </div>
             {% endif %}
+            {% if not forward %}
             <div class="send-operators-email option">
                 <label {% if ticket.department.getOperatorEmailTemplate('operator_ticket_reply') == -1 %}title="{{ Lang.get('ticket.department_template_disabled') }}"{% endif %}>
                     {{ form_check('send_email_to_operators', 1, ticket.internal and ticket.user_id == auth_user().id ? true :
@@ -36,6 +39,7 @@
                     {{ Lang.get('ticket.send_email_to_operators') }}
                 </label>
             </div>
+            {% endif %}
             <div class="option">
                 <label>
                     {{ form_check('back_to_grid', 1, note ? null : operator.default_reply_options['back_to_grid']) }}
@@ -48,8 +52,7 @@
                     {{ Lang.get('ticket.take_ownership') }}
                 </label>
             </div>
-            {% if ticket.sla_plan_id is not empty and ticket.due_time is not empty
-                and 'now'|date('U') < ticket.due_time %}
+            {% if ticket.sla_plan_id is not empty and ticket.due_time is not empty and 'now'|date('U') < ticket.due_time %}
                 <div class="option">
                     <label>
                         {{ form_check('pause_duetime', 1, note ? null : operator.default_reply_options['pause_duetime']) }}
@@ -57,6 +60,7 @@
                     </label>
                 </div>
             {% endif %}
+            {% if not forward %}
             <div class="option">
                 <label>
                     {{ form_check('add_canned', 1) }}
@@ -71,6 +75,7 @@
                     </label>
                 </div>
             </div>
+            {% endif %}
             <div class="option">
                 <label>
                     {{ Lang.get('ticket.set_status') }}:

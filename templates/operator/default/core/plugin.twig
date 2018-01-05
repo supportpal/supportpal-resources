@@ -55,8 +55,8 @@
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_plugin", filter_type: "text"},
-                {column_number : 1, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text"}
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_plugin", filter_type: "text", filter_delay: 500},
+                {column_number : 1, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
             ]);
 
             $(document.body).on('click', '.uninstall-plugin', function() {

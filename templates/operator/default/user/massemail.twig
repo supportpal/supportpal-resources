@@ -98,7 +98,7 @@
                 <div class="input-container">
                     <div>
                         {{ form_redactor_mf('contents') }}
-                        {% if max_file_size != 0 %}
+                        {% if cumulative_attachment_limit != 0 %}
                         <ul class="attached-files">
                             <li class="hide">
                                 <i class="fa fa-file"></i>
@@ -180,10 +180,11 @@
     <!-- Attachments -->
     <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         new FileUpload({
             blueimp: {
-                cumulativeMaxFileSize: FileUpload.MAX_FILE_SIZE
+                cumulativeMaxFileSize: {{ cumulative_attachment_limit }}
             }
         });
     </script>

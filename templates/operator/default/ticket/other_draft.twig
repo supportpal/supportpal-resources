@@ -6,7 +6,8 @@
                 'name': otherDraft.user.formatted_name|e,
                 'time': timeago(otherDraft.created_at),
                 'type': otherDraft.type == 0 ? mb_strtolower(Lang.get('general.reply'), 'UTF-8') :
-                    mb_strtolower(Lang.choice('general.note', 1), 'UTF-8')
+                    otherDraft.type == 1 ? mb_strtolower(Lang.choice('general.note', 1), 'UTF-8') :
+                        mb_strtolower(Lang.get('ticket.forward'), 'UTF-8')
             })|raw }}
         </div>
         <div class='draft-message box'>

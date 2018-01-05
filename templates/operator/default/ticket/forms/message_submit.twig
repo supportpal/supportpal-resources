@@ -1,8 +1,9 @@
 <div style="margin-top: 15px;">
-    {{ form_submit(note ? Lang.get('ticket.post_note') : Lang.get('ticket.post_reply'), { 'class': 'right' }) }}
+    {{ form_submit(submit_name, { 'class': 'right' }) }}
 
     <span class="reply-buttons">
-        {% if ticket.department_email_id is not empty or note %}
+        {# Don't want to show the add attachment button if it's forwarding form and not allowed attachments #}
+        {% if (ticket.department_email_id is not empty and submit_name != Lang.get('ticket.forward')) or allow_attachments %}
             <label class="file-input button">
                 <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
 
@@ -20,5 +21,9 @@
         &nbsp;&nbsp;
     </span>
 
-    <span class="draft-success description hide"></span>
+    <span class="draft-success description {% if draft|default is empty %}hide{% endif %}">
+        {% if draft|default is not empty %}
+            {{ Lang.get('ticket.draft_saved', {'time': formatDate(draft.updated_at)}) }}
+        {% endif %}
+    </span>
 </div>

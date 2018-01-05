@@ -156,18 +156,19 @@
         <h2>{{ Lang.get('ticket.escalation_rule') }}</h2>
         <h2 class="description">{{ Lang.get('ticket.escalation_rule_desc') }}</h2>
 
-        <div class="form-container open first">
+        <div class="form-container open first is-sortable">
 
             <table class="rule-table settings">
                 <thead>
                     <tr>
+                        <th width="14"></th>
                         <th>{{ Lang.choice('general.action', 1) }}</th>
                         <th>{{ Lang.get('general.when') }}</th>
                         <th>{{ Lang.get('general.value') }}</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="sortable">
                     {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with { 'hide': true, 'when': true } %}
 
                     {% if oldRules|default is not empty and oldRules is not empty %}
@@ -230,7 +231,7 @@
         var organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}";
     </script>
 
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/slaplan.js') }}"></script>
 

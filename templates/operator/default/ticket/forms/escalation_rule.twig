@@ -1,4 +1,8 @@
 <tr class="rule {% if hide|default is not empty %} hide {% endif %}">
+    <td class="rule-drag">
+        <i class="fa fa-bars fa-lg handle" aria-hidden="true"></i>
+    </td>
+
     <td class="rule-action">
         {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][id]', rule|default is not empty ? rule.id : '') }}
         {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][action]', actions, rule|default is not empty ? rule.action : null) }}
@@ -169,7 +173,8 @@
                 {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
                     array_column(ticketCustomFields.toArray(), 'name', 'id'),
                     rule|default is not empty and rule.action == 13 ? rule.value_id : null, {'class': 'value-id'})
-                }} &nbsp;
+                }}
+                <br />
                 {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule_customfields' with {'customfields': ticketCustomFields} %}
             {% endif %}
         </div>
@@ -258,7 +263,21 @@
                 }}
             {% endif %}
         </div>
+
+        <div class="action hide" data-action="26">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 26 ? rule.value_text : null)
+            }}
+        </div>
+
+        <div class="action hide" data-action="27">
+            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                rule|default is not empty and rule.action == 27 ? rule.value_text : null)
+            }}<br />
+            <span class="description">{{ Lang.get('actions.remove_cc_desc') }}</span>
+        </div>
     </td>
+
     <td>
         <i class="fa fa-times right remove-button"></i>
     </td>

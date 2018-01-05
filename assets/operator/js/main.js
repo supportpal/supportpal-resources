@@ -51,6 +51,18 @@ $(document).ready(function () {
             e.preventDefault();
         }
     });
+    
+    // Check / Uncheck all checkboxes in an input group.
+    $(document).on('click', 'button.check_all', function (e) {
+        e.preventDefault();
+
+        $(this).parents('.input-group').find('input[type="checkbox"]').prop('checked', true);
+    });
+    $(document).on('click', 'button.uncheck_all', function (e) {
+        e.preventDefault();
+
+        $(this).parents('.input-group').find('input[type="checkbox"]').prop('checked', false);
+    });
 
     // For opening/collapsing form containers
     $(document.body).on('click', '.form-container.open .arrow, .form-container.collapsed', function() {
@@ -62,7 +74,7 @@ $(document).ready(function () {
 
         $this.find('.arrow .fa').toggleClass('fa-chevron-down fa-chevron-up');
         $this.toggleClass('open collapsed');
-        $this.find('.hide').toggle();
+        $this.find('.hide').not('.translatable-modal').not('.translatable-modal .hide').toggle();
     });
 
     // Toggle show/hide of the filters area

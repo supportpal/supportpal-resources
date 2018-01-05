@@ -21,15 +21,16 @@
                 </div>
             </div>
 
-            {% if not is_english %}
             <div class="form-row">
                 {{ form_label('enabled', Lang.get('general.enabled')) }}
                 <div class="input-container">
                     {{ form_check('enabled', 1, record.enabled, { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
                     <label for="toggle_enabled"></label>
+                    {% if Config.get('settings.default_frontend_language') == record.code or Config.get('settings.default_operator_language') == record.code %}
+                        <div class="warning box bottombox">{{ Lang.get('core.disabling_default_language') }}</div>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
 
         </div>
 

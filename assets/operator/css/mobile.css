@@ -14,11 +14,6 @@ html {
 		width: 200px;
 	}
 
-	.quick-actions {
-		float: none;
-		margin: 25px 0;
-	}
-
 }
 
 /*
@@ -182,7 +177,7 @@ html {
 		width: 50px;
 	}
 
-	#sidebar.sidebar-close .ticket-update, #sidebar.sidebar-close .ticket-viewing {
+	#sidebar.sidebar-close .ticket-update {
 		position: fixed;
 	    z-index: 101;
 	    width: 100%;
@@ -348,6 +343,19 @@ html {
 		margin-left: 0;
 	}
 
+	.quick-actions button {
+		font-size: 0;
+		line-height: 35px;
+		padding-left: 10px;
+		padding-right: 10px;
+		text-align: center;
+		width: 36px;
+	}
+
+	.quick-actions button i {
+		margin: 0;
+	}
+
 }
 
 /*
@@ -366,7 +374,7 @@ html {
 	    width: auto;
 	}
 
-	.form-row .input-container {
+	.form-row .input-container, .customfield-options .ui-state-highlight {
 	    margin-left: 0;
 	}
 
@@ -454,19 +462,6 @@ html {
 		margin-bottom: 15px;
 	}
 
-	.quick-actions button {
-		font-size: 0;
-		line-height: 35px;
-		padding-left: 10px;
-		padding-right: 10px;
-		text-align: center;
-		width: 36px;
-	}
-
-	.quick-actions button i {
-		margin: 0;
-	}
-
 }
 
 /*
@@ -527,6 +522,10 @@ html {
  */
 
 @media (max-width: 480px) {
+
+	.hide480 {
+		display: none;
+	}
 
 	#sidebar.sidebar-close {
 		width: 31px;
@@ -635,16 +634,20 @@ html {
 	    top: 0;
 	}
 
-	.ticket-update, .ticket-viewing.box {
+	.ticket-update {
 		border-bottom: 0;
 		border-top: 1px solid #DFE5E6;
 		bottom: 0;
+		z-index: 11000;
 	}
 
-	.ticket-viewing:not([style*="display: none"]) + .desk_content_padding {
-		margin-bottom: 47px;
-		margin-top: 0;
+	.quick-actions {
+		position: static;
 	}
+
+    .ticket-viewing {
+        top: 0;
+    }
 
 }
 

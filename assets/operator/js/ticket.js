@@ -11,11 +11,12 @@ function Ticket(parameters)
     /**
      * Message drafts.
      *
-     * @type {{newMessage: null, newNote: null}}
+     * @type {{newMessage: null, newNote: null, newForward: null}}
      */
     var drafts = {
         'newMessage': null,
-        'newNote': null
+        'newNote': null,
+        'newForward': null
     };
 
     /**
@@ -54,17 +55,17 @@ function Ticket(parameters)
 
         // If more than one message, show split ticket button and checkboxes
         if ($('.message').length > 1) {
-            $('.split-ticket').show();
+            $('.split-ticket').fadeIn();
         }
 
-        // If we have one or more CC email, show the reply-all button, else hide it (if it's there)
-        if ($('.cc-emails').is(':visible')) {
+        // If we have one or more CC email in the reply form, show the reply-all button, else hide it (if it's there)
+        if ($('.message-form .cc-emails').is(':visible')) {
             if ($ccSelectize[0].selectize.getValue().length) {
-                $('.reply-form .recipients').addClass('with-cc');
-                $('.reply-form .recipients .reply-all').show();
+                $('.message-form .recipients').addClass('with-cc');
+                $('.message-form .recipients .reply-all').show();
             } else {
-                $('.reply-form .recipients').removeClass('with-cc');
-                $('.reply-form .recipients .reply-all').hide();
+                $('.message-form .recipients').removeClass('with-cc');
+                $('.message-form .recipients .reply-all').hide();
             }
         }
     };
@@ -169,6 +170,8 @@ function Ticket(parameters)
                 // Only add the signature back to the message reply box (not notes).
                 if ($form.find('input[name="reply_type"]').val() == '1') {
                     self.setNoteDraft(null);
+                } else if ($form.find('input[name="reply_type"]').val() == '2') {
+                    self.setForwardDraft(null);
                 } else {
                     $redactor.redactor('insert.set', '');
                     $redactor.redactor('insert.html', signature, false);
@@ -176,9 +179,9 @@ function Ticket(parameters)
                 }
             }
 
-            // If posting a reply to the user, update the status in the notes box.
+            // If posting a reply to the user, update the status in the notes and forwarding box.
             if ($form.find('input[name="reply_type"]').val() == '0') {
-                $('.notes-form').find('select[name="to_status"]').val(
+                $('.notes-form, .forward-form').find('select[name="to_status"]').val(
                     $('.message-form').find('select[name="to_status"]').val()
                 );
             }
@@ -272,7 +275,7 @@ function Ticket(parameters)
             );
             $messageContainer.addClass('loading');
 
-            $.get(laroute.route('ticket.operator.message.showJson', { id: $messageContainer.data('id') }))
+            return $.get(laroute.route('ticket.operator.message.showJson', { id: $messageContainer.data('id') }))
                 .success(function (ajax) {
                     // Load the message in, it should already be sanitized.
                     $text.children('.original')
@@ -310,6 +313,34 @@ function Ticket(parameters)
 
             // Run success callback if exists.
             typeof successCallback === 'function' && successCallback();
+        }
+    };
+
+    /**
+     * Scroll to a message in the view.
+     *
+     * @param id
+     */
+    this.scrollToMessage = function(id)
+    {
+        if (document.getElementById(id) !== null) {
+            var $message = $('#' + id);
+
+            // AJAX load the message into the view.
+            ticket.loadMessage($message);
+
+            // Toggle collapsed state.
+            if ($message.hasClass('collapsed')) {
+                $message.toggleClass('collapsible collapsed').find('.text').children('.original, .trimmed').toggle();
+            }
+
+            // Scroll to the right position, offset based on what is showing.
+            var position = $message.offset().top - $('.ticket-viewing:visible').outerHeight();
+            if ($(window).height() > 720) {
+                position = position - $('#header').outerHeight() - $('.quick-actions').outerHeight();
+            }
+
+            $('html, body').animate({scrollTop: position}, 1000);
         }
     };
 
@@ -494,6 +525,37 @@ function Ticket(parameters)
     }
 
     /**
+     * Determine whether the forward draft has changed.
+     *
+     * @param new_value
+     * @returns {boolean}
+     */
+    this.forwardDraftHasChanged = function (new_value)
+    {
+        return this.draftHasChanged('newForward', new_value);
+    };
+
+    /**
+     * Set a new forward draft.
+     *
+     * @param message
+     */
+    this.setForwardDraft = function(message)
+    {
+        drafts.newForward = message;
+    };
+
+    /**
+     * Get the current forward draft.
+     *
+     * @returns {string}
+     */
+    this.getForwardDraft = function()
+    {
+        return drafts.newForward;
+    }
+
+    /**
      * Get if the ticket log table has been loaded yet.
      *
      * @returns {boolean}
@@ -570,7 +632,7 @@ function Ticket(parameters)
         if ($quote.length === 0) {
             return;
         }
-        
+
         var content = false,
             $original = $message.children('.text').children('.original'),
             $parent = $quote;
@@ -581,7 +643,10 @@ function Ticket(parameters)
 
             // It needs to check if this container has any visible text in it (but not in invisible elements inside it)
             // https://stackoverflow.com/questions/1846177/how-do-i-get-just-the-visible-text-with-jquery-or-javascript
-            if ($parent.find('*:not(:has(*)):visible').text().trim().length) {
+            var visibleText = $parent.find('*:not(:has(*)):visible').text(),
+                textNodes = $parent.contents().filter(function () { return this.nodeType === 3; }).text();
+
+            if (visibleText.trim().length || textNodes.trim().length) {
                 content = true;
                 break;
             }
@@ -592,6 +657,123 @@ function Ticket(parameters)
             $quote.removeClass('supportpal_quote');
             $quote.prev('.expandable').remove();
         }
+    };
+
+    /**
+     * Populate redactor with the specified messages to forward.
+     *
+     * @param $messages
+     */
+    this.forward = function ($messages)
+    {
+        // Switch to Forward tab.
+        $('.reply-type .option[data-type="2"]').removeClass('fresh').show().click();
+
+        // Delete any attachments currently tied to the form.
+        var deferred = [];
+        $('.forward-form .attached-files li:not(.hide) .deleteAttachment').each(function (index, element) {
+            deferred.push(forwardFileUpload.deleteNewFile(element, true));
+        });
+        
+        // Load any messages that need to be AJAX loaded.
+        $messages.each(function (index, message) {
+            deferred.push(ticket.loadMessage($(message)));
+        });
+        
+        // Lock the interface and show a waiting spinner (this may take a while on a large ticket).
+        swal({
+            title: Lang.get('general.loading'),
+            allowOutsideClick: false
+        });
+        swal.disableButtons();
+
+        // Can't pass a literal array, so use apply.
+        $.when.apply($, deferred).then(function () {
+            // Grab the text of all prior messages (excluding notes).
+            var subject = $(document).find('.subject').html().trim(),
+                messages = [],
+                attachments = [],
+                failed_attachments = [];
+
+            $messages.each(function (index, message) {
+                var $message = $(message),
+                    message_attachments = [];
+
+                // Message has attachments.
+                $message.find('.attachments ul li').each(function (index, attachment) {
+                    var $attachment = $(attachment),
+                        size = $attachment.find('.deleteAttachment').data('size'),
+                        filename = $attachment.find('a').html().trim();
+
+                    // If we've gone above the cumulative file size, don't attach any more.
+                    forwardFileUpload.incrementTotalUploadedFileSize(size);
+                    if (forwardFileUpload.totalUploadedFileSize() > forwardFileUpload.cumulativeMaxFileSize) {
+                        forwardFileUpload.decrementTotalUploadedFileSize(size);
+                        failed_attachments.push(filename);
+                    } else {
+                        attachments.push({
+                            hash: $attachment.find('.deleteAttachment').data('hash'),
+                            filename: filename,
+                            size: size
+                        });
+
+                        message_attachments.push(filename);
+                    }
+                });
+
+                messages.push(
+                    '<strong>' + Lang.get('ticket.from') + ':</strong> ' + $message.find('.name').html().trim() + '<br />'
+                    + '<strong>' + Lang.get('customfield.date') + ':</strong> ' + $message.find('time').prop('title') + '<br />'
+                    + '<strong>' + Lang.get('ticket.subject') + ':</strong> ' + subject + '<br />'
+                    + (message_attachments.length > 0
+                    ? '<strong>' + Lang.choice('general.attachment', 2) + ':</strong> ' + message_attachments.join(', ') + '<br />'
+                    : '')
+                    + '<br />'
+                    + $message.find('.text .original').html().trim()
+                );
+            });
+
+            // Make forwarded message.
+            var message = signature
+                + '<br /><br />'
+                + '<div class="expandable"></div>'
+                + '<div class="supportpal_quote">'
+                + '<span>' + Lang.get('ticket.forwarded_message') + '</span><br />'
+                + messages.join('<br /><br />')
+                + '</div>';
+
+            $('#newForward').redactor('insert.set', '');
+            $('#newForward').redactor('insert.html', message, false);
+            $('#newForward').redactor('focus.setStart');
+
+            // Set attachments.
+            for (var i = 0; i < attachments.length; i++) {
+                var filename = attachments[i].filename,
+                    hash = attachments[i].hash,
+                    $item = forwardFileUpload.addFile(filename, attachments[i].size);
+
+                forwardFileUpload.registerFile($item, filename, hash);
+            }
+
+            // Show an alert of which attachments we failed to attach.
+            if (failed_attachments.length > 0) {
+                swal({
+                    title: Lang.get('messages.failed_attachments'),
+                    html: failed_attachments.join(', ') + '<br /><br />'
+                    + Lang.get('core.attachment_limit_reached', {size: forwardFileUpload.cumulativeMaxFileSize.fileSize()}),
+                    type: 'info'
+                });
+            } else {
+                // Close the please wait modal...
+                swal.closeModal();
+            }
+
+            // Update draft message variable so it doesn't save a draft automatically
+            // Redactor is a bit slow to update so have to delay it slightly
+            setTimeout(function() {
+                ticket.setForwardDraft($('.forward-form textarea:not(.CodeMirror textarea):eq(0)').redactor('code.get'));
+            }, 1000);
+        });
     }
 }
 
@@ -616,13 +798,36 @@ $(document).ready(function() {
         $(this).addClass('active');
 
         // Determine whether to show the notes or reply form.
-        var $form = $('.message-form');
-        if ($(this).data('type') == 1) {
-            $form = $('.notes-form');
+        var $form;
+        switch ($(this).data('type')) {
+            case 1:
+                $form = $('.notes-form');
+                break;
+
+            case 2:
+                $form = $('.forward-form');
+
+                // If it's not been used before, forward the whole ticket.
+                if ($(this).hasClass('fresh')) {
+                    // Choose right message depending on reply order.
+                    var $message;
+                    if (replyOrder == 'ASC') {
+                        $message = $('#tabMessages .message:not(.note, .forward):last');
+                    } else {
+                        $message = $('#tabMessages .message:not(.note, .forward):first');
+                    }
+
+                    $message.find('a.forward-from-here').click();
+                }
+
+                break;
+
+            default:
+                $form = $('.message-form:not(.edit)');
         }
 
         // Show the correct form.
-        $('.message-form, .notes-form').hide();
+        $('.message-form:not(.edit), .notes-form, .forward-form').hide();
         $form.show();
     });
 
@@ -658,6 +863,26 @@ $(document).ready(function() {
     // Process block button
     $('.block-ticket').click(function() {
         deleteTicket(true);
+    });
+
+    // Handle message actions button to show dropdown
+    $(document).on('click', '.message-actions .button', function(e) {
+        var $message = $(this).parents('.message');
+
+        // Don't collapse message if it's currently open
+        // However we need to stop the propagation so the dropdown doesn't close itself
+        if (! $message.hasClass('collapsible')) {
+            $message.click();
+        }
+        e.stopPropagation();
+
+        $(this).parent().find('.dropdown').toggle();
+    });
+
+    // Message actions
+    $(document).on('click', '.message-actions .dropdown li', function() {
+        // Hide dropdown
+        $(this).parents('.dropdown').hide();
     });
 
     // Toggle edit form
@@ -703,18 +928,10 @@ $(document).ready(function() {
         var messageId = $(this).data('id');
 
         // Show the alert
-        swal({
-            title: Lang.get('messages.are_you_sure'),
-            text: Lang.get('messages.warn_delete'),
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#e74c3c",
-            confirmButtonText: Lang.get('messages.yes_im_sure'),
-            closeOnConfirm: false
-        }, function(isConfirm) {
+        swal(deleteAlert.getDefaultOpts(Lang.choice('general.message', 1)), function(isConfirm) {
             if (isConfirm) {
                 // Disable submit button
-                swal.disableButtons();
+                deleteAlert.disableButtons();
                 // Delete record and reload table if successful
                 $.ajax({
                     url: deleteRoute,
@@ -753,6 +970,42 @@ $(document).ready(function() {
 
     });
 
+    $(document).on('click', '.link-ticket', function (event) {
+        // Don't collapse or expand message
+        event.stopPropagation();
+        event.preventDefault();
+
+        // Go to link.
+        window.location.href = $(this).data('href');
+    });
+
+    $(document).on('click', 'a.forward-message', function (event) {
+        // Don't collapse or expand message
+        event.stopPropagation();
+        event.preventDefault();
+
+        ticket.forward($(this).parents('.message'));
+    });
+
+    $(document).on('click', 'a.forward-from-here', function (event) {
+        // Don't collapse or expand message
+        event.stopPropagation();
+        event.preventDefault();
+
+        // Uncollapse messages first
+        $('.collapsed-messages').click();
+
+        // Fetch the list of messages from this one based on the reply order
+        var $messages;
+        if (replyOrder == 'ASC') {
+            $messages = $(this).parents('.message').prevUntil('#tabMessages', '.message:not(.note, .forward)').andSelf();
+        } else {
+            $messages = $(this).parents('.message').nextUntil('#tabMessages', '.message:not(.note, .forward)').andSelf();
+        }
+
+        ticket.forward($messages);
+    });
+
     /*
      * Handle updating the ticket side bar
      */
@@ -778,7 +1031,7 @@ $(document).ready(function() {
         }
 
         // Update the status in the notes box.
-        $('.notes-form').find('select[name="to_status"]').val($(this).val());
+        $('.notes-form, .forward-form').find('select[name="to_status"]').val($(this).val());
     });
 
     // Update SLA plan
@@ -864,6 +1117,32 @@ $(document).ready(function() {
         updateTicket(data);
     });
 
+    // Forward message.
+    $(document.body).on('submit', '.forward-form', function(event) {
+        event.preventDefault();
+
+        // Make sure we have at least one recipient to forward the message to.
+        if ($forwardToSelectize[0].selectize.getValue().length === 0
+            && $forwardCcSelectize[0].selectize.getValue().length === 0
+            && $forwardBccSelectize[0].selectize.getValue().length === 0
+        ) {
+            swal(Lang.get('messages.error'), Lang.get('ticket.at_least_one_recipient'), 'error');
+        } else {
+            ticket.createMessage($(this), $('#newForward'));
+        }
+    });
+
+    // Reset the forwarding form after posting a message.
+    $(document).on('supportpal.new_message:success', 'form.forward-form', function (event, $textarea) {
+        // Reset address boxes.
+        $forwardToSelectize[0].selectize.clear(true);
+        $forwardCcSelectize[0].selectize.clear(true);
+        $forwardBccSelectize[0].selectize.clear(true);
+
+        // Reset subject.
+        $(this).find('input[name="subject"]').val('FW: ' + $('<div/>').html($(document).find('.subject').html()).text().trim());
+    });
+
     // Update message
     $(document.body).on('submit', '.message-form, .notes-form', function(event) {
         event.preventDefault();
@@ -930,11 +1209,7 @@ $(document).ready(function() {
      */
     // If more than one message, show split ticket button and checkboxes
     if ($('.messages-header').nextAll('.message').length > 1) {
-        $('.split-ticket').show();
-    }
-
-    if (!$('input.split-ticket:visible').length) {
-        $('button.split-ticket').parent().hide();
+        $('input.split-ticket').show();
     }
 
     // Enable button if at least one checkbox ticked
@@ -945,16 +1220,17 @@ $(document).ready(function() {
         $('input.split-ticket[data-id="' + $(this).data('id') + '"]').prop('checked', $(this).prop('checked'));
 
         // Show button if at least one is ticked
-        $('button.split-ticket').parent().show();
         if ($('input.split-ticket:checked').length) {
-            $('button.split-ticket').prop('disabled', false);
+            $('.split-ticket-button').fadeIn();
+            $('.split-ticket-button button').prop('disabled', false);
         } else {
-            $('button.split-ticket').prop('disabled', true);
+            $('.split-ticket-button').fadeOut();
+            $('.split-ticket-button button').prop('disabled', true);
         }
     });
 
     // Split checked messages to a new ticket
-    $('button.split-ticket').click(function() {
+    $('.split-ticket-button button').click(function() {
         var selected = '';
         // Add checked fields to form
         $('input.split-ticket:checked').each(function() {
@@ -983,6 +1259,51 @@ $(document).ready(function() {
     });
 
     /*
+     * Scroll to message
+     */
+    var hash = window.location.hash.substring(1),
+        scrollToMessage = false;
+    if ((hash.indexOf($('meta[name="messages-url-id"]').prop('content').replace('%ID%', '')) !== -1
+        || hash.indexOf($('meta[name="notes-url-id"]').prop('content').replace('%ID%', '')) !== -1)
+        && document.getElementById(hash) !== null
+    ) {
+        // Remove the collapsed class if the URL wants to scroll to a specific message (/view/18#message-2).
+        scrollToMessage = true;
+
+        // Wait 1 seconds to start, due to page moving about
+        setTimeout(function() {
+            ticket.scrollToMessage(hash);
+        }, 1000);
+    }
+
+    $(document).on('click', '.link-message', function(event) {
+        var $message = $(this).parents('.message'),
+            id = $message.attr('id');
+
+        // Don't expand or collapse message, but close dropdown
+        event.stopPropagation();
+        $message.find('.message-actions .dropdown').hide();
+
+        // Update URL (and don't jump to top)
+        var scrollmem = $('html,body').scrollTop();
+        window.location.hash = id;
+        $('html, body').scrollTop(scrollmem);
+
+        // Scroll to message
+        ticket.scrollToMessage(id);
+
+        // Copy URL
+        var $temp = $("<input>");
+        $('body').append($temp);
+        $temp.val($message.data('url')).select();
+        document.execCommand('copy');
+        $temp.remove();
+    });
+    /*
+     * END Scroll to message
+     */
+
+    /*
      * Toggle long tickets (>5 messages)
      */
     var selector = replyOrder == 'ASC' ? ":last" : ":first";
@@ -993,10 +1314,10 @@ $(document).ready(function() {
         .toggleClass('collapsible collapsed')
         .find('.text')
         .children('.original, .trimmed').toggle();
-    
+
     // Remove expandable from visible messages.
     $('.collapsible').each(function () {
-        ticket.removeExpandable($(this)); 
+        ticket.removeExpandable($(this));
     });
 
     // Collapsing or opening message
@@ -1016,7 +1337,7 @@ $(document).ready(function() {
     });
 
     // Collapse tickets with >5 messages
-    if ($('.message').size() > 5) {
+    if ($('.message').size() > 5 && ! scrollToMessage) {
         // Staff notes and ticket content regions of the screen
         var regions = [ ".notes-header", ".messages-header" ];
 
@@ -1080,12 +1401,14 @@ $(document).ready(function() {
     /*
      * Saving drafts automatically
      */
-    function saveDraft($form, is_note) {
+    function saveDraft($form, type) {
         var message = $form.find('textarea:not(.CodeMirror textarea):eq(0)').redactor('code.get');
 
         // Update draft message variable
-        if (is_note == '1') {
+        if (type == '1') {
             ticket.setNoteDraft(message);
+        } else if (type == '2') {
+            ticket.setForwardDraft(message);
         } else {
             ticket.setMessageDraft(message);
         }
@@ -1096,9 +1419,14 @@ $(document).ready(function() {
             url: laroute.route('ticket.operator.message.store'),
             data: {
                 ticket: [ ticketId ],
-                reply_type: is_note,
+                reply_type: type,
                 is_draft: 1,
-                text: message
+                text: message,
+                from_address: type == '2' ? $form.find('select[name="from_address"]').val() : null,
+                to_address: type == '2' ? $form.find('select[name="to_address[]"]').val() : null,
+                cc_address: type == '2' ? $form.find('select[name="cc_address[]"]').val() : null,
+                bcc_address: type == '2' ? $form.find('select[name="bcc_address[]"]').val() : null,
+                subject: type == '2' ? $form.find('input[name="subject"]').val() : null
             },
             success: function(response) {
                 if (typeof response.status !== 'undefined' && response.status == 'success') {
@@ -1186,6 +1514,10 @@ $(document).ready(function() {
             replyType = $form.find('input[name="reply_type"]').val(),
             params = { ticket_id: ticketId, reply_type: replyType };
 
+        // Delete any attachments currently showing
+        $form.find('input[name="attachment[]"]:not(:first)').remove();
+        $form.find('.attached-files li:not(.hide) .deleteAttachment').attr('data-silent', true).click();
+
         $.post(laroute.route('ticket.operator.message.discard'), params, function(response) {
             if (response.status == 'success') {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
@@ -1194,6 +1526,10 @@ $(document).ready(function() {
                 if (replyType == 1) {
                     $('#newNote').redactor('insert.set', '');
                     ticket.setNoteDraft(null);
+                } else if (replyType == 2) {
+                    $('#newForward').redactor('insert.set', '');
+                    $('.reply-type .option[data-type="2"]').addClass('fresh');
+                    ticket.setForwardDraft(null);
                 } else {
                     $('#newMessage').redactor('insert.set', '');
                     $('#newMessage').redactor('insert.html', signature, false);
@@ -1240,9 +1576,9 @@ $(document).ready(function() {
         });
     });
 
-    // Hide reply all dropdown if clicking outside the reply-all div
+    // Hide reply all dropdown if clicking outside the dropdown div
     $(document).click(function() {
-        $('.reply-all .dropdown:visible').hide();
+        $('.dropdown-container .dropdown:visible').hide();
     });
 
     // Handle reply all button to show dropdown
@@ -1282,14 +1618,15 @@ $(document).ready(function() {
     var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
     // From email input
-    $fromSelectize = $('select[name="department_email"]').selectize({
+    var fromSelectizeConfig = {
         persist: false,
         dropdownParent: 'body',
         plugins: ['disableDelete']
-    });
+    };
+    $('select[name="department_email"]').selectize(fromSelectizeConfig);
 
     // CC email input
-    $ccSelectize = $('select[name="cc[]"]').selectize({
+    var emailSelectize = {
         plugins: ['restore_on_backspace', 'remove_button'],
         delimiter: ',',
         persist: false,
@@ -1315,6 +1652,28 @@ $(document).ready(function() {
             }
 
             return false;
+        }
+    };
+    $ccSelectize = $('.message-form select[name="cc[]"]').selectize($.extend({ }, emailSelectize, {
+        onChange: function(input) {
+            if (! input) {
+                // In case of removing all emails
+                input = [];
+            }
+            // Detach and re-attach the list of CC addresses
+            $.post(laroute.route('ticket.operator.ticket.updateCc', { id: ticketId }), { 'cc': input } )
+                .done(function(data) {
+                    if (data.status == 'success') {
+                        $('.ticket-update.success').show(500).delay(5000).hide(500);
+                        return;
+                    }
+
+                    // Else, an error occurred
+                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                })
+                .fail(function(data) {
+                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                });
         },
         onDelete: function(input) {
             var self = this;
@@ -1328,12 +1687,26 @@ $(document).ready(function() {
             // We handle the deletions above, no need to carry on with deleteSelect()
             return false;
         }
-    });
+    }));
 
     // Show CC email input
     $('.add-cc').on('click', function() {
         $('.cc-emails').toggle();
         $('.add-cc').hide();
+    });
+
+    /**
+     * Initialise Forward tab.
+     */
+
+    var $forwardFromSelectize = $('select[name="from_address"]').selectize(fromSelectizeConfig),
+        $forwardToSelectize = $('select[name="to_address[]"]').selectize(emailSelectize),
+        $forwardCcSelectize = $('select[name="cc_address[]"]').selectize(emailSelectize),
+        $forwardBccSelectize = $('select[name="bcc_address[]"]').selectize(emailSelectize);
+
+    $('.add-bcc').on('click', function() {
+        $('.bcc-emails').toggle();
+        $('.add-bcc').hide();
     });
 
     /**
@@ -1466,7 +1839,7 @@ $(document).ready(function() {
         valueField: 'original_name',
         labelField: 'name',
         searchField: [ 'name' ],
-        create: true,
+        create: tagPermission ? true : false,
         createFilter: function(input) {
             return input.length <= 45;
         },
@@ -1571,6 +1944,131 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * Linked Tickets
+     */
+    $(document).on('click', '.add-link', function () {
+        // Show the alert
+        swal({
+            title: Lang.get('ticket.add_linked_ticket'),
+            html: '<form class="add-link-form">'
+                + Lang.get('ticket.add_linked_ticket_desc')
+                + '<br /><br />'
+                + '<input type="text" name="linked_search" autocomplete="off" />'
+                + '<ul class="results"></ul>'
+                + '</form>',
+            showConfirmButton: false,
+            showCancelButton: true,
+        });
+
+        $('input[name=linked_search]').donetyping().trigger('donetyping').focus();
+
+        // Don't allow hitting enter (reloads the page)
+        $('input[name=linked_search]').keydown(function(event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+    });
+
+    $(document).on('donetyping', 'input[name=linked_search]', function() {
+        var $this = $(this),
+            $term = $this.val(),
+            $list = $this.next('.results');
+
+        // Empty the list
+        $list.empty();
+
+        // Add a search icon
+        $this.addClass('ui-autocomplete-loading');
+
+        if ($term.length > 0) {
+            // Only search if term is one character or more
+            $.ajax({
+                url: laroute.route('ticket.operator.linked.search', { id: ticketId }),
+                dataType: "json",
+                data: { term: $term },
+                method: 'POST',
+                success: function(data) {
+                    // Empty the list (in case we've somehow run this twice)
+                    $list.empty();
+
+                    // In case there is no results
+                    if (data.status == "error" || data.data.length === 0) {
+                        $list.append($("<li class='no-results'>" + Lang.get('messages.no_results') + "</li>"));
+                    } else {
+                        // Add responses to list
+                        $.each(data.data, function (key, item) {
+                            $list.append($("<li data-id='" + item.id + "'>")
+                                .append($("<strong>" + "#" + item.number + "</strong>&nbsp; " + item.subject + "</span>"
+                                    + "<br /><span class='description'>" + item.user.formatted_name + " &nbsp;&middot;&nbsp; "
+                                    + item.department.name + " &nbsp;&middot;&nbsp; " + item.brand.name + "</span>")));
+                        });
+                    }
+                }
+            }).always(function() {
+                // Remove spinning circle
+                $this.removeClass('ui-autocomplete-loading');
+            });
+        } else {
+            // Remove spinning circle
+            $this.removeClass('ui-autocomplete-loading');
+        }
+    });
+
+    $(document).on('click', '.add-link-form .results li:not(".no-results")', function() {
+        // Close modal
+        swal.closeModal();
+
+        // Post data
+        $.ajax({
+            url: laroute.route('ticket.operator.linked.link'),
+            type: 'POST',
+            data: { 'ticket': ticketId + ',' + $(this).data('id') },
+            dataType: 'json'
+        }).done(function(response) {
+            if (response.status == 'success') {
+                $('.ticket-update.success').show(500).delay(5000).hide(500);
+
+                // Update linked tickets list
+                $('.linked-tickets-list').html(response.data);
+
+                // Update log
+                ticket.updateLogTable();
+            } else {
+                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+            }
+        }).fail(function() {
+            $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        });
+    });
+
+    $(document).on('click', '.linked-tickets .unlink', function () {
+        var $this = $(this);
+
+        $.ajax({
+            url: $this.data('route'),
+            type: 'POST',
+            data: { 'ticket': ticketId + ',' + $this.data('id') },
+            dataType: 'json'
+        }).done(function(response) {
+            if (response.status == 'success') {
+                $('.ticket-update.success').show(500).delay(5000).hide(500);
+
+                // Update linked tickets list
+                $('.linked-tickets-list').html(response.data);
+
+                // Update log
+                ticket.updateLogTable();
+            } else {
+                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+            }
+        }).fail(function() {
+            $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        });
+    });
+
     // Show email details popup
     ticket.registerEmailDetails($('.show-email-details'));
 
@@ -1596,36 +2094,47 @@ $(document).ready(function() {
         $('html, body').animate({
             scrollTop: $(".reply-header").offset().top - 25
         }, 1000);
+
+        // Focus redactor.
+        var $textarea = $('.reply-type .option.active').data('type') ? $('#newNote') : $('#newMessage');
+        $textarea.redactor('focus.setStart');
     });
 
     // It should only show when needed, depending on the ticket replies order
+    var scroll = 0;
     $(window).scroll(function() {
-        var $form = $('form.message-form:not(.edit)');
-        if ($('.reply-type .option.active').data('type') == 1) {
-            $form = $('form.notes-form');
-        }
+        // Don't run on first page load
+        if (scroll > 0) {
+            var $form = $('form.message-form:not(.edit)');
+            if ($('.reply-type .option.active').data('type') == 1) {
+                $form = $('form.notes-form');
+            }
 
-        // Only do this if the message tab is visible currently
-        if ($('#tabMessages').is(':visible') && $form.is(':visible')) {
-            var y;
-            if (replyOrder == 'ASC') {
-                y = $(".reply-header").offset().top;
-                // Show until you reach the start of the add reply
-                if ($(this).scrollTop() + $(this).height() < y) {
-                    $('.jump-to-reply').fadeIn();
+            // Only do this if the message tab is visible currently
+            if ($('#tabMessages').is(':visible') && $form.is(':visible')) {
+                var y;
+                if (replyOrder == 'ASC') {
+                    y = $(".reply-header").offset().top;
+                    // Show until you reach the start of the add reply
+                    if ($(this).scrollTop() + $(this).height() < y) {
+                        $('.jump-to-reply').fadeIn();
+                    } else {
+                        $('.jump-to-reply').fadeOut();
+                    }
                 } else {
-                    $('.jump-to-reply').fadeOut();
-                }
-            } else {
-                // Show once you pass the post button
-                y = $form.offset().top + $form.outerHeight(true);
-                if ($(this).scrollTop() > y) {
-                    $('.jump-to-reply').fadeIn();
-                } else {
-                    $('.jump-to-reply').fadeOut();
+                    // Show once you pass the post button
+                    y = $form.offset().top + $form.outerHeight(true);
+                    if ($(this).scrollTop() > y) {
+                        $('.jump-to-reply').fadeIn();
+                    } else {
+                        $('.jump-to-reply').fadeOut();
+                    }
                 }
             }
         }
+
+        // Increase counter
+        scroll++;
     });
 
     // If the order is ascending, show the down arrow instead
@@ -1654,17 +2163,17 @@ $(document).ready(function() {
             ticket.updateEscalationsTable(true);
         }
     });
-    
+
     /*
      * FOLLOW UP TAB
      */
-    
+
     // Load follow up tab for the first time.
     $(document).on('click','.tabs #Followup', function () {
         // The #FollowUp node will be empty if we haven't loaded it before.
         if ($('#tabFollowup').is(':empty')) {
             refreshFollowUpTab();
-        } 
+        }
     });
 
     // Follow up is active, show the follow up tab.
@@ -1756,15 +2265,26 @@ function htmlDecodeWithLineBreaks(html) {
 
 function showMessage(html) {
     // Add message to right place
-    var message, place, code = $(html);
+    var message,
+        code = $(html),
+        noteUrlId = $('meta[name="notes-url-id"]').prop('content'),
+        messageUrlId = $('meta[name="messages-url-id"]').prop('content'),
+        setUrlProp = function ($code, placeholder) {
+            $code.prop('id', placeholder.replace('%ID%', $code.data('id')));
+            $code.data('url', $code.data('url').replace(/#$/, '#' + $code.prop('id')));
+        };
 
     // Make the message visible.
     code.removeClass('collapsed').addClass('collapsible');
     code.find('.text').children('.trimmed').hide();
     code.find('.text').children('.original').show();
-    
+
     // Remove expandable if appropriate.
     ticket.removeExpandable(code);
+    
+    // Clone the code object now we've manipulated it, otherwise if we call setUrlProp twice then it
+    // will overwrite the original code variable.
+    var codeCopy = code.clone();
 
     // It's a note
     if (code.hasClass('note')) {
@@ -1773,30 +2293,32 @@ function showMessage(html) {
             // Show the headers (in case its first note)
             $('.notes-header, .messages-header').show();
             if (replyOrder == 'ASC') {
-                if ($('.note')[0]) {
-                    // Notes already exist
-                    place = $('.messages-header').prev('.note');
-                } else {
-                    // First note at top
-                    place = $('.notes-header');
-                }
-
-                if (notesPosition === 0) {
-                    // Also want to add to end of message area
-                    place = place.add($('.message').last());
-                }
-
+                // Check if notes already exist.
+                var place = $('.note')[0] ? $('.messages-header').prev('.note') : $('.notes-header');
+                setUrlProp(code, noteUrlId);
                 message = code.insertAfter(place);
+
+                // Also want to add to end of message area
+                if (notesPosition === 0) {
+                    setUrlProp(codeCopy, messageUrlId);
+                    message = message.add(codeCopy.insertAfter($('.message').last()));
+                }
             } else {
                 if (notesPosition === 0) {
                     // Show in both notes and messages blocks
-                    message = code.insertAfter('.notes-header, .messages-header');
+                    setUrlProp(code, noteUrlId);
+                    message = code.insertAfter('.notes-header');
+                    setUrlProp(codeCopy, messageUrlId);
+                    message = message.add(codeCopy.insertAfter('.messages-header'));
                 } else {
                     // Only show in notes block
+                    setUrlProp(code, noteUrlId);
                     message = code.insertAfter('.notes-header');
                 }
             }
         } else {
+            setUrlProp(code, messageUrlId);
+            
             if (replyOrder == 'ASC') {
                 message = code.insertAfter($('.message').last());
             } else {
@@ -1805,6 +2327,8 @@ function showMessage(html) {
         }
     } else {
         // It's a message
+        setUrlProp(code, messageUrlId);
+        
         // Determine where to put the message
         if (replyOrder == 'ASC') {
             message = code.insertAfter($('.message').last());
@@ -1908,7 +2432,7 @@ function changeDepartment(data) {
                 $('.ticket-update.success').show(500).delay(5000).hide(500);
                 // Update log
                 ticket.updateLogTable();
-                
+
                 // Update assigned operators and remove operators from the dropdown that are no longer assigned.
                 $assignSelectize[0].selectize.loadedSearches = {};
                 $assignSelectize[0].selectize.setValue(response.data.assigned, true);
@@ -1918,14 +2442,16 @@ function changeDepartment(data) {
                     }
                 });
                 $assignSelectize[0].selectize.refreshOptions(false);
-                
+
                 // Poll for new replies and updates
                 pollReplies();
 
                 // If the ticket has a department email dropdown
+                var first,
+                    $fromSelectize = $('select[name="department_email"]');
                 if ($fromSelectize.length) {
                     // Update department emails list
-                    var first = null;
+                    first = null;
                     $fromSelectize[0].selectize.clearOptions();
                     $.each(response.data.emails, function (index, value) {
                         if (first === null) first = index;
@@ -1934,6 +2460,30 @@ function changeDepartment(data) {
                     });
                     // Select first option
                     $fromSelectize[0].selectize.addItem(first, true);
+                }
+
+                // Update the forward department email list.
+                var $forwardFromSelectize = $('select[name="from_address"]');
+                if ($forwardFromSelectize.length) {
+                    first = null;
+
+                    // Get the "me" option.
+                    var me = $('select[name="from_address"]')[0].selectize.options.me;
+
+                    // Reset the list.
+                    $forwardFromSelectize[0].selectize.clearOptions();
+                    $.each(response.data.emails, function (index, value) {
+                        if (first === null) first = index;
+                        $forwardFromSelectize[0].selectize.addOption({value: index, text: value});
+                        $forwardFromSelectize[0].selectize.refreshOptions(false);
+                    });
+
+                    // Add "me" option back.
+                    $forwardFromSelectize[0].selectize.addOption({value: me.value, text: me.text});
+                    $forwardFromSelectize[0].selectize.refreshOptions(false);
+
+                    // Select first option
+                    $forwardFromSelectize[0].selectize.addItem(first, true);
                 }
 
                 // Update custom fields
@@ -1975,30 +2525,30 @@ function changeDepartment(data) {
 }
 
 function deleteTicket(block) {
-    var type, route, text;
+    var type, route, relations = [
+        Lang.choice('general.message', 2),
+        Lang.choice('general.attachment', 2),
+        Lang.get('report.user_feedback')
+    ];
+    if (timeTrackingEnabled) {
+        relations.push(Lang.get('TimeTracking::lang.time_tracking'));
+    }
+
+    var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 1), '', relations);
     if (block == true) {
         type = 'POST';
         route = laroute.route('ticket.operator.action.block');
-        text = Lang.get('messages.warn_delete') + ' ' + Lang.get('ticket.block_warning');
+        opts.html = $('<div/>').html(opts.html).append('<span style="text-align: left">'+Lang.get('ticket.block_warning')+'</span>').html();
     } else {
         type = 'DELETE';
         route = laroute.route('ticket.operator.action.destroy');
-        text = Lang.get('messages.warn_delete');
     }
 
     // Show the alert
-    swal({
-        title: Lang.get('messages.are_you_sure'),
-        text: text,
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#e74c3c",
-        confirmButtonText: Lang.get('messages.yes_im_sure'),
-        closeOnConfirm: false
-    }, function(isConfirm) {
+    swal(opts, function(isConfirm) {
         if (isConfirm) {
             // Disable submit button
-            swal.disableButtons();
+            deleteAlert.disableButtons();
             // Post destroy data
             $.ajax({
                 url: route,
@@ -2077,6 +2627,16 @@ function refreshFollowUpTab() {
                 // Initialise date picker.
                 callPikaday();
 
+                // Initialise sortable.
+                $("#sortable").sortable({
+                    placeholder: "ui-state-highlight",
+                    handle: ".handle",
+                    start: function(event, ui) {
+                        // Undo styling set by jqueryUI
+                        ui.helper.css("height", "auto").css("width", "auto");
+                    }
+                });
+
                 // Initialise timepicker.
                 $('.followup-form')
                     .find('.timepicker')
@@ -2100,7 +2660,7 @@ function refreshFollowUpTab() {
  */
 var lastReplyPoll;
 var pollTimeout;
-var $tagSelectize, $assignSelectize;
+var $tagSelectize, $assignSelectize, $ccSelectize;
 
 function pollReplies(allMessages) {
     // Fetch all messages (included authed user) or just other users
@@ -2158,7 +2718,7 @@ function pollReplies(allMessages) {
                         $('select[name="status"]').val(response.data.details.status);
 
                         // Update the status dropdown in the notes box (only if it's changed)
-                        $('.notes-form').find('select[name="to_status"]').val(response.data.details.status);
+                        $('.notes-form, .forward-form').find('select[name="to_status"]').val(response.data.details.status);
                     }
 
                     $tagSelectize[0].selectize.clear(true);
@@ -2176,6 +2736,26 @@ function pollReplies(allMessages) {
                         $assignSelectize[0].selectize.refreshOptions(false);
                         $assignSelectize[0].selectize.addItem(value.id, true);
                     });
+
+                    if (typeof $ccSelectize[0] !== 'undefined') {
+                        // We need to keep a list of the 'unremovable' options so they get added back properly.
+                        var options = [];
+                        $.each($ccSelectize[0].selectize.options, function (index, option) {
+                            if (typeof option.unremovable !== 'undefined' && option.unremovable) {
+                                options.push(option);
+                            }
+                        });
+                        $.each(response.data.details.cc, function (index, value) {
+                            options.push({ text: value, value: value });
+                        });
+                        $ccSelectize[0].selectize.clear(true);
+                        $ccSelectize[0].selectize.refreshOptions(false);
+                        $.each(options, function (index, value) {
+                            $ccSelectize[0].selectize.addOption(value);
+                            $ccSelectize[0].selectize.refreshOptions(false);
+                            $ccSelectize[0].selectize.addItem(value.value, true);
+                        });
+                    }
 
                     $('select[name="slaplan"]').val(response.data.details.sla_plan);
                     $('.edit-duetime').html(response.data.details.due_time);
@@ -2210,9 +2790,10 @@ function pollReplies(allMessages) {
                 // Update custom fields
                 if (typeof response.data.customfields != 'undefined') {
                     $('#sidebar .customfields').html(response.data.customfields);
-                    // Enable hide/show password toggle and textarea redactor if needed
+                    // Enable hide/show password toggle, textarea redactor and pikaday if needed
                     callHideShowPassword();
                     customfieldRedactor();
+                    callPikaday();
                 }
 
                 $('#sidebar').trigger('refreshedSidebar');

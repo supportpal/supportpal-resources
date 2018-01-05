@@ -84,6 +84,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/filtering.css') }}">
 
@@ -144,26 +149,20 @@
 
         function deleteUser(data) {
             // Get URL depending if its operators or users
-            var url;
+            var url, section;
             {% if operator|default is not empty and operator %}
                 url = laroute.route('user.operator.operator.destroymultiple');
+                section = '{{ Lang.choice('general.operator', 2) }}';
             {% else %}
                 url = laroute.route('user.operator.user.destroymultiple');
+                section = '{{ Lang.choice('user.user', 2) }}';
             {% endif %}
 
             // Show the alert
-            swal({
-                title: Lang.get('messages.are_you_sure'),
-                text: Lang.get('messages.warn_delete'),
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#e74c3c",
-                confirmButtonText: Lang.get('messages.yes_im_sure'),
-                closeOnConfirm: false
-            }, function(isConfirm) {
+            swal(deleteAlert.getDefaultOpts(section, '', {{ relations|json_encode|raw }}), function(isConfirm) {
                 if (isConfirm) {
                     // Disable submit button
-                    swal.disableButtons();
+                    deleteAlert.disableButtons();
                     // Delete record and reload table if successful
                     $.ajax({
                         url: url,

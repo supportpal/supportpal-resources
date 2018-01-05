@@ -6,13 +6,6 @@
 
 {% block content %}
 
-    {% if licenseInformation.devLicense|default is not empty %}
-        <div class="warning box">
-            <strong>{{ Lang.get('core.development_license') }}</strong>
-            {{ Lang.get('core.development_license_desc') }}
-        </div>
-    {% endif %}
-
     <h2>{{ Lang.get('core.license_status') }}</h2>
 
     <div class="form-container first">

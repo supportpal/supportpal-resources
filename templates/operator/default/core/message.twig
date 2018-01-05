@@ -31,7 +31,7 @@
 
     <div id="tabCompose" class="tabContent hide">
 
-        {{ form_open({ 'method': 'POST', 'route': 'core.operator.message.store' }) }}
+        {{ form_open({ 'method': 'POST', 'route': 'core.operator.message.store', 'class': 'validate' }) }}
 
             <div class="form-row form-full">
                 {{ form_label('to_user_id', Lang.get('core.send_to')) }}
@@ -56,6 +56,10 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+    
     <!-- Datatables -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>

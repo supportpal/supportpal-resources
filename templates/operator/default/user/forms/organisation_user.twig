@@ -119,7 +119,14 @@
 
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript">
+        deleteAlert.translationKeys.title = 'user.remove_from';
+        deleteAlert.translationKeys.warning = 'user.remove_from_warn';
+        deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+        deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+    </script>
 
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
@@ -141,21 +148,14 @@
             $(document.body).on('click', '.existing-row .remove-button', function() {
                 // Removing existing rows, need to make an AJAX call
                 var row = $(this).parents('tr'),
-                    $this = $(this);
+                    $this = $(this),
+                    name = $('<div/>').text(row.find('td:first .description').text().replace(/^<|>$/g, '')).html();
 
                 // Show the alert
-                swal({
-                    title: Lang.get('messages.are_you_sure'),
-                    text: Lang.get('user.organisation_no_longer'),
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#e74c3c",
-                    confirmButtonText: Lang.get('messages.yes_im_sure'),
-                    closeOnConfirm: false
-                }, function(isConfirm) {
+                swal(deleteAlert.getDefaultOpts(Lang.choice('user.organisation', 1), name), function(isConfirm) {
                     if (isConfirm) {
                         // Disable the submit button
-                        swal.disableButtons();
+                        deleteAlert.disableButtons();
                         // Make the request
                         $.ajax({
                             url: laroute.route('user.operator.organisation.removeUser', {id: {{ record.id }}}),

@@ -99,6 +99,8 @@
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    
     <script type="text/javascript">
         $(document).ready(function() {
             // Toggle the password fields depending on whether we're sending a confirmation email
@@ -223,19 +225,15 @@
             {% if record.exists and not operator %}
                 // Delete user button
                 $('.delete-user').on('click', function() {
+                    var section = '{{ Lang.choice('user.user', 1) }}',
+                        name = $('<div/>').text($('input[name=email]').val()).html(),
+                        relations = {{ relations|json_encode|raw }};
+                    
                     // Show the alert
-                    swal({
-                        title: Lang.get('messages.are_you_sure'),
-                        text: Lang.get('messages.warn_delete'),
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#e74c3c",
-                        confirmButtonText: Lang.get('messages.yes_im_sure'),
-                        closeOnConfirm: false
-                    }, function(isConfirm) {
+                    swal(deleteAlert.getDefaultOpts(section, name, relations), function(isConfirm) {
                         if (isConfirm) {
                             // Disable submit button
-                            swal.disableButtons();
+                            deleteAlert.disableButtons();
                             // Go to user list
                             $('body').append($('<form class="delete" action="' + laroute.route('user.operator.user.destroy_redirect', { id: {{ record.id }} }) + '" method="POST">'
                                 + '<input name="_method" type="hidden" value="DELETE" />'
@@ -323,8 +321,10 @@
                 $(':input[name="brand_id"]').on('change', function() {
                     var brandId = $(this).val();
 
-                    // Clear the organisation
-                    $organisationSelectize[0].selectize.clearOptions();
+                    // Clear the organisation. Organisation field may not be present if organisations are disabled.
+                    if (typeof $organisationSelectize[0] !== 'undefined') {
+                        $organisationSelectize[0].selectize.clearOptions();
+                    }
 
                     // Check if each field exists in the currently selected brand
                     $('[data-field]').each(function () {
@@ -333,7 +333,13 @@
                             $(this).hide();
                         } else {
                             $(this).find(':input').prop('disabled', false);
-                            $(this).show();
+                            
+                            var dependsOn = $(this).data('depends-on-option');
+                            if (typeof dependsOn === 'number') {
+                                $('option[value="'+dependsOn+'"]:selected').is(':visible') ? $(this).show() : $(this).hide();
+                            } else {
+                                $(this).show();                                                
+                            }
                         }
                     });
 
