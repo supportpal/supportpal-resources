@@ -172,4 +172,14 @@ return array(
     "ticket_user_removed_from_group"    => "Ticket user removed from user group :old_value.",
     "email_on_behalf"                   => "Forwarded :extra_rel2 on behalf of ':extra_rel1' in ticket #:rel.",
 
+    /*
+     * 2.3.0
+     */
+    "registered_users_only"             => "Sent ':extra_rel1' email to :new_value, department does not accept emails from unregistered users.",
+    "deleted_user"                      => "Deleted :item ':rel' with email ':email_address' (ID :user_id).",
+    "linked_ticket"                     => "Linked ticket #:rel with ticket :extra_rel1.",
+    "unlinked_ticket"                   => "Unlinked ticket #:rel from ticket :extra_rel1.",
+    "email_queue_attachment_deleted"    => "Deleted attachment ':old_value' from queued email ':rel'.",
+    "forward_ticket_email"              => "Forwarded ticket #:rel to third-party, view ':extra_rel1' email.",
+
 );

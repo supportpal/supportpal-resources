@@ -47,4 +47,12 @@ return array(
     "hours_to_be_set"           => "hours to be added to the current time and set as the ticket's new due time.",
     "only_with_due_time"        => "Only applies to tickets with a due time currently set.",
     "set_due_time_desc"         => "Clear the current due time by leaving the field blank. Can also set a due time in the past by using a negative number.",
+
+    /*
+     * 2.3.0
+     */
+    "add_cc"                    => "Add CC email address",
+    "remove_cc"                 => "Remove CC email address",
+    "remove_cc_desc"            => "Leave blank to remove all CC email addresses on ticket.",
+
 );

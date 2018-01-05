@@ -69,7 +69,7 @@ return array(
     "step_7"                    => "Step 7 of 7: Installed!",
     "successfully_installed"    => "Congratulations, SupportPal has been successfully installed.",
     "operator_panel"            => "Operator Panel",
-    "help_desc"                 => "Should you need any help in configuring or using SupportPal, we have three main sources of information:",
+    "help_desc"                 => "Should you need any help in configuring or using SupportPal, we have two main sources of information:",
     "submit_a_ticket"           => "Submit a Ticket",
 
     /*
@@ -89,7 +89,6 @@ return array(
     "disabled"                  => "Disabled",
     "php_settings"              => "PHP Settings",
     "ipv6_support"              => "IPv6 Support",
-    "png_jpg_support"           => "PNG & JEPG support",
     "memory_limit"              => ">= 128MB Memory",
     "memory_limit_error"        => "Your memory limit is ':limit'.",
     "permission_denied"         => "Permission Denied",
@@ -102,8 +101,6 @@ return array(
     "help_mysql_version"        => "For assistance installing a new version of MySQL please contact your hosting provider or server administrator.",
     "mysql_version"             => "MySQL Version",
     "mysql_version_not_found"   => "Not available, found MySQL version: :version",
-    "mysql_server_version"      => "MySQL 5.5.3 or greater (10.x for MariaDB) is required to run SupportPal. Found: ':version'.",
-    "mysql_client_version"      => "MySQL client version 5.5.3 or greater (5.0.9 for MySQLnd) is required to run SupportPal. Found: ':version'.",
 
     /*
      * 2.0.3
@@ -120,5 +117,16 @@ return array(
      * 2.2.0
      */
     "ioncube_version"           => "ionCube Loaders version :required or greater required. Found: ':version'.",
+
+    /*
+     * 2.3.0
+     */
+    "mysql_server_version"      => "Server Version >= 5.5.3",
+    "mysql_server_version_desc" => "MySQL 5.5.3 or greater is required to run SupportPal. Found: ':version'.",
+    "mysql_client_version"      => "Client Version >= 5.5.3 (5.0.9 for MySQLnd)",
+    "mysql_client_version_desc" => "MySQL client version 5.5.3 or greater (5.0.9 for MySQLnd) is required to run SupportPal. Found: ':version'.",
+    "png_jpg_support"           => "PNG & JPEG Support",
+    "allow_url_fopen"           => "'allow_url_fopen' Enabled",
+    "allow_url_fopen_failure"   => "Enable 'allow_url_fopen' in your php.ini file to use Gravatar and other features.",
 
 );

@@ -20,7 +20,6 @@ return array(
     "manage_organisation"           => "Manage Organisation",
     "leave_organisation"            => "Leave Organisation",
     "user_membership"               => "User membership",
-    "organisation_no_longer"        => "This user will no longer be a part of this organisation.",
     "transfer_ownership"            => "Transfer ownership",
     "transfer_ownership_desc"       => "As the current owner of the organisation, you cannot be removed as a manager and only you can delete the organisation. You may transfer the ownership of the organisation to someone else, be aware that this action cannot be reversed.",
     "transfer_ownership_operator"   => "Only the owner can delete the organisation and cannot be removed from it. Use this option to change the ownership to another user in the organisation.",
@@ -278,5 +277,11 @@ return array(
      */
     "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
     "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
+    
+    /*
+     * 2.3.0
+     */
+    "remove_from"                   => "Remove From :record?",
+    "remove_from_warn"              => "This will permanently remove the <strong>:name</strong> user from the :record.",
 
 );

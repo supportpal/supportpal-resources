@@ -287,5 +287,16 @@ return array(
     "sunday"                    => "Sunday",
     "inactive"                  => "Inactive",
     "run"                       => "Run",
+    
+    /*
+     * 2.3.0
+     */
+    "regex"                     => "Regex Validation",
+    "check_all"                 => "Check All",
+    "uncheck_all"               => "Uncheck All",
+    "after_and_including"       => "After (and including)",
+    "add_link"                  => "Add Link",
+    "unlink"                    => "Unlink",
+    "link"                      => "Link",
 
 );

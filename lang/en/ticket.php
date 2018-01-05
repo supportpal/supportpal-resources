@@ -14,8 +14,7 @@ return array(
     "invalid_user"              => "Please ensure valid user details have been entered to continue.",
 
     "registered_users"          => "Registered Users Only",
-    "registered_users_desc"     => "Toggle to only import tickets from users with an account in the help desk.",
-
+    
     "tickets"                   => "Ticket(s)",
     "ticket"                    => "Ticket|Tickets",
     "subject"                   => "Subject",
@@ -122,7 +121,6 @@ return array(
     "email_operators"           => "Notify Operators",
     "email_operators_desc"      => "Select whether to forward operator replies to other operators. By default checks the \"email operators\" option in the operator panel, and will automatically send an email for email replies by operators.",
     // Department email templates
-    "new_ticket_reply"          => "New Ticket Reply",
     "new_ticket_opened"         => "New Ticket Opened",
     "reply_to_locked"           => "Reply to Locked Ticket",
     "waiting_for_response"      => "Waiting for Response",
@@ -144,7 +142,6 @@ return array(
     "form_conditions"           => "Form Conditions",
     "form_conditions_desc"      => "Define the ticket conditions for which newly resolved tickets are checked to see if they fall under this form. If a resolved ticket fits multiple forms, it will be selected on the form priority, which can be modified by going to the list of forms and reordering.",
     "form_fields"               => "Form Fields",
-    "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here.",
     "response_rate"             => "Response Rate",
     "sent_forms"                => "Sent Feedback Forms",
     "rating"                    => "Rating",
@@ -331,8 +328,6 @@ return array(
 
     "mass_reply"                => "Mass Reply",
 
-    "delete_warning"            => "Once these tickets have been deleted, they cannot be recovered.",
-
     "due_today"                 => "Due Today",
     "overdue"                   => "Overdue",
     "unassigned"                => "Unassigned",
@@ -478,4 +473,29 @@ return array(
     "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
     "run_macro"                 => "Run Macro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
+    
+    /*
+     * 2.3.0
+     */
+    "registered_users_desc"     => "Toggle to only show the department to logged in users and only accept emails from users actively registered in the help desk. If enabled, a bounce back email will be sent to unregistered users who email this department, to change or disable the email please see the 'Registered Users Only' template option below.",
+    "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here. The field type will be locked once the form has been completed by a user.",
+    "feedback_ratings"          => "Customer Satisfaction Ratings (affecting your Customer Satisfaction score)",
+    "email_and_other_accounts"  => "Email and other channel accounts",
+    "delete_message"            => "Delete message",
+    "linked_tickets"            => "Linked Tickets",
+    "add_linked_ticket"         => "Add Linked Ticket",
+    "add_linked_ticket_desc"    => "Search by ticket number or subject:",
+    "create_linked_ticket"      => "Create linked ticket",
+    "copy_link"                 => "Copy link",
+    "forward_message"           => "Forward this message",
+    "forward_from_here"         => "Forward ticket from here",
+    "forward"                   => "Forward",
+    "forward_options"           => "Forward Options",
+    "forwarded_to"              => "Forwarded to",
+    "new_operator_reply"        => "New Operator Reply",
+    "new_user_reply"            => "New User Reply",
+    "add_bcc"                   => "Add BCC",
+    "at_least_one_recipient"    => "Please specify at least one recipient.",
+    "forwarded_message"         => "---------- Forwarded message ----------",
+
 );
