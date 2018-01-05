@@ -109,7 +109,7 @@
             
             // Custom submit handler.
             submitHandler: function (form) {
-                $(form).find(':submit').prop('disabled', 'disabled');
+                $(form).find('input[type="submit"], button[type="submit"]').prop('disabled', 'disabled');
 
                 // Validate the form.
                 if (validator.form()) {
@@ -130,7 +130,7 @@
                     // Submit the form (will cause the page to refresh etc).
                     form.submit();
                 } else {
-                    $(form).find(':submit').prop('disabled', false);
+                    $(form).find('input[type="submit"], button[type="submit"]').prop('disabled', false);
                     validator.focusInvalid();
                     return false;
                 }
