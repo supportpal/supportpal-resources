@@ -20,7 +20,6 @@ return array(
     "manage_organisation"           => "Hantera organisation",
     "leave_organisation"            => "Lämna organisation",
     "user_membership"               => "Användarmedlemskap",
-    "organisation_no_longer"        => "Denna användare kommer inte längre vara en del av denna organisation.",
     "transfer_ownership"            => "Flytta ägarskap",
     "transfer_ownership_desc"       => "Som den nuvarande ägaren av organisationen kan du inte tas bort som chef och bara du kan ta bort organisationen. Du kan flytta ägarskapet till någon annan men var uppmärksam på att du inte kan ångra handlingen.",
     "transfer_ownership_operator"   => "Bara ägaren kan ta bort organisationen och kan inte tas bort från den. Använd detta val för att ge ägarskapet till en annan användare inom organisationen.",

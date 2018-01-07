@@ -99,7 +99,6 @@ return array(
     /*
      * 2.0.3
      */
-    "warn_delete"           => "När denna post har blivit borttagen kan den inte återskapas. Om denna post tas bort kan det påverka andra delar av systemet där denna post används.",
     "only_ssl_connections"  => "Endast SSL-anslutningar är tillåtna, du bör uppdatera din begäran till en säker anslutning.",
     "queued_emails"         => "Handlingen lyckades - e-posten kommer att bli köade och skickade inom kort.",
     "error_loading_message" => "Ett fel uppstod när meddelandet skulle laddas. Försök igen.",

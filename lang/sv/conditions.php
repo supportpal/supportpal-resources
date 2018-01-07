@@ -28,7 +28,6 @@ return array(
     "user_email"                        => "Användarens e-post",
     "user_full_name"                    => "Användarens fullständiga namn",
     "user_group"                        => "Användargrupp",
-    "user_organisation"                 => "Användarorganisation",
 
     /*
      * 2.1.0

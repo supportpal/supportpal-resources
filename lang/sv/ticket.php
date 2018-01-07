@@ -14,7 +14,6 @@ return array(
     "invalid_user"              => "Se till att giltiga användardetaljer har skrivits in för att fortsätt.",
 
     "registered_users"          => "Enbart registrerade användare",
-    "registered_users_desc"     => "Kryssa i för att bara importera ärenden från användare med ett konto i helpdesken.",
 
     "tickets"                   => "Ärenden",
     "ticket"                    => "Ärende|Ärenden",
@@ -122,7 +121,6 @@ return array(
     "email_operators"           => "Notifiera operatörer",
     "email_operators_desc"      => "Välj om operatörssvar ska vidarebefordras till andra operatörer. Som standard kollas \"e-postoperatörer\"-inställningen i operatörspanelen och kommer automatiskt skicka ett e-postmeddelande för operatörse-postsvar.",
     // Department email templates
-    "new_ticket_reply"          => "Nytt ärendesvar",
     "new_ticket_opened"         => "Nytt ärende öppnat",
     "reply_to_locked"           => "Svara låst ärende",
     "waiting_for_response"      => "Vänta på svar",
@@ -144,7 +142,6 @@ return array(
     "form_conditions"           => "Formulärvillkor",
     "form_conditions_desc"      => "Definiera ärendevillkoren för vilka nyligen lösta ärenden kontrolleras för att se om de tillhör detta formulär. Om ett löst ärende uppfyller kraven för fler än ett formulär väljs rätt formulär utifrån prioritering vilken kan ändras genom att gå till formulärlistan och ändra ordningen.",
     "form_fields"               => "Formulärfält",
-    "form_fields_desc"          => "Om du vill samla in ytterliggare information när användaren ger feedback kan du sätta upp skräddarsydda fält att visa på formuläret här.",
     "response_rate"             => "Svarsfrekvens",
     "sent_forms"                => "Skickat feedbackformulär",
     "rating"                    => "Betyg",
@@ -330,8 +327,6 @@ return array(
     "block_warning"             => "Användarens e-post kommer också att blockeras och inte kunna öppna ärenden.",
 
     "mass_reply"                => "Massvar",
-
-    "delete_warning"            => "När dessa ärenden har tagits bort kan de inte återställas.",
 
     "due_today"                 => "Förfaller i dag",
     "overdue"                   => "Försenad",

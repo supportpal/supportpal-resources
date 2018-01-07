@@ -21,8 +21,6 @@ return array(
     "public"                    => "Publik",
     "public_desc"               => "Om det skräddarsydda fältet visas publikt på framsidan eller är enbart för personal.",
     "encrypted"                 => "Krypterad",
-    "encrypted_desc"            => "Om det skräddarsydda fältet är känsligt och ska sparas krypterat i databasen.",
-    "purge"                     => "Rensa vid avstängning",
     "purge_desc"                => "Om det skräddarsydda fältet automatiskt ska rensas när ärendet är avslutat.",
     "locked"                    => "Låst",
     "locked_desc"               => "Om det skräddarsydda fältets värde inte ska kunna ändras i efterhand.",
