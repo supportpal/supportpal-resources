@@ -465,15 +465,15 @@ return array(
     /*
      * 2.2.0
      */
-    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
-    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
-    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
-    "response"                  => "Response|Responses",
-    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
-    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
-    "filter_performance"        => "Performance considerations and recommendations",
-    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
-    "run_macro"                 => "Run Macro",
+    "macro_order"               => "Automatiska macron körs i en ordning de listas. Dra raderna för att ändra ordningen de körs.",
+    "user_ticket_existing_desc" => "Öppna ett nytt ärende på uppdrag av en befintlig användare.",
+    "canned_response_tag"       => "Snabbsvars tagg|Snabbsvars taggar",
+    "response"                  => "Svar|Svar",
+    "response_desc"             => "Snabbsvaraet kan skrivas på flera språk. Språket väljs från användarens inställningar.",
+    "no_slaplans"               => "Ingen SLA plan funnen. Klicka <a href=':route'>här</a> för att skapa en",
+    "filter_performance"        => "Prestanda överväganden och rekommendationer",
+    "filter_performance_desc"   => "<li>Filter som matchar många ärenden kommer att vara långsamma, försöka att exkludera stängda ärenden.</li><li>Filter som använder 'är inte' villkor är normalt långsammar än 'är' villkor.</li><li>Filter som kontrollerat NULL värden (ex. Ärende tagg är Ingen) kommer att vara långsom.</li><li>Undivk många villkor som kontrollerar om strängar/ord eftersom de intriducerar större komplexitet.</li><li>Filter som använder 'börjar med' eller 'innehåller' villkor kommer generellt sett vara långsammare än 'lika med' eller 'slutar med' villkor.</li><li>Avslutade ärenden är exkluderade frpn antalet som visa i sidofältet.</li>",
+    "run_macro"                 => "Kör Makro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
 
     /*
