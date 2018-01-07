@@ -100,6 +100,13 @@ return array(
     "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
 
     /*
+     * 2.3.0
+     */
+    "required_translation"      => "The :translation translation for the :attribute field is required.",
+    "customfield_not_cyclic"    => "The field cannot depend on one of it's children.",
+    "distinct"                  => "The :attribute field has a duplicate value.",
+
+    /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------

@@ -121,4 +121,15 @@ return array(
      */
     "ioncube_version"           => "ionCube Loaders version :required or greater required. Found: ':version'.",
 
+    /*
+     * 2.3.0
+     */
+    "mysql_server_version"      => "Server Version >= 5.5.3",
+    "mysql_server_version_desc" => "MySQL 5.5.3 or greater is required to run SupportPal. Found: ':version'.",
+    "mysql_client_version"      => "Client Version >= 5.5.3 (5.0.9 for MySQLnd)",
+    "mysql_client_version_desc" => "MySQL client version 5.5.3 or greater (5.0.9 for MySQLnd) is required to run SupportPal. Found: ':version'.",
+    "png_jpg_support"           => "PNG & JPEG Support",
+    "allow_url_fopen"           => "'allow_url_fopen' Enabled",
+    "allow_url_fopen_failure"   => "Enable 'allow_url_fopen' in your php.ini file to use Gravatar and other features.",
+
 );

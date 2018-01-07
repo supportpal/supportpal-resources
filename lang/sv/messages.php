@@ -128,4 +128,16 @@ return array(
      */
     "field_required"        => "Fält krävs.",
 
+    /*
+     * 2.3.0
+     */
+    "delete_record"         => "Radera :record?",
+    "cannot_be_undone"      => "Detta kan inte göras ogjort.",
+    "warn_delete"           => "Detta kommer permanent radera <strong>:name</strong> :record från systemet.",
+    "delete_confirm"        => "Ja, Radera :record",
+    "keep_record"           => "Nej, Behåll :record",
+    "delete_relations"      => "Vid radering av <strong>:name</strong> :record kommer även följande data raderas permanent:",
+    "please_check"          => "Du måste bocka i fältet ovan för att verifiera att du förstått att denna ändring inte går att ångra",
+    "failed_attachments"    => "Misslyckades att lägg till några filer.",
+
 );

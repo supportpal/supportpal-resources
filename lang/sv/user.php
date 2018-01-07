@@ -279,4 +279,10 @@ return array(
     "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
     "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
 
+    /*
+     * 2.3.0
+     */
+    "remove_from"                   => "Ta bort Från :record?",
+    "remove_from_warn"              => "Detta kommer permanent ta bort <strong>:name</strong> användaren från :record.",
+
 );

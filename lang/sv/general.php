@@ -288,4 +288,15 @@ return array(
     "inactive"                  => "Inaktiv",
     "run"                       => "Kör",
 
+    /*
+     * 2.3.0
+     */
+    "regex"                     => "Regex Validering",
+    "check_all"                 => "Välj alla",
+    "uncheck_all"               => "Välj ingen",
+    "after_and_including"       => "Efter (och inkludera)",
+    "add_link"                  => "Lägg till länk",
+    "unlink"                    => "Avlänka",
+    "link"                      => "Länka",
+
 );
