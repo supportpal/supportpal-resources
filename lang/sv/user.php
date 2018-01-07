@@ -275,8 +275,8 @@ return array(
     /*
      * 2.2.0
      */
-    "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
-    "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
+    "user_name_format_desc"         => "Formatet som används för att visa användarens namn i applikationen.",
+    "operator_name_format_desc"     => "Formatet som används för att visa operatörens namn i applikationen.",
 
     /*
      * 2.3.0

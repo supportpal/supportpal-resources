@@ -95,16 +95,16 @@ return array(
     /*
      * 2.2.0
      */
-    "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
-    "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
-    "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
+    "required_with_translation" => ":translation översättningen av :attribute fältet krävs när :values finns.",
+    "max_translation"           => ":translation översättningen av :attribute fältet får inte vara större än :max tecken.",
+    "unique_translation"        => ":translation översättningen av :attribute field har redan använts.",
 
     /*
      * 2.3.0
      */
-    "required_translation"      => "The :translation translation for the :attribute field is required.",
-    "customfield_not_cyclic"    => "The field cannot depend on one of it's children.",
-    "distinct"                  => "The :attribute field has a duplicate value.",
+    "required_translation"      => ":translation översättningen av :attribute fältet krävs.",
+    "customfield_not_cyclic"    => "Fältet kan inte bero på sitt eget under fält.",
+    "distinct"                  => ":attribute fältets värde finns redan.",
 
     /*
     |--------------------------------------------------------------------------
