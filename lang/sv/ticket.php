@@ -165,10 +165,11 @@ return array(
     "customfield_order"         => "Dra raderna för att ändra ordningen på de skräddarsydda fälten som visas för användare när de öppnar ärenden via webben.",
 
     // Canned responses
-    "cannedresponse"            => "Konserverat svar|Konserverade svar",
-    "canned_response_category"  => "Konserverat svar-kategori|Konserverat svar-kategorier",
-    "canned_public_desc"        => "Växla för att låta konserverade svar bara vara tillgängliga för dig själv.",
-    "canned_group_desc"         => "Om du vill att det konserverade svaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
+    "cannedresponse"            => "Snabbsvar|Snabbsvar",
+    "canned_response_category"  => "Snabbsvarskategori|Snabbsvarskategorier",
+    "response"                  => "Svar",
+    "canned_public_desc"        => "Aktivera för att låta snabbsvaret bara vara tillgängliga för dig själv.",
+    "canned_group_desc"         => "Om du vill att snabbsvaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
 
     // Filters
     "filter"                    => "Filter|Filter",
@@ -252,13 +253,13 @@ return array(
     "take"                      => "Ta",
     "take_ownership"            => "Ta ägarskap",
     "pause_duetime"             => "Pausa förfallotid",
-    "add_to_canned_responses"   => "Lägg till på konserverade svar",
+    "add_to_canned_responses"   => "Lägg till på snabbsvaret",
     "visible_to_all_operators"  => "Gör synlig för alla operatörer",
     "set_status"                => "Sätt status",
     "add_selfservice_link"      => "Lägg till självbetjäningslänk",
     "search_selfservice"        => "Sök efter självbetjäningsartikel",
-    "add_canned_response"       => "Lägg till ett konserverat meddelande",
-    "search_canned"             => "Sök efter ett konserverat meddelande",
+    "add_canned_response"       => "Lägg till ett snabbsvar",
+    "search_canned"             => "Sök efter ett snabbsvar",
 
     "mark_resolved"             => "Märk som löst",
 
@@ -370,7 +371,7 @@ return array(
     "default_reply_options"     => "Standardsvarsalternativ",
     "default_reply_options_desc" => "Välj standardsvarsalternativ som sätts när ett ärende öppnas eller besvaras. ':reply_option'-inställningen blir ikryssad baserad på ':department_option'-avdelningsinställningar.",
     "associate_response_tag"    => "Associera konserverat svar med en etikett...",
-    "canned_response_tags_desc" => "Lägg till etiketter som kan hjälpa dig att hitta ett konserverat svar när ett ärende besvaras.",
+    "canned_response_tags_desc" => "Lägg till etiketter som kan hjälpa dig att hitta ett snabbsvar när ett ärende besvaras.",
     "loading_tags"              => "Laddar etiketter",
     "append_ip_address"         => "Bifoga IP-adress",
     "append_ip_address_desc"    => "Bifoga användarnas IP-adresser till deras meddelande när de öppnar eller svarar på ärenden från framsidan.",
@@ -491,7 +492,7 @@ return array(
     "forward_message"           => "Vidarebefodra detta meddelande",
     "forward_from_here"         => "Vidarebefodra ärendet från denna punkt",
     "forward"                   => "Vidarebefodra",
-    "forward_options"           => "Vidarebefodra Inställningar",
+    "forward_options"           => "Vidarebefodraval",
     "forwarded_to"              => "Vidarebefodrat till",
     "new_operator_reply"        => "Nytt operatörs svar",
     "new_user_reply"            => "Nytt användar svar",
