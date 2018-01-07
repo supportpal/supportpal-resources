@@ -167,7 +167,6 @@ return array(
     // Canned responses
     "cannedresponse"            => "Snabbsvar|Snabbsvar",
     "canned_response_category"  => "Snabbsvarskategori|Snabbsvarskategorier",
-    "response"                  => "Svar",
     "canned_public_desc"        => "Aktivera för att låta snabbsvaret bara vara tillgängliga för dig själv.",
     "canned_group_desc"         => "Om du vill att snabbsvaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
 
