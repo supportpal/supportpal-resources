@@ -35,6 +35,13 @@
                     </a>
                 </li>
             {% endif %}
+            {% if not socialite_providers.isEmpty() %}
+                <li>
+                    <a href="{{ route('user.linked_account') }}" {% if route starts with 'user.linked_account' %}class="current"{% endif %}>
+                        {{ Lang.get('user.linked_accounts') }}
+                    </a>
+                </li>
+            {% endif %}
             <li>
                 <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
                     {{ Lang.get('user.email_history') }}
@@ -97,7 +104,7 @@
     {% if isModuleEnabled('Selfservice') %}
         {% for type in selfserviceTypes %}
             <li>
-                <a href="{{ route('selfservice.index', { 'type': type.slug }) }}" {% if route starts with 'selfservice' and Request.segment(2) == type.slug %}class="current"{% endif %}>
+                <a href="{{ type.url }}" {% if route starts with 'selfservice' and Request.segment(2) == type.slug %}class="current"{% endif %}>
                     {{ type.name }}
                 </a>
             </li>

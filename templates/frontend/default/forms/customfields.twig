@@ -32,12 +32,21 @@
                 </label>
 
             {% elseif customfield['type'] == 1 %}
-                {{ form_check('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
-                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                <label>
+                    {% if customfield['required'] %}
+                        {{ form_checkbox('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                    {% else %}
+                        {{ form_check('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                    {% endif %}
+                </label>
 
             {% elseif customfield['type'] == 2 %}
-                {# Filler value for when the checklist is submitted with no values, do not delete! #}
-                <input type="hidden" name="customfield[{{ customfield['id'] }}][]" value="0" />
+                {% if not customfield['required'] %}
+                    {# Filler value for when the checklist is not required and submitted with no values, do not delete! #}
+                    <input type="hidden" name="customfield[{{ customfield['id'] }}][]" value="0" />
+                {% endif %}
                 {% for key, option in customfield['options'] %}
                     <label>
                         {{ form_checkbox('customfield[' ~ customfield['id'] ~ '][]', key,
@@ -82,12 +91,12 @@
                 {% endfor %}
 
             {% elseif customfield['type'] == 8 %}
-                {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                {{ form_text('customfield[' ~ customfield['id'] ~ ']', customfield['value'] is not null and not customfield['encrypted'] ? customfield['value'] : null,
                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled', 'style': 'width: 50%;'} : {'style': 'width: 50%;'})) }}
                 {% if customfield['value'] is not null and customfield['encrypted'] %}&nbsp; <span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
 
             {% elseif customfield['type'] == 9 %}
-                {{ form_redactor('customfield[' ~ customfield['id'] ~ ']', customfield['value'],
+                {{ form_redactor('customfield[' ~ customfield['id'] ~ ']', customfield['value'] is not null and not customfield['encrypted'] ? customfield['value'] : null,
                     (customfield['value'] is not empty and customfield['locked'] ? {'rows': 5, 'style': 'width:100%', 'disabled': 'disabled'} : {'rows': 5, 'style': 'width:100%'})) }}
                 {% if customfield['value'] is not null and customfield['encrypted'] %}&nbsp; <span class="light">({{ Lang.get('user.only_enter_to_change') }})</span>{% endif %}
 

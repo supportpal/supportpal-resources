@@ -47,11 +47,11 @@
         {% if isModuleEnabled('Selfservice') %}
             {% for type in selfserviceTypes %}
             <div class="desk_section">
-                <a href="{{ route('selfservice.index', { 'type': type.slug }) }}">
+                <a href="{{ type.url }}">
                     <img src="data:image/jpeg;base64, {{ type.icon }}" class="icon left"
                          width="48" alt="{{ type.name }}" />
                 </a>
-                <h4><a href="{{ route('selfservice.index', { 'type': type.slug }) }}">{{ type.name }}</a></h4>
+                <h4><a href="{{ type.url }}">{{ type.name }}</a></h4>
                 <p>{{ type.description }}</p>
             </div>
             {% endfor %}
@@ -63,7 +63,7 @@
 
                 <ul class="desk-tabs">
                     {% for type in types %}
-                        {% if type.show_on_dashboard %}
+                        {% if type.content == 0 and type.show_on_dashboard %}
                             <li id="{{ type.slug }}" {% if firstTab is not defined %} class="active" {% set firstTab = true %} {% endif %}>
                                 {% if type.view == 0 %}
                                     {{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}
@@ -77,7 +77,7 @@
 
                 <div class="desk-tabs-content">
                     {% for type in types %}
-                        {% if type.show_on_dashboard %}
+                        {% if type.content == 0 and type.show_on_dashboard %}
                             <div id="tab{{ type.slug }}" class="desk-tab {% if firstContent is defined %} hide {% else %} {% set firstContent = true %} {% endif %}">
                                 {% if type.view == 0 %}
                                     <h2 class="tab-title">{{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}</h2>

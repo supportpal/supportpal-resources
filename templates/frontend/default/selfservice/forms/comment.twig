@@ -24,7 +24,9 @@
         {{ form_textarea('text', null, { 'size': '50x3', 'placeholder': Lang.choice('selfservice.comment', 1) }) }}
     </div>
 
-    {% if Config.get('settings.comment_captcha') == 2 or (not auth_check() and Config.get('settings.comment_captcha') == 1) %}
+    {% if Config.get('settings.captcha_type') != 0
+        and (Config.get('settings.comment_captcha') == 2 or (not auth_check() and Config.get('settings.comment_captcha') == 1))
+    %}
         {{ Captcha.getHtml() }}
     {% endif %}
 

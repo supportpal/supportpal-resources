@@ -141,11 +141,9 @@
 
         </div>
 
-        {% if Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1) %}
-            <hr />
-
-            <h2>{{ Lang.get('core.captcha') }}</h2>
-
+        {% if Config.get('settings.captcha_type') != 0
+            and (Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1))
+        %}
             {{ Captcha.getHtml() }}
         {% endif %}
 
@@ -196,6 +194,12 @@
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+
+    {% if Config.get('settings.captcha_type') != 0
+        and (Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1))
+    %}
+        {{ Captcha.getJs() }}
+    {% endif %}
 
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}

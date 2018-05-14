@@ -200,6 +200,13 @@
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- Attachment previews -->
+    <link href="{{ asset_rev('resources/assets/libs/file-icon-vectors/file-icon-vivid.min.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/lightgallery/css/lightgallery.min.css') }}" />
+    <script src="{{ asset_rev('resources/assets/libs/lightgallery/js/lightgallery.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/lg-zoom/js/lg-zoom.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/lg-video/js/lg-video.min.js') }}"></script>
+
     <script type="text/javascript">
         var ticketNumber = "{{ ticket.number }}",
             closedStatusId = "{{ Config.get('settings.default_resolved_status') }}";

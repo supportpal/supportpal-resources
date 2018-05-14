@@ -18,6 +18,6 @@
 {% block content %}
 
     {# Show all articles with tag in this type #}
-    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'articles': articles } %}
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'articles': articles, 'show_pinned': type.view == 1 } %}
 
 {% endblock %}

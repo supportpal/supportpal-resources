@@ -7,6 +7,9 @@ $(document).ready(function() {
     // Enable hide / show password toggle
     callHideShowPassword();
 
+    // Load attachment previews
+    loadAttachmentPreviews($('.message'));
+
     // Ajax load messages.
     $(document).on('click', '.show_message', function (e) {
         e.preventDefault();
@@ -274,9 +277,59 @@ function showMessage(message) {
     // Show new message
     var message = $(message).insertAfter($('.message').last());
 
+    // Load attachment previews if needed
+    loadAttachmentPreviews(message);
+
     // Special effects
     message.css('border-left','3px solid #a4d0e9');
     setTimeout(function(){ message.css('border-left','0'); }, 10000);
     message.css('background','#e5f1f9');
     setTimeout(function(){ message.css('background',''); }, 10000);
+}
+
+
+/**
+ * Load attachment previews within message div if needed.
+ *
+ * @param $message
+ */
+function loadAttachmentPreviews(message) {
+    // Preview certain attachments
+    $(message).find(".attachments").lightGallery({
+        selector: '.attachment-preview',
+        counter: false
+    });
+
+    // Load preview image if it exists
+    $(message).find('span[data-preview-url]').each(function(index) {
+        var $this = $(this);
+
+        // Set it in image so it tries to download it
+        $('<img>').attr("src", $this.data('preview-url')).prependTo($(this));
+
+        // Handle image load/error
+        $(this).find('img').bind('load', function() {
+            // Handler for .load() called.
+            $this.find('.fa').remove();
+        }).bind('error', function() {
+            // If 404 or other error
+            // Replace preview link with download link
+            $this.parents('a').removeClass('attachment-preview').attr('href', $this.data('download-url'));
+            $this.parents('li').find('.preview-hover strong').html('<i class="fa fa-download"></i> &nbsp; '
+                + Lang.get('general.download'));
+
+            // Stop the lightbox working for this item
+            var $lg = $this.parents('.attachments');
+            $lg.data('lightGallery').destroy(true);
+            $lg.lightGallery({
+                selector: '.attachment-preview',
+                counter: false
+            });
+
+            // Show the default icon
+            $this.replaceWith('<span class="fiv-viv fiv-icon-' + $this.data('icon') + '"></span>');
+        })
+
+        $(this).removeAttr('data-preview-url');
+    });
 }

@@ -11,7 +11,7 @@ $(document).ready(function() {
 
         // Make call
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -47,7 +47,7 @@ $(document).ready(function() {
         var $this = $(this);
         $this.prop('disabled', 'disabled');
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -87,7 +87,7 @@ $(document).ready(function() {
         var $this = $(this);
         $this.prop('disabled', 'disabled');
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -191,7 +191,6 @@ $(document).ready(function() {
         // Clear textarea
         $(".add-comment").find('textarea').val('');
     });
-
 
     // Handles the rating of an article
     $('a.rate-article').on('click', function() {

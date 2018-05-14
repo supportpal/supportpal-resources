@@ -19,30 +19,82 @@
 
 	<div class="text">
 		{{ message.purified_text|raw }}
+	</div>
 
-        {% if not message.attachments.isEmpty() %}
-			<div class="attachments">
-				<h4 class="attachments-title">{{ Lang.choice('general.attachment', 2) }}</h4>
-				<ul class="attachments">
-					{% for attachment in message.attachments %}
-						<li {% if (message.by != 0) %}class="deletable"{% endif %}>
-							<a href='{{ attachment.direct_frontend_url }}'>
-								<i class="fa fa-paperclip"></i>
-								&nbsp;
-								{{ attachment.original_name }}
-								&nbsp;
-								<span class="light">({{ attachment.upload.size }})</span>
-							</a>{% if (message.by != 0) %}<i class="fa fa-times deleteAttachment"
+	{% if not message.attachments.isEmpty() %}
+		<div class="attachments">
+			<h4 class="attachments-title">{{ message.attachments.count() }} {{ Lang.choice('general.attachment', message.attachments.count()) }}</h4>
+			<ul>
+				{% for attachment in message.attachments %}
+					<li>
+						{% if (message.by != 0) %}
+							<div class="deleteAttachment" title="{{ Lang.get('general.delete') }}">
+								<i class="fa fa-times"
 								   data-url="{{ route('ticket.frontend.attachment.destroy') }}"
 								   data-token="{{ Input.get('token', '') }}"
 								   data-attachment-id="{{ attachment.id }}"
-								   data-hash="{{ attachment.upload_hash }}"></i>{% endif %}
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-    	{% endif %}
+								   data-hash="{{ attachment.upload_hash }}"></i>
+							</div>
+						{% endif %}
 
-    </div>
+						{% if attachment.upload.isPreviewable() %}
+							{% if attachment.upload.isPreviewableVideo() or attachment.upload.isPreviewableAudio() %}
+								<div class="hide" id="html5player-{{ attachment.id }}">
+									<video class="lg-video-object lg-html5" controls preload="none"
+										   {% if attachment.upload.isPreviewableAudio() %}poster="{{ asset_rev('resources/assets/libs/file-icon-vectors/icons/vivid/' ~ attachment.upload.icon ~ '.svg') }}"{% endif %}>
+										<source src="{{ attachment.previewFrontendUrl(true) }}"
+												type="{{ attachment.upload.mime }}">
+										Your browser does not support HTML5 audio/video.
+									</video>
+								</div>
+								<a class="attachment-preview" data-html="#html5player-{{ attachment.id }}"
+								   data-download-url="{{ attachment.direct_frontend_url }}">
+							{% else %}
+								<a {% if attachment.upload.isPreviewableImage() %}class="attachment-preview"{% else %}target="_blank"{% endif %}
+								   href="{{ attachment.previewFrontendUrl(true) }}"
+								   data-download-url="{{ attachment.direct_frontend_url }}">
+							{% endif %}
+						{% else %}
+							<a href="{{ attachment.direct_frontend_url }}">
+						{% endif %}
+							<div class="preview">
+								{% if attachment.upload.isPreviewableImage() %}
+									<span data-preview-url="{{ attachment.previewFrontendUrl() }}"
+										  data-download-url="{{ attachment.direct_frontend_url }}"
+										  data-icon="{{ attachment.upload.icon }}">
+										<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+									</span>
+								{% else %}
+									<span class="fiv-viv fiv-icon-{{ attachment.upload.icon }}"></span>
+								{% endif %}
+							</div>
+
+							<div class="name">
+								<span class="underline">{{ attachment.original_name }}</span>
+								&nbsp;<span class="light">({{ attachment.upload.size }})</span>
+							</div>
+
+							<div class="preview-hover hide">
+								<strong>
+									{% if attachment.upload.isPreviewable() %}
+										<i class="fa {% if attachment.upload.isPreviewableAudio() %}fa-headphones{% else %}fa-eye{% endif %}"></i>
+										&nbsp; {{ Lang.get('general.preview') }}
+									{% else %}
+										<i class="fa fa-download"></i> &nbsp; {{ Lang.get('general.download') }}
+									{% endif %}
+								</strong>
+								<br /><br />
+								<span class="fiv-viv fiv-icon-{{ attachment.upload.icon }} left"></span>
+								<span class="attachment-details left">
+									<span class="hover-name">{{ attachment.original_name }}</span>
+									<span class="light">{{ attachment.upload.size }}</span>
+								</span>
+							</div>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
 
 </div>

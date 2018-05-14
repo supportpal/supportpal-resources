@@ -16,7 +16,7 @@
 
 	{# Show all the parent categories #}
 
-    {% include 'frontend.' ~ template ~ '.selfservice.category_list' %}
+    {% include 'frontend.' ~ template ~ '.selfservice.category_list' with { 'categories': parent_categories } %}
 
 	{# Latest / Most Popular articles #}
 

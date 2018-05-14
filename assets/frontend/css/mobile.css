@@ -337,6 +337,11 @@ html {
         padding-bottom: 20px;
     }
 
+    .attachments li {
+        margin-right: 0;
+        width: 100%;
+    }
+
     ul.comments > li {
         margin-top: 20px;
         padding-top: 20px;

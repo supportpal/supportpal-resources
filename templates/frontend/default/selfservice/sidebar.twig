@@ -8,8 +8,8 @@
                     {% if category.count is not empty %}
                         <span class="badge">{{ category.count }}</span>
                     {% endif %}
-                    <div class="nav-item">
-                        {{ category.name }}
+                    <div class="nav-item" {% if currentCategory is not empty and currentCategory == category.id %}style="font-weight: bold;"{% endif %}>
+                        {{ category.dashes|raw }}&nbsp;{{ category.name }}
                     </div>
                 </a>
             </li>

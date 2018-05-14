@@ -30,28 +30,30 @@
 
     {# Stats (date, category name, views) #}
     <ul class="details light">
-        <li>
-            <i class="fa fa-calendar-o"></i> {{ formatDate(article.created_at) }}
-        </li>
+        {% if article.published %}
+            <li>
+                <i class="fa fa-calendar-o"></i> {{ formatDate(article.published_at) }}
+            </li>
+        {% endif %}
         {% if not article.categories.isEmpty() %}
-        <li>
-            <i class="fa fa-folder-o"></i>
-            <ul class="item-list">
-                {% for category in article.categories.sortBy('name') %}
-                <li><a href="{{ category.frontend_url }}">{{ category.name }}</a></li>
-                {% endfor %}
-            </ul>
-        </li>
+            <li>
+                <i class="fa fa-folder-o"></i>
+                <ul class="item-list">
+                    {% for category in article.categories.sortBy('name') %}
+                    <li><a href="{{ category.frontend_url }}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endif %}
         {% if not article.tags.isEmpty() %}
-        <li>
-            <i class="fa fa-tag"></i>
-            <ul class="item-list">
-                {% for tag in article.tags.sortBy('name') %}
-                <li><a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
-                {% endfor %}
-            </ul>
-        </li>
+            <li>
+                <i class="fa fa-tag"></i>
+                <ul class="item-list">
+                    {% for tag in article.tags.sortBy('name') %}
+                    <li><a href="{{ route('selfservice.tag', { 'type': type.slug, 'slug': tag.slug }) }}">{{ tag.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endif %}
     </ul>
 
@@ -66,15 +68,14 @@
 
     <!-- Attachments -->
     {% if not article.getAttachments().isEmpty() %}
-        <h4>{{ Lang.choice('general.attachment', 2) }}</h4>
+        <h4 class="attachments-title">{{ Lang.choice('general.attachment', 2) }}</h4>
         <ul class="attachments">
             {% for attachment in article.getAttachments() %}
                 <li>
                     <a href='{{ attachment.downloadLink(type) }}'>
-                        <i class="fa fa-paperclip"></i>
-                        &nbsp;
-                        {{ attachment.original_name }}
-                        &nbsp;<span class="light">({{ attachment.upload.size }})</span>
+                        <span class="fiv-viv fiv-icon-{{ attachment.upload.icon }} left"></span>
+                        <div>{{ attachment.original_name }}</div>
+                        <span class="light">{{ attachment.upload.size }}</span>
                     </a>
                 </li>
             {% endfor %}
@@ -154,6 +155,8 @@
             {% if Config.get('settings.comment_write') == 0 or auth_check() %}
                 <h3 class="margin0">{{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.comment', 1)}) }}</h3>
                 {% include 'frontend.' ~ template ~ '.selfservice.forms.comment' with { type: type.id } %}
+            {% else %}
+                <p class="light">{{ Lang.get('selfservice.login_to_comment') }}</p>
             {% endif %}
 
             {% if article.comments is not empty %}
@@ -204,10 +207,20 @@
         var typeId = {{ type.id }};
         var loggedIn = {{ auth_check() ? 'true' : 'false' }};
         var showRatings = "{{ Config.get('settings.rating_show') }}";
+        var commentRoute = "{{ route('selfservice.comment') }}";
     </script>
+
+    <!-- Attachment file icons -->
+    <link href="{{ asset_rev('resources/assets/libs/file-icon-vectors/file-icon-vivid.min.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/article.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/article-print.css') }}">
+
+    {% if Config.get('settings.captcha_type') != 0
+        and (Config.get('settings.comment_captcha') == 2 or (not auth_check() and Config.get('settings.comment_captcha') == 1))
+    %}
+        {{ Captcha.getJs() }}
+    {% endif %}
 
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}

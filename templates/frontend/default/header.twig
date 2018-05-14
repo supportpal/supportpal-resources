@@ -13,6 +13,10 @@
 
     <title>{{ company }} - {% block title %}{{ Lang.get('general.support_portal') }}{% endblock %}</title>
 
+    {% if Config.get('settings.favicon') is not empty %}
+        <link rel="icon" type="image/png" href="{{ Config.get('settings.favicon') }}" sizes="32x32" />
+    {% endif %}
+    
     <script src="{{ asset_rev('resources/assets/frontend/js/jquery.min.js') }}" type="text/javascript"></script>
     <link href="{{ asset_rev('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset_rev('resources/assets/libs/jquery-ui/js/jquery-ui.min.js') }}"></script>
@@ -22,6 +26,16 @@
     <link href="{{ asset_rev('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/frontend/css/mobile.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+
+    {# Brand styling - delete these blocks if you don't want to apply the automatic brand colour styling. #}
+    {% if Input.has('preview') or Session.has('preview_colour') %}
+        <link href="{{ route('core.frontend.preview', Input.get('preview', Session.get('preview_colour'))) }}?v={{ 'now'|date('U') }}"
+              rel="stylesheet" type="text/css" />
+    {% elseif frontendCSS is not empty %}
+        <style>
+            {{ frontendCSS|raw }}
+        </style>
+    {% endif %}
 
     {% set route = Route.currentRouteName() %}
 </head>
@@ -46,7 +60,11 @@
             </div>
         {% endif %}
 
-        <a href="{{ route('core.frontend.home') }}">
+        {% set frontend_logo_url = route('core.frontend.home') %}
+        {% if Config.get('settings.frontend_logo_url') is not empty %}
+            {% set frontend_logo_url = Config.get('settings.frontend_logo_url') %}
+        {% endif %}
+        <a href="{{ frontend_logo_url }}">
             <img src="{{ get_logo() }}" alt="{{ company }}" class="logo" />
         </a>
 

@@ -19,7 +19,7 @@
 
             {%
                 include 'frontend.' ~ template ~ '.selfservice.article_list'
-                with { 'articles': type.articles, 'type': type, 'noRssFeed': true }
+                with { 'articles': type.articles, 'type': type, 'noRssFeed': true, 'show_pinned': type.view == 1 }
             %}
         {% endif %}
     {% endfor %}
