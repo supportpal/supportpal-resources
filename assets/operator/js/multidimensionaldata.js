@@ -36,7 +36,9 @@ $(document).ready(function() {
             });
 
             // Initialise redactor on new textarea.
-            newElem.find('textarea:not(.not-redactor)').redactor($.extend($.Redactor.default_opts, opts));
+            if (newElem.find('textarea:not(.not-redactor)').length > 0) {
+                newElem.find('textarea:not(.not-redactor)').redactor($.extend($.Redactor.default_opts, opts));
+            }
             
             // Initialise file upload.
             if (typeof FileUpload !== 'undefined' && newElem.find('.fileupload').length > 0) {
@@ -75,6 +77,9 @@ $(document).ready(function() {
             if (Object.keys(this.options).length === 0) {
                 this.$input.parents('.form-container').hide();
             }
+            
+            // Trigger DOM event.
+            $container.trigger('multidimensionaldata:added', [ newElem ]);
         }
     });
 

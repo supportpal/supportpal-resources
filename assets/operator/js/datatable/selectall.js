@@ -27,6 +27,11 @@ $(function () {
             $('input[name="select-all"]').prop('checked', false);
 
             $(this).find('input[type=checkbox]').prop('disabled', false);
+
+            var table = $('.dataTable').dataTable().api().table();
+            if (typeof table.fixedHeader !== 'undefined') {
+                table.fixedHeader.disable();
+            }
         } )
 
         // Disable checkboxes before every AJAX request.
@@ -61,11 +66,18 @@ $(function () {
                     }
                 }
 
-                // Re-enable buttons if at least one row is selected
+                // Re-enable buttons (and make footer stick in some situations) if at least one row is selected
+                var table = $('.dataTable').dataTable().api().table();
                 if ($('tr.selected').length) {
                     $('.ticket-options :input').prop('disabled', false);
+                    if (typeof table.fixedHeader !== 'undefined') {
+                        table.fixedHeader.enable($(window).height() > 600 && $(window).width() > 768);
+                    }
                 } else {
                     $('.ticket-options :input').prop('disabled', true);
+                    if (typeof table.fixedHeader !== 'undefined') {
+                        table.fixedHeader.disable();
+                    }
                 }
             }
         })

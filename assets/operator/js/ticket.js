@@ -9,6 +9,14 @@ function Ticket(parameters)
     "use strict";
 
     /**
+     * Copy Link message identifiers.
+     *
+     * @type {string}
+     */
+    var NOTES_PLACEHOLDER = $('meta[name="notes-url-id"]').prop('content'),
+        MESSAGE_PLACEHOLDER = $('meta[name="messages-url-id"]').prop('content');
+
+    /**
      * Message drafts.
      *
      * @type {{newMessage: null, newNote: null, newForward: null}}
@@ -286,6 +294,9 @@ function Ticket(parameters)
                     // We must do this after the content has been made visible to the user!
                     ticket.removeExpandable($messageContainer);
 
+                    // Load attachment previews if needed.
+                    ticket.loadAttachmentPreviews($messageContainer);
+
                     // Load redactor for edit-message if not already loaded
                     if (! $messageContainer.find('textarea').parents('.redactor-box').length) {
                         redactor($messageContainer.find('textarea'));
@@ -311,6 +322,9 @@ function Ticket(parameters)
             // Remove expandable if there's no other text visible.
             ticket.removeExpandable($messageContainer);
 
+            // Load attachment previews if needed.
+            ticket.loadAttachmentPreviews($messageContainer);
+
             // Run success callback if exists.
             typeof successCallback === 'function' && successCallback();
         }
@@ -319,29 +333,25 @@ function Ticket(parameters)
     /**
      * Scroll to a message in the view.
      *
-     * @param id
+     * @param $message
      */
-    this.scrollToMessage = function(id)
+    this.scrollToMessage = function($message)
     {
-        if (document.getElementById(id) !== null) {
-            var $message = $('#' + id);
+        // AJAX load the message into the view.
+        ticket.loadMessage($message);
 
-            // AJAX load the message into the view.
-            ticket.loadMessage($message);
-
-            // Toggle collapsed state.
-            if ($message.hasClass('collapsed')) {
-                $message.toggleClass('collapsible collapsed').find('.text').children('.original, .trimmed').toggle();
-            }
-
-            // Scroll to the right position, offset based on what is showing.
-            var position = $message.offset().top - $('.ticket-viewing:visible').outerHeight();
-            if ($(window).height() > 720) {
-                position = position - $('#header').outerHeight() - $('.quick-actions').outerHeight();
-            }
-
-            $('html, body').animate({scrollTop: position}, 1000);
+        // Toggle collapsed state.
+        if ($message.hasClass('collapsed')) {
+            $message.toggleClass('collapsible collapsed').find('.text').children('.original, .trimmed').toggle();
         }
+
+        // Scroll to the right position, offset based on what is showing.
+        var position = $message.offset().top - $('.ticket-viewing:visible').outerHeight();
+        if ($(window).height() > 720) {
+            position = position - $('#header').outerHeight() - $('.quick-actions').outerHeight();
+        }
+
+        $('html, body').animate({scrollTop: position}, 1000);
     };
 
     /**
@@ -622,6 +632,50 @@ function Ticket(parameters)
     };
 
     /**
+     * Check whether a message with the ID exists.
+     *
+     * @param id
+     * @returns {boolean}
+     */
+    this.getMessage = function (id)
+    {
+        // id should be in the format notes-%ID% so we need to split it into those two components.
+        var components = id.split('-');
+        if (components.length !== 2) {
+            return false;
+        }
+
+        // Check whether a note (displayed at the top) or a message has been requested.
+        var notesOnly = components[0].toUpperCase() === NOTES_PLACEHOLDER.replace('-%ID%', '').toUpperCase();
+
+        // Get messages.
+        var messages = $('.message-' + components[1]).filter(function() {
+            var len = $(this).prevAll('.messages-header').length;
+
+            return notesOnly ? len === 0 : len > 0;
+        });
+
+        return messages.length >= 1 ? messages.first() : false;
+    };
+
+    /**
+     * Get message ID for Copy Link functionality.
+     *
+     * @param $message
+     * @returns {string}
+     */
+    this.getId = function ($message)
+    {
+        // If the .messages-header doesn't exist in the previous siblings then we've been given
+        // a note that's displayed at the top of the page.
+        if ($message.prevAll('.messages-header').length === 0) {
+            return NOTES_PLACEHOLDER.replace('%ID%', $message.data('id'))
+        } else {
+            return MESSAGE_PLACEHOLDER.replace('%ID%', $message.data('id'));
+        }
+    };
+
+    /**
      * Remove expandable if there's no content before it.
      *
      * @param $message
@@ -703,7 +757,7 @@ function Ticket(parameters)
                 $message.find('.attachments ul li').each(function (index, attachment) {
                     var $attachment = $(attachment),
                         size = $attachment.find('.deleteAttachment').data('size'),
-                        filename = $attachment.find('a').html().trim();
+                        filename = $attachment.find('.hover-name').text().trim();
 
                     // If we've gone above the cumulative file size, don't attach any more.
                     forwardFileUpload.incrementTotalUploadedFileSize(size);
@@ -773,6 +827,53 @@ function Ticket(parameters)
             setTimeout(function() {
                 ticket.setForwardDraft($('.forward-form textarea:not(.CodeMirror textarea):eq(0)').redactor('code.get'));
             }, 1000);
+        });
+    }
+
+    /**
+     * Load attachment previews within message div if needed.
+     *
+     * @param $message
+     */
+    this.loadAttachmentPreviews = function ($message)
+    {
+        // Preview certain attachments
+        $($message).find(".attachments").lightGallery({
+            selector: '.attachment-preview',
+            counter: false
+        });
+
+        // Load preview image if it exists
+        $($message).find('span[data-preview-url]').each(function(index) {
+            var $this = $(this);
+
+            // Set it in image so it tries to download it
+            $('<img>').attr("src", $this.data('preview-url')).prependTo($(this));
+
+            // Handle image load/error
+            $(this).find('img').bind('load', function() {
+                // Handler for .load() called.
+                $this.find('.fa').remove();
+            }).bind('error', function() {
+                // If 404 or other error
+                // Replace preview link with download link
+                $this.parents('a').removeClass('attachment-preview').attr('href', $this.data('download-url'));
+                $this.parents('li').find('.preview-hover strong').html('<i class="fa fa-download"></i> &nbsp; '
+                    + Lang.get('general.download'));
+
+                // Stop the lightbox working for this item
+                var $lg = $this.parents('.attachments');
+                $lg.data('lightGallery').destroy(true);
+                $lg.lightGallery({
+                    selector: '.attachment-preview',
+                    counter: false
+                });
+
+                // Show the default icon
+                $this.replaceWith('<span class="fiv-viv fiv-icon-' + $this.data('icon') + '"></span>');
+            })
+
+            $(this).removeAttr('data-preview-url');
         });
     }
 }
@@ -1160,46 +1261,69 @@ $(document).ready(function() {
     /*
      * Update subject
      */
-    var subject = $('.subject').text();
+    var subject = $('.edit-subject').val(),
+        updateSubject = function (context) {
+            // Only update if different
+            if (subject !== $(context).val()) {
+                // Hide input and show new subject
+                $(context).hide();
+                $('.subject').text($(context).val()).show();
+                
+                // Post data to perform action
+                var url = laroute.route('ticket.operator.ticket.updateSubject', { id: ticketId });
+                $.post(url, { subject: $(context).val() })
+                    .done(function (response) {
+                        if (response.status == 'success') {
+                            $('.ticket-update.success').show(500).delay(5000).hide(500);
+                            // Update subject
+                            subject = $('.edit-subject').val();
+                        } else {
+                            $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                            // Show old subject
+                            $('.subject').text(subject);
+                        }
+                    })
+                    .fail(function () {
+                        $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                        // Show old subject
+                        $('.subject').text(subject);
+                    });
+            } else {
+                // Hide input and show old subject
+                $(context).hide();
+                $('.subject').show();
+            }
+        };
 
     // Show edit input
     $('.subject').click(function() {
-        $(this).hide();
-        $('.edit-subject').show().focus();
+        var self = this;
+        setTimeout(function() {
+            var selectedText = "";
+            if (document.selection && document.selection.createRange) {
+                selectedText = document.selection.createRange().text || "";
+            }
+            if (window.getSelection) {
+                selectedText = window.getSelection().toString();
+            }
+            
+            // If they haven't selected any text, then show the edit form.
+            if (selectedText === "") {
+                $(self).hide();
+                $('.edit-subject').show().focus();
+            }
+        }, 250);
     });
 
-    // Perform update
-    $('.edit-subject').focusout(function() {
-        // Only update if different
-        if (subject !== $(this).val()) {
-            // Hide input and show new subject
-            $(this).hide();
-            $('.subject').text($(this).val()).show();
-            // Post data to perform action
-            $.post(
-                laroute.route('ticket.operator.ticket.updateSubject', { id: ticketId }),
-                { subject: $(this).val() },
-            function(response) {
-                if (response.status == 'success') {
-                    $('.ticket-update.success').show(500).delay(5000).hide(500);
-                    // Update subject
-                    subject = $('.edit-subject').val();
-                } else {
-                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                    // Show old subject
-                    $('.subject').text(subject);
-                }
-            }, "json").fail(function() {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
-                // Show old subject
-                $('.subject').text(subject);
-            });
-        } else {
-            // Hide input and show old subject
-            $(this).hide();
-            $('.subject').show();
-        }
-    });
+    $('.edit-subject')
+        .on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                updateSubject(this);
+            }
+        })
+        .on('focusout', function () {
+            updateSubject(this);
+        });
     /*
      * END update subject
      */
@@ -1262,23 +1386,22 @@ $(document).ready(function() {
      * Scroll to message
      */
     var hash = window.location.hash.substring(1),
+        $message = ticket.getMessage(hash),
         scrollToMessage = false;
-    if ((hash.indexOf($('meta[name="messages-url-id"]').prop('content').replace('%ID%', '')) !== -1
-        || hash.indexOf($('meta[name="notes-url-id"]').prop('content').replace('%ID%', '')) !== -1)
-        && document.getElementById(hash) !== null
-    ) {
+    if ($message !== false) {
         // Remove the collapsed class if the URL wants to scroll to a specific message (/view/18#message-2).
         scrollToMessage = true;
 
         // Wait 1 seconds to start, due to page moving about
         setTimeout(function() {
-            ticket.scrollToMessage(hash);
+            ticket.scrollToMessage($message);
         }, 1000);
     }
 
     $(document).on('click', '.link-message', function(event) {
         var $message = $(this).parents('.message'),
-            id = $message.attr('id');
+            id = ticket.getId($message),
+            url = laroute.route('ticket.operator.ticket.show', {'view': ticketId}) + '#' + id;
 
         // Don't expand or collapse message, but close dropdown
         event.stopPropagation();
@@ -1290,12 +1413,12 @@ $(document).ready(function() {
         $('html, body').scrollTop(scrollmem);
 
         // Scroll to message
-        ticket.scrollToMessage(id);
+        ticket.scrollToMessage($message);
 
         // Copy URL
         var $temp = $("<input>");
         $('body').append($temp);
-        $temp.val($message.data('url')).select();
+        $temp.val(url).select();
         document.execCommand('copy');
         $temp.remove();
     });
@@ -1399,6 +1522,14 @@ $(document).ready(function() {
      */
 
     /*
+     * Show ticket attachment previews
+     */
+    ticket.loadAttachmentPreviews($('.message.collapsible'));
+    /*
+     * END Show ticket attachment previews
+     */
+
+    /*
      * Saving drafts automatically
      */
     function saveDraft($form, type) {
@@ -1413,21 +1544,29 @@ $(document).ready(function() {
             ticket.setMessageDraft(message);
         }
 
+        // Make AJAX data.
+        var data = {
+            ticket: [ ticketId ],
+            reply_type: type,
+            is_draft: 1,
+            text: message,
+            from_address: type == '2' ? $form.find('select[name="from_address"]').val() : null,
+            to_address: type == '2' ? $form.find('select[name="to_address[]"]').val() : null,
+            cc_address: type == '2' ? $form.find('select[name="cc_address[]"]').val() : null,
+            bcc_address: type == '2' ? $form.find('select[name="bcc_address[]"]').val() : null,
+            subject: type == '2' ? $form.find('input[name="subject"]').val() : null
+        };
+        
+        // Add attachments to AJAX data.
+        $($form.find('input[name^="attachment["]:not(:disabled)').serializeArray()).each(function(index, obj) {
+            data[obj.name] = obj.value;
+        });
+
         // Call the ajax to save draft
         $.ajax({
             method: 'POST',
             url: laroute.route('ticket.operator.message.store'),
-            data: {
-                ticket: [ ticketId ],
-                reply_type: type,
-                is_draft: 1,
-                text: message,
-                from_address: type == '2' ? $form.find('select[name="from_address"]').val() : null,
-                to_address: type == '2' ? $form.find('select[name="to_address[]"]').val() : null,
-                cc_address: type == '2' ? $form.find('select[name="cc_address[]"]').val() : null,
-                bcc_address: type == '2' ? $form.find('select[name="bcc_address[]"]').val() : null,
-                subject: type == '2' ? $form.find('input[name="subject"]').val() : null
-            },
+            data: data,
             success: function(response) {
                 if (typeof response.status !== 'undefined' && response.status == 'success') {
                     // Show saved message
@@ -2265,14 +2404,7 @@ function htmlDecodeWithLineBreaks(html) {
 
 function showMessage(html) {
     // Add message to right place
-    var message,
-        code = $(html),
-        noteUrlId = $('meta[name="notes-url-id"]').prop('content'),
-        messageUrlId = $('meta[name="messages-url-id"]').prop('content'),
-        setUrlProp = function ($code, placeholder) {
-            $code.prop('id', placeholder.replace('%ID%', $code.data('id')));
-            $code.data('url', $code.data('url').replace(/#$/, '#' + $code.prop('id')));
-        };
+    var message, code = $(html);
 
     // Make the message visible.
     code.removeClass('collapsed').addClass('collapsible');
@@ -2281,10 +2413,6 @@ function showMessage(html) {
 
     // Remove expandable if appropriate.
     ticket.removeExpandable(code);
-    
-    // Clone the code object now we've manipulated it, otherwise if we call setUrlProp twice then it
-    // will overwrite the original code variable.
-    var codeCopy = code.clone();
 
     // It's a note
     if (code.hasClass('note')) {
@@ -2295,30 +2423,23 @@ function showMessage(html) {
             if (replyOrder == 'ASC') {
                 // Check if notes already exist.
                 var place = $('.note')[0] ? $('.messages-header').prev('.note') : $('.notes-header');
-                setUrlProp(code, noteUrlId);
-                message = code.insertAfter(place);
 
                 // Also want to add to end of message area
                 if (notesPosition === 0) {
-                    setUrlProp(codeCopy, messageUrlId);
-                    message = message.add(codeCopy.insertAfter($('.message').last()));
+                    place = place.add($('.message').last());
                 }
+
+                message = code.insertAfter(place);
             } else {
                 if (notesPosition === 0) {
                     // Show in both notes and messages blocks
-                    setUrlProp(code, noteUrlId);
-                    message = code.insertAfter('.notes-header');
-                    setUrlProp(codeCopy, messageUrlId);
-                    message = message.add(codeCopy.insertAfter('.messages-header'));
+                    message = code.insertAfter('.notes-header, .messages-header');
                 } else {
                     // Only show in notes block
-                    setUrlProp(code, noteUrlId);
                     message = code.insertAfter('.notes-header');
                 }
             }
         } else {
-            setUrlProp(code, messageUrlId);
-            
             if (replyOrder == 'ASC') {
                 message = code.insertAfter($('.message').last());
             } else {
@@ -2327,8 +2448,6 @@ function showMessage(html) {
         }
     } else {
         // It's a message
-        setUrlProp(code, messageUrlId);
-        
         // Determine where to put the message
         if (replyOrder == 'ASC') {
             message = code.insertAfter($('.message').last());
@@ -2336,6 +2455,9 @@ function showMessage(html) {
             message = code.insertAfter('.messages-header');
         }
     }
+
+    // Load attachment previews if needed.
+    ticket.loadAttachmentPreviews(message);
 
     // Special effects
     message.css('border-left','2px solid #a4d0e9');
@@ -2525,16 +2647,9 @@ function changeDepartment(data) {
 }
 
 function deleteTicket(block) {
-    var type, route, relations = [
-        Lang.choice('general.message', 2),
-        Lang.choice('general.attachment', 2),
-        Lang.get('report.user_feedback')
-    ];
-    if (timeTrackingEnabled) {
-        relations.push(Lang.get('TimeTracking::lang.time_tracking'));
-    }
+    var type, route;
 
-    var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 1), '', relations);
+    var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 1), '', deleteRelations);
     if (block == true) {
         type = 'POST';
         route = laroute.route('ticket.operator.action.block');

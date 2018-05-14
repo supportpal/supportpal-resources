@@ -5,10 +5,18 @@
 {% endblock %}
 
 {% block title %}
-    {{ Lang.choice("user.organisation", 2) }}
+    {% if title|default is not empty %}
+        {{ title }}
+    {% else %}
+        {{ Lang.choice("user.organisation", 2) }}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
+
+    {% if customSearch %}
+        {% include 'operator.' ~ template ~ '.core.search_tabs' %}
+    {% endif %}
 
 	<div class="success box delete hide">
         {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('user.organisation', 1), 'UTF-8') }) }}

@@ -28,6 +28,7 @@
     </div>
     <div class="fail task-run box hide">
         {{ Lang.get('core.task_failed') }}
+        <span class="error-message hide"></span>
     </div>
 
 	<div class="grid-options options box">
@@ -89,6 +90,11 @@
                         $('.task-run.success').show(500).delay(5000).hide(500);
                     } else {
                         $('.task-run.fail').show(500).delay(5000).hide(500);
+                        if (response.message) {
+                            $('.task-run.fail .error-message').show().html('<br />' + response.message);
+                        } else {
+                            $('.task-run.fail .error-message').hide();
+                        }
                     }
                 })
                 .fail(function() {

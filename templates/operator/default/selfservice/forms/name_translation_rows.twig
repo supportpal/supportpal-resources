@@ -1,0 +1,23 @@
+{% set attributes = hide|default is not empty ? { 'disabled': 'disabled' } : [] %}
+
+<div>
+    <div class="form-row">
+        {{ form_label(elements.name.name, Lang.get('general.name')) }}
+        <div class="input-container name-input translatable small-translatable">
+            {{ form_text(elements.name.name, elements.name.value, attributes) }}
+        </div>
+    </div>
+
+    <div class="form-row form-full slug {% if hide_slug or elements.slug.value is empty %}not-edited hide{% endif %}">
+        {{ form_label(elements.slug.name, Lang.get('selfservice.slug')) }}
+        <div class="input-container translatable small-translatable">
+            <span class="slug-text">{{ elements.slug.value }}</span><!--
+            -->&nbsp;&nbsp;&nbsp;<a class="edit-slug"><i class='fa fa-pencil'></i></a>
+            {{ form_text(elements.slug.name, elements.slug.value, attributes|merge({'style': 'visibility: hidden; width: 1px;'})) }}
+            {% if elements.slug.name == 'slug' %}
+                <br />
+                <span class="description">{{ Lang.get('selfservice.slug_desc') }}</span>
+            {% endif %}
+        </div>
+    </div>
+</div>

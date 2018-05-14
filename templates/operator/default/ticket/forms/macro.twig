@@ -48,6 +48,24 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                {{ form_label('public', Lang.get('general.public')) }}
+                <div class="input-container">
+                    {{ form_check('public', 1, record.user_id|default is empty, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                    <label for="toggle_public"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.record_public_desc', { 'record': mb_strtolower(Lang.choice('ticket.macro', 1), 'UTF-8') }) }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full usergroups">
+                {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+                <div class="input-container">
+                    {{ form_select('groups[]', operatorGroups, record.groups.pluck('id').all(), { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.record_group_desc', { 'record': mb_strtolower(Lang.choice('ticket.macro', 1), 'UTF-8') }) }}</span>
+                </div>
+            </div>
+
         </div>
 
         <h2>{{ Lang.get('ticket.macro_condition') }}</h2>
@@ -160,6 +178,7 @@
 
     <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/visibility.js') }}"></script>
 
     <!-- Date picker -->
     <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>

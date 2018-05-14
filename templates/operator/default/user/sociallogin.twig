@@ -1,0 +1,37 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('user.social_login') }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        {% for key, provider in providers %}
+            <div class="item item50">
+                <div class="cleanup-box">
+                    <div style="height: 40px;">
+                        <img src="{{ provider.image }}" alt="{{ provider.name }}" style="max-width: 200px;" />
+                    </div>
+                    <p>{{ Lang.get('user.social_login_provider_desc', {'provider': provider.name }) }}</p>
+                    <a class="button {% if activeProviders.contains('name', key) %}button-submit{% endif %}" href="{{ route('user.operator.sociallogin.edit', key) }}">
+                        {% if activeProviders.contains('name', key) %}
+                            {{ Lang.get('general.manage') }}
+                        {% else %}
+                            {{ Lang.get('general.activate') }}
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+            {% if loop.index is divisible by(2) %}
+                </div>
+                <div class="row" style="margin-top: 25px;">
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

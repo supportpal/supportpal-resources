@@ -3,8 +3,21 @@
 <div class="article">
     <div class="form-row form-full">
         {{ form_label(elements.title.name, Lang.get('selfservice.title')) }}
-        <div class="input-container">
+        <div class="input-container name-input">
             {{ form_text(elements.title.name, elements.title.value, attributes) }}
+        </div>
+    </div>
+
+    <div class="form-row form-full slug {% if hide_slug or elements.slug.value is empty %}not-edited hide{% endif %}">
+        {{ form_label(elements.slug.name, Lang.get('selfservice.slug')) }}
+        <div class="input-container">
+            <span class="slug-text">{{ elements.slug.value }}</span><!--
+            -->&nbsp;<a class="edit-slug"><i class='fa fa-pencil'></i></a>
+            {{ form_text(elements.slug.name, elements.slug.value, attributes|merge({'style': 'visibility: hidden; width: 1px;'})) }}
+            {% if elements.slug.name == 'slug' %}
+                <br />
+                <span class="description">{{ Lang.get('selfservice.slug_desc') }}</span>
+            {% endif %}
         </div>
     </div>
     
@@ -33,7 +46,8 @@
                     'input_name': elements.attachments.name,
                     'route': 'selfservice.operator.attachment',
                     'downloadRoute': 'selfservice.operator.attachment.download',
-                    'attachments': elements.attachments.value
+                    'attachments': elements.attachments.value,
+                    'deleteFromServer': clone is not empty ? false : true
                 }
             %}
         </div>

@@ -1,143 +1,144 @@
-<!DOCTYPE html>
-<html>
+{% extends 'operator.' ~ template ~ '.user.login-master' %}
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% block scripts_header %}
+    <style>
+        .wrapper {
+            min-width: 400px;
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
 
-    <title>{% block title %}{{ Lang.get('core.product_name') }} - {{ Lang.get('core.operator_panel') }}{% endblock %}</title>
+{% block content_title %}
+    <h1>{{ Lang.get('license.license_invalid') }}</h1>
+{% endblock %}
 
-    <!-- CSS -->
-    <link href="{{ asset_rev('resources/assets/operator/css/login.css') }}" rel="stylesheet" type="text/css" />
+{% block content %}
+    <div class="white-box">
 
-    <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
-    <meta name="application-name" content="SupportPal"/>
-    <meta name="msapplication-TileColor" content="#FFFFFF" />
-    <meta name="msapplication-TileImage" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
-    <meta name="msapplication-square70x70logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
-    <meta name="msapplication-square150x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
-    <meta name="msapplication-wide310x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
-    <meta name="msapplication-square310x310logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+        <noscript class="error" style="display: block">
+            {{ Lang.get('core.javascript_required') }}
+        </noscript>
 
-    <!-- Javascript -->
-    <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
-    <script src="{{ asset_rev('resources/assets/operator/js/main.js') }}" type="text/javascript"></script>
+        {% if Session.has('error') and errors|default is empty and not errors.has() %}
+            <div class="error">{{ Session.get('error') }}</div>
+        {% endif %}
+        {% if Session.has('success') %}
+            <div class="success">{{ Session.get('success') }}</div>
+        {% endif %}
 
-    <!-- Laravel Javascript Validation -->
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
-
-    {% block scripts_header %}{% endblock %}
-</head>
-
-<body>
-
-    <div class="container">
-
-        <div class="wrapper" style="min-width: 400px; max-width: 400px;">
-
-            <img src="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}"
-                 alt="{{ Lang.get('core.product_name') }}" width="72" />
-
-            <h1>{{ Lang.get('license.license_invalid') }}</h1>
-
-            <div class="white-box">
-
-                {% if Session.has('error') and errors|default is empty and not errors.has() %}
-                    <div class="error">{{ Session.get('error') }}</div>
-                {% endif %}
-                {% if Session.has('success') %}
-                    <div class="success">{{ Session.get('success') }}</div>
-                {% endif %}
-
-                {% if errors|default is not empty and errors.has() %}
-                    <div class="error box">
-                        <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-                        {% for error in errors.all() %}
-                            {{ error }}<br />
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                <div style="text-align:left;">
-
-                    {% if licenseResponse is not empty %}
-                        <h3 style="margin-top: 0">{{ Lang.get('license.server_response') }}: </h3>
-                        {{ licenseResponse }}<br />
-                    {% else %}
-                        <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
-                        <ul>
-                            {% for reason in licenseStatusReasons %}
-                            <li>{{ reason }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-
-                    <br />
-
-                    {{ Lang.get('license.need_to_reissue')|raw }}
-
-                    <a href="{{ route('core.operator.dashboard') }}" class="button primary">
-                        {{ Lang.get('general.retry') }}
-                    </a>
-
-                    <a class="license-key button">{{ Lang.get('license.enter_new_key') }}</a>
-
-                    <div class="enter-license" style="display: none;">
-
-                        <hr />
-
-                        <h3>{{ Lang.get('license.new_key') }}</h3>
-
-                        <p>{{ Lang.get('license.enter_key') }}</p>
-
-                        {{ form_open({ 'method': 'POST', 'route': 'core.operator.license.update' }) }}
-
-                            {{ csrf_field() }}
-                            {{ form_text('license_key', null, {'placeholder': Lang.get('license.license_key')}) }}
-
-                            {{ form_submit(Lang.get('license.submit')) }}
-
-                        {{ form_close() }}
-
-                    </div>
-
-                </div>
-
+        {% if errors|default is not empty and errors.has() %}
+            <div class="error box">
+                <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
+                {% for error in errors.all() %}
+                    {{ error }}<br />
+                {% endfor %}
             </div>
+        {% endif %}
 
-            <div id="forgotbox">
-                <a href="http://www.supportpal.com/manage/" target="_blank">{{ Lang.get('license.assistance') }}</a>
+        <div style="text-align:left;">
+
+            {% if licenseResponse is not empty %}
+                <h3 style="margin-top: 0">{{ Lang.get('license.server_response') }}: </h3>
+                {{ licenseResponse }}<br />
+            {% else %}
+                <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
+                <ul>
+                    {% for reason in licenseStatusReasons %}
+                    <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <br />
+
+            {{ Lang.get('license.need_to_reissue')|raw }}
+
+            <button class="button retry primary">{{ Lang.get('general.retry') }}</button>
+
+            <a class="license-key button">{{ Lang.get('license.enter_new_key') }}</a>
+
+            <div class="enter-license" style="display: none;">
+
+                <hr />
+
+                <h3>{{ Lang.get('license.new_key') }}</h3>
+
+                <p>{{ Lang.get('license.enter_key') }}</p>
+
+                {{ form_open({ 'method': 'POST', 'route': 'core.operator.license.update' }) }}
+
+                    {{ csrf_field() }}
+                    {{ form_text('license_key', null, {'placeholder': Lang.get('license.license_key')}) }}
+
+                    {{ form_submit(Lang.get('license.submit')) }}
+
+                {{ form_close() }}
+
             </div>
 
         </div>
 
     </div>
 
-    {% block scripts_footer %}
-        <script type="text/javascript">
-            $(document).ready(function() {
-                // Handle forgotten click
-                $('.license-key').bind('click', function() {
-                    $('.license-key, .enter-license').toggle();
-                    $('.enter-license input[type=text]').focus();
-                });
+    <div id="forgotbox">
+        <a href="http://www.supportpal.com/manage/" target="_blank">{{ Lang.get('license.assistance') }}</a>
+    </div>
+{% endblock %}
+
+{% block scripts_footer %}
+    <!-- Sweet Alert 2 -->
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Handle forgotten click
+            $('.license-key').bind('click', function() {
+                $('.license-key, .enter-license').toggle();
+                $('.enter-license input[type=text]').focus();
             });
-        </script>
-    {% endblock %}
 
-</body>
+            // Handle retry event.
+            $('.retry').on('click', function (e) {
+                e.preventDefault();
 
-</html>
+                var $this = $(this),
+                    originalText = $this.text();
+
+                // Disable the retry button.
+                $this.prop('disabled', 'disabled');
+
+                // Force a call home to validate the license.
+                $.get('{{ route('core.operator.license.check') }}')
+                    .success(function (data) {
+                        if (data.status == 'success') {
+                            swal({
+                                type: 'success',
+                                title: '{{ Lang.get('license.license_valid') }}',
+                                confirmButtonText: '{{ Lang.get('core.go_to_dashboard') }}',
+                                closeOnConfirm: false,
+                                closeOnCancel: false,
+                                allowOutsideClick: false
+                            }, function () {
+                                swal.disableButtons();
+
+                                // Redirect the user to the dashboard.
+                                window.location.replace('{{ route('core.operator.dashboard') }}');
+                            });
+                        } else {
+                            swal('{{ Lang.get('license.license_invalid') }}', data.message, 'error');
+                        }
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                         swal('{{ Lang.get('messages.error') }}', jqXHR.responseText, 'error');
+                    })
+                    .always(function () {
+                        // Enable the retry button.
+                        $this.removeAttr('disabled');
+                        $this.html(originalText);
+                    });
+            });
+        });
+    </script>
+{% endblock %}

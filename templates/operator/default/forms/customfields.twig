@@ -6,7 +6,7 @@
     {% set attributes = { 'data-depends-on': customfield.depends_on_option_id } %}
     <div class="form-row form-customfields"
          data-field="{{ customfield['id'] }}"
-         data-dependent-children="{{ customfield.children|json_encode }}"
+         data-dependent-children="{{ customfield.children is not empty ? customfield.children|json_encode : "[]" }}"
          data-depends-on-option="{{ customfield.depends_on_option_id }}"
          {% if customfield.depends_on_option_id and not customfield.parent_selected %}style="display: none"{% endif %}>
     
@@ -30,8 +30,12 @@
                 </div>
 
             {% elseif customfield['type'] == 1 %}
-                {{ form_check('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],
-                     (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                <div class="input-group">
+                    <label>
+                        {{ form_check('customfield[' ~ customfield['id'] ~ ']', 1, customfield['value'],    
+                            (customfield['value'] is not empty and customfield['locked'] ? {'disabled': 'disabled'} : {})) }}
+                    </label>
+                </div>
 
             {% elseif customfield['type'] == 2 %}
                 {# Filler value for when the checklist is submitted with no values, do not delete! #}
@@ -118,7 +122,7 @@
                     {% endfor %}
             {% endif %}
             {% if customfield['description'] is not empty %}
-                {% if customfield['type'] != 0 and customfield['type'] != 2 and customfield['type'] != 7 and customfield['type'] != 9 %}
+                {% if customfield['type'] != 0 and customfield['type'] != 1 and customfield['type'] != 2 and customfield['type'] != 7 and customfield['type'] != 9 %}
                     <br />
                 {% endif %}
                 <span class="description">{{ customfield['description'] }}</span>

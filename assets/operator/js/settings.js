@@ -55,4 +55,9 @@ $(function() {
     if ($('input[name="smtp_requires_auth"][value="1"]').is(":checked")) {
         $('#smtp_auth').show();
     }
+    if ($('input[name="captcha_type"][value="2"]').is(":checked")
+        || $('input[name="captcha_type"][value="3"]').is(":checked")
+    ) {
+        $('.recaptcha').show();
+    }
 });

@@ -1,5 +1,9 @@
 {% extends parent_template %}
 
+{% block meta %}
+    <meta name="default_frontend_locale" content="{{ default_frontend_locale }}" />
+{% endblock %}
+
 {% block title %}
     {% if record|default is not empty and record.exists %}
         {{ Lang.get('general.edit_item', {'item': Lang.choice('selfservice.type', 1)}) }}
@@ -30,21 +34,58 @@
 
         {{ form_hidden('brand_id', record.brand_id) }}
 
+        <div id="sectionWrapper">
+    
+            <h2>{{ Lang.choice('selfservice.type', 1) }}</h2>
+    
+            {# Required by multidimensionaldata.js #}
+            <div class="tabContent">
+    
+                {# Hidden option for multidimensionaldata.js #}
+                {% include 'operator.' ~ template ~ '.selfservice.forms.type_translation' with { 'hide': true } %}
+    
+                <div class="section-items">
+                    {# Default #}
+                    <div class="form-container first open">
+                        {%
+                            include 'operator.' ~ template ~ '.selfservice.forms.type_rows'
+                            with {
+                                'hide_slug': record.content == 1,
+                                'elements': {
+                                    'name': { 'name': 'name', 'value': record.getOriginal('name') },
+                                    'slug': { 'name': 'slug', 'value': record.getOriginal('slug') },
+                                    'description': { 'name': 'description', 'value': record.getOriginal('description') },
+                                }
+                            }
+                        %}
+                    </div>
+    
+                    {# Existing Translations #}
+                    {% for locale, translation in translations %}
+                        {% include 'operator.' ~ template ~ '.selfservice.forms.type_translation' %}
+                    {% endfor %}
+                </div>
+    
+                <div class="form-container open {% if not availableLanguages|length %}hide{% endif %}">
+                    <div class="form-row small-selectize">
+                        <div class="input-container">
+                            <select name="languages" title="{{ Lang.get('core.add_another_language') }}" class="add-item-selectize">
+                                <option></option>
+                                {% for code, name in availableLanguages %}
+                                    <option value="{{ code }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+    
+        </div>
+
+        <h2>{{ Lang.get('selfservice.visibility') }}</h2>
+    
         <div class="form-container first open">
-
-            <div class="form-row">
-                {{ form_label('name', Lang.get('general.name')) }}
-                <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
-                </div>
-            </div>
-
-            <div class="form-row form-full">
-                {{ form_label('description', Lang.get('general.description')) }}
-                <div class="input-container translatable">
-                    {{ form_translatable_text(record, 'description') }}
-                </div>
-            </div>
 
             <div class="form-row">
                 {{ form_label('enabled', Lang.get('general.enabled')) }}
@@ -58,24 +99,16 @@
             </div>
 
             <div class="form-row">
-                {{ form_label('view', Lang.choice('general.view', 1)) }}
+                {{ form_label('internal', Lang.get('selfservice.internal')) }}
                 <div class="input-container">
-                    <div class="input-group">
-                        <label style="display: inline-block; text-align: center; position: static;">
-                            <img src="{{ asset_rev('resources/assets/operator/images/view_hierarchical.png') }}" alt="{{ Lang.get('selfservice.hierarchical') }}" /><br />
-                            {{ form_radio('view', 0, true) }} {{ Lang.get('selfservice.hierarchical') }}
-                        </label>
-                        &nbsp;&nbsp;
-                        <label style="display: inline-block; text-align: center;">
-                            <img src="{{ asset_rev('resources/assets/operator/images/view_list.png') }}" alt="{{ Lang.get('selfservice.list') }}" /><br />
-                            {{ form_radio('view', 1) }} {{ Lang.get('selfservice.list') }}
-                        </label>
-                    </div>
-                    <span class="description">{{ Lang.get('selfservice.type_view_desc') }}</span>
+                    {{ form_check('internal', 1, record.internal, { 'class': 'toggle', 'id': 'toggle_internal' }) }}
+                    <label for="toggle_internal"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('selfservice.internal_desc') }}</span>
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-row icon-input {% if record.internal == 1 %}hide{% endif %}">
                 {{ form_label('icon', Lang.get('selfservice.frontend_icon')) }}
                 <div class="input-container">
                     <div class="input-group">
@@ -86,27 +119,92 @@
                             </label>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                         {% endfor %}
-                        </div>
+                    </div>
 
                     <span class="description">{{ Lang.get('selfservice.frontend_icon_desc') }}</span>
                     <br />
 
                     {% if record.icon is not empty %}
+                        <br />
                         {{ form_hidden('existing_icon', 1) }}
-                        <img src="data:image/jpeg;base64, {{ record.icon }}" />
+                        <img src="data:image/jpeg;base64, {{ record.icon }}" style="max-width: 128px;" />
                     {% endif %}
                     {{ form_file('icon') }}
                 </div>
             </div>
 
+        </div>
+
+        <h2>{{ Lang.get('selfservice.content_options') }}</h2>
+
+        <div class="form-container first open">
+
             <div class="form-row">
-                {{ form_label('show_on_dashboard', Lang.get('selfservice.show_on_dashboard')|raw) }}
+                {{ form_label('content', Lang.get('general.content')) }}
                 <div class="input-container">
-                    {{ form_check('show_on_dashboard', 1, not record.exists or record.show_on_dashboard ? true : null,
-                        { 'class': 'toggle', 'id': 'toggle_show_on_dashboard' }) }}
-                    <label for="toggle_show_on_dashboard"></label>
-                    <br />
-                    <span class="description">{{ Lang.get('selfservice.show_on_dashboard_desc')|raw }}</span>
+                    <div class="input-group">
+                        <label>
+                            <input type="radio" name="content" value="0" {% if not record.exists or record.content == 0 %}checked="checked"{% endif %} />
+                            {{ Lang.choice('selfservice.article', 2) }}
+                        </label><br />
+                        <label>
+                            <input type="radio" name="content" value="1" {% if record.content == 1 %}checked="checked"{% endif %} />
+                            {{ Lang.get('selfservice.external_link') }}
+                        </label>
+                    </div>
+                    <span class="description">{{ Lang.get('selfservice.content_desc')|raw }}</span>
+                </div>
+            </div>
+
+            <div class="content-articles {% if record.content == 1 %}hide{% endif %}">
+                <div class="form-row">
+                    {{ form_label('view', Lang.choice('general.view', 1)) }}
+                    <div class="input-container">
+                        <div class="input-group">
+                            <label style="display: inline-block; text-align: center; position: static;">
+                                <img src="{{ asset_rev('resources/assets/operator/images/view_hierarchical.png') }}" alt="{{ Lang.get('selfservice.hierarchical') }}" /><br />
+                                {{ form_radio('view', 0, true) }} {{ Lang.get('selfservice.hierarchical') }}
+                            </label>
+                            &nbsp;&nbsp;
+                            <label style="display: inline-block; text-align: center;">
+                                <img src="{{ asset_rev('resources/assets/operator/images/view_list.png') }}" alt="{{ Lang.get('selfservice.list') }}" /><br />
+                                {{ form_radio('view', 1) }} {{ Lang.get('selfservice.list') }}
+                            </label>
+                        </div>
+                        <span class="description">{{ Lang.get('selfservice.type_view_desc') }}</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    {{ form_label('article_ordering', Lang.get('selfservice.article_ordering')) }}
+                    <div class="input-container">
+                        {{ form_select('article_ordering', {
+                            0: Lang.get('general.alphabetical'),
+                            1: Lang.get('selfservice.most_popular'),
+                            2: Lang.get('selfservice.most_recent'),
+                            3: Lang.get('general.random')
+                        }, not record.exists ? 1 : record.article_ordering) }}
+                        <br />
+                        <span class="description">{{ Lang.get('selfservice.article_ordering_desc') }}</span>
+                    </div>
+                </div>
+
+                <div class="form-row show_on_dashboard {% if record.internal == 1 %}hide{% endif %}">
+                    {{ form_label('show_on_dashboard', Lang.get('selfservice.show_on_dashboard')) }}
+                    <div class="input-container">
+                        {{ form_check('show_on_dashboard', 1, not record.exists or record.show_on_dashboard ? true : null,
+                            { 'class': 'toggle', 'id': 'toggle_show_on_dashboard' }) }}
+                        <label for="toggle_show_on_dashboard"></label>
+                        <br />
+                        <span class="description">{{ Lang.get('selfservice.show_on_dashboard_desc')|raw }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row content-external_link {% if record.content == 0 %}hide{% endif %}">
+                {{ form_label('external_link', Lang.get('selfservice.external_link')) }}
+                <div class="input-container">
+                    {{ form_text('external_link', null, {'size': '45'}) }}
                 </div>
             </div>
 
@@ -125,8 +223,83 @@
         {{ jsValidator|raw }}
     {% endif %}
 
+    <!-- selfserviceslug.js dependencies: Sweetalert2, donetyping -->
+    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selfserviceslug.js') }}"></script>
+
     <!-- Translatable.js dependencies: Selectize -->
     <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
     <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script type="text/javascript">
+        // List of valid translatable attributes.
+        var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
+
+        // Custom attribute mapper for multidimensionaldata.js
+        attributeMapper = function(elem, value, attribute) {
+            var attr = elem.attr(attribute);
+            if (typeof attr !== 'undefined') {
+                elem.attr(attribute, translatableAttributes[value][attr.replace(':default', '')]);
+            }
+        };
+
+        $(document).ready(function() {
+            $('input[name="internal"]').on('change', function() {
+                if ($('input[name="internal"]:checked').val() == '1') {
+                    $('.icon-input, .show_on_dashboard').hide();
+                } else {
+                    $('.icon-input, .show_on_dashboard').show();
+                }
+            });
+
+            $('input[name="content"]').on('change', function() {
+                if ($('input[name="content"]:checked').val() == '1') {
+                    $('.content-articles, .slug').hide();
+                    $('.slug').addClass('dont-show');
+                    $('.content-external_link').show();
+                } else {
+                    $('.content-articles, .slug').show();
+                    $('.slug').removeClass('dont-show');
+                    $('.content-external_link').hide();
+
+                    // Hide any empty slugs we've shown
+                    $('.slug:visible').each(function () {
+                        if ($(this).find(':input').val() === '') {
+                            $(this).hide();
+                        }
+                    });
+                }
+            });
+
+            {% if not record.exists %}
+                $('input[name="view"]').on('change', function() {
+                    if ($('input[name="view"]:checked').val() == '0') {
+                        $('select[name="article_ordering"]').val(1);
+                    } else {
+                        $('select[name="article_ordering"]').val(2);
+                    }
+                });
+            {% endif %}
+            
+            // Initialise the slug generator.
+            new SupportPalSlugGenerator({
+                route: {
+                    url: '{{ route('selfservice.operator.type.slug') }}',
+                    parameters: function ($slug) {
+                        var internal = $slug.parents('form').find('input[name="internal"]:checked').val();
+                        var locale = $slug.parents('.form-container').find('input[name="locale"][type="hidden"]').val();
+                        if (typeof locale === 'undefined') {
+                            locale = null;
+                        }
+                        
+                        return { type: '{{ record.id }}', brand: '{{ record.brand_id }}', internal: internal, locale: locale };
+                    } 
+                }
+            });
+        });
+    </script>
 {% endblock %}

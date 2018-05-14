@@ -25,6 +25,7 @@
         <div class="form-row">
             {{ form_label('author', Lang.get('selfservice.comment_by')) }}
             <div class="input-container">
+                <img src="data:image/png;base64,{{ record.author.avatar }}" class="avatar" height="21" width="21" />
                 <a href='{{ route("user.operator.user.edit", [ record.author_id ]) }}'>
                     {{ record.author.formatted_name }}
                 </a>

@@ -4,7 +4,7 @@
     {% if download %}
         <meta http-equiv="refresh" content="2;{{ download.direct_operator_url }}" />
     {% endif %}
-    
+
     <meta name="notes-url-id" content="{{ notesUrlId }}" />
     <meta name="messages-url-id" content="{{ messagesUrlId }}" />
 {% endblock %}
@@ -157,7 +157,7 @@
 
             {% for message in messages %}
                 {% if message.type == 1 %}
-                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message, 'message_url_id': notesUrlId|replace({ '%ID%': message.id }) } %}
+                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message } %}
                 {% endif %}
             {% endfor %}
 
@@ -169,7 +169,7 @@
 
         {% for message in messages %}
             {% if (Config.get('settings.ticket_notes_position') != 1 or message.type != 1) %}
-                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message, 'message_url_id': messagesUrlId|replace({ '%ID%': message.id }) } %}
+                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message } %}
             {% endif %}
         {% endfor %}
 
@@ -304,7 +304,8 @@
             organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}",
             departmentTemplates = {{ ticket.department.email_templates|json_encode()|raw }},
             userLanguage = "{{ ticket.user.languageOrDefault() }}",
-            allLanguages = {{ languages|sort|json_encode()|raw }};
+            allLanguages = {{ languages|sort|json_encode()|raw }},
+            deleteRelations = {{ deleteRelations|json_encode|raw }};
 
         var signature = '';
         {% if signature is not empty %}
@@ -345,7 +346,6 @@
         }
 
         $(document).ready(function() {
-
             // Register redactor
             $('#newMessage, #newNote, #newForward').redactor($.extend($.Redactor.default_opts, redactor_config, {
                 changeCallback: function() {
@@ -378,13 +378,19 @@
 
     <script src="{{ asset_rev('resources/assets/libs/webui-popover/js/jquery.webui-popover.min.js') }}"></script>
 
+    <!-- Attachment previews -->
+    <link href="{{ asset_rev('resources/assets/libs/file-icon-vectors/file-icon-vivid.min.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/lightgallery/css/lightgallery.min.css') }}" />
+    <script src="{{ asset_rev('resources/assets/libs/lightgallery/js/lightgallery.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/lg-zoom/js/lg-zoom.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/lg-video/js/lg-video.min.js') }}"></script>
+
     <!-- Remember collapsible side box state -->
     <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/ticket.js') }}"></script>
     <script type="text/javascript">
-        var ticket = new Ticket(""),
-            timeTrackingEnabled = {{ timeTrackingEnabled }};
+        var ticket = new Ticket("");
     </script>
 
     <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>

@@ -61,20 +61,18 @@
                 </div>
                 {% endif %}
 
+                <div class="form-row">
+                    <label>{{ Lang.get('ticket.from') }}</label>
+                    <div class="input-container">
+                        {{ record.getFromAddress()|raw }}
+                    </div>
+                </div>
+
                 {% if record.to is not empty %}
                 <div class="form-row">
                     <label>{{ Lang.get('ticket.to') }}</label>
                     <div class="input-container">
                         {{ implode(", ", record.to) }}
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if record.from_address is not empty %}
-                <div class="form-row">
-                    <label>{{ Lang.get('ticket.from') }}</label>
-                    <div class="input-container">
-                        {{ record.from_address }}
                     </div>
                 </div>
                 {% endif %}
@@ -135,9 +133,12 @@
             {% endif %}
 
             {% if record.raw is not empty %}
-            <a href="{{ route('core.operator.email.log.raw', [ record.id ]) }}" class="button">
-                {{ Lang.get('core.show_original') }}
-            </a>
+                <a href="{{ route('core.operator.email.log.raw', [ record.id ]) }}" class="button">
+                    {{ Lang.get('core.view_original') }}
+                </a> &nbsp;&nbsp;
+                <a href="{{ route('core.operator.email.log.download_raw', [ record.id ]) }}" target="_blank" class="button">
+                    {{ Lang.get('core.download_original') }}
+                </a>
             {% endif %}
 
         </div>

@@ -1,5 +1,9 @@
 {% extends parent_template %}
 
+{% block scripts_header %}
+    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block title %}
     {% if record|default is not empty and record.exists %}
         {{ record.formatted_name }}
@@ -45,6 +49,42 @@
         <h2>{{ Lang.get('user.profile') }}</h2>
         <div class="form-container first">
             {% include 'operator.' ~ template ~ '.user.forms.profile' with { 'managing': true } %}
+
+            <div class="form-row">
+                <label>{{ Lang.choice('general.export', 2) }}</label>
+                <div class="input-container">
+                    {% if record.exports is not empty or record.exportqueue is not empty %}
+                        <ul class="exports-list attached-files" style="border-top: 1px solid #ddd;">
+                            {% for export in record.exports %}
+                                <li>
+                                    <i class="fa fa-file fa-fw"></i>&nbsp;
+                                    <span class="information">
+                                        <span class="filename ellipsis">
+                                            <a href="{{ route('core.operator.export.download', export.upload_hash) }}">{{ export.upload.filename }}</a>
+                                        </span>
+                                        &nbsp;
+                                        <span class="filesize">({{ export.upload.size }})</span>
+                                    </span>
+                                    <i class="fa fa-times deleteAttachment right" data-url="{{ route('core.operator.export.destroy', export.upload_hash) }}"></i>
+                                </li>
+                            {% endfor %}
+                            {% for export in record.exportqueue %}
+                                <li>
+                                    <i class="fa fa-spin fa-spinner fa-fw"></i>&nbsp;
+                                    {{ Lang.get('messages.in_progress') }} &nbsp; ({{ formatDate(export.created_at) }})
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <button class="export-user" type="button">{{ Lang.get('core.export_data') }}</button><br />
+                    <span class="description">{{ Lang.get("core.export_data_desc") }}</span>
+
+                    <div class="success box bottombox export-scheduled hide">
+                        {{ Lang.get('core.export_data_scheduled') }}
+                    </div>
+                </div>
+            </div>
         </div>
 
         {% if Config.get('settings.organisations_enabled') %}
@@ -63,6 +103,15 @@
             </div>
         {% endif %}
 
+        {% if linkedTable is not empty %}
+            <div class="user-customfields">
+                <h2>{{ Lang.get('user.linked_accounts') }}</h2>
+
+                {{ linkedTable.render()|raw }}
+                {{ linkedTable.script()|raw }}
+            </div>
+        {% endif %}
+
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
             {% if record.exists and not operator %}
@@ -78,6 +127,10 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
+
+    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
@@ -99,7 +152,11 @@
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
-    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript">
+        var unlinkRoute = "{{ route('user.operator.user.unlink_account', record.id) }}";
+    </script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/linked_account.js') }}"></script>
     
     <script type="text/javascript">
         $(document).ready(function() {
@@ -240,6 +297,128 @@
                                 + '<input name="_token" type="hidden" value="' + $('meta[name=csrf_token]').prop('content') + '">'
                             + '</form>'));
                             $('form.delete').submit();
+                        }
+                    });
+                });
+
+                // Export user button
+                $('.export-user').on('click', function() {
+                    var $this = $(this);
+
+                    // Show the alert
+                    swal({
+                        title: '{{ Lang.get("core.export_data") }}',
+                        html: '<p>{{ Lang.get("core.export_data_select") }}</p>'
+                            + '<form class="export-form" style="text-align: left;">'
+                            + '<div class="row">'
+                                + '<div class="item item50"><label>{{ form_check("activity_log", 1, true) }} {{ Lang.get("user.activity_log") }}</label></div>'
+                                + '<div class="item item50"><label>{{ form_check("article_rating", 1, true) }} {{ Lang.choice("selfservice.article_rating", 2) }}</label></div>'
+                            + '</div>'
+                            + '<div class="row">'
+                                + '<div class="item item50"><label>{{ form_check("comment", 1, true) }} {{ Lang.choice("selfservice.comment", 2) }}</label></div>'
+                                + '<div class="item item50"><label>{{ form_check("comment_rating", 1, true) }} {{ Lang.choice("selfservice.comment_rating", 2) }}</label></div>'
+                            + '</div>'
+                            + '<div class="row">'
+                                + '<div class="item item50"><label>{{ form_check("email_log", 1, true) }} {{ Lang.get("core.email_log") }}</label></div>'
+                                + '<div class="item item50"><label>{{ form_check("failed_login", 1, true) }} {{ Lang.choice("user.failed_login", 2) }}</label></div>'
+                            + '</div>'
+                            + '<div class="row">'
+                                + '<div class="item item50"><label>{{ form_check("feedback_log", 1, true) }} {{ Lang.get("ticket.feedback") }}</label></div>'
+                                + '<div class="item item50"><label>{{ form_check("ticket", 1, true) }} {{ Lang.choice("ticket.ticket", 2) }}</label></div>'
+                            + '</div>'
+                            + '<div class="row">'
+                                + '<div class="item item50"><label>{{ form_check("user_organisation", 1, true) }} {{ Lang.choice("user.organisation", 1) }}</label></div>'
+                            + '</div></div>',
+                        showCancelButton: true,
+                        confirmButtonColor: "#3B91CE",
+                        confirmButtonText: "{{ Lang.get('general.generate') }}",
+                        closeOnConfirm: false
+                    }, function(isConfirm) {
+                        if (isConfirm) {
+                            // Disable submit button
+                            swal.disableButtons();
+
+                            // Run export
+                            $.ajax({
+                                url: "{{ route('core.operator.export.user', record.id) }}",
+                                data: $('.export-form').serialize(),
+                                type: 'POST',
+                                dataType: 'json',
+                                success: function(response) {
+                                    if (response.status == 'success') {
+                                        $this.parent().find('.export-scheduled').show();
+                                        swal.closeModal();
+                                    } else {
+                                        swal(Lang.get('messages.error'), Lang.get('messages.general_error'), 'error');
+                                    }
+                                },
+                                error: function() {
+                                    swal(Lang.get('messages.error'), Lang.get('messages.general_error'), 'error');
+                                }
+                            });
+                        }
+                    });
+                });
+
+                // Delete existing exports
+                $('.exports-list .deleteAttachment').on('click', function() {
+                    var row = $(this).parent(),
+                        name = row.find('.filename').text(),
+                        url = $(this).data('url');
+
+                    // Show the alert
+                    swal({
+                        title: Lang.get('messages.delete_record', {record: "{{ Lang.choice('general.export', 1) }}"}),
+                        html: '<div style="text-align: left">'
+                                + '<div class="warning-box">'
+                                    + '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;'
+                                    + Lang.get('messages.cannot_be_undone')
+                                + '</div>'
+                                + Lang.get('messages.warn_delete', {name: name, record: "{{ Lang.choice('general.export', 1) }}"})
+                            + '</div>',
+                        showCancelButton: true,
+                        confirmButtonColor: "#e74c3c",
+                        confirmButtonText: Lang.get('messages.delete_confirm', {record: "{{ Lang.choice('general.export', 1) }}"}),
+                        width: 550,
+                        customClass: 'delete-modal'
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            // Show AJAX in progress (spinning icon), hide cancel button and disable the checkboxes.
+                            swal.disableButtons();
+
+                            $.ajax({ url: url, type: 'DELETE' }).then(
+                                function (result) {
+                                    if (result.status == 'success') {
+                                        if (row.parent().find('li').length == 1) {
+                                            // Check if this is the last item in list, if so delete list
+                                            row.parent().remove();
+                                        } else {
+                                            // Else just delete row
+                                            row.remove();
+                                        }
+
+                                        // Show success message
+                                        swal(
+                                            Lang.get('messages.deleted'),
+                                            Lang.get('messages.success_deleted', {'item': "{{ Lang.choice('general.export', 1) }}"}),
+                                            'success'
+                                        );
+                                    } else {
+                                        swal(
+                                            Lang.get('messages.error'),
+                                            Lang.get('messages.error_deleted', {'item': "{{ Lang.choice('general.export', 1) }}"}),
+                                            'error'
+                                        );
+                                    }
+                                },
+                                function (jqXHR, textStatus, errorThrown) {
+                                    swal(
+                                        Lang.get('messages.error'),
+                                        Lang.get('messages.error_deleted', {'item': "{{ Lang.choice('general.export', 1) }}"}),
+                                        'error'
+                                    );
+                                }
+                            );
                         }
                     });
                 });

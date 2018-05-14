@@ -22,7 +22,7 @@
 
         <ul class="tabs">
             <li id="General" class="active">{{ Lang.get('general.general') }}</li>
-            <li id="Website">{{ Lang.get('core.website') }}</li>
+            <li id="Branding">{{ Lang.get('core.branding') }}</li>
             <li id="Email">{{ Lang.get('general.email') }}</li>
             <li id="Locale">{{ Lang.get('core.locale') }}</li>
         </ul>
@@ -33,6 +33,33 @@
                 <div class="input-container translatable small-translatable">
                     {{ form_translatable_text(record, 'name') }}<br />
                     <span class="description">{{ Lang.get('core.brand_name_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('system_url', Lang.get('core.base_url')) }}
+                <div class="input-container">
+                    {{ form_text('system_url', null, {'size': '45'}) }}<br />
+                    <span class="description">{{ Lang.get('core.base_url_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('enable_ssl', Lang.get('core.enable_ssl')) }}
+                <div class="input-container input-group">
+                    <label>
+                        {{ form_radio('enable_ssl', -1, true) }}
+                        {{ Lang.get('core.inherit_global_setting') }}
+                    </label> &nbsp;
+                    <label>
+                        {{ form_radio('enable_ssl', 1) }}
+                        {{ Lang.get('general.yes') }}
+                    </label> &nbsp;
+                    <label>
+                        {{ form_radio('enable_ssl', 0) }}
+                        {{ Lang.get('general.no') }}
+                    </label><br />
+                    <span class="description">{{ Lang.get('core.enable_ssl_desc') }}</span>
                 </div>
             </div>
 
@@ -59,14 +86,30 @@
             </div>
         </div>
 
-        <div id="tabWebsite" class="tabContent hide">
+        <div id="tabBranding" class="tabContent hide">
             <div class="form-row">
-                {{ form_label('system_url', Lang.get('core.base_url')) }}
+                {{ form_label('brand_colour', Lang.get('general.colour')) }}
                 <div class="input-container">
-                    {{ form_text('system_url', null, {'size': '45'}) }}<br />
-                    <span class="description">{{ Lang.get('core.base_url_desc') }}</span>
+                    {{ form_text('brand_colour') }}<br />
+                    <a class="preview-colour">{{ Lang.get('general.preview') }}</a> &nbsp;&middot;&nbsp; <a class="clear-colour">{{ Lang.get('general.clear') }}</a><br />
+                    <span class="description">
+                        {{ Lang.get('core.brand_colour_desc') }}
+                        {% if not record.exists %}
+                            {{ Lang.get('core.new_brand_preview') }}
+                        {% endif %}
+                    </span>
                 </div>
             </div>
+
+            <div class="form-row">
+                {{ form_label('favicon', Lang.get('core.favicon')) }}
+                <div class="input-container">
+                    {{ form_text('favicon', null, { 'size': 65 }) }}<br />
+                    <span class="description">{{ Lang.get('core.favicon_desc') }}</span>
+                </div>
+            </div>
+
+            <hr />
 
             <div class="form-row">
                 {{ form_label('frontend_logo', Lang.get('core.frontend_logo')) }}
@@ -77,15 +120,39 @@
             </div>
 
             <div class="form-row">
+                {{ form_label('frontend_logo_url', Lang.get('core.frontend_logo_url')) }}
+                <div class="input-container">
+                    {{ form_text('frontend_logo_url', null, { 'size': 65 }) }}<br />
+                    <span class="description">{{ Lang.get('core.frontend_logo_url_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
                 {{ form_label('frontend_template', Lang.get('core.frontend_template')) }}
                 <div class="input-container">
                     {{ form_select('frontend_template', frontendTemplates) }}
                 </div>
             </div>
+
+            <hr />
+
+            <div class="form-row">
+                {{ form_label('operator_icon', Lang.get('core.operator_icon')) }}
+                <div class="input-container">
+                    {{ form_text('operator_icon', null, { 'size': 65 }) }}<br />
+                    <span class="description">{{ Lang.get('core.operator_icon_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('operator_template', Lang.get('core.operator_template')) }}
+                <div class="input-container">
+                    {{ form_select('operator_template', operatorTemplates) }}
+                </div>
+            </div>
         </div>
 
         <div id="tabEmail" class="tabContent hide">
-
             <div class="form-row">
                 {{ form_label('default_email', Lang.get('core.default_email_addr')) }}
                 <div class="input-container">
@@ -130,11 +197,9 @@
             </div>
 
             {% include 'operator.' ~ template ~ '.core.forms.smtp_tab' with {'email_method': record.email_method} %}
-
         </div>
 
         <div id="tabLocale" class="tabContent hide">
-
             {% include 'operator.' ~ template ~ '.core.forms.locale_tab' %}
 
             <div class="form-row">
@@ -154,7 +219,6 @@
                     <span class="description">{{ Lang.get('core.brand_lang_toggle_desc') }}</span>
                 </div>
             </div>
-
         </div>
 
         <hr />
@@ -184,12 +248,34 @@
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
+    <!-- Minicolors -->
+    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/settings.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
             $('select[name="group[]"]').selectize({
                 plugins: ['remove_button']
+            });
+
+            $('input[name="brand_colour"]').minicolors();
+
+            $('.clear-colour').on('click', function() {
+                $('input[name="brand_colour"]').minicolors('value', '');
+            });
+
+            $('.preview-colour').on('click', function() {
+                var colour = $('input[name="brand_colour"]').minicolors('value').replace('#', '');
+                if (colour === '') {
+                    colour = '0'
+                }
+                var url = "{{ route('core.frontend.home', {'brand_id': record.id}) }}";
+                {% if record.exists %}
+                    url = url + '&';
+                {% endif %}
+                window.open(url + 'preview=' + colour,'width=800,height=600,scrollbars=yes');
             });
         });
     </script>

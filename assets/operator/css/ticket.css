@@ -4,7 +4,6 @@
 
 .ticket-options {
     line-height: 41px;
-    position: relative;
 }
 
 .ticket-options .processing {
@@ -38,40 +37,43 @@ table.dataTable tbody tr.ticket-viewed.selected td {
 
 /* Ticket View */
 
-#main h1.ticket-subject {
-    line-height: 34px;
+span.subject {
+    display: inline-block;
+    padding: 3px 0;
 }
 
 span.subject:hover {
     border: 1px solid #ddd;
-    cursor: pointer;
-    margin-bottom: -12px;
-    padding: 2px 9px;
+    padding: 2px 42px 2px 9px;
+    position: relative;
 }
 
-span.subject:hover:after {
+span.subject:hover:before {
     background: #F6F8F8;
-    border: 1px solid #ddd;
-    border-left-color: #eee;
+    border-left: 1px solid #eee;
     content: "\f040";
+    cursor: pointer;
     display: inline-block;
     font-family: 'FontAwesome';
     font-size: 14px;
-    padding: 1px 6px 2px;
-    margin-left: 9px;
-    margin-top: -3px;
+    margin-top: -2px;
+    padding: 2px 9px;
     position: absolute;
+    right: 0;
 }
 
 .message {
     border-bottom: 1px solid #eee;
     margin: 0 -25px;
-    min-height: 175px;
     padding: 20px 25px 0;
 }
 
 .message:first-child {
     padding-top: 0;
+}
+
+.message:last-child {
+    min-height: 230px;
 }
 
 .message .header {
@@ -406,9 +408,116 @@ div.collapsed-messages span {
 }
 
 .attachments ul li {
-    background: #E9F3F9;
-    margin-top: 1px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    display: inline-block;
+    margin-right: 5px;
+    position: relative;
+    width: 200px;
+}
+
+.attachments ul li a {
+    display: block;
+    text-decoration: none;
+}
+
+.attachments ul li a:hover {
+    color: #333;
+}
+
+.attachments ul li div.deleteAttachment {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-top: 0;
+    border-right: 0;
+    float: right;
+    line-height: 1em;
+    margin: 0;
+    padding: 4px 2px;
+    position: absolute;
+    right: 0;
+    z-index: 90;
+}
+
+.attachments ul li div.deleteAttachment:hover {
+    background: #eee;
+}
+
+.attachments ul li .deleteAttachment .fa {
+    color: #777;
+}
+
+.attachments ul li .deleteAttachment:hover .fa {
+    color: #333;
+}
+
+.attachments ul li .preview {
+    height: 88px;
+    line-height: 88px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.attachments ul li .preview .fiv-viv {
+    font-size: 64px;
+    padding: 12px;
+}
+
+.attachments ul li .name {
+    background: #f5f5f5;
+    border-top: 1px solid #eee;
     padding: 4px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachments ul li .name .underline {
+    text-decoration: underline;
+}
+
+.attachments ul li .preview-hover {
+    background: #454545;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    height: 100%;
+    line-height: 1.2em;
+    padding: 12px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.attachments ul li .preview-hover .fiv-viv {
+    font-size: 20px;
+}
+
+.attachments ul li .preview-hover .attachment-details {
+    margin-left: 10px;
+    max-width: 142px;
+}
+
+.attachments ul li .preview-hover .hover-name {
+    display: block;
+    max-height: 46px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.attachments ul li .preview-hover .description {
+    color: #999;
+}
+
+.attachments ul li a:hover .preview-hover {
+    display: block;
+}
+
+#main .attachments ul li a:hover .preview-hover .fa {
+    color: #fff;
+}
+
+.attachments ul li a:hover .preview:not(.hover) {
+    opacity: 0.5;
 }
 
 .messages-button-group {
@@ -476,7 +585,7 @@ div.collapsed-messages span {
     position: -o-sticky;
     position: sticky;
     top: 50px;
-    z-index: 200;
+    z-index: 98;
 }
 
 .quick-actions, .ticket-viewing.box {
@@ -490,6 +599,11 @@ div.collapsed-messages span {
 
 #sidebar .linked-tickets a {
     text-decoration: underline;
+}
+
+#sidebar .linked-tickets a.unlink {
+    position: relative;
+    z-index: 100;
 }
 
 .add-link-form input[name="linked_search"], .add-link-form .results {
@@ -740,4 +854,26 @@ table.ticket-details .create-new-user .fa {
 
 .message-block .message:first-child {
     padding: 0;
+}
+
+/* lightGallery */
+
+body.lg-on {
+    overflow: hidden;
+}
+
+.lg-backdrop, .lg-toolbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.lg-actions .lg-next, .lg-actions .lg-prev {
+    background: rgba(0,0,0,.45);
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-top: 5px !important;
+}
+
+.lg-video-object {
+    background: #111;
 }

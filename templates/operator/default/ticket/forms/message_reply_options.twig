@@ -80,23 +80,20 @@
                 <label>
                     {{ Lang.get('ticket.set_status') }}:
                     <select name="to_status">
+                        {% if ticket.user_id == auth_user().id and not note %}
+                            {# If it's an internal ticket and the ticket owner is replying, use the default reply status from ticket settings #}
+                            {% set status_id = Config.get('settings.default_reply_status') %}
+                        {% elseif operator.default_reply_options['to_status'] == 0 or note %}
+                            {# If the default reply options set status option is set to '-- Unchanged --' or a note, keep same status #}
+                            {% set status_id = ticket.status_id %}
+                        {% elseif not note %}
+                            {# Use the operator's default reply option setting #}
+                            {% set status_id = operator.default_reply_options['to_status'] %}
+                        {% endif %}
                         {% for status in statuses %}
-                            {# If the default reply options set status option is set to '-- Unchanged --', keep status as it is, else set that status ID #}
-                            {% if (operator.default_reply_options['to_status'] == 0 or note)
-                                and ticket.status.id == status.id
-                            %}
-                                <option value="{{ status.id }}" selected="selected">
-                                    {{ status.name }}
-                                </option>
-                            {% elseif not note and operator.default_reply_options['to_status'] == status.id %}
-                                <option value="{{ status.id }}" selected="selected">
-                                    {{ status.name }}
-                                </option>
-                            {% else %}
-                                <option value="{{ status.id }}">
-                                    {{ status.name }}
-                                </option>
-                            {% endif %}
+                            <option value="{{ status.id }}" {% if status_id == status.id %}selected="selected"{% endif %}>
+                                {{ status.name }}
+                            </option>
                         {% endfor %}
                     </select>
                 </label>

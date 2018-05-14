@@ -10,128 +10,293 @@
 
 {% block content %}
 
-	<div class="success box hide">
-		{{ Lang.get('messages.success_action') }}
-	</div>
-	<div class="fail box hide">
-		{{ Lang.get('messages.error_action') }}
-	</div>
+    <div class="success box hide">
+        {{ Lang.get('messages.success_action') }}
+    </div>
+    <div class="fail box hide">
+        {{ Lang.get('messages.error_action') }}
+    </div>
 
-	<hr />
+    <hr />
 
-	<h2>{{ Lang.get('core.files') }}</h2>
-	<h2 class="description">{{ Lang.get('core.files_desc') }}</h2>
+    {{ form_open({ 'route': [ 'core.operator.systemcleanup' ], 'method': 'put', 'class': 'validate' }) }}
 
-	<div class="row">
-		<div class="item item33">
-			<div class="cleanup-box empty">
-				<h3>{{ Lang.get('core.system_cache') }}</h3>
-				<p>{{ Lang.get('core.system_cache_desc') }}</p>
-				{{ form_button(Lang.get('core.empty'), { 'class': 'system-cache' }) }}
-			</div>
-		</div>
-		<div class="item item33">
-			<div class="cleanup-box empty">
-				<h3>{{ Lang.get('core.template_cache') }}</h3>
-				<p>{{ Lang.get('core.template_cache_desc') }}</p>
-				{{ form_button(Lang.get('core.empty'), { 'class': 'template-cache' }) }}
-			</div>
-		</div>
-		<div class="item item33">
-			<div class="cleanup-box purge">
-				<h3>{{ Lang.choice('general.attachment', 2) }}</h3>
-				<p>{{ Lang.get('core.attachments_desc') }}</p>
-				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="attachments count">{{ attachmentCount }}</span></p>
-				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'attachments' }) }}
-			</div>
-		</div>
-	</div>
+        <h2>{{ Lang.get('core.database') }}</h2>
+        <h2 class="description">{{ Lang.get('core.database_desc') }}</h2>
 
-	<hr />
+        <div class="row">
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.choice('user.user', 2) }}</h3>
+                    <p>{{ Lang.get('core.prune_users') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: {{ userCount }}</p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_users_enabled', 0, pruneUsers == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_users_enabled', 1, pruneUsers != 0) }}
+                            {{ Lang.get('core.days_after_last_activity') }}
+                            {{ form_text('prune_users', pruneUsers != 0 ? pruneUsers : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <div class="fail box bottombox">
+                        {{ Lang.get('core.record_delete_relations', {relations: userRelations|join(', ')}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.choice('ticket.ticket', 2) }}</h3>
+                    <p>{{ Lang.get('core.prune_tickets') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: {{ ticketCount }}</p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_tickets_enabled', 0, pruneTickets == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_tickets_enabled', 1, pruneTickets != 0) }}
+                            {{ Lang.get('core.days_after_last_activity') }}
+                            {{ form_text('prune_tickets', pruneTickets != 0 ? pruneTickets : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <div class="fail box bottombox">
+                        {{ Lang.get('core.record_delete_relations', {relations: ticketRelations|join(', ')}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.choice('user.organisation', 2) }}</h3>
+                    <p>{{ Lang.get('core.prune_organisations') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: {{ organisationCount }}</p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_organisations_enabled', 0, pruneOrganisations == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_organisations_enabled', 1, pruneOrganisations != 0) }}
+                            {{ Lang.get('core.days_after_last_activity') }}
+                            {{ form_text('prune_organisations', pruneOrganisations != 0 ? pruneOrganisations : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <div class="fail box bottombox">
+                        {{ Lang.get('core.record_permanent_delete', {relations: userRelations|join(', ')}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	<h2>{{ Lang.get('core.logs') }}</h2>
-	<h2 class="description">{{ Lang.get('core.logs_desc') }}</h2>
+        <hr />
 
-	<div class="row">
-		<div class="item item33">
-			<div class="cleanup-box purge">
-				<h3>{{ Lang.get('user.system_activity_log') }}</h3>
-				<p>{{ Lang.get('core.system_activity_log_desc') }}</p>
-				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="activity-log count">{{ activityCount }}</span></p>
-				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'activity-log' }) }}
-			</div>
-		</div>
-		<div class="item item33">
-			<div class="cleanup-box purge">
-				<h3>{{ Lang.get('core.email_log') }}</h3>
-				<p>{{ Lang.get('core.email_log_desc') }}</p>
-				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="email-log count">{{ emailCount }}</span></p>
-				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'email-log' }) }}
-			</div>
-		</div>
-		<div class="item item33">
-			<div class="cleanup-box purge">
-				<h3>{{ Lang.get('user.operator_login_log') }}</h3>
-				<p>{{ Lang.get('core.operator_login_log_desc') }}</p>
-				<p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="login-log count">{{ loginCount }}</span></p>
-				{{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'login-log' }) }}
-			</div>
-		</div>
-	</div>
+        <h2>{{ Lang.get('core.files') }}</h2>
+        <h2 class="description">{{ Lang.get('core.files_desc') }}</h2>
+
+        <div class="row">
+            <div class="item item33">
+                <div class="cleanup-box empty">
+                    <h3>{{ Lang.get('core.system_cache') }}</h3>
+                    <p>{{ Lang.get('core.system_cache_desc') }}</p>
+                    {{ form_button(Lang.get('core.empty'), { 'class': 'system-cache' }) }}
+                    <hr />
+                    <h3>{{ Lang.get('core.template_cache') }}</h3>
+                    <p>{{ Lang.get('core.template_cache_desc') }}</p>
+                    {{ form_button(Lang.get('core.empty'), { 'class': 'template-cache' }) }}
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.choice('general.attachment', 2) }}</h3>
+                    <p>{{ Lang.get('core.attachments_desc') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="attachments count">{{ attachmentCount }}</span></p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_attachments_enabled', 0, pruneAttachments == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_attachments_enabled', 1, pruneAttachments != 0) }}
+                            {{ Lang.get('core.days_after_saved') }}
+                            {{ form_text('prune_attachments', pruneAttachments != 0 ? pruneAttachments : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <h4>{{ Lang.get('core.manually_prune') }}</h4>
+                    {{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'attachments' }) }}
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.choice('general.export', 2) }}</h3>
+                    <p>{{ Lang.get('core.prune_export') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="exports count">{{ exportCount }}</span></p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_exports_enabled', 0, pruneExports == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_exports_enabled', 1, pruneExports != 0) }}
+                            {{ Lang.get('core.days_after_saved') }}
+                            {{ form_text('prune_exports', pruneExports != 0 ? pruneExports : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <h4>{{ Lang.get('core.manually_prune') }}</h4>
+                    {{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'exports' }) }}
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>{{ Lang.get('core.logs') }}</h2>
+        <h2 class="description">{{ Lang.get('core.logs_desc') }}</h2>
+
+        <div class="row">
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.get('user.system_activity_log') }}</h3>
+                    <p>{{ Lang.get('core.system_activity_log_desc') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="activity-log count">{{ activityCount }}</span></p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_activity_enabled', 0, pruneActivity == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_activity_enabled', 1, pruneActivity != 0) }}
+                            {{ Lang.get('core.days_after_saved') }}
+                            {{ form_text('prune_activity', pruneActivity != 0 ? pruneActivity : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <h4>{{ Lang.get('core.manually_prune') }}</h4>
+                    {{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'activity-log' }) }}
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.get('core.email_log') }}</h3>
+                    <p>{{ Lang.get('core.email_log_desc') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="email-log count">{{ emailCount }}</span></p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_emails_enabled', 0, pruneEmails == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_emails_enabled', 1, pruneEmails != 0) }}
+                            {{ Lang.get('core.days_after_saved') }}
+                            {{ form_text('prune_emails', pruneEmails != 0 ? pruneEmails : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <h4>{{ Lang.get('core.manually_prune') }}</h4>
+                    {{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'email-log' }) }}
+                </div>
+            </div>
+            <div class="item item33">
+                <div class="cleanup-box purge">
+                    <h3>{{ Lang.get('user.operator_login_log') }}</h3>
+                    <p>{{ Lang.get('core.operator_login_log_desc') }}</p>
+                    <p><strong>{{ Lang.get('core.total_records') }}</strong>: <span class="login-log count">{{ loginCount }}</span></p>
+                    <h4>{{ Lang.get('core.automatically_prune') }}</h4>
+                    <div class="input-group">
+                        <label>
+                            {{ form_radio('prune_logins_enabled', 0, pruneLogins == 0) }}
+                            {{ Lang.get('general.never') }}
+                        </label><br />
+                        <label>
+                            {{ form_radio('prune_logins_enabled', 1, pruneLogins != 0) }}
+                            {{ Lang.get('core.days_after_saved') }}
+                            {{ form_text('prune_logins', pruneLogins != 0 ? pruneLogins : '', {'size': 2}) }}
+                            {{ mb_strtolower(Lang.choice('general.day', 2), 'UTF-8') }}
+                        </label>
+                    </div>
+                    <h4>{{ Lang.get('core.manually_prune') }}</h4>
+                    {{ form_text('date', null, { 'class': 'datepicker', 'placeholder': '&#xf073;' }) }} &nbsp; {{ form_button(Lang.get('core.prune'), { 'class': 'login-log' }) }}
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="form-button fixed-bottom">
+            {{ form_submit(Lang.get('general.save')) }}
+        </div>
+
+    {{ form_close() }}
 
 {% endblock %}
 
 {% block scripts_footer %}
-	<script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
-    	$(document).ready(function() {
-    		$('.cleanup-box button').on('click', function() {
-    			// Determine which route to use
-    			var route;
-    			if ($(this).parent().hasClass('purge')) {
-    				route = laroute.route('core.operator.systemcleanup.purge');
-    			} else {
-    				route = laroute.route('core.operator.systemcleanup.empty');
-    			}
+        $(document).ready(function() {
+            $('.cleanup-box button').on('click', function() {
+                // Determine which route to use
+                var route;
+                if ($(this).parent().hasClass('purge')) {
+                    route = laroute.route('core.operator.systemcleanup.purge');
+                } else {
+                    route = laroute.route('core.operator.systemcleanup.empty');
+                }
 
-    			// Get name and date if needed
-    			var name = $(this).attr('class');
-    			var date = null;
-    			if ($(this).prev().hasClass('datepicker')) {
-    				date = $(this).prev().val();
-    			}
+                // Get name and date if needed
+                var name = $(this).attr('class');
+                var date = null;
+                if ($(this).prev().hasClass('datepicker')) {
+                    date = $(this).prev().val();
+                }
 
-    			// Make AJAX call
-    			$.ajax({
-		            url: route,
-		            type: 'POST',
-		            data: {
-		            	name: name,
-		            	date: date
-		            },
-		            dataType: 'json'
-		        }).done(function(response) {
-		            if (response.status == 'success') {
-		                $('.success').show(500).delay(5000).hide(500);
-		                if (response.data != 'undefined') {
-		                	// Update count
-		                	$('.' + name + '.count').text(response.data);
-		                }
-		            } else {
-		                $('.fail').show(500).delay(5000).hide(500);
-		            }
-		        }).fail(function() {
-		            $('.fail').show(500).delay(5000).hide(500);
-		        });
+                // Make AJAX call
+                $.ajax({
+                    url: route,
+                    type: 'POST',
+                    data: {
+                        name: name,
+                        date: date
+                    },
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        // Scroll to top
+                        $("html, body").animate({ scrollTop: 0 }, 500);
 
-    		});
+                        $('.success').show(500).delay(5000).hide(500);
+                        if (response.data != 'undefined') {
+                            // Update count
+                            $('.' + name + '.count').text(response.data);
+                        }
+                    } else {
+                        $('.fail').show(500).delay(5000).hide(500);
+                    }
+                }).fail(function() {
+                    $('.fail').show(500).delay(5000).hide(500);
+                });
 
-			// Date picker
+            });
+
+            // Date picker
             callPikaday();
-    	});
-	</script>
+        });
+    </script>
 {% endblock %}

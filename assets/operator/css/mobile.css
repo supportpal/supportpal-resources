@@ -31,13 +31,6 @@ html {
 		padding: 9px 25px;
 	}
 
-	#header .logo .logo-icon {
-		display: none;
-	}
-	#header .logo .logo-full {
-		display: block;
-	}
-
 	#header .mobile-nav {
 		display: block;
 	}
@@ -58,6 +51,10 @@ html {
 		clear: left;
 		display: none;
 		float: none;
+	}
+
+	#header .selfservice .dropdown2 {
+		display: block;
 	}
 
 	#header .headerSearch {
@@ -555,9 +552,44 @@ html {
     }
 
     .message-block .message .text,
-    #tabMessages .message .text {
+	.message-block .message .edit-message,
+	#tabMessages .message .text,
+	#tabMessages .message .edit-message {
         padding: 0 0 20px;
     }
+
+	.message-block .message .attachments,
+	#tabMessages .message .attachments {
+		margin: 0 0 20px;
+	}
+
+	.message-block .message .attachments ul,
+	#tabMessages .message .attachments ul {
+		font-size: 0;
+	}
+
+	.message-block .message .attachments ul li,
+	#tabMessages .message .attachments ul li {
+		font-size: 11px;
+		margin-right: 2%;
+		width: 48%;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .attachment-details,
+	#tabMessages .message .attachments ul li .preview-hover .attachment-details {
+		margin-left: 0;
+		max-width: 100%;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .fiv-viv,
+	#tabMessages .message .attachments ul li .preview-hover .fiv-viv {
+		display: none;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .hover-name,
+	#tabMessages .message .attachments ul li .preview-hover .hover-name {
+		max-height: 50px;
+	}
 
 	#showModal {
 		display: table;
@@ -648,6 +680,20 @@ html {
     .ticket-viewing {
         top: 0;
     }
+
+}
+
+/*
+ *	Height - under 420px
+ */
+
+@media screen and (max-height: 420px) {
+
+	.form-button.fixed-bottom {
+		border: 0;
+		padding: 0;
+		position: static;
+	}
 
 }
 

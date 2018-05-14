@@ -28,7 +28,7 @@ $(function() {
 
         // If it's a textarea, use redactor
         if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea.text')) {
-            redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input'));
+            redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] textarea'));
         }
     });
 
@@ -79,7 +79,7 @@ $(function() {
 
         // If it's a textarea, use redactor
         if ($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input').is('textarea.text')) {
-            redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] :input'));
+            redactor($(this).parents('tr').find('.rule-value .action[data-action="' + $(this).val() +'"] textarea'));
         }
     });
 
@@ -92,6 +92,11 @@ $(function() {
 
     // Disable the item that is used for copying
     $(".rule:first :input").prop('disabled', true);
+
+    // Show/hide exclude CC option if the email user option is clicked (Add Reply action only)
+    $(document).on('click', 'label.email-user', function() {
+        $(this).parent().find('label.exclude-cc').toggle($(this).find(':input').is(':checked'));
+    });
 
     /**
      * Add a new item to the form

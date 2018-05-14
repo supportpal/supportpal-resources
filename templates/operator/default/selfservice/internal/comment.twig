@@ -1,0 +1,48 @@
+{% if comments is not empty %}
+<ul class="comments">
+    {% for comment in comments %}
+        <li data-id="{{ comment['id'] }}">
+            <a name="_comment-{{ comment['id'] }}"></a>
+
+            <img class="avatar" src="data:image/jpeg;base64, {{ comment.author.avatar }}" />
+
+            <div class="comment">
+                <span class="author">
+                    {{ comment['author']['formatted_name'] }}
+                </span> &nbsp;
+                <span class="date">{{ timeago(comment['created_at']) }}</span>
+                <br />
+
+                <div class="commentContents">
+
+                    <p class="commentText">{{ comment['purified_text']|raw }}</p>
+
+                    <div class="commentOptions">
+                        <a class="commentReply" data-id="{{ comment['id'] }}">{{ Lang.get('general.reply') }}</a>
+                    </div>
+
+                    <div class="commentReplyContainer"></div>
+
+                    {% if comment['children'] is not empty %}
+                        {% if comment['more']|default is not empty and comment_ordering == 1 %}
+                            <button class="show-children" data-parent="{{ comment['id'] }}">
+                                {{ Lang.get('selfservice.view_all_replies') }} &raquo;
+                            </button>
+                        {% endif %}
+
+                        {% include 'operator.' ~ template ~ '.selfservice.internal.comment' with { 'comments': (comment_ordering == 1 ? comment['children']|reverse(true) : comment['children']) } %}
+
+                        {% if comment['more']|default is not empty and comment_ordering != 1 %}
+                            <button class="show-children" data-parent="{{ comment['id'] }}">
+                                {{ Lang.get('selfservice.view_all_replies') }} &raquo;
+                            </button>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}

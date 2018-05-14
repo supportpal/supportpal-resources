@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+@media print {
+
+    @page {
+        size: A4;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    #header, #sidebar {
+        display: none;
+    }
+
+    #main {
+        padding: 0;
+    }
+
+    #sidebar + #main {
+        border-left: 0;
+        margin: 0;
+    }
+
+    .comments-order, .add-comment, .print {
+        display: none;
+    }
+
+    #main .padding {
+        padding: 25px 0;
+    }
+
+    #main .desk_content_padding {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+}

@@ -7,4 +7,8 @@
             {% if Input.get('tab') == 1 %} class="active"{% endif %}>
         {{ Lang.choice('user.user', 2) }}
     </a>
+    <a href="{{ route('core.operator.search', {'query': Input.get('query'), 'tab': 2}) }}"
+            {% if Input.get('tab') == 2 %} class="active"{% endif %}>
+        {{ Lang.choice('user.organisation', 2) }}
+    </a>
 </ul>

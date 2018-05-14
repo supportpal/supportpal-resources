@@ -1,6 +1,11 @@
 {% if ticket.department_email_id is not empty or allow_attachments %}
     <div class="attachment-details">
         <input type="hidden" name="attachment[]" disabled="disabled" />
+        {% for attachment in message.attachments %}
+            <input type="hidden" name="attachment[{{ attachment.upload_hash }}]"
+                   id="attachment[{{ attachment.upload_hash }}]"
+                   value="{{ attachment.original_name }}" />
+        {% endfor %}
     </div>
     <ul class="attached-files">
         <li class="hide">
@@ -16,6 +21,27 @@
                 <div class="bar"></div>
             </div>
         </li>
+        {% for attachment in message.attachments %}
+            <li>
+                <i class="fa fa-file"></i>
+                &nbsp;
+                <span class="information">
+                    <span class="filename ellipsis">{{ attachment.original_name }}</span>
+                    &nbsp;
+                    <span class="filesize">({{ attachment.upload.size }})</span>
+                </span>
+                <i class="fa fa-times deleteAttachment right hide"
+                    data-url="{{ route('ticket.operator.attachment.destroy') }}"
+                    data-attachment-id="{{ attachment.id }}"
+                    data-size="{{ attachment.upload.getOriginal('size') }}"
+                    data-hash="{{ attachment.upload_hash }}"
+                    data-silent="false"
+                    style="display: inline;"></i>
+                <div class="progress" style="display: none;">
+                    <div class="bar" style="width: 100%;"></div>
+                </div>
+            </li>
+        {% endfor %}
     </ul>
 
     <div class="attachment-dragover hide">

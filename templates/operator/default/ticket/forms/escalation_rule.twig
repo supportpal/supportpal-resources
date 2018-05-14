@@ -26,18 +26,46 @@
     
     <td class="rule-value">
         <div class="action" data-action="0">
-            {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
-                rule|default is not empty and rule.action == 0 ? rule.value_text : null,
-                {'class': 'text'})
-            }}
+            {% set value_text = rule|default is not empty and rule.action == 0 ?
+                (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {}
+            %}
+            <div style="margin-bottom: 10px;">
+                {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text][text]',
+                    value_text.text|default is not empty ? value_text.text : null, {'class': 'text'})
+                }}
+            </div>
+            <label>
+                {{ form_check('rules[' ~ (count is defined ? count : '') ~ '][value_text][email_operators]', 1,
+                    value_text.email_operators|default is not empty ? value_text.email_operators : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_operators') }}
+            </label>
+            </div>
         </div>
 
         <div class="action hide" data-action="1">
-            {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
-                rule|default is not empty and rule.action == 1 ? rule.value_text :
-                '<br /><br />{{ operator.signature }}',
-                {'class': 'text'})
-            }}
+            {% set value_text = rule|default is not empty and rule.action == 1 ?
+                (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {}
+            %}
+            <div style="margin-bottom: 10px;">
+                {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text][text]',
+                    value_text.text|default is not empty ? value_text.text : '<br /><br />{{ operator.signature }}', {'class': 'text'})
+                }}
+            </div>
+            <label class="email-user">
+                {{ form_check('rules[' ~ (count is defined ? count : '') ~ '][value_text][email_user]', 1,
+                    value_text.email_user|default is not empty ? value_text.email_user : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_users') }}
+            </label> &nbsp;&nbsp;
+            <label class="exclude-cc {% if value_text.email_user|default is not empty and not value_text.email_user %}hide{% endif %}">
+                {{ form_check('rules[' ~ (count is defined ? count : '') ~ '][value_text][exclude_cc]', 1,
+                    value_text.exclude_cc|default is not empty ? value_text.exclude_cc : false)
+                }}&nbsp; {{ Lang.get('actions.exclude_cc') }} &nbsp;&nbsp;
+            </label>
+            <label>
+                {{ form_check('rules[' ~ (count is defined ? count : '') ~ '][value_text][email_operators]', 1,
+                    value_text.email_operators|default is not empty ? value_text.email_operators : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_operators') }}
+            </label>
         </div>
 
         <div class="action hide" data-action="2">
@@ -87,6 +115,12 @@
                 {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
                     array_column(templates.toArray(), 'name', 'id'), rule|default is not empty and rule.action == 6 ? rule.value_id : null)
                 }}
+                &nbsp;&nbsp;&nbsp;
+                <label>
+                    {{ form_check('rules[' ~ (count is defined ? count : '') ~ '][value_text]', 1,
+                        rule|default is not empty and rule.action == 6 ? rule.value_text : false)
+                    }}&nbsp; {{ Lang.get('actions.exclude_cc') }}
+                </label>
             {% endif %}
         </div>
 

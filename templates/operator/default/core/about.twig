@@ -69,8 +69,7 @@
         <div class="form-row">
             <label>{{ Lang.get('core.license_valid_ip') }}</label>
             <div class="input-container">
-                {{ licenseInformation.licenseIP }}
-                {% if licenseInformation.externalIP is not empty %}, {{ licenseInformation.externalIP }}{% endif %}
+                {{ licenseInformation.licenseIP }}{% if licenseInformation.externalIP is not empty %}, {{ licenseInformation.externalIP }}{% endif %}
             </div>
         </div>
 
@@ -94,36 +93,40 @@
 
     </div>
 
-    <h2>{{ Lang.get('core.support_status') }}</h2>
+    {% if licenseInformation.supportStatus != 'N/A' %}
+        <h2>{{ Lang.get('core.support_status') }}</h2>
 
-    <div class="form-container first">
+        <div class="form-container first">
 
-        <div class="form-row">
-            <label>{{ Lang.get('core.support_status') }}</label>
-            <div class="input-container">
-                {% if licenseInformation.supportStatus == 'Active' %}
-                    <strong style="color: #27ae60;">{{ licenseInformation.supportStatus }}</strong>
-                    {% if not monthlyProduct %}
-                        &nbsp; ({{ Lang.get('core.renew_support')|raw }})
+            <div class="form-row">
+                <label>{{ Lang.get('core.support_status') }}</label>
+                <div class="input-container">
+                    {% if licenseInformation.supportStatus == 'Active' %}
+                        <strong style="color: #27ae60;">{{ licenseInformation.supportStatus }}</strong>
+                        {% if not monthlyProduct %}
+                            &nbsp; ({{ Lang.get('core.renew_support')|raw }})
+                        {% endif %}
+                    {% elseif licenseInformation.supportStatus == 'Expired' %}
+                        <strong style="color: #e74c3c;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc')|raw }}
+                    {% else %}
+                        {{ licenseInformation.supportStatus }}
                     {% endif %}
-                {% else %}
-                    <strong style="color: #e74c3c;">{{ licenseInformation.supportStatus }}</strong> - {{ Lang.get('core.support_status_desc')|raw }}
-                {% endif %}
+                </div>
             </div>
-        </div>
 
-        <div class="form-row">
-            <label>{{ Lang.get('core.support_expires') }}</label>
-            <div class="input-container">
-                {{ licenseInformation.supportExpires }}
-                {% if monthlyProduct %}
-                    <br />
-                    {{ Lang.get('core.monthly_product') }}
-                {% endif %}
+            <div class="form-row">
+                <label>{{ Lang.get('core.support_expires') }}</label>
+                <div class="input-container">
+                    {{ licenseInformation.supportExpires }}
+                    {% if monthlyProduct %}
+                        <br />
+                        {{ Lang.get('core.monthly_product') }}
+                    {% endif %}
+                </div>
             </div>
-        </div>
 
-    </div>
+        </div>
+    {% endif %}
 
     <h2>{{ Lang.get('core.version_info') }}</h2>
 

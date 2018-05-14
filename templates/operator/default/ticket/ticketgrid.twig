@@ -153,10 +153,12 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <!-- Datatables -->
+    <!-- Datatables, fixed header extension -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/css/fixedHeader.dataTables.min.css') }}">
 
     <!-- Sweetalert -->
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
@@ -204,10 +206,7 @@
         <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/sidebar.js') }}"></script>
     {% endif %}
     
-    
     <script type="text/javascript">
-        var timeTrackingEnabled = {{ timeTrackingEnabled  }};
-        
         // Schedule first grid refresh in 60 seconds.
         var gridTimeout = setTimeout(function() {
             refreshGrid();
@@ -607,16 +606,7 @@
             // Are we also blocking?
             block = typeof block !== 'undefined' ? block : false;
 
-            var relations = [
-                Lang.choice('general.message', 2),
-                Lang.choice('general.attachment', 2),
-                Lang.get('report.user_feedback')
-            ];
-            if (timeTrackingEnabled) {
-                relations.push(Lang.get('TimeTracking::lang.time_tracking'));
-            }
-
-            var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 2), '', relations);
+            var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 2), '', {{ deleteRelations|json_encode|raw }});
 
             // Set the URL
             var url = laroute.route('ticket.operator.action.destroy');
@@ -674,15 +664,17 @@
                     var array = selection.split(","); // explode the selected rows
 
                     // Trigger a row click for each previously selected row, this will trigger the necessary properties
-                    // and events
+                    // and events. Keep a track of how many we click.
+                    var number_selected = 0;
                     $.each(array, function(index, item) {
-                        if (item != '') {
+                        if (item != '' && $('tr#'+item).length) {
                             $('tr#'+item).trigger('click');
+                            number_selected++;
                         }
                     });
 
-                    // Re-check the select all checkbox.
-                    if (all_selected) {
+                    // Re-check the select all checkbox (only if all rows were selected still).
+                    if (all_selected && number_selected === array.length) {
                         $('input[name="select-all"]').prop('checked', true);
                     }
                 }

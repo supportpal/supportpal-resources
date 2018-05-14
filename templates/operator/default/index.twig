@@ -15,26 +15,26 @@
     <title>{% if title is not empty %}{{ title|raw }} - {% endif %} SupportPal Operator Panel</title>
 
     <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
     <meta name="application-name" content="SupportPal"/>
     <meta name="msapplication-TileColor" content="#FFFFFF" />
-    <meta name="msapplication-TileImage" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
-    <meta name="msapplication-square70x70logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
-    <meta name="msapplication-square150x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
-    <meta name="msapplication-wide310x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
-    <meta name="msapplication-square310x310logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+    <meta name="msapplication-TileImage" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
+    <meta name="msapplication-square70x70logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
 
     <!-- jQuery -->
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
@@ -47,6 +47,13 @@
 
     <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
+
+    {# Brand styling - delete this block if you don't want to apply the automatic brand colour styling. #}
+    {% if operatorCSS is not empty %}
+        <style>
+            {{ operatorCSS|raw }}
+        </style>
+    {% endif %}
 </head>
 
 <body>
@@ -54,10 +61,8 @@
 <div id="header">
     {% block header %}
         <a href="{{ route('core.operator.dashboard') }}" class="logo left">
-            <img src="{{ asset_rev('resources/assets/operator/images/logo_icon.png') }}"
-                 alt="{{ Lang.get('core.product_name') }}" class="2x logo-icon" height="32" />
-            <img src="{{ asset_rev('resources/assets/operator/images/logo.png') }}"
-                 alt="{{ Lang.get('core.product_name') }}" class="2x logo-full hide" height="32" />
+            <img src="{{ get_icon('resources/assets/operator/images/logo_icon.png') }}"
+                 alt="{{ Config.get('settings.brand_name') }}" class="2x" height="32" />
         </a>
 
         <div class="opsettings right">
@@ -86,6 +91,38 @@
         <div class="mobile-nav hide right">
             <i class="fa fa-bars"></i>
         </div>
+
+        {% if isModuleEnabled('Selfservice') and internalTypes.whereIn('brand_id', assignedBrands.pluck('id').all()).count() %}
+            <div class="selfservice right">
+                <ul id="nav" class="dropdown2 dropdown-horizontal">
+                    <li class="dir" aria-haspopup="true">
+                        <i class="fa fa-book left" aria-hidden="true"></i>
+                        &nbsp;
+                        <span>
+                        <i class="fa fa-chevron-down"></i>
+                        </span>
+
+                        <ul>
+                            {% for brand in assignedBrands %}
+                                {% if internalTypes.where('brand_id', brand.id).count() %}
+                                <li aria-haspopup="false">
+                                    <div class="brand">
+                                        <div class="title">{{ brand.name }}</div>
+                                        {% for type in internalTypes.where('brand_id', brand.id) %}
+                                            <a href="{{ type.content == 1 ? type.url : route('selfservice.operator.internal.index', {'brand': type.brand_id, 'type': type.slug}) }}"
+                                                {% if type.content == 1 %}target="_blank"{% endif %}>
+                                                {{ type.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
 
         <div class="divider right" id="privateMessages">
             <a href="{{ route('core.operator.message.index') }}">

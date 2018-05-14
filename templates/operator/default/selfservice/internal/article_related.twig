@@ -1,0 +1,17 @@
+{% if not related.isEmpty() %}
+    <ul class="article-list related-list">
+        {% for article in related %}
+            <li>
+                <ul class="details light right">
+                    <li>
+                        <i class="fa fa-calendar-o"></i> {{ formatDate(article.published_at) }}
+                    </li>
+                </ul>
+                <i class="fa fa-file-o left"></i>
+                <a href='{{ article.internalUrl(type) }}'>
+                    <h4>{{ article.title }}</h4>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

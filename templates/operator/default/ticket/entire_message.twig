@@ -8,6 +8,7 @@
     <title>{{ ticket.subject }}</title>
 
     <!-- CSS Stylesheets -->
+    <link href="{{ asset_rev('resources/assets/libs/webui-popover/css/jquery.webui-popover.min.css') }}" rel="stylesheet" />
     <link href="{{ asset_rev('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/general/css/entiremessage.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
@@ -25,7 +26,12 @@
         <!-- Success / failure message box -->
         <div class="box" style="display: none"></div>
 
-        <h2>{{ ticket.subject }}</h2>
+        <div class="desk_header">
+            <h2>{{ ticket.subject }}</h2>
+            <button class="print-button right">
+                <i class="fa fa-print"></i>&nbsp;{{ Lang.get('general.print') }}
+            </button>
+        </div>
 
         <div class="desk_content_padding" style="padding: 25px 25px 0; margin-bottom: 25px;">
 
@@ -43,17 +49,58 @@
                 {% endif %}
 
                 <span class="description">
-                    {% if message.by == 0 %}
-                        {{ Lang.get('general.staff') }}
-                        {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
+                    {% if message.type == 2 %}
+                        {{ Lang.get('ticket.forwarded_to') }} <strong>{{ message.getForwardRecipients() }}</strong>
+                        {% set emaillog = message.emaillog.where('type', 0).first() %}
+                        {% if emaillog is not empty %}
+                            &nbsp;(<a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>)
+                        {% endif %}
                     {% else %}
-                        {{ Lang.choice('user.user', 1) }}
-                    {% endif %} &nbsp;&middot;&nbsp; {{ formatDate(message.created_at) }}
+                        {% if message.by == 0 %}
+                            {{ Lang.get('general.staff') }}
+                            {% if message.type == 1 %}({{ Lang.choice('general.note', 1) }}){% endif %}
+                        {% else %}
+                            {{ Lang.choice('user.user', 1) }}
+                        {% endif %}
+                    {% endif %}
+                    &nbsp;&middot;&nbsp; {{ timeago(message.created_at) }}
+                    {% if editHistory.get(message.id) is not null %}
+                        {% set edit = editHistory.get(message.id) %}
+                        <strong title="{{ Lang.get('ticket.edited_message', {'user': edit.formatName(false), 'date': formatDate(edit.created_at)}) }}">
+                            ({{ Lang.get('general.edited') }})
+                        </strong>
+                    {% endif %}
                     &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
-                    {% if message.emaillog.count() %}
-                        <a href="{{ route('core.operator.email.log.raw', [ message.emaillog.first().id ]) }}" class="show-original description">
-                            ({{ Lang.get('core.show_original') }})
-                        </a>
+                    {% set emaillog = message.emaillog.where('type', 1).first() %}
+                    {% if emaillog is not empty %}
+                        <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
+                        <div class="webui-popover-content form-row recipients email-details">
+                            {% if emaillog.to is not empty %}
+                                <div>
+                                    <label>{{ Lang.get('ticket.to') }}</label>
+                                    <div class="input-container">{{ emaillog.to|join(', ') }}</div>
+                                </div>
+                            {% endif %}
+                            {% if emaillog.cc is not empty %}
+                                <div>
+                                    <label>{{ Lang.get('ticket.cc') }}</label>
+                                    <div class="input-container">{{ emaillog.cc|join(', ') }}</div>
+                                </div>
+                            {% endif %}
+                            <div>
+                                <label>{{ Lang.get('ticket.from') }}</label>
+                                <div class="input-container">
+                                    {{ emaillog.from_name ~ ' <' ~ emaillog.from_address ~ '>' }}
+                                </div>
+                            </div>
+                            {% if auth_user().hasPermission('view.emaillog') %}
+                                <div>
+                                    <div class="input-container">
+                                        <a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </span>
             </div>
@@ -77,8 +124,20 @@
 <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
+<!-- WebUI Popover -->
+<script src="{{ asset_rev('resources/assets/libs/webui-popover/js/jquery.webui-popover.min.js') }}"></script>
+
 <script type="text/javascript">
     $(document).ready(function() {
+        {% if Input.get('print') %}
+            window.print();
+        {% endif %}
+        
+        // Show print dialog when clicking the "Print" button.
+        $('.print-button').on('click', function () {
+            window.print();
+        });
+        
         function showSuccess() {
             $('#desk_content')
                 .find('.box')
@@ -98,6 +157,9 @@
                 .show()
                 .delay(10000).fadeOut();
         }
+
+        // Popup for email details
+        $('.show-email-details').webuiPopover({ placement: 'bottom', padding: false, offsetTop: 2 });
 
         // Open links in a new window/tab
         $('.desk_content_padding .text a').attr('target', '_blank');

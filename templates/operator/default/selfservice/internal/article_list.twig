@@ -1,0 +1,48 @@
+{% if not articles.isEmpty() %}
+    <ul class="article-list">
+    {% for article in articles %}
+        <li data-slug="{{ article.slug }}">
+            <a href='{{ article.internalUrl(type) }}'>
+                <h4>
+                    {% if show_pinned|default is not empty and show_pinned and article.pinned %}
+                        <span class="left">
+                            <i class="fa fa-thumb-tack pinned" aria-hidden="true"></i> &nbsp;
+                        </span>
+                    {% endif %}
+                    {{ article.title }}
+                </h4>
+                <p>{{ article.excerpt }}</p>
+            </a>
+            <ul class="details description">
+                <li>
+                    <i class="fa fa-calendar-o"></i> {{ formatDate(article.published_at) }}
+                </li>
+                {% if not article.categories.isEmpty() %}
+                <li>
+                    <i class="fa fa-folder-o"></i>
+                    <ul class="item-list">
+                        {% for category in article.categories.sortBy('name') %}
+                        <li><a href="{{ route('selfservice.operator.internal.category', {'brand': type.brand_id, 'type': type.slug, 'slug': category.slug}) }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if not article.tags.isEmpty() %}
+                <li>
+                    <i class="fa fa-tag"></i>
+                    <ul class="item-list">
+                        {% for tag in article.tags.sortBy('name') %}
+                        <li><a href="{{ route('selfservice.operator.internal.tag', {'brand': type.brand_id, 'type': type.slug, 'slug': tag.slug}) }}">{{ tag.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+
+    {{ articles.render()|raw }}
+{% else %}
+    {{ Lang.get('selfservice.no_articles') }}
+{% endif %}

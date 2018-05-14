@@ -40,7 +40,11 @@
     <div class="form-row">
         {{ form_label('email', Lang.get('general.email')) }}
         <div class="input-container">
-            {{ form_email('email', record.email, {size: 45}) }}
+            {% set emailAttributes = { size: 45 } %}
+            {% if auth_check() and record.id == auth_user().id and auth_user().loggedInViaSSO() %}
+                {% set emailAttributes = emailAttributes|merge({ 'readonly': 'readonly' }) %}
+            {% endif %}
+            {{ form_email('email', record.email, emailAttributes) }}
         </div>
     </div>
 

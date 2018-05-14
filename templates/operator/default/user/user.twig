@@ -76,9 +76,12 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    <!-- Datatables, fixed header extension -->
     <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/css/fixedHeader.dataTables.min.css') }}">
 
     <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
@@ -124,6 +127,9 @@
                     url = laroute.route("user.operator.usergroup.members.update", { id: groupId });
                 {% endif %}
 
+                // Disable the grid options (buttons)
+                $('.grid-options :input').prop('disabled', true);
+
                 // Update group membership
                 $.ajax({
                     url: url,
@@ -140,6 +146,8 @@
                 }).always(function() {
                     // Reload table
                     $('.dataTable').dataTable()._fnAjaxUpdate();
+                    // Re-enable the grid options (buttons)
+                    $('.grid-options :input').prop('disabled', false);
                 });
 
                 // Reset the dropdown to its initial state
@@ -163,6 +171,8 @@
                 if (isConfirm) {
                     // Disable submit button
                     deleteAlert.disableButtons();
+                    // Disable the grid options (buttons)
+                    $('.grid-options :input').prop('disabled', true);
                     // Delete record and reload table if successful
                     $.ajax({
                         url: url,
@@ -182,6 +192,8 @@
                         swal.closeModal();
                         // Reload table
                         $('.dataTable').dataTable()._fnAjaxUpdate();
+                        // Re-enable the grid options (buttons)
+                        $('.grid-options :input').prop('disabled', false);
                     });
                 }
             });

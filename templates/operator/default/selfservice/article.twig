@@ -69,6 +69,16 @@
                 <label>{{ Lang.get('selfservice.published') }}:</label>
                 <div id="filter_published"></div>
             </div>
+            <div>
+                <label>{{ Lang.get('selfservice.registered_users') }}:</label>
+                <div id="filter_protected"></div>
+            </div>
+            {% if type|default is empty or type.view == 1 %}
+                <div>
+                    <label>{{ Lang.get('selfservice.pinned') }}:</label>
+                    <div id="filter_pinned"></div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -106,7 +116,9 @@
                     {% endif %}
                 {% endif %}
                 {column_number : 5, filter_container_id: "filter_tag"},
-                {column_number : 6, filter_container_id: "filter_published"}
+                {column_number : 6, filter_container_id: "filter_published"},
+                {column_number : 7, filter_container_id: "filter_protected"},
+                {column_number : 8, filter_container_id: "filter_pinned"}
             ]);
         });
     </script>

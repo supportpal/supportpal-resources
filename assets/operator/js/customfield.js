@@ -58,14 +58,6 @@ jQuery(function($){
             $('.customfield-options').hide();
         }
 
-        // Hide required field if checkbox, checklist or multiple options
-        if ($(this).val() == '1' || $(this).val() == '2' || $(this).val() == '4') {
-            $('.required-field').find('input').prop('checked', false);
-            $('.required-field').hide();
-        } else {
-            $('.required-field').show();
-        }
-
         // Hide encrypt and regex fields if not password, text or textarea
         if ($(this).val() == '6' || $(this).val() == '8' || $(this).val() == '9') {
             $('.encrypt-field').show();

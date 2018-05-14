@@ -46,13 +46,17 @@
                 <label>{{ Lang.get('general.description') }}:</label>
                 <div id="filter_description"></div>
             </div>
+            <div>
+                <label>{{ Lang.get('general.type') }}:</label>
+                <div id="filter_type"></div>
+            </div>
         </div>
 	</div>
 
 	{{ table.render()|raw }}
 	{{ table.script()|raw }}
 
-    <div class="note box bottombox">
+    <div class="note box bottombox" id="dndOrderNote">
         <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('ticket.macro_order') }}
     </div>
 
@@ -80,7 +84,8 @@
              */
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
-                {column_number : 1, filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
+                {column_number : 1, filter_container_id: "filter_description", filter_type: "text", filter_delay: 500},
+                {column_number : 2, filter_container_id: "filter_type"}
             ]);
         });
     </script>

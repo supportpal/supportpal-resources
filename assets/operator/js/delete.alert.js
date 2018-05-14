@@ -1,4 +1,153 @@
-function deleteAlert() {};
+/**
+ * Initialise a new delete alert modal.
+ *
+ * @constructor
+ */
+function deleteAlert()
+{
+    "use strict";
+
+    /**
+     * The current instance.
+     *
+     * @type {deleteAlert}
+     */
+    var instance = this;
+
+    /**
+     * Delete options common to both delete alert types.
+     *
+     * @type {{closeOnConfirm: boolean, width: number, customClass: string}}
+     */
+    this.defaultOpts = $.extend(true, {}, deleteAlert.defaultOpts);
+
+    /**
+     * Checkbox selector for severe modal.
+     *
+     * @type {string}
+     */
+    this.checkboxSelector = $.extend(true, {}, deleteAlert.checkboxSelector);
+
+    /**
+     * List of translation keys to use in the alert modal.
+     *
+     * @type {{title: string, warning: string, relations: string, confirmButton: string, cancelButton: string}}
+     */
+    this.translationKeys = $.extend(true, {}, deleteAlert.translationKeys);
+
+    /**
+     * Make description for deleting a record with several relations.
+     *
+     * @param section
+     * @param name
+     * @param relations
+     * @param disabled
+     * @returns {string}
+     */
+    var makeRelationsDescription = function (section, name, relations, disabled)
+    {
+        disabled = disabled || false;
+
+        // Make checklist.
+        var checklist = [];
+        for (var i = 0; i < relations.length; i++) {
+            var str = '<label style="margin: 0 10px 0 20px">'
+                + '<input type="checkbox" name="confirm-delete[]" style="margin: 0 15px 0 0" ' + (disabled ? 'disabled checked' : '') + ' />'
+                + relations[i]
+                + '</label>';
+            checklist.push(str);
+        }
+
+        // Lang string replacements.
+        var replacements = {"record": section.toLowerCase(), 'name': name};
+
+        return '<span>' + Lang.get(instance.translationKeys.relations, replacements) + '</span>'
+            + '<br />'
+            + checklist.join('<br />');
+    };
+
+    /**
+     * SWAL options for deleting a normal record.
+     *
+     * @param name
+     * @param section
+     * @param relations
+     * @returns {{title: (*|String), html: (*|String), showCancelButton: boolean, confirmButtonColor: string, confirmButtonText: (*|String), cancelButtonText: (*|String), closeOnConfirm: boolean}}
+     */
+    this.getDefaultOpts = function (section, name, relations)
+    {
+        name = name || '';
+        if (typeof section !== 'string' || typeof name !== 'string') {
+            throw ("Expecting parameters 'section' and 'name' to be of type string.");
+        }
+
+        var message = Lang.get(this.translationKeys.warning, {"record": section.toLowerCase(), 'name': name});
+        if (typeof relations === 'object' && relations.length > 0) {
+            message = makeRelationsDescription(section, name, relations, true);
+        }
+
+        return $.extend(this.defaultOpts, {
+            title: Lang.get(this.translationKeys.title, {'record': section }),
+            html: '<div style="text-align: left">'
+                    + '<div class="warning-box">'
+                        + '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;'
+                        + Lang.get('messages.cannot_be_undone')
+                    + '</div>'
+                    + message
+                + '</div>',
+            showCancelButton: true,
+            confirmButtonColor: "#e74c3c",
+            confirmButtonText: Lang.get(this.translationKeys.confirmButton, {'record': section}),
+            cancelButtonText: Lang.get(this.translationKeys.cancelButton, {'record': section})
+        });
+    };
+
+    /**
+     * SWAL options for deleting a record that has severe consequences i.e. the delete will cascade and
+     * wipe out several other related records.
+     *
+     * @param section
+     * @param name
+     * @param relations
+     * @returns {{title: (*|String), html: string, showCancelButton: boolean, confirmButtonColor: string, confirmButtonText: (*|String), closeOnConfirm: boolean, width: number}}
+     */
+    this.getSevereOpts = function (section, name, relations)
+    {
+        name = name || '';
+        relations = relations || [];
+        if (typeof name !== 'string' || typeof section !== 'string') {
+            throw ("Expecting parameters 'section' and 'name' to be of type string.");
+        } else if (typeof relations !== 'object') {
+            throw ("Expecting 'relations' parameter of type array.");
+        }
+
+        return $.extend(this.defaultOpts, {
+            title: Lang.get(this.translationKeys.title, {'record': section }),
+            html: '<div style="text-align: left;">'
+                    + '<div class="warning-box">'
+                        + '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;'
+                        + Lang.get('messages.cannot_be_undone')
+                    + '</div>'
+                    + makeRelationsDescription(section, name, relations)
+                    + '<br /><span>' + Lang.get('messages.please_check') + '</span>'
+                + '</div>',
+            showCancelButton: true,
+            cancelButtonText: Lang.get(this.translationKeys.cancelButton, {'record': section}),
+            confirmButtonColor: "#e74c3c",
+            confirmButtonText: Lang.get(this.translationKeys.confirmButton, {'record': section})
+        });
+    };
+
+    /**
+     * Convert modal buttons to an 'in-progress' state to show AJAX is running in the background.
+     */
+    this.disableButtons = function ()
+    {
+        swal.disableButtons();
+        $(this.checkboxSelector).prop('disabled', 'disabled');
+        $('.sweet-alert').find('button.cancel').hide();
+    };
+}
 
 /**
  * Delete options common to both delete alert types.
@@ -31,40 +180,7 @@ deleteAlert.translationKeys = {
  */
 deleteAlert.disableButtons = function ()
 {
-    swal.disableButtons();
-    $(deleteAlert.checkboxSelector).prop('disabled', 'disabled');
-    $('.sweet-alert').find('button.cancel').hide();
-};
-
-/**
- * Make description for deleting a record with several relations.
- *
- * @param section
- * @param name
- * @param relations
- * @param disabled
- * @returns {string}
- */
-deleteAlert.makeRelationsDescription = function (section, name, relations, disabled)
-{
-    disabled = disabled || false;
-    
-    // Make checklist.
-    var checklist = [];
-    for (var i = 0; i < relations.length; i++) {
-        var str = '<label style="margin: 0 10px 0 20px">'
-            + '<input type="checkbox" name="confirm-delete[]" style="margin: 0 15px 0 0" ' + (disabled ? 'disabled checked' : '') + ' />'
-            + relations[i]
-            + '</label>';
-        checklist.push(str);
-    }
-    
-    // Lang string replacements.
-    var replacements = {"record": section.toLowerCase(), 'name': name};
-    
-    return '<span>' + Lang.get(deleteAlert.translationKeys.relations, replacements) + '</span>'
-         + '<br />'
-         + checklist.join('<br />');
+    return (new deleteAlert).disableButtons();
 };
 
 /**
@@ -77,30 +193,7 @@ deleteAlert.makeRelationsDescription = function (section, name, relations, disab
  */
 deleteAlert.getDefaultOpts = function (section, name, relations)
 {
-    name = name || '';
-    if (typeof section !== 'string' || typeof name !== 'string') {
-        throw ("Expecting parameters 'section' and 'name' to be of type string.");
-    }
-    
-    var message = Lang.get(deleteAlert.translationKeys.warning, {"record": section.toLowerCase(), 'name': name});
-    if (typeof relations === 'object' && relations.length > 0) {
-        message = deleteAlert.makeRelationsDescription(section, name, relations, true);
-    }
-
-    return $.extend(deleteAlert.defaultOpts, {
-        title: Lang.get(deleteAlert.translationKeys.title, {'record': section }),
-        html: '<div style="text-align: left">'
-                + '<div class="warning-box">'
-                    + '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;'
-                    + Lang.get('messages.cannot_be_undone')
-                + '</div>'
-                + message
-            + '</div>',
-        showCancelButton: true,
-        confirmButtonColor: "#e74c3c",
-        confirmButtonText: Lang.get(deleteAlert.translationKeys.confirmButton, {'record': section}),
-        cancelButtonText: Lang.get(deleteAlert.translationKeys.cancelButton, {'record': section})
-    });
+    return (new deleteAlert).getDefaultOpts(section, name, relations);
 };
 
 /**
@@ -114,29 +207,7 @@ deleteAlert.getDefaultOpts = function (section, name, relations)
  */
 deleteAlert.getSevereOpts = function (section, name, relations)
 {
-    name = name || '';
-    relations = relations || [];
-    if (typeof name !== 'string' || typeof section !== 'string') {
-        throw ("Expecting parameters 'section' and 'name' to be of type string.");
-    } else if (typeof relations !== 'object') {
-        throw ("Expecting 'relations' parameter of type array.");
-    }
-
-    return $.extend(deleteAlert.defaultOpts, {
-        title: Lang.get(deleteAlert.translationKeys.title, {'record': section }),
-        html: '<div style="text-align: left;">'
-                + '<div class="warning-box">'
-                    + '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> &nbsp;'
-                    + Lang.get('messages.cannot_be_undone')
-                + '</div>'
-                + deleteAlert.makeRelationsDescription(section, name, relations)
-                + '<br /><span>' + Lang.get('messages.please_check') + '</span>'
-            + '</div>',
-        showCancelButton: true,
-        cancelButtonText: Lang.get(deleteAlert.translationKeys.cancelButton, {'record': section}),
-        confirmButtonColor: "#e74c3c",
-        confirmButtonText: Lang.get(deleteAlert.translationKeys.confirmButton, {'record': section})
-    });
+    return (new deleteAlert).getSevereOpts(section, name, relations);
 };
 
 $(function () {

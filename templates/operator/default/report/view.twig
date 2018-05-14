@@ -15,7 +15,7 @@
 {% block content %}
 
     {% if report.timeframe|default is not empty and report.timeframe != 'none' %}
-    <div class="options box">
+    <div class="grid-options options box">
         <div class="timeframe-options">
             {{ form_button(Lang.get('general.update'), { 'class': 'updateReport right' }) }}
             {% if report.timeframe == 'custom' %}
@@ -139,17 +139,11 @@
             // Date pickers
             var startPicker = new Pikaday({
                 field: $('input[name="startDate"]')[0],
-                format: $('meta[name=date_format]').prop('content'),
-                onSelect: function() {
-                    startTimestamp = this.getMoment().format('X');
-                }
+                format: $('meta[name=date_format]').prop('content')
             });
             var endPicker = new Pikaday({
                 field: $('input[name="endDate"]')[0],
-                format: $('meta[name=date_format]').prop('content'),
-                onSelect: function() {
-                    endTimestamp = this.getMoment().format('X');
-                }
+                format: $('meta[name=date_format]').prop('content')
             });
 
             // Set chart type dropdown to first item
@@ -169,45 +163,43 @@
             var timeframe = '{{ report.timeframe }}';
 
             // Set the current period
-            var startDate = new Date('{{ report.startDate }}' * 1000);
             if (timeframe == 'yearly' || timeframe == 'monthly') {
                 // Monthly/Yearly
-                $('select[name="year"]').val(startDate.getFullYear());
+                var startDate = moment.utc('{{ report.startDate }}', 'X')
+                $('select[name="year"]').val(startDate.year());
                 if (timeframe == 'monthly') {
-                    $('select[name="month"]').val(startDate.getMonth() + 1);
+                    $('select[name="month"]').val(startDate.month() + 1);
                 }
             } else {
                 // Custom timeframe
                 {% if report.startDate != 0 %}
-                    startTimestamp = {{ report.startDate }};
-                    startPicker.setMoment(moment('{{ formatDate(report.startDate, true) }}', $('meta[name=date_format]').prop('content')));
+                    startPicker.setDate(moment.utc('{{ report.startDate }}', 'X').format('YYYY-MM-DD'));
                 {% endif %}
-                endTimestamp = {{ report.endDate }};
-                endPicker.setMoment(moment('{{ formatDate(report.endDate, true) }}', $('meta[name=date_format]').prop('content')));
+                endPicker.setDate(moment.utc('{{ report.endDate}}', 'X').format('YYYY-MM-DD'));
             }
 
             $(document.body).on('click', '.updateReport', function() {
-                var startDate = 0, endDate = 0;
+                var startDate = null, endDate = null;
                 // Depending on timeframe
                 if (timeframe == 'yearly' || timeframe == 'monthly') {
                     if (timeframe == 'monthly') {
                         // Monthly - Get new start and end date
                         var date = new Date($('select[name="year"]').val(), parseInt($('select[name="month"]').val() - 1), 1, 0, 0, 0, 0);
-                        startDate = date.getTime() / 1000;
+                        startDate = moment(date).format($('meta[name=date_format]').prop('content'));
                         date = new Date($('select[name="year"]').val(), $('select[name="month"]').val(), 0, 23, 59, 59, 0);
-                        endDate = date.getTime() / 1000;
+                        endDate = moment(date).format($('meta[name=date_format]').prop('content'));
                     } else {
                         // Yearly - Get new start and end date
                         var date = new Date($('select[name="year"]').val(), 0, 1, 0, 0, 0, 0);
-                        startDate = date.getTime() / 1000;
+                        startDate = moment(date).format($('meta[name=date_format]').prop('content'));
                         date = new Date($('select[name="year"]').val(), 11, 31, 23, 59, 59, 0);
-                        endDate = date.getTime() / 1000;
+                        endDate = moment(date).format($('meta[name=date_format]').prop('content'));
                     }
                 } else {
                     // Specific range
                     if ($('input[name="timeframe"]:checked').val() == 1) {
-                        startDate = startTimestamp;
-                        endDate = endTimestamp;
+                        startDate = startPicker.getMoment().format($('meta[name=date_format]').prop('content'));
+                        endDate = endPicker.getMoment().format($('meta[name=date_format]').prop('content'));
                     }
                 }
 

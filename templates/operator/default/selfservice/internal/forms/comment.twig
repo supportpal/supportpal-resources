@@ -1,0 +1,29 @@
+{% if article.comments is not empty %}
+    {{ form_open({ 'route': [ 'selfservice.operator.internal.comment' ], 'method': 'post', 'class': 'add-comment validate with-comments' }) }}
+{% else %}
+    {{ form_open({ 'route': [ 'selfservice.operator.internal.comment' ], 'method': 'post', 'class': 'add-comment validate' }) }}
+{% endif %}
+
+    {{ form_hidden('article_id', article['id']) }}
+    {{ form_hidden('type_id', type) }}
+    {{ form_hidden('parent_id') }}
+
+    <p class="replying-to light hide">
+        {{ Lang.get('selfservice.replying_to') }} <strong><span class="reply-name"></span></strong>
+        &nbsp;
+        {{ form_button(Lang.get('general.cancel'), { 'class': 'cancel-reply' }) }}
+    </p>
+
+    <div class="form-row form-full">
+        {{ form_textarea('text', null, { 'size': '50x3', 'placeholder': Lang.choice('selfservice.comment', 1) }) }}
+    </div>
+
+    <div class="form-button">
+        {{ form_submit(Lang.choice('general.post', 1)) }}
+        {% if auth_check() %}
+            &nbsp;&nbsp;&nbsp;
+            {{ form_check('notify_reply', 1, true) }} {{ Lang.get('selfservice.receive_notifications') }}
+        {% endif %}
+    </div>
+
+{{ form_close() }}

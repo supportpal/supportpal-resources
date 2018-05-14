@@ -92,7 +92,7 @@
                     {{ form_check('public', 1, record.user_id|default is empty, { 'class': 'toggle', 'id': 'toggle_public' }) }}
                     <label for="toggle_public"></label>
                     <br />
-                    <span class="description">{{ Lang.get('ticket.canned_public_desc') }}</span>
+                    <span class="description">{{ Lang.get('ticket.record_public_desc', { 'record': mb_strtolower(Lang.choice('ticket.cannedresponse', 1)) }) }}</span>
                 </div>
             </div>
 
@@ -100,7 +100,7 @@
                 {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
                 <div class="input-container">
                     {{ form_select('groups[]', groups, userGroups, { 'multiple': 'multiple' }) }}
-                    <span class="description">{{ Lang.get('ticket.canned_group_desc') }}</span>
+                    <span class="description">{{ Lang.get('ticket.record_group_desc', { 'record': mb_strtolower(Lang.choice('ticket.cannedresponse', 1)) }) }}</span>
                 </div>
             </div>
 
@@ -140,6 +140,7 @@
 
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/visibility.js') }}"></script>
     <script type="text/javascript">
         // List of valid translatable attributes.
         var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
@@ -164,9 +165,6 @@
             // Focus the canned response name input box.
             $('input[name="name"]').focus();
 
-            var $select = $('select[name="groups[]"]').selectize({
-                plugins: ['remove_button']
-            })[0].selectize;
             $('div.section-items textarea').redactor($.extend($.Redactor.default_opts, opts));
 
             // Tags
@@ -181,24 +179,6 @@
                 },
                 maxItems: null,
                 placeholder: Lang.get("ticket.associate_response_tag")
-            });
-
-            // On page load, toggle the user groups box depending on whether public is set/not
-            var $public = $('input[name="public"]');
-            $('.usergroups').toggle($public.is(":checked"));
-
-            // Toggle user groups, as we update the checkbox
-            $public.change(function() {
-                if (this.checked) {
-                    $('.usergroups').show();
-                    $('select[name="groups[]"]').prop("disabled", false);
-                    $select.enable();
-                } else {
-                    $('.usergroups').hide();
-                    $('select[name="groups[]"]').prop("disabled", true);
-                    $select.clear();
-                    $select.disable();
-                }
             });
         });
     </script>

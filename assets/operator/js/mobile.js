@@ -43,10 +43,19 @@ $(document).ready(function() {
 
         // Show/hide navigation lists depending on screen format (desktop/mobile)
         if ($(this).width() > 1080) {
-            $('#navarea, ul#nav ul').css('display', 'block');
+            $('#navarea').css('display', 'block');
         } else {
-            $('#navarea, ul#nav ul').css('display', 'none');
+            $('#navarea').css('display', 'none');
             $('.mobile-nav').removeClass('active');
+        }
+        
+        // Adjust DataTable footer.
+        var $dataTable = $('.dataTable');
+        if ($dataTable.length) {
+            var table = $dataTable.dataTable().api().table();
+            if (typeof table.fixedHeader !== 'undefined') {
+                table.fixedHeader.adjust();
+            }
         }
     });
 
@@ -108,6 +117,6 @@ function closeHeader() {
     });
 
     // Hide mobile navigation
-    $('#navarea, ul#nav ul').css('display', 'none');
+    $('#navarea').css('display', 'none');
     $('.mobile-nav').removeClass('active');
 }

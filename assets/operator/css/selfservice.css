@@ -1,0 +1,417 @@
+@charset "utf-8";
+
+/* List styles */
+
+ul.article-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.article-list li {
+	margin-top: 20px;
+}
+
+ul.article-list li:first-child {
+	margin-top: 0;
+}
+
+ul.article-list li a {
+	text-decoration: none;
+}
+
+ul.article-list li a h4 {
+	font-size: 125%;
+	font-weight: 600;
+	line-height: 1.7em;
+	margin: 0;
+}
+
+ul.article-list li p {
+	color: #222;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+ul.article-list li a:hover > h4 {
+	text-decoration: underline;
+}
+
+ul.article-list li.none {
+	text-align: center;
+}
+
+ul.article-list .fa.pinned, #main ul.article-list a:hover .fa.pinned {
+	color: #f9ca24
+}
+
+ul.details {
+	margin: 0;
+	padding: 0;
+}
+
+ul.details > li {
+	display: inline-block;
+	zoom: 1;
+	*display: inline;
+	font-size: 90%;
+	margin: 0 15px 0 0;
+	background: left center no-repeat;
+}
+
+ul.details .fa {
+	margin-right: 4px;
+}
+
+ul.catlist {
+	list-style: none;
+	margin: 0;
+	min-height: 80px;
+	padding: 0 15px;
+}
+
+ul.catlist li {
+	line-height: 26px;
+	padding-left: 20px;
+	position: relative;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+ul.catlist li:before {
+	color: #999;
+	content: "\f016";
+	font-family: 'FontAwesome';
+	font-size: 10px;
+	left: 1px;
+	position: absolute;
+}
+
+ul.catlist li.none {
+	background: 0;
+	text-align: center;
+}
+
+ul.related-list .fa-file-o {
+	margin: 7px 7px 0 0;
+}
+
+ul.related-list h4 {
+	color: #454545;
+}
+
+ul.related-list li {
+	margin-top: 7px;
+}
+
+/* Knowledgebase / Downloads */
+
+.catcontainer {
+	margin-right: -25px;
+}
+
+.catbox {
+	float: left;
+	margin-bottom: 25px;
+	padding-right: 25px;
+	width: 50%;
+}
+
+.catbox a.cattitle {
+	background: #f5f5f5;
+	border: 1px solid #e6e6e6;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	display: block;
+	font-size: 110%;
+	font-weight: bold;
+	margin-bottom: 10px;
+	padding: 9px 12px;
+	text-decoration: none;
+}
+
+.catbox a.cattitle:hover {
+	background: #e6e6e6;
+}
+
+ul.item-list {
+	display: inline-block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.item-list li {
+	display: inline;
+	padding: 0;
+	margin: 0;
+}
+
+ul.item-list li:after {
+	content: ", ";
+}
+
+ul.item-list li:last-child:after {
+	content: "";
+}
+
+ul.tags {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.tags li {
+	display: inline-block;
+	margin: 5px 3px 0 0;
+}
+
+ul.tags li a {
+	background: #fff;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #e0e0e0;
+	display: inline-block;
+	font-size: 0.9em;
+	padding: 0 6px;
+	text-transform: uppercase;
+}
+
+ul.tags li a:hover {
+	background: #eee;
+	text-decoration: none;
+}
+
+.article h2 {
+	margin: 25px 0;
+}
+
+.article pre {
+	background: #f9f9f9;
+	border: 1px solid #e0e0e0;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	display: block;
+	overflow: scroll;
+	padding: 20px;
+}
+
+.print, .manage-article {
+	background: #f9f9f9;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	line-height: 26px;
+	padding: 0 10px;
+	text-decoration: none;
+}
+
+.print .fa, .manage-article .fa {
+	color: #454545;
+}
+
+.print:hover, .manage-article:hover {
+	background: #e0e0e0;
+	text-decoration: none;
+}
+
+.manage-article {
+    margin-right: 10px;
+}
+
+.attachments {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.attachments li {
+	display: inline-block;
+	margin: 0 5px 7px 0;
+	width: 300px;
+}
+
+.attachments li a {
+	background: #f9f9f9;
+	border: 1px solid #eee;
+	display: block;
+	padding: 6px 12px;
+    text-decoration: none;
+}
+
+.attachments li a:hover {
+	background: #f0f0f0;
+}
+
+.attachments li a .fiv-viv {
+	font-size: 32px;
+	margin: 5px 12px 0 0;
+}
+
+.attachments li a div {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* Comments */
+
+ul.comments, ul.comments ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.comments > li {
+	border-top: 1px solid #eee;
+	margin-top: 25px;
+	padding-top: 25px;
+}
+
+ul.comments li li {
+	border-top: 0;
+	margin-top: 25px;
+	padding: 0;
+}
+
+ul.comments img.avatar {
+	float: left;
+	margin-right: 12px;
+	margin-top: 5px;
+	max-height: 48px;
+	max-width: 48px;
+}
+
+ul.comments span.author {
+	font-size: 105%;
+	font-weight: bold;
+}
+
+ul.comments span.date {
+	color: #888;
+	font-size: 80%;
+}
+
+ul.comments p.commentText {
+	margin: 5px 0;
+}
+
+ul.comments div.comment {
+	margin-left: 60px;
+}
+
+ul.comments ul li img.avatar {
+	width: 32px;
+}
+
+ul.comments ul li div.comment {
+	margin-left: 44px;
+}
+
+ul.comments .commentContents {
+	margin: 0;
+}
+
+ul.comments .commentOptions {
+	font-size: 90%;
+	margin: 0;
+}
+
+ul.comments .score {
+	margin-right: 6px;
+}
+
+ul.comments .commentReplyContainer, ul.comments .commentReplyContainer div {
+	margin-left: 0;
+}
+
+.commentReply {
+	background: #eee;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	padding: 4px 7px;
+}
+
+ul.comments .badge {
+	background: #454545;
+	padding: 2px 7px;
+}
+
+.add-comment {
+	margin-top: 20px;
+}
+
+a.commentHidden {
+	color: #999;
+	font-size: 90%;
+	font-style: italic;
+	line-height: 2.5em;
+}
+
+button.show-children {
+	margin-top: 25px;
+}
+
+.loading {
+	background: #f0f0f0;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	padding: 7px 14px;
+	margin-left: 5px;
+	vertical-align: middle;
+}
+
+.loading .fa {
+	font-size: 14px;
+}
+
+/* Pagination */
+
+.pager {
+    padding-left: 0;
+    margin: 25px 0 0;
+    text-align: center;
+    list-style: none;
+}
+
+.pager li {
+    display: inline;
+}
+
+.pager li > a, .pager li > span {
+    display: inline-block;
+    padding: 5px 12px 7px;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    font-size: 150%;
+    text-decoration: none;
+}
+
+.pager li > a:hover {
+    background: #eee;
+    text-decoration: none;
+}
+
+.pager li.disabled > span {
+    color: #aaa;
+    opacity: 0.6;
+}
+
+/* Mobile */
+
+@media only screen and (max-width: 480px) {
+
+	.attachments li {
+		margin-right: 0;
+		width: 100%;
+	}
+
+}

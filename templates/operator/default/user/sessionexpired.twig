@@ -1,8 +1,8 @@
 {% extends 'operator.' ~ template ~ '.user.login-master' %}
 
 {% block logo %}
-    <img src="{{ asset_rev('resources/assets/operator/images/logo_sleep.png') }}"
-         alt="{{ Lang.get('core.product_name') }}" height="128" />
+    <img src="{{ get_icon('resources/assets/operator/images/logo_sleep.png') }}"
+         alt="{{ Lang.get('core.product_name') }}" style="max-height: {% if Config.get('settings.operator_icon') is not empty %}80{% else %}98{% endif %}px;" />
 {% endblock %}
 
 {% block content_title %}

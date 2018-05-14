@@ -2,7 +2,7 @@
     {% include overriddenViews['message'] %}
 {% else %}
     <div class="message message-{{ message.id }} {% if message.type == 1 %}note{% elseif message.type == 2 %}forward{% endif %} clear collapsed"
-         data-id="{{ message.id }}" id="{{ message_url_id }}" data-url="{{ route('ticket.operator.ticket.show', ticket.id) }}#{{ message_url_id }}">
+         data-id="{{ message.id }}">
 
     	<div class="header">
     		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
@@ -33,6 +33,11 @@
                         </div>
                         <div class="dropdown hide">
                             <ul>
+                                <li>
+                                    <a class="print-message" href="{{ route('ticket.operator.message.show', { 'id': message.id, 'print': '1' }) }}" target="_blank">
+                                        {{ Lang.get('general.print') }}
+                                    </a>
+                                </li>
                                 <li>
                                     <a class="link-message">{{ Lang.get('ticket.copy_link') }}</a>
                                 </li>
@@ -84,15 +89,17 @@
                 {% if emaillog is not empty %}
                     <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
                     <div class="webui-popover-content form-row recipients email-details">
-                        <div>
-                            <label>{{ Lang.get('ticket.to') }}</label>
-                            <div class="input-container">{{ emaillog.to|join(', ') }}</div>
-                        </div>
-                        {% if not emaillog.cc is empty %}
-                        <div>
-                            <label>{{ Lang.get('ticket.cc') }}</label>
-                            <div class="input-container">{{ emaillog.cc|join(', ') }}</div>
-                        </div>
+                        {% if emaillog.to is not empty %}
+                            <div>
+                                <label>{{ Lang.get('ticket.to') }}</label>
+                                <div class="input-container">{{ emaillog.to|join(', ') }}</div>
+                            </div>
+                        {% endif %}
+                        {% if emaillog.cc is not empty %}
+                            <div>
+                                <label>{{ Lang.get('ticket.cc') }}</label>
+                                <div class="input-container">{{ emaillog.cc|join(', ') }}</div>
+                            </div>
                         {% endif %}
                         <div>
                             <label>{{ Lang.get('ticket.from') }}</label>
