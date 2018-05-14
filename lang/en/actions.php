@@ -55,4 +55,9 @@ return array(
     "remove_cc"                 => "Remove CC email address",
     "remove_cc_desc"            => "Leave blank to remove all CC email addresses on ticket.",
 
+    /*
+     * 2.3.1
+     */
+    "exclude_cc"                => "Exclude CC email addresses",
+
 );

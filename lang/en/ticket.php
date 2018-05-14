@@ -79,7 +79,6 @@ return array(
 
     "ticket_number"             => "Ticket Number",
     "ticket_format"             => "Ticket Number Format",
-    "ticket_format_desc"        => "The following variables may be used:<br />%S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
 
     // Departments
     "department_public_desc"    => "If the department is visible to users on the web help desk.",
@@ -167,15 +166,11 @@ return array(
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
     "canned_response_category"  => "Canned Response Category|Canned Response Categories",
-    "canned_public_desc"        => "Toggle to only let the canned response be accessible by yourself.",
-    "canned_group_desc"         => "If you wish to make the canned response visible to only certain operator groups, leave blank to make visible to all operators.",
 
     // Filters
     "filter"                    => "Filter|Filters",
     "filter_condition"          => "Filter Conditions",
     "filter_condition_desc"     => "Define the ticket conditions for which tickets are listed under this filter.",
-    "filter_public_desc"        => "Toggle to only let the filter be accessible by yourself.",
-    "filter_group_desc"         => "If you wish to make the filter visible to only certain operator groups, leave blank to make visible to all operators.",
 
     // Macros
     "macro"                     => "Macro|Macros",
@@ -274,7 +269,6 @@ return array(
 
     "close_inactive_tickets"    => "Close Inactive Tickets",
     "close_inactive_tickets_desc" => "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
-    "close_inactive_status_desc" => "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
 
     "ticket_reply_order"        => "Ticket Reply Order",
     "ticket_reply_order_desc"   => "Select the order in which ticket messages are shown, ascending where the latest message is last or descending where the latest message is first.",
@@ -360,7 +354,7 @@ return array(
     "no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
     "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
     "opened_by"                 => "(Opened by :name)",
-    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
+    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='https://docs.supportpal.com/current/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
     "not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
     /*
      * 2.0.3
@@ -497,5 +491,23 @@ return array(
     "add_bcc"                   => "Add BCC",
     "at_least_one_recipient"    => "Please specify at least one recipient.",
     "forwarded_message"         => "---------- Forwarded message ----------",
+    
+    /*
+     * 2.3.1
+     */
+    "inactive_ticket_note"      => "Note: only affects tickets belonging to a status with 'Close Inactive Tickets' enabled.",
+    "close_inactive_status_desc" => "Toggle to enable/disable automatic closure of inactive tickets and inactivity email reminders ('Waiting For Response' and 'Ticket Auto Closed' templates). If enabled, the time before reminders are sent can be configured via the ticket general settings.",
+    "from_header_missing"       => "From: header missing from email.",
+    "move_ticket"               => "Move Ticket",
+    "move_ticket_step1"         => "Step 1: Choose a new brand to move ticket to",
+    "move_ticket_step2"         => "Step 2: Choose a department from new brand",
+    "move_ticket_step3"         => "Step 3: Choose a user from new brand",
+    "current_record"            => "Current :record",
+    "new_record"                => "New :record",
+    "department_email"          => "Department Email",
+    "select_a_department_email" => "Select a department email...",
+    "record_public_desc"        => "Toggle to only let the :record be accessible by yourself.",
+    "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups, leave blank to make visible to all operators.",
+    "ticket_format_desc"        => "Can contain alphanumeric characters and special characters <code>-_.+!*,</code><br />The following variables may also be used: %S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
 
 );

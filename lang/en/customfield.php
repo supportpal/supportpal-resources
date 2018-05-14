@@ -17,7 +17,6 @@ return array(
     "text"                      => "Text",
     "textarea"                  => "Textarea",
 
-    "required_desc"             => "If the custom field must be filled out.",
     "public"                    => "Public",
     "public_desc"               => "If the custom field is shown publicly on the frontend or is for staff only.",
     "encrypted"                 => "Encrypted",
@@ -55,5 +54,10 @@ return array(
     "select_option"             => "Select an option...",
     "purge"                     => "Purge",
     "encrypted_desc"            => "If the custom field value is sensitive and should be saved in the database encrypted. This cannot be changed once the custom field has been created.",
+
+    /*
+     * 2.3.1
+     */
+    "required_desc"             => "If the custom field must be filled out. For the checkbox, checklist or multiple options types, it will require the user to select at least one option.",
 
 );

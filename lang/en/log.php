@@ -45,7 +45,6 @@ return array(
     "mass_email_queued"                 => "Queued :new_value emails in batches to be sent.",
     "mass_email_sent"                   => "Sent :new_value emails in queue.",
 
-    "email_send_failed"                 => "Error: Failed to send email in queue 5 times, removing from queue.",
     "email_queue_deleted"               => "Deleted queued email to :rel.",
 
     "scheduled_task_run"                => "Scheduled task :rel has been run manually.",
@@ -67,7 +66,6 @@ return array(
 
     "ticket_message_reply"              => "Posted a new reply to ticket #:rel.",
     "ticket_message_note"               => "Posted a new note to ticket #:rel.",
-    "ticket_message_updated"            => "Updated a message in ticket #:rel.",
     "ticket_message_deleted"            => "Deleted a message in ticket #:rel.",
 
     "ticket_user_updated"               => "Updated the user on ticket #:rel from :old_value to :new_value.",
@@ -145,7 +143,7 @@ return array(
      * 2.1.1
      */
     "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
-    
+
     /*
      * 2.1.2
      */
@@ -155,7 +153,6 @@ return array(
     "sent_email_to_operators"           => "Sent ':extra_rel1' email to operators.",
     "sent_ticket_email_to_operators"    => "Sent ':extra_rel1' email to operators for ticket #:rel.",
     "sent_email_to_operator_group"      => "Sent ':extra_rel1' email to operator group ':new_value' for ticket #:rel.",
-    "sent_email_to_user_group"          => "Sent ':extra_rel1' email to user group ':new_value' for ticket #:rel.",
     "ticket_macro_applied"              => "The macro ':new_value' was ran on ticket #:rel.",
     "ticket_macro_automatic"            => "The macro ':new_value' automatically ran on ticket #:rel.",
     "email_template_not_found"          => "Email template ID ':new_value' not found, aborted sending email.",
@@ -181,5 +178,22 @@ return array(
     "unlinked_ticket"                   => "Unlinked ticket #:rel from ticket :extra_rel1.",
     "email_queue_attachment_deleted"    => "Deleted attachment ':old_value' from queued email ':rel'.",
     "forward_ticket_email"              => "Forwarded ticket #:rel to third-party, view ':extra_rel1' email.",
+
+    /*
+     * 2.3.1
+     */
+    "selfservice_comment_updated"       => "Updated :rel by :extra_rel1.",
+    "selfservice_comment_status"        => "Changed status of :rel by :extra_rel1 from :old_value to :new_value.",
+    "selfservice_comment_deleted"       => "Deleted comment by :extra_rel1.",
+    "ticket_message_posted"             => "Posted a new :extra_rel1 to ticket #:rel.",
+    "ticket_message_edited"             => "Edited a :extra_rel1 in ticket #:rel.",
+    "email_send_failed"                 => "Failed to send email.",
+    "ticket_brand_updated"              => "Updated the brand on ticket #:rel from :old_value to :new_value.",
+    "export_scheduled"                  => "An export of user :rel has been scheduled.",
+    "export_generated"                  => "Export :new_value of user :rel has been generated and stored on the system.",
+    "export_deleted"                    => "Export :old_value of user :rel has been deleted from the system.",
+    "deleted_inactive_records"          => "Automatically deleted :old_value inactive :rel.",
+    "deleted_old_records"               => "Automatically deleted old :rel records.",
+    "sent_email_to_user_group"          => "Queued email to user group ':new_value' for ticket #:rel.",
 
 );

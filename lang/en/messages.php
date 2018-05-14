@@ -139,4 +139,12 @@ return array(
     "please_check"          => "You must check all of the boxes above to confirm you understand the result of this irreversible action.",
     "failed_attachments"    => "Failed to attach some files.",
 
+    /*
+     * 2.3.1
+     */
+    "sent_email"            => "Success - the email has been sent.",
+    "task_already_running"  => "Scheduled task is running automatically currently, please try again shortly.",
+    "linked_account"        => "The social account has successfully been linked with your account.",
+    "already_linked"        => "The social account is already linked with another account. Please login to the other account and unlink it.",
+
 );

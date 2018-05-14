@@ -264,7 +264,6 @@ return array(
     "new_password"                  => "New Password",
     "personal_confirm_password"     => "Please confirm your current password to set a new password.",
     "operator_confirm_password"     => "Please confirm your password to make changes to the operator account.",
-    "login_via_idp"                 => "Login via IdP",
 
     /*
      * 2.1.2
@@ -283,5 +282,37 @@ return array(
      */
     "remove_from"                   => "Remove From :record?",
     "remove_from_warn"              => "This will permanently remove the <strong>:name</strong> user from the :record.",
+
+    /*
+     * 2.3.1
+     */
+    "social_login"                  => "Social Login",
+    "social_login_provider_desc"    => "Allow users to register and log in using their :provider account.",
+    "social_login_provider_docs"    => "Please check over our documentation for setting up <a href=':link'>:provider Login</a>.",
+    "facebook_app_id"               => "App ID",
+    "facebook_app_secret"           => "App Secret",
+    "facebook_redirect_url"         => "The following URL <strong>must</strong> be entered for the Facebook Login 'Valid OAuth redirect URIs':",
+    "google_client_id"              => "Client ID",
+    "google_client_secret"          => "Client Secret",
+    "google_redirect_url"           => "The following URL <strong>must</strong> be entered for the Google 'Authorized redirect URIs':",
+    "steam_api_key"                 => "API Key",
+    "twitter_consumer_key"          => "Consumer Key",
+    "twitter_consumer_secret"       => "Consumer Secret",
+    "twitter_redirect_url"          => "The following URL <strong>must</strong> be entered for the Twitter Application 'Callback URL':",
+    "login_via"                     => "Log in via :provider",
+    "register_with"                 => "Register with :provider",
+    "idp"                           => "IdP",
+    "social_linking_login"          => "Please log in to complete linking of your social account.",
+    "social_linking_register"       => "Please fill in the details below to complete registration of your account. Your social account will be automatically linked.",
+    "already_registered"            => "Already registered?",
+    "linked_accounts"               => "Linked Accounts",
+    "unlink_account"                => "Unlink :record Account",
+    "unlink_account_warning"        => "Unlinking the social account will mean it can no longer be used to log in directly to the account.",
+    "failed_login"                  => "Failed Login|Failed Logins",
+    "confirmaton_token_expired"     => "Token has expired, please try to register again.",
+    "confirmaton_token_invalid"     => "Invalid token, please verify details are correct or try to register again.",
+    "unconfirmed_account"           => "Your account is currently unconfirmed, please check your email for a confirmation link to complete your account registration.",
+    "resend_confirmation"           => "<strong><a href=':link'>Click here</a></strong> to be sent a new confirmation email.",
+    "resend_confirmation_sent"      => "A new confirmation email has been queued and will be sent to you shortly.",
 
 );

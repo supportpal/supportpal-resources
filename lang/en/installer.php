@@ -76,7 +76,7 @@ return array(
      * 2.0.1
      */
 
-    "post_install"              => "For the system to function properly, a cron job must be set-up. Please read our <a href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-PostInstallationSteps'>post installation steps</a> for details on this and other recommend actions to improve functionality and security.",
+    "post_install"              => "For the system to function properly, a cron job must be set-up. Please read our <a href='https://docs.supportpal.com/current/New+Installation#PostInstallationSteps'>post installation steps</a> for details on this and other recommend actions to improve functionality and security.",
 
     /*
      * 2.0.2
@@ -95,7 +95,7 @@ return array(
     "writable"                  => "Writable",
     "help_php_version"          => "For assistance installing a new version of PHP please contact your hosting provider or server administrator.",
     "help_php_extensions"       => "PHP extensions differ depending on your server, your host and other system variable. For assistance installing missing extensions, please contact your hosting provider or server administrator.",
-    "help_php_settings"         => "For additional assistance, please read <a target=\"_blank\" href=\"http://docs.supportpal.com/display/DOCS/System+Requirements#SystemRequirements-PHPSettingsPHPSettings\">PHP Settings Help</a>.",
+    "help_php_settings"         => "For additional assistance, please read <a target=\"_blank\" href=\"https://docs.supportpal.com/current/System+Requirements#PHPSettings\">PHP Settings Help</a>.",
     "disabled_functions"        => "Disabled Functions",
     "mysql_version_is"          => "Your MySQL Version is :version.",
     "help_mysql_version"        => "For assistance installing a new version of MySQL please contact your hosting provider or server administrator.",
@@ -128,5 +128,9 @@ return array(
     "png_jpg_support"           => "PNG & JPEG Support",
     "allow_url_fopen"           => "'allow_url_fopen' Enabled",
     "allow_url_fopen_failure"   => "Enable 'allow_url_fopen' in your php.ini file to use Gravatar and other features.",
+    "allowed_methods"           => "HTTP Allowed Methods",
+    "help_allowed_methods"      => "Your web server must permit all of the below HTTP methods. Please check our <a href='https://docs.supportpal.com/current/New+Installation#PostInstallationSteps' target='_blank'>New Installation</a> documentation for more information.",
+    "view_log"                  => "View Log",
+    "unexpected_response"       => "Unexpected response.",
 
 );

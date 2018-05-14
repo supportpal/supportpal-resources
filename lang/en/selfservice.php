@@ -14,10 +14,6 @@ return array(
     "tag"                       => "Tag|Tags",
     "type"                      => "Type|Types",
 
-    "type_enabled_desc"         => "Disabling the type will stop it displaying in the frontend.",
-    "type_order"                => "You can change the order that the self-service types are displayed to users on the frontend by dragging and dropping the rows.",
-
-    "type_view_desc"            => "If your content will contain many categories and be informative like a knowledgebase, we recommend the hierarchical view, whereas if your content is time-related such as announcements or a blog, we recommend the list view.",
     "frontend_icon"             => "Frontend Icon",
     "frontend_icon_desc"        => "Select a default icon to display on the frontend. Alternatively, upload your own icon:",
 
@@ -129,5 +125,31 @@ return array(
      */
     "article_desc"              => "The article can be written in several languages. The appropriate article will be shown automatically based on the user's language preference.",
     "no_author"                 => "No Author",
+
+    /*
+     * 2.3.1
+     */
+    "slug"                      => "Slug",
+    "slug_desc"                 => "The URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.",
+    "change_slug"               => "Change Slug",
+    "published_date"            => "Published Date",
+    "published_date_desc"       => "The date and time that the article was published as shown to users on the frontend.",
+    "content_options"           => "Content Options",
+    "content_desc"              => "The content that will be served with this type.<br /><strong>Articles</strong> - A collection of posts that can be grouped together (such as a knowledgebase) or kept individually (such as announcements).<br /><strong>External Link</strong> - Provide a link to an external site, such as a documentation portal.",
+    "external_link"             => "External Link",
+    "type_view_desc"            => "If your content will contain many categories and be informative like a knowledgebase, we recommend the hierarchical view, whereas if your content is time-related such as announcements or a blog, we recommend the list view. The external link option can be used if you need to add a link to a section outside of the help desk.",
+    "pinned"                    => "Pinned",
+    "pinned_desc"               => "Pin record so it shows at the top on the frontend. Only applies to list view types.",
+    "article_ordering"          => "Article Ordering",
+    "article_ordering_desc"     => "The ordering of articles when viewing the type on the frontend.",
+    "most_popular"              => "Most Popular",
+    "most_recent"               => "Most Recent",
+    "type_order"                => "You can change the order that the self-service types are displayed to users by dragging and dropping the rows.",
+    "type_enabled_desc"         => "Disabling the type will stop it displaying.",
+    "internal"                  => "Internal",
+    "internal_desc"             => "Toggle to set the type to only be visible internally to operators in the operator panel.",
+    "login_to_comment"          => "Please login to post a comment.",
+    "article_rating"            => "Article Rating|Article Ratings",
+    "comment_rating"            => "Comment Rating|Comment Ratings",
 
 );

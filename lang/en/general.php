@@ -299,4 +299,19 @@ return array(
     "unlink"                    => "Unlink",
     "link"                      => "Link",
 
+    /*
+     * 2.3.1
+     */
+    "clone"                     => "Clone",
+    "created_date"              => "Created Date",
+    "alphabetical"              => "Alphabetical",
+    "random"                    => "Random",
+    "blocked"                   => "Blocked",
+    "private_to"                => "Private to",
+    "refresh"                   => "Refresh",
+    "provider"                  => "Provider|Providers",
+    "export"                    => "Export|Exports",
+    "generate"                  => "Generate",
+    "entry"                     => "Entry",
+
 );
