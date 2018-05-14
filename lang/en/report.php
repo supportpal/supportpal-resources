@@ -75,5 +75,21 @@ return array(
     "ticket_by_user_desc"       => "This report shows the number of tickets each user has submitted over a given time period, ordered by most tickets.",
     "ticket_by_organisation"    => "Tickets by Organisations",
     "ticket_by_organisation_desc" => "This report shows the number of tickets each organisation (users within the organisation) has submitted over a given time period, ordered by most tickets.",
+    "ticket_by_tag"             => "Tickets by Tag",
+    "ticket_by_tag_desc"        => "The total number of tickets per tag over a given time period, only shows tags which are set on at least one ticket in the time period.",
+
+    /*
+     * 2.3.1
+     */
+    "canned_response_usage"     => "Canned Response Usage",
+    "canned_response_usage_desc" => "The number of times a given canned response has been used.",
+    "busiest_time_of_day"       => "Busiest Time Of Day",
+    "busiest_time_of_day_desc"  => "The number of messages received from users during each hour of the day.",
+    "busiest_day"               => "Busiest Day of the Month",
+    "busiest_day_desc"          => "The number of messages received from users across each day of the month.",
+    "busiest_month"             => "Busiest Month of the Year",
+    "busiest_month_desc"        => "The number of messages received from users across each month of the year.",
+    "busiest_department"        => "Busiest Department",
+    "busiest_department_desc"   => "The average number of operator messages per department, tallies all operator replies and divides by the number of assigned operators per department.",
 
 );

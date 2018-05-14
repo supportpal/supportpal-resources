@@ -249,19 +249,16 @@ return array(
     "debug_mode_desc"           => "Enable debug mode to display errors, only use for debugging or if instructed by support. Errors are otherwise stored in the logs at /storage/logs.",
     "pretty_urls"               => "Pretty URLs",
     "pretty_urls_desc"          => "Enabling will remove index.php from URLs, only enable if you are able to access the operator panel without index.php. Disable if you do not have mod_rewrite installed, .htaccess files are not allowed or haven't converted the Apache .htaccess rewrite rules to work with your alternative web server.",
-    "send_diagnostic"           => "Send Diagnostic Data",
-    "send_diagnostic_desc"      => "To help SupportPal improve its products, your installation can send diagnostic data when something goes wrong.",
 
     /*
      * 2.0.1
      */
     "incoming_rejected"         => "Incoming (Rejected)",
-    "show_original"             => "Show Original",
 
     /*
      * 2.0.2
      */
-    "cron_makesure"             => "For assistance registering the cron job, please see <a target='_blank' href='http://docs.supportpal.com/display/DOCS/New+Installation#NewInstallation-CronJob'>Cron Job Help</a>.",
+    "cron_makesure"             => "For assistance registering the cron job, please see <a target='_blank' href='https://docs.supportpal.com/current/New+Installation#CronJob'>Cron Job Help</a>.",
     "widget"                    => "Widget|Widgets",
 
     /*
@@ -360,5 +357,53 @@ return array(
     "upgrade_pending"           => "Upgrade Pending",
     "locale_in_uri"             => "Include Locale in URI",
     "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
+
+    /*
+     * 2.3.0
+     */
+    "disabling_default_language" => "This is currently set as a default language. Disabling the language will set another enabled language as the default language instead.",
+
+    /*
+     * 2.3.1
+     */
+    "javascript_required"       => "Please enable JavaScript in order to use this page.",
+    "go_to_dashboard"           => "Go to dashboard",
+    "brand_colour_desc"         => "Select a colour for your brand, it will be used for the colour scheme on both the frontend and operator template. Leave blank to use the default colour scheme.",
+    "new_brand_preview"         => "For new brands, the preview option will use the default brand data.",
+    "frontend_logo_url"         => "Frontend Logo URL",
+    "frontend_logo_url_desc"    => "Web page to send the user to after clicking the logo. By default, redirects to the support portal home page.",
+    "favicon"                   => "Favicon",
+    "favicon_desc"              => "The favicon image appears in the address bar and is used to identify your website. For the best results, ensure the icon contains a range of sizes from 32x32px to 310x310px, is square and ICO/PNG format.",
+    "operator_icon"             => "Operator Icon",
+    "operator_icon_desc"        => "Change the default icon on the operator interface for this brand. The field can either be a path relative to the base directory (we recommend to store your logo in the resources/assets/ folder) or a direct URL to the image. We recommend a white-filled icon that is transparent and scales from 32x32px to 80x80px well.",
+    "view_original"             => "View Original",
+    "download_original"         => "Download Original",
+    "consume_all"               => "Optionally enter a department email address  with \"Consume All\" enabled.",
+    "reprocess_email"           => "Reprocess Email",
+    "reprocess_email_desc"      => "We recommend to review what originally blocked the email and make any necessary changes before attempting to reprocess.",
+    "email_blocked_desc"        => "The email failed to send several times, it must now be manually sent.",
+    "captcha_type"              => "Captcha Type",
+    "captcha_type_desc"         => "Select the Captcha to be used throughout the system. We recommend switching to Google reCAPTCHA, which requires additional configuration.",
+    "default_captcha"           => "Default Captcha",
+    "recaptcha_site_key"        => "Site Key",
+    "recaptcha_secret_key"      => "Secret Key",
+    "recaptcha_desc"            => "Please register a new site at <a target='_blank' href=\"https://www.google.com/recaptcha/admin\">https://www.google.com/recaptcha/admin</a>, select the correct type of reCAPTCHA and ensure to add each brand domain. Copy the site and secret key above.",
+    "enter_code"                => "Enter code",
+    "export_data"               => "Export Data",
+    "export_data_desc"          => "Generate a downloadable export of data belonging to this user.",
+    "export_data_select"        => "Please select what data you would like to export.",
+    "export_data_scheduled"     => "The export is currently being generated, this may take some time. We will e-mail you when it's available to download.",
+    "database"                  => "Database",
+    "database_desc"             => "The following items are stored in the database.",
+    "prune_users"               => "Inactive user records can be automatically pruned. A user is considered inactive if they have not logged in or have any other activity for a given amount of time.",
+    "prune_tickets"             => "Inactive tickets can be automatically pruned. A ticket is considered inactive if it is resolved and has not had any activity for a given amount of time.",
+    "prune_organisations"       => "Inactive organisations can be automatically pruned. An organisation is considered inactive if it has no users linked with it and has not had any activity for a given amount of time.",
+    "prune_export"              => "User data exports are stored on the file system but may take up room, you can prune export files generated before a certain date.",
+    "automatically_prune"       => "Automatically delete",
+    "days_after_saved"          => "Records after",
+    "days_after_last_activity"  => "Inactive records after",
+    "record_permanent_delete"   => "The records will be permanently deleted. This will impact reports.",
+    "record_delete_relations"   => "The records will be permanently deleted along with the following related data: :relations. This will impact reports.",
+    "manually_prune"            => "Manually delete records created before",
 
 );

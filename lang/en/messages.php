@@ -128,4 +128,12 @@ return array(
      */
     "field_required"        => "Field is required.",
 
+    /*
+     * 2.3.1
+     */
+    "sent_email"            => "Success - the email has been sent.",
+    "task_already_running"  => "Scheduled task is running automatically currently, please try again shortly.",
+    "linked_account"        => "The social account has successfully been linked with your account.",
+    "already_linked"        => "The social account is already linked with another account. Please login to the other account and unlink it.",
+
 );

@@ -14,8 +14,7 @@ return array(
     "invalid_user"              => "Please ensure valid user details have been entered to continue.",
 
     "registered_users"          => "Registered Users Only",
-    "registered_users_desc"     => "Toggle to only import tickets from users with an account in the help desk.",
-
+    
     "tickets"                   => "Ticket(s)",
     "ticket"                    => "Ticket|Tickets",
     "subject"                   => "Subject",
@@ -80,7 +79,6 @@ return array(
 
     "ticket_number"             => "Ticket Number",
     "ticket_format"             => "Ticket Number Format",
-    "ticket_format_desc"        => "The following variables may be used:<br />%S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
 
     // Departments
     "department_public_desc"    => "If the department is visible to users on the web help desk.",
@@ -122,7 +120,6 @@ return array(
     "email_operators"           => "Notify Operators",
     "email_operators_desc"      => "Select whether to forward operator replies to other operators. By default checks the \"email operators\" option in the operator panel, and will automatically send an email for email replies by operators.",
     // Department email templates
-    "new_ticket_reply"          => "New Ticket Reply",
     "new_ticket_opened"         => "New Ticket Opened",
     "reply_to_locked"           => "Reply to Locked Ticket",
     "waiting_for_response"      => "Waiting for Response",
@@ -144,7 +141,6 @@ return array(
     "form_conditions"           => "Form Conditions",
     "form_conditions_desc"      => "Define the ticket conditions for which newly resolved tickets are checked to see if they fall under this form. If a resolved ticket fits multiple forms, it will be selected on the form priority, which can be modified by going to the list of forms and reordering.",
     "form_fields"               => "Form Fields",
-    "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here.",
     "response_rate"             => "Response Rate",
     "sent_forms"                => "Sent Feedback Forms",
     "rating"                    => "Rating",
@@ -170,15 +166,11 @@ return array(
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
     "canned_response_category"  => "Canned Response Category|Canned Response Categories",
-    "canned_public_desc"        => "Toggle to only let the canned response be accessible by yourself.",
-    "canned_group_desc"         => "If you wish to make the canned response visible to only certain operator groups, leave blank to make visible to all operators.",
 
     // Filters
     "filter"                    => "Filter|Filters",
     "filter_condition"          => "Filter Conditions",
     "filter_condition_desc"     => "Define the ticket conditions for which tickets are listed under this filter.",
-    "filter_public_desc"        => "Toggle to only let the filter be accessible by yourself.",
-    "filter_group_desc"         => "If you wish to make the filter visible to only certain operator groups, leave blank to make visible to all operators.",
 
     // Macros
     "macro"                     => "Macro|Macros",
@@ -277,7 +269,6 @@ return array(
 
     "close_inactive_tickets"    => "Close Inactive Tickets",
     "close_inactive_tickets_desc" => "The time after which inactive tickets are automatically closed, set to 0 to never close tickets automatically.",
-    "close_inactive_status_desc" => "Automatically close tickets that have become inactive without a follow up from the user (defined by the number of days since the last reply by an operator in the ticket general settings).",
 
     "ticket_reply_order"        => "Ticket Reply Order",
     "ticket_reply_order_desc"   => "Select the order in which ticket messages are shown, ascending where the latest message is last or descending where the latest message is first.",
@@ -331,8 +322,6 @@ return array(
 
     "mass_reply"                => "Mass Reply",
 
-    "delete_warning"            => "Once these tickets have been deleted, they cannot be recovered.",
-
     "due_today"                 => "Due Today",
     "overdue"                   => "Overdue",
     "unassigned"                => "Unassigned",
@@ -365,9 +354,8 @@ return array(
     "no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
     "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
     "opened_by"                 => "(Opened by :name)",
-    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='http://docs.supportpal.com/display/DOCS/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
+    "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='https://docs.supportpal.com/current/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
     "not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
-
     /*
      * 2.0.3
      */
@@ -479,5 +467,47 @@ return array(
     "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
     "run_macro"                 => "Run Macro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
+    
+    /*
+     * 2.3.0
+     */
+    "registered_users_desc"     => "Toggle to only show the department to logged in users and only accept emails from users actively registered in the help desk. If enabled, a bounce back email will be sent to unregistered users who email this department, to change or disable the email please see the 'Registered Users Only' template option below.",
+    "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here. The field type will be locked once the form has been completed by a user.",
+    "feedback_ratings"          => "Customer Satisfaction Ratings (affecting your Customer Satisfaction score)",
+    "email_and_other_accounts"  => "Email and other channel accounts",
+    "delete_message"            => "Delete message",
+    "linked_tickets"            => "Linked Tickets",
+    "add_linked_ticket"         => "Add Linked Ticket",
+    "add_linked_ticket_desc"    => "Search by ticket number or subject:",
+    "create_linked_ticket"      => "Create linked ticket",
+    "copy_link"                 => "Copy link",
+    "forward_message"           => "Forward this message",
+    "forward_from_here"         => "Forward ticket from here",
+    "forward"                   => "Forward",
+    "forward_options"           => "Forward Options",
+    "forwarded_to"              => "Forwarded to",
+    "new_operator_reply"        => "New Operator Reply",
+    "new_user_reply"            => "New User Reply",
+    "add_bcc"                   => "Add BCC",
+    "at_least_one_recipient"    => "Please specify at least one recipient.",
+    "forwarded_message"         => "---------- Forwarded message ----------",
+    
+    /*
+     * 2.3.1
+     */
+    "inactive_ticket_note"      => "Note: only affects tickets belonging to a status with 'Close Inactive Tickets' enabled.",
+    "close_inactive_status_desc" => "Toggle to enable/disable automatic closure of inactive tickets and inactivity email reminders ('Waiting For Response' and 'Ticket Auto Closed' templates). If enabled, the time before reminders are sent can be configured via the ticket general settings.",
+    "from_header_missing"       => "From: header missing from email.",
+    "move_ticket"               => "Move Ticket",
+    "move_ticket_step1"         => "Step 1: Choose a new brand to move ticket to",
+    "move_ticket_step2"         => "Step 2: Choose a department from new brand",
+    "move_ticket_step3"         => "Step 3: Choose a user from new brand",
+    "current_record"            => "Current :record",
+    "new_record"                => "New :record",
+    "department_email"          => "Department Email",
+    "select_a_department_email" => "Select a department email...",
+    "record_public_desc"        => "Toggle to only let the :record be accessible by yourself.",
+    "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups, leave blank to make visible to all operators.",
+    "ticket_format_desc"        => "Can contain alphanumeric characters and special characters <code>-_.+!*,</code><br />The following variables may also be used: %S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
 
 );

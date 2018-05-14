@@ -51,5 +51,10 @@ return array(
      * 2.2.0
      */
     "enter_new_key"     => "Enter New License Key",
+    
+    /*
+     * 2.3.1
+     */
+    "license_valid"     => "License Valid!",
 
 );

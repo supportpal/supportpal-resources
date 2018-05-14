@@ -17,7 +17,6 @@ return array(
     "text"                      => "Text",
     "textarea"                  => "Textarea",
 
-    "required_desc"             => "If the custom field must be filled out.",
     "public"                    => "Public",
     "public_desc"               => "If the custom field is shown publicly on the frontend or is for staff only.",
     "encrypted"                 => "Encrypted",
@@ -42,5 +41,10 @@ return array(
      * 2.1.0
      */
     "brand_desc"                => "Choose which brands the field is available in.",
+
+    /*
+     * 2.3.1
+     */
+    "required_desc"             => "If the custom field must be filled out. For the checkbox, checklist or multiple options types, it will require the user to select at least one option.",
 
 );

@@ -288,4 +288,19 @@ return array(
     "inactive"                  => "Inactive",
     "run"                       => "Run",
 
+    /*
+     * 2.3.1
+     */
+    "clone"                     => "Clone",
+    "created_date"              => "Created Date",
+    "alphabetical"              => "Alphabetical",
+    "random"                    => "Random",
+    "blocked"                   => "Blocked",
+    "private_to"                => "Private to",
+    "refresh"                   => "Refresh",
+    "provider"                  => "Provider|Providers",
+    "export"                    => "Export|Exports",
+    "generate"                  => "Generate",
+    "entry"                     => "Entry",
+
 );
