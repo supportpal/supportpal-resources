@@ -38,10 +38,11 @@
             errorPlacement: function(error, element) {
                 var position = element;
 
-                // If it's redactor, codemirror, show/hide button, a checkbox or radio, add after parent
-                if (element.parent('.redactor-box').length || element.parent('.merge-field_container').length ||
-                    element.parent('.hideShowPassword-wrapper').length || element.parent('.input-group').length ||
-                    element.prop('type') === 'checkbox' || element.prop('type') === 'radio'
+                // If it's redactor, codemirror, show/hide button, recaptcha, a checkbox or radio, add after parent
+                if (element.parent('.redactor-box').length || element.parent('.merge-field_container').length
+                    || element.parent('.hideShowPassword-wrapper').length || element.parent('.input-group').length
+                    || element.parent().parent('.g-recaptcha').length || element.prop('type') === 'checkbox'
+                    || element.prop('type') === 'radio'
                 ) {
                     position = element.parent();
                 }
@@ -126,7 +127,7 @@
                     if (typeof $(form).data('ajax') !== "undefined") {
                         return false;
                     }
-                    
+
                     // Submit the form (will cause the page to refresh etc).
                     form.submit();
                 } else {
@@ -151,7 +152,7 @@
                     // Get tab ID
                     var id = $(validator.errorList[0].element).parents('.tabContent').attr('id');
                     // Get name from ID and click on the tab
-                    if (id.substring(0, 3) == 'tab') {
+                    if (typeof id !== 'undefined' && id.substring(0, 3) == 'tab') {
                         $('.tabs li#' + id.substring(3)).click();
                     }
                 }

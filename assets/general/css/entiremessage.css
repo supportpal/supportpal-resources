@@ -1,5 +1,12 @@
 @charset "utf-8";
 
+.desk_header h2 {
+    display: inline-block;
+}
+.print-button {
+    float: right;
+}
+
 .header {
     position: relative;
 }
@@ -43,3 +50,71 @@
     position: absolute;
     right: 0;
 }
+
+.webui-popover {
+    border: 0;
+    border-radius: 0;
+    -moz-box-shadow: 0 0 2px #777;
+    -webkit-box-shadow: 0 0 2px #777;
+    box-shadow: 0 0 2px #777;
+    margin: 0 20px;
+    max-width: 100%;
+    max-width: calc(100% - 60px);
+    padding: 8px 15px;
+}
+
+.webui-popover .webui-popover-content>div:first-child {
+    width: auto;
+}
+
+.form-row label {
+    position: absolute;
+}
+
+.recipients.form-row {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    line-height: 30px;
+    margin: 0;
+    position: relative;
+}
+
+.recipients.form-row label {
+    color: #777;
+    font-weight: normal;
+    padding-left: 10px;
+    text-align: left;
+    width: 60px;
+}
+
+.recipients.form-row .input-container {
+    margin-left: 63px;
+}
+
+.email-details.form-row {
+    border: 0;
+}
+
+.email-details > div {
+    border: 0;
+    padding: 3px 0;
+}
+
+.email-details.form-row label {
+    line-height: 24px;
+    padding-left: 0;
+    text-align: right;
+    width: 40px;
+}
+
+.email-details.form-row .input-container,
+.email-details.form-row .input-container::first-line {
+    line-height: 24px;
+}
+
+@media print {
+    .print-button, .edit-button {
+        display: none;
+    }
+} 

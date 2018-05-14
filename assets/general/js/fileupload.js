@@ -277,17 +277,24 @@ function FileUpload(parameters)
     };
 
     /**
-     * Delete a file that hasn't been attached to a record (uploaded but form hasn't been submit).
+     * Delete a file that hasn't been attached to a final record (uploaded but form hasn't been submit). May have been
+     * attached to a draft so we do still need to feed an ID if we have.
      *
      * @param context
      * @param silent
      */
     this.deleteNewFile = function (context, silent)
     {
+        var data = [];
+        data.push({ name: 'hash', value: $(context).data('hash') });
+        if (typeof $(context).data('attachment-id') !== 'undefined') {
+            data.push({ name: 'id', value: $(context).data('attachment-id') });
+        }
+
         return FileUpload.deleteAttachment(
             context,
             $(context).data('url'),
-            { 'hash': $(context).data('hash') },
+            data,
             $(context).parents('li'),
             function(context) {
                 settings.$container.find('input[name="' + settings.inputName + '['+ $(context).data().hash +']"]')
