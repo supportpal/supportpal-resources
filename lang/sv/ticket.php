@@ -14,7 +14,6 @@ return array(
     "invalid_user"              => "Se till att giltiga användardetaljer har skrivits in för att fortsätt.",
 
     "registered_users"          => "Enbart registrerade användare",
-    "registered_users_desc"     => "Kryssa i för att bara importera ärenden från användare med ett konto i helpdesken.",
 
     "tickets"                   => "Ärenden",
     "ticket"                    => "Ärende|Ärenden",
@@ -122,7 +121,6 @@ return array(
     "email_operators"           => "Notifiera operatörer",
     "email_operators_desc"      => "Välj om operatörssvar ska vidarebefordras till andra operatörer. Som standard kollas \"e-postoperatörer\"-inställningen i operatörspanelen och kommer automatiskt skicka ett e-postmeddelande för operatörse-postsvar.",
     // Department email templates
-    "new_ticket_reply"          => "Nytt ärendesvar",
     "new_ticket_opened"         => "Nytt ärende öppnat",
     "reply_to_locked"           => "Svara låst ärende",
     "waiting_for_response"      => "Vänta på svar",
@@ -144,7 +142,6 @@ return array(
     "form_conditions"           => "Formulärvillkor",
     "form_conditions_desc"      => "Definiera ärendevillkoren för vilka nyligen lösta ärenden kontrolleras för att se om de tillhör detta formulär. Om ett löst ärende uppfyller kraven för fler än ett formulär väljs rätt formulär utifrån prioritering vilken kan ändras genom att gå till formulärlistan och ändra ordningen.",
     "form_fields"               => "Formulärfält",
-    "form_fields_desc"          => "Om du vill samla in ytterliggare information när användaren ger feedback kan du sätta upp skräddarsydda fält att visa på formuläret här.",
     "response_rate"             => "Svarsfrekvens",
     "sent_forms"                => "Skickat feedbackformulär",
     "rating"                    => "Betyg",
@@ -168,10 +165,10 @@ return array(
     "customfield_order"         => "Dra raderna för att ändra ordningen på de skräddarsydda fälten som visas för användare när de öppnar ärenden via webben.",
 
     // Canned responses
-    "cannedresponse"            => "Konserverat svar|Konserverade svar",
-    "canned_response_category"  => "Konserverat svar-kategori|Konserverat svar-kategorier",
-    "canned_public_desc"        => "Växla för att låta konserverade svar bara vara tillgängliga för dig själv.",
-    "canned_group_desc"         => "Om du vill att det konserverade svaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
+    "cannedresponse"            => "Snabbsvar|Snabbsvar",
+    "canned_response_category"  => "Snabbsvarskategori|Snabbsvarskategorier",
+    "canned_public_desc"        => "Aktivera för att låta snabbsvaret bara vara tillgängliga för dig själv.",
+    "canned_group_desc"         => "Om du vill att snabbsvaret ska vara synligt för enbart vissa operatörsgrupper. Lämna tomt för synligt av alla operatörsgrupper.",
 
     // Filters
     "filter"                    => "Filter|Filter",
@@ -255,13 +252,13 @@ return array(
     "take"                      => "Ta",
     "take_ownership"            => "Ta ägarskap",
     "pause_duetime"             => "Pausa förfallotid",
-    "add_to_canned_responses"   => "Lägg till på konserverade svar",
+    "add_to_canned_responses"   => "Lägg till på snabbsvaret",
     "visible_to_all_operators"  => "Gör synlig för alla operatörer",
     "set_status"                => "Sätt status",
     "add_selfservice_link"      => "Lägg till självbetjäningslänk",
     "search_selfservice"        => "Sök efter självbetjäningsartikel",
-    "add_canned_response"       => "Lägg till ett konserverat meddelande",
-    "search_canned"             => "Sök efter ett konserverat meddelande",
+    "add_canned_response"       => "Lägg till ett snabbsvar",
+    "search_canned"             => "Sök efter ett snabbsvar",
 
     "mark_resolved"             => "Märk som löst",
 
@@ -331,8 +328,6 @@ return array(
 
     "mass_reply"                => "Massvar",
 
-    "delete_warning"            => "När dessa ärenden har tagits bort kan de inte återställas.",
-
     "due_today"                 => "Förfaller i dag",
     "overdue"                   => "Försenad",
     "unassigned"                => "Ej tilldelad",
@@ -375,7 +370,7 @@ return array(
     "default_reply_options"     => "Standardsvarsalternativ",
     "default_reply_options_desc" => "Välj standardsvarsalternativ som sätts när ett ärende öppnas eller besvaras. ':reply_option'-inställningen blir ikryssad baserad på ':department_option'-avdelningsinställningar.",
     "associate_response_tag"    => "Associera konserverat svar med en etikett...",
-    "canned_response_tags_desc" => "Lägg till etiketter som kan hjälpa dig att hitta ett konserverat svar när ett ärende besvaras.",
+    "canned_response_tags_desc" => "Lägg till etiketter som kan hjälpa dig att hitta ett snabbsvar när ett ärende besvaras.",
     "loading_tags"              => "Laddar etiketter",
     "append_ip_address"         => "Bifoga IP-adress",
     "append_ip_address_desc"    => "Bifoga användarnas IP-adresser till deras meddelande när de öppnar eller svarar på ärenden från framsidan.",
@@ -469,15 +464,39 @@ return array(
     /*
      * 2.2.0
      */
-    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
-    "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
-    "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
-    "response"                  => "Response|Responses",
-    "response_desc"             => "The canned response can be written in several languages. The appropriate response will be used automatically based on the user's language preference.",
-    "no_slaplans"               => "No SLA plans found. Click <a href=':route'>here</a> to create one.",
-    "filter_performance"        => "Performance considerations and recommendations",
-    "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
-    "run_macro"                 => "Run Macro",
+    "macro_order"               => "Automatiska macron körs i en ordning de listas. Dra raderna för att ändra ordningen de körs.",
+    "user_ticket_existing_desc" => "Öppna ett nytt ärende på uppdrag av en befintlig användare.",
+    "canned_response_tag"       => "Snabbsvars tagg|Snabbsvars taggar",
+    "response"                  => "Svar|Svar",
+    "response_desc"             => "Snabbsvaraet kan skrivas på flera språk. Språket väljs från användarens inställningar.",
+    "no_slaplans"               => "Ingen SLA plan funnen. Klicka <a href=':route'>här</a> för att skapa en",
+    "filter_performance"        => "Prestanda överväganden och rekommendationer",
+    "filter_performance_desc"   => "<li>Filter som matchar många ärenden kommer att vara långsamma, försöka att exkludera stängda ärenden.</li><li>Filter som använder 'är inte' villkor är normalt långsammar än 'är' villkor.</li><li>Filter som kontrollerat NULL värden (ex. Ärende tagg är Ingen) kommer att vara långsom.</li><li>Undivk många villkor som kontrollerar om strängar/ord eftersom de intriducerar större komplexitet.</li><li>Filter som använder 'börjar med' eller 'innehåller' villkor kommer generellt sett vara långsammare än 'lika med' eller 'slutar med' villkor.</li><li>Avslutade ärenden är exkluderade frpn antalet som visa i sidofältet.</li>",
+    "run_macro"                 => "Kör Makro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
+
+    /*
+     * 2.3.0
+     */
+    "registered_users_desc"     => "Aktivera för att endast visa avdelningen för inloggade användare och endast acceptera epost som skickas från registrerade användare. Om akverad kommer ett svarsmail skickas till oregistrerad användare som skickar epost till denna avdelning, för att ändra eller avaktivera, se 'Endast Registrerade Användare' mallen nedan.",
+    "form_fields_desc"          => "För att samla in mer information när en användare lämnar återkoppling, kan du lägga till egna fält som visas i formuläret. Fältet kommer att låsa när avnändaren skickar in svaret.",
+    "feedback_ratings"          => "Kundnöjdhetsbetyg (förändrar ditt kundnöjdhetspoäng)",
+    "email_and_other_accounts"  => "Epost och andra kanal konton",
+    "delete_message"            => "Radera meddelande",
+    "linked_tickets"            => "Länkade Ärenden",
+    "add_linked_ticket"         => "Lägg till Länkat Ärende",
+    "add_linked_ticket_desc"    => "Sök efter ärende nummer elle ämne:",
+    "create_linked_ticket"      => "Skapa länkat ärende",
+    "copy_link"                 => "Kopiera länk",
+    "forward_message"           => "Vidarebefodra detta meddelande",
+    "forward_from_here"         => "Vidarebefodra ärendet från denna punkt",
+    "forward"                   => "Vidarebefodra",
+    "forward_options"           => "Vidarebefodraval",
+    "forwarded_to"              => "Vidarebefodrat till",
+    "new_operator_reply"        => "Nytt operatörs svar",
+    "new_user_reply"            => "Nytt användar svar",
+    "add_bcc"                   => "Lägg till BCC",
+    "at_least_one_recipient"    => "Ange minst en mottagare.",
+    "forwarded_message"         => "---------- Vidarebefodrat meddelande ---------",
 
 );

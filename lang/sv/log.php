@@ -172,4 +172,14 @@ return array(
     "ticket_user_removed_from_group"    => "Ärendetsanvändare bortagen från grupp :old_value.",
     "email_on_behalf"                   => "Vidaresänt :extra_rel2 för ':extra_rel1' räkning, i ärednde #:rel.",
 
+    /*
+     * 2.3.0
+     */
+    "registered_users_only"             => "Skickat ':extra_rel1' epost till :new_value, avdelningen accepterar inte email från ej registrerade användare",
+    "deleted_user"                      => "Raderat :item ':rel' med epost ':email_address' (ID :user_id).",
+    "linked_ticket"                     => "Länkat ärende #:rel med ärende :extra_rel1.",
+    "unlinked_ticket"                   => "Avlänkat ärende #:rel från ärende :extra_rel1.",
+    "email_queue_attachment_deleted"    => "Raderat bilaga ':old_value' från köat epost ':rel'.",
+    "forward_ticket_email"              => "Vidatebefodrat ärende #:rel till extern part, visa ':extra_rel1' epost.",
+
 );

@@ -28,7 +28,6 @@ return array(
     "user_email"                        => "Användarens e-post",
     "user_full_name"                    => "Användarens fullständiga namn",
     "user_group"                        => "Användargrupp",
-    "user_organisation"                 => "Användarorganisation",
 
     /*
      * 2.1.0
@@ -57,5 +56,19 @@ return array(
     "user_country"                      => "Användarens land",
     "user_language"                     => "Användarens språk",
     "user_timezone"                     => "Användarens tidzon",
+
+    /*
+     * 2.3.0
+     */
+    "ticket_cc"                         => "Ärende CC",
+    "ticket_custom_field"               => "Ärende eget fält",
+    "user_custom_field"                 => "Användare eget fält",
+    "user_organisation_custom_field"    => "Användarorganisation eget fält",
+    "user_organisation"                 => "Användarorganisation namn",
+    "user_organisation_brand"           => "Användarorganisation varumärke",
+    "user_organisation_country"         => "Användarorganisation land",
+    "user_organisation_language"        => "Användarorganisation språk",
+    "user_organisation_notes"           => "Användarorganisation anteckningar",
+    "user_organisation_timezone"        => "Användarorganisation tidzon",
 
 );

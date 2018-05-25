@@ -49,4 +49,11 @@ return array(
     "only_with_due_time"        => "Appliceras endast till ärenden med förfallotid.",
     "set_due_time_desc"         => "Lämna tomt för att ta bort förfallotiden. Med ett negativt nummer sätts förfallotiden i dåtid",
 
+    /*
+     * 2.3.0
+     */
+    "add_cc"                    => "Lägg till CC mottagare",
+    "remove_cc"                 => "Ändra CC mottagare",
+    "remove_cc_desc"            => "Lämna denna tom för att ta bort alla CC mottagare.",
+
 );

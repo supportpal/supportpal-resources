@@ -127,7 +127,7 @@ return array(
     /*
      * 2.2.0
      */
-    "article_desc"              => "The article can be written in several languages. The appropriate article will be shown automatically based on the user's language preference.",
-    "no_author"                 => "No Author",
+    "article_desc"              => "Artiklen kan skrivas i flera språk. Språket den visas i bestämms av användarens inställningar.",
+    "no_author"                 => "Ingen författare",
 
 );

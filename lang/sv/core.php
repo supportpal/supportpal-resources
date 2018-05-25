@@ -361,4 +361,9 @@ return array(
     "locale_in_uri"             => "Inkludera språkval i URL",
     "locale_in_uri_desc"        => "Disable to remove the locale from the URI, for example: http://support.mycompany.com/en/announcements becomes http://support.mycompany.com/announcements. Can only be disabled when there's one enabled language in the system.",
 
+    /*
+     * 2.3.0
+     */
+    "disabling_default_language" => "Detta är standardspråket. Om du avaktiverar detta kommer ett annat aktiverat språl sättas som stanarspråk.",
+
 );

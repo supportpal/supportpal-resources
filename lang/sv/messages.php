@@ -99,7 +99,6 @@ return array(
     /*
      * 2.0.3
      */
-    "warn_delete"           => "När denna post har blivit borttagen kan den inte återskapas. Om denna post tas bort kan det påverka andra delar av systemet där denna post används.",
     "only_ssl_connections"  => "Endast SSL-anslutningar är tillåtna, du bör uppdatera din begäran till en säker anslutning.",
     "queued_emails"         => "Handlingen lyckades - e-posten kommer att bli köade och skickade inom kort.",
     "error_loading_message" => "Ett fel uppstod när meddelandet skulle laddas. Försök igen.",
@@ -127,5 +126,17 @@ return array(
      * 2.1.2
      */
     "field_required"        => "Fält krävs.",
+
+    /*
+     * 2.3.0
+     */
+    "delete_record"         => "Radera :record?",
+    "cannot_be_undone"      => "Detta kan inte göras ogjort.",
+    "warn_delete"           => "Detta kommer permanent radera <strong>:name</strong> :record från systemet.",
+    "delete_confirm"        => "Ja, Radera :record",
+    "keep_record"           => "Nej, Behåll :record",
+    "delete_relations"      => "Vid radering av <strong>:name</strong> :record kommer även följande data raderas permanent:",
+    "please_check"          => "Du måste bocka i fältet ovan för att verifiera att du förstått att denna ändring inte går att ångra",
+    "failed_attachments"    => "Misslyckades att lägg till några filer.",
 
 );
