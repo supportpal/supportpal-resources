@@ -353,7 +353,7 @@ return array(
     "todo_list"                 => "To Do lijst",
     "version_check"             => "Versiecontrole",
     "system_overview"           => "Systeemoverzicht",
-    "getting_started"           => "Beginenn",
+    "getting_started"           => "Beginnen",
     "operator_notes"            => "Operatornotities",
     "simpleauth_operators_desc" => "Sta operators toe in en uit te loggen met SimpleAuth, we raden aan dit niet actief te houden tenzij u het specifiek voor deze reden gebruikt.",
     "upgrade_and_reactivate"    => "Upgrade & Heractiveren",

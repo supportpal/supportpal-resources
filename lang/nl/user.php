@@ -145,7 +145,7 @@ return array(
     "load_template_desc"            => "Kies een template welke de huige onderwerp en bericht zal vervangen.",
     "clear_template"                => "Schoon template",
 
-    "personal_settings"             => "Personijke instellingen",
+    "personal_settings"             => "Persoonlijke instellingen",
     "personal_settings_desc"        => "Werk uw profiel bij en wijzig instellingen die alleen van toepassing zijn op uw eigen operatoraccount.",
     "two_fa"                        => "Twee-Factor Autenticatie",
     "notifications"                 => "Meldingen",
