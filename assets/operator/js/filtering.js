@@ -46,6 +46,9 @@ Filtering.showCondition = function (context) {
     $(context).parents('tr').find('.condition-value :input').prop('disabled', true).hide();
     $(context).parents('tr').find('.condition-value :input[data-item="' + item +'"]').prop('disabled', false).show();
 
+    $(context).parents('tr').find('.condition-value .description').hide();
+    $(context).parents('tr').find('.condition-value .description[data-item="' + item +'"]').show();
+
     $(context).parents('tr').find('.condition-operator select').prop('disabled', true).hide();
     var operator = $(context).parents('tr').find('.condition-value :input[data-item="' + item +'"]').data('operator');
     $(context).parents('tr').find('.condition-operator select.operator' + operator).prop('disabled', false).show();

@@ -16,9 +16,13 @@
             <li id="Profile" class="active">{{ Lang.get('user.profile') }}</li>
             {% if auth_user().password is not empty and not auth_user().loggedInViaSSO() %}
                 <li id="ChangePassword">{{ Lang.get('user.change_password') }}</li>
+            {% endif %}
+            {% if not auth_user().loggedInViaSSO() or Session.has('ldap') %}
                 <li id="TwoFA">{{ Lang.get('user.two_fa') }}</li>
             {% endif %}
-            <li id="Ticket">{{ Lang.get('ticket.settings') }}</li>
+            {% if isModuleEnabled('Ticket') %}
+                <li id="Ticket">{{ Lang.get('ticket.settings') }}</li>
+            {% endif %}
             <li id="Notifications">{{ Lang.get('user.notifications') }}</li>
         </ul>
 
@@ -51,7 +55,9 @@
                     </div>
                 </div>
             </div>
+        {% endif %}
 
+        {% if not auth_user().loggedInViaSSO() or Session.has('ldap') %}
             <div id="tabTwoFA" class="tabContent hide">
 
                 <div class="success box twofa-status hide">

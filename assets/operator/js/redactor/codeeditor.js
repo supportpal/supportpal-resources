@@ -197,7 +197,7 @@
         var containsSignature = function (html) {
 
             // Check if the editor contains {{ operator.signature }}
-            if (/\{\{\s*operator\.signature\s*}}/.test(html)) {
+            if (/\{\{\s*operator\.signature(\|raw)?\s*}}/.test(html)) {
 
                 if (! $('.twig-sig-warning').length) {
                     redactor.$box.after($('<div class="box bottombox warning twig-sig-warning">'

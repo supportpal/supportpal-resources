@@ -36,6 +36,10 @@
     <meta name="msapplication-wide310x150logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
     <meta name="msapplication-square310x310logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
 
+    <!-- CSS -->
+    <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
+
     <!-- jQuery -->
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
     <link href="{{ asset_rev('resources/assets/libs/jquery-ui/css/jquery-ui.min.css') }}" rel="stylesheet" type="text/css" />
@@ -43,10 +47,7 @@
 
     {% block scripts_header %}{% endblock %}
 
-    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
+    {{ View.fireHook('operator.head') }}
 
     {# Brand styling - delete this block if you don't want to apply the automatic brand colour styling. #}
     {% if operatorCSS is not empty %}
@@ -58,17 +59,21 @@
 
 <body>
 
+{{ View.fireHook('operator.body_start') }}
+
 <div id="header">
+    {{ View.fireHook('operator.header_start') }}
+
     {% block header %}
         <a href="{{ route('core.operator.dashboard') }}" class="logo left">
             <img src="{{ get_icon('resources/assets/operator/images/logo_icon.png') }}"
-                 alt="{{ Config.get('settings.brand_name') }}" class="2x" height="32" />
+                 alt="{{ Config.get('settings.brand_name') }}" {% if Config.get('settings.operator_icon') is empty %}class="2x"{% endif %} height="32" />
         </a>
 
         <div class="opsettings right">
             <ul id="nav" class="dropdown2 dropdown-horizontal">
                 <li class="dir" aria-haspopup="true">
-                    <img src="data:image/png;base64,{{ auth_user().avatar }}" width="24" height="24"
+                    <img src="{{ auth_user().avatar_url }}" width="24" height="24"
                          alt="{{ Lang.choice('general.operator', 1) }}" class="avatar left"/>
                     &nbsp;
                     <i class="fa fa-chevron-down"></i>
@@ -77,9 +82,11 @@
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.personalsetting') }}">{{ Lang.get('user.personal_settings') }}</a>
                         </li>
+                        {% if isModuleEnabled('Ticket') %}
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.signature') }}">{{ Lang.choice('user.signature', 2) }}</a>
                         </li>
+                        {% endif %}
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.logout') }}">{{ Lang.get('user.logout') }}</a>
                         </li>
@@ -250,7 +257,7 @@
                                 {% endif %}
                             {% endif %}
                             {% if auth_user().hasPermission('view.operator') %}
-                                <li aria-haspopup="false">
+                                <li aria-haspopup="false" id="manageOperatorSetting">
                                     <a href="{{ route('user.operator.operator') }}">
                                         {{ Lang.get('user.manage_operators') }}
                                     </a>
@@ -438,6 +445,8 @@
                     </li>
                 {% endif %}
 
+                {{ View.fireHook('operator.navigation') }}
+
                 <li class="dir mobile-only hide" aria-haspopup="false">
                     <a href="{{ route('user.operator.personalsetting') }}" class="nav">
                         {{ Lang.get('user.personal_settings') }}
@@ -456,15 +465,21 @@
             </ul>
         </div>
     {% endblock %}
+
+    {{ View.fireHook('operator.header_end') }}
 </div>
 
 <div class="clear"></div>
 
 <div id="content">
+    {{ View.fireHook('operator.wrapper_start') }}
+
     {% block sidebar %}
     {% endblock %}
 
     <div id="main">
+        {{ View.fireHook('operator.content_start') }}
+
         {% if Config.get('settings.maintenance_mode') %}
             <div class="box warning" style="margin-bottom: 0">
                 {{ Lang.get('messages.maintenance_mode') }}
@@ -475,6 +490,7 @@
         {% endblock %}
 
         <div class="desk_content_padding">
+            {{ View.fireHook('operator.content_inner_start') }}
 
             {% block pageTitle %}
                 {% if title is not empty %}
@@ -512,23 +528,39 @@
                 </div>
             {% endif %}
 
-            {% if errors|default is not empty and errors.has() %}
+            {% if errors|default is not empty and errors.count() %}
                 <div class="fail box">
                     <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-                    {% for error in errors.all() %}
+                    {% for error in errors.unique() %}
                         {{ Purifier.clean(error) }}<br />
                     {% endfor %}
                 </div>
             {% endif %}
 
             {% block content %}{% endblock %}
+
+            {{ View.fireHook('operator.content_inner_end') }}
         </div>
         <div class="clear"></div>
+
+        {{ View.fireHook('operator.content_end') }}
     </div>
+
+    {{ View.fireHook('operator.wrapper_end') }}
 </div>
 
-<!-- Laravel Javascript Validation -->
-<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+{{ View.fireHook('operator.footer') }}
+
+<!-- Vendor -->
+<script type="text/javascript">
+    paceOptions = {
+        "ajax": {
+            "ignoreURLs": [ "notification", "pollReplies" ]
+        }
+    }
+</script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/common.min.js') }}"></script>
+<link href="{{ asset_rev('resources/assets/libs/css/common.min.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 
 <!-- Laravel Localisation -->
 <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/lang.min.js') }}"></script>
@@ -548,7 +580,6 @@
 </script>
 
 <!-- Timeago.js -->
-<script src="{{ asset_rev('resources/assets/libs/timeago.js/js/timeago.min.js') }}"></script>
 <script src="{{ asset_rev('resources/assets/general/js/main.js') }}"></script>
 
 <!-- Global Javascript Functions -->
@@ -572,11 +603,6 @@
 {% endif %}
 
 <!-- Notifications library -->
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.core.js') }}" type="text/javascript"></script>
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.buttons.js') }}" type="text/javascript"></script>
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.desktop.js') }}" type="text/javascript"></script>
-<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.buttons.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
-<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.core.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 <script src="{{ asset_rev('resources/assets/operator/js/notification.js') }}" type="text/javascript"></script>
 <script type="text/javascript">
     var notifications = new SupportPalNotifications({
@@ -587,10 +613,7 @@
     notifications.poll();
 </script>
 
-<!-- Pace - AJAX notifications -->
-<script data-pace-options='{ "ajax": { "ignoreURLs": [ "notification", "pollReplies" ] } }'
-        src="{{ asset_rev('resources/assets/libs/pace/js/pace.min.js') }}" type="text/javascript"></script>
-<link href="{{ asset_rev('resources/assets/operator/css/pace.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
+{{ View.fireHook('operator.body_end') }}
 
 </body>
 

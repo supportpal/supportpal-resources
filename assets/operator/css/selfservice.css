@@ -221,7 +221,7 @@ ul.tags li a:hover {
 	text-decoration: none;
 }
 
-.manage-article {
+.print + .manage-article {
     margin-right: 10px;
 }
 
@@ -298,7 +298,7 @@ ul.comments span.date {
 	font-size: 80%;
 }
 
-ul.comments p.commentText {
+ul.comments div.commentText {
 	margin: 5px 0;
 }
 

@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {% if record|default is not empty and record.exists %}
         {{ record.formatted_name }}
@@ -18,7 +14,7 @@
 {% block pageTitle %}
     {% set title %}
         {{ block('title') }}
-        {% if record|default is not empty and record.exists and auth_user().hasPermission('create.ticket') %}
+        {% if isModuleEnabled('Ticket') and record|default is not empty and record.exists and auth_user().hasPermission('create.ticket') %}
             &nbsp;
             <a class="button" href="{{ route('ticket.operator.ticket.createStep1', {'user': record.id}) }}">
                 {{ Lang.get('ticket.open_new') }}
@@ -128,29 +124,12 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
 
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/randomPassword.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">

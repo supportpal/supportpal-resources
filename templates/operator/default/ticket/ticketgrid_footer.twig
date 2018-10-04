@@ -14,6 +14,11 @@
             </span>
             &nbsp;
             <span class="button-group">
+                <button class="watch-ticket" disabled="disabled"><i class="fa fa-eye"></i> {{ Lang.get('ticket.watch') }}</button><!--
+                --><button class="unwatch-ticket" disabled="disabled"><i class="fa fa-eye-slash"></i> {{ Lang.get('ticket.unwatch') }}</button>
+            </span>
+            &nbsp;
+            <span class="button-group">
                 <button class="link-ticket" disabled="disabled"><i class="fa fa-link"></i> {{ Lang.get('general.link') }}</button><!--
                 --><button class="merge-ticket" disabled="disabled"><i class="fa fa-compress"></i> {{ Lang.get('ticket.merge') }}</button><!--
                 --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-expand"></i> {{ Lang.get('ticket.unmerge') }}</button>
@@ -86,6 +91,13 @@
                 {% endfor %}
             </select>
             {% endif %}
+            &nbsp;
+            <select name="macro" disabled="disabled">
+                <option value="">{{ Lang.get('ticket.run_macro') }}...</option>
+                {% for id, name in macros %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
         {% endif %}
     </td>
     {% endif %}

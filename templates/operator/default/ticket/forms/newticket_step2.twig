@@ -48,7 +48,7 @@
             <div class="form-row">
                 {{ form_label('status', Lang.choice('general.status', 1)) }}
                 <div class="input-container">
-                    {{ form_select('status', statuses, Config.get('settings.default_open_status')) }}
+                    {{ form_select('status', statuses, Config.get('settings.default_open_status'), { 'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -86,8 +86,6 @@
                 </div>
             </div>
 
-            {% include 'operator.' ~ template ~ '.forms.customfields' %}
-
         </div>
 
         <h2>{{ Lang.get('ticket.enter_subject_message') }}</h2>
@@ -115,7 +113,26 @@
                         <div>
                             {{ form_label('to', Lang.get('ticket.to')) }}
                             <div class="input-container">
-                                <span id="toAddress">{{ Purifier.clean(toEmails) }}</span>
+                                <span id="toAddress">
+                                    {% for user in toEmails %}
+                                        {% set hide = false %}
+                                        {% if internal %}
+                                            {% set classes = "operator operator-" ~ user.id|escape %}
+                                            {% if defaultAssigned is not empty and user.id not in defaultAssigned %}
+                                                {% set hide = true %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        {# We hide operators that aren't currently emailed, but if they're added to the assigned list then we'll show them #}
+                                        <span class="{{ classes }} {% if hide %}hide{% endif %}">
+                                            {{ user.formatted_name }}
+                                            {% if user.email is not empty %}
+                                                &lt;{{ user.email }}&gt;
+                                            {% endif %}
+                                        </span>
+                                        {% if not loop.last %}<span class="comma">, </span>{% endif %}
+                                    {% endfor %}
+                                </span>
                                 {% if not internal and organisationEmails is empty %}<a class="add-cc right">{{ Lang.get('ticket.add_cc') }}</a>{% endif %}
                             </div>
                         </div>
@@ -170,6 +187,8 @@
                 </div>
             </div>
 
+            {% include 'operator.' ~ template ~ '.forms.customfields' %}
+
         </div>
 
         <div class="form-button">
@@ -205,26 +224,18 @@
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/max_items.js') }}"></script>
 
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <!-- Attachments JS -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
@@ -252,11 +263,6 @@
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle

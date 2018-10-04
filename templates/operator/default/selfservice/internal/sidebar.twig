@@ -1,8 +1,16 @@
 <div id="sidebar" class="sidebar-close left">
-    <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
+    {{ View.fireHook('operator.sidebar_start') }}
+
+    <span class="toggle-sidebar hide">
+        <i class="fa fa-angle-double-right"></i>
+    </span>
 
     <div class="sidebox">
         <h2>{{ type.name }}</h2>
+
+        <form name="search" action="{{ route('selfservice.operator.internal.search', {'brand': type.brand_id, 'type': type.slug}) }}" method="get">
+            <input type="text" name="query" placeholder="{{ Lang.get('general.search') }}..." style="width: 100%; margin-top: 10px;" />
+        </form>
     </div>
 
     {% if categories is not empty and not categories.isEmpty() %}
@@ -51,6 +59,8 @@
             </ul>
         </div>
     {% endif %}
+
+    {{ View.fireHook('operator.sidebar_end') }}
 
     <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
 </div>

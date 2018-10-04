@@ -50,7 +50,7 @@
                             include 'operator.' ~ template ~ '.selfservice.forms.name_translation_rows'
                             with {
                             'elements': {
-                                'name': { 'name': 'name', 'value': record.getOriginal('name') },
+                                'name': { 'name': 'name', 'value': record.getOriginal('name'), 'attributes': {'autofocus': 'autofocus'} },
                                 'slug': { 'name': 'slug', 'value': record.getOriginal('slug') },
                             }
                         }
@@ -141,13 +141,9 @@
     {% endif %}
 
     <!-- selfserviceslug.js dependencies: Sweetalert2, donetyping -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selfserviceslug.js') }}"></script>
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <!-- Translatable.js dependencies: Selectize -->

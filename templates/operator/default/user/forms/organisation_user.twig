@@ -28,7 +28,7 @@
                 {% for user in record.users %}
                 <tr class="existing-row">
                     <td>
-                        <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="21" />
+                        <img class="avatar" src="{{ user.avatar_url }}" width="21" />
                         &nbsp;
                         <a href="{{ route('user.operator.user.edit', user.id) }}">{{ user.formattedname }}</a>
                         {% if user.email is not empty %}
@@ -116,9 +116,6 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
@@ -127,9 +124,6 @@
         deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
         deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
     </script>
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -194,14 +188,14 @@
                 render: {
                     item: function(item, escape) {
                         return '<div class="item">' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                            '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                             escape(item.formatted_name) +
                             (item.email ? ' <span class="description">' + escape('<' + item.email + '>') + '</span>' : '') +
                             '</div>';
                     },
                     option: function(item, escape) {
                         return '<div>' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                            '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                             escape(item.formatted_name) +
                             (item.email ? ' <span class="description">' + escape('<' + item.email + '>') + '</span>' : '') +
                             '</div>';
@@ -222,14 +216,14 @@
                 render: {
                     item: function(item, escape) {
                         return '<div class="item">' +
-                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                                 escape(item.formatted_name) +
                                 (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
                                 '</div>';
                     },
                     option: function(item, escape) {
                         return '<div>' +
-                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                                 escape(item.formatted_name) +
                                 (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
                                 '</div>';

@@ -1,8 +1,6 @@
 var $select;
 
 $(function() {
-    $('input[name="name"]').focus();
-
     // Handle schedule switching
     $('input[name="all_hours"]').change(function() {
         if ($(this).val() == 0) {

@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice('selfservice.type', 2) }}
 {% endblock %}
@@ -112,21 +108,14 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
     <!-- Deleting records from the table -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
     <!-- Ordering -->
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/TableDnD/js/jquery.tablednd.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/ordering.js') }}"></script>
 
-    <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <!-- Filtering and delay loading some tables -->
+    <script src="{{ asset_rev('resources/assets/operator/js/datatable/deferloading.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             /**
@@ -138,6 +127,11 @@
                 {column_number : 2, filter_container_id: "filter_internal_content"},
                 {column_number : 3, filter_container_id: "filter_internal_view"}
             ]);
+
+            /**
+             * Defer loading internal datatable
+             */
+            defferedDatatables({ 'Internal': false });
         });
     </script>
 {% endblock %}

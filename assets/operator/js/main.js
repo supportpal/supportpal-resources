@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // For mobile retina images
-    if (window.devicePixelRatio == 2) {
+    if (window.devicePixelRatio >= 2) {
         var images = $("img.2x");
 
         // Loop through the images and make them hi-res
@@ -95,6 +95,31 @@ $(document).ready(function () {
         }
     }
 
+    // Smooth scrolling for anchors
+    $(document.body).on('click', 'a[href^=#]', function(event) {
+        event.preventDefault();
+
+        // Check if we have a name with an underscore (used in comments)
+        var href = $.attr(this, 'href').substr(1),
+            $elem = $('[name="_' + $.attr(this, 'href').substr(1) + '"]');
+
+        // If not, check if it's an ID first or a name without an underscore
+        // (normal usage)
+        if ($elem.length === 0) {
+            $elem = $('[id="' + $.attr(this, 'href').substr(1) + '"]');
+            if ($elem.length === 0) {
+                $elem = $('[name="' + $.attr(this, 'href').substr(1) + '"]');
+            }
+        }
+
+        // Only handle it if we have an element
+        if (href.length !== 0 && $elem.length !== 0) {
+            $('html, body').animate({
+                scrollTop: $elem.offset().top - 25
+            }, 500);
+        }
+    });
+
     // Responsive datatables
     if ($.fn.dataTable !== undefined) {
         $.extend($.fn.dataTable.defaults, {
@@ -144,6 +169,28 @@ $(document).ready(function () {
         }
     });
 
+    // Scrolling for sidebar on desktop
+    if (typeof $.fn.overlayScrollbars !== 'undefined' && $('#sidebar').length) {
+        $('#sidebar').overlayScrollbars({
+            overflowBehavior: {
+                x: 'hidden'
+            },
+            scrollbars: {
+                autoHide: 'scroll'
+            },
+            callbacks: {
+                onUpdated: function (eventArgs) {
+                    // if mobile view, destroy
+                    if ($(window).width() < 1080 || $(window).height() < 720) {
+                        $('#sidebar').overlayScrollbars().destroy();
+                    }
+                }
+            }
+        });
+
+        // Run update callback on load
+        $('#sidebar').overlayScrollbars().update();
+    }
 });
 
 /**
@@ -201,7 +248,12 @@ function addNewItem(className, container) {
 
 // Adds a button to show/hide passwords
 function callHideShowPassword() {
-    $('input[type=password]').hideShowPassword(false, true);
+    $('input[type=password]').hideShowPassword(false, true, {
+        states: {
+            shown: { toggle: { attr: { title: '' } } },
+            hidden: { toggle: { attr: { title: '' } } }
+        }
+    });
 }
 
 // Date picker fields
@@ -260,4 +312,51 @@ function array_map (callback) { // eslint-disable-line camelcase
     }
 
     return tmpArr
+}
+
+function emailSelectizeConfig(plugins)
+{
+    var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    var config = {
+        'restore_on_backspace': {},
+        'remove_button': {},
+        'max_items': {
+            'message': Lang.get('general.show_count_more')
+        }
+    };
+    
+    for (var name in config) {
+        if (config.hasOwnProperty(name) && plugins.indexOf(name) === -1) {
+            delete config[name];
+        }
+    }
+    
+    return {
+        plugins: config,
+        delimiter: ',',
+        persist: false,
+        dropdownParent: 'body',
+        placeholder: Lang.get('ticket.enter_email_address'),
+        render: {
+            item: function(item, escape) {
+                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+            }
+        },
+        createFilter: function(input) {
+            var match = input.match(re);
+            if (match) return !this.options.hasOwnProperty(match[0]);
+
+            return false;
+        },
+        create: function(input) {
+            if (re.test(input)) {
+                return {
+                    value: input,
+                    text: input
+                };
+            }
+
+            return false;
+        }
+    };
 }

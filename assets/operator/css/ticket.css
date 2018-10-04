@@ -175,7 +175,7 @@ span.subject:hover:before {
     cursor: pointer;
 }
 
-.message div.supportpal_quote {
+.message div.expandable + div.supportpal_quote {
     display: none;
     color: #500050;
 }
@@ -369,6 +369,10 @@ div.collapsed-messages span {
 .email-details.form-row .input-container,
 .email-details.form-row .input-container::first-line {
     line-height: 24px;
+}
+
+.message .email-details {
+    display: none;
 }
 
 .text .recipients {
@@ -577,7 +581,6 @@ div.collapsed-messages span {
 }
 
 .quick-actions, .ticket-viewing {
-    background: #fff;
     border-bottom: 1px solid #eee;
     position: -webkit-sticky;
     position: -moz-sticky;
@@ -586,6 +589,10 @@ div.collapsed-messages span {
     position: sticky;
     top: 50px;
     z-index: 98;
+}
+
+.quick-actions {
+    background: #fff;
 }
 
 .quick-actions, .ticket-viewing.box {

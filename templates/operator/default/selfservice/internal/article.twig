@@ -64,7 +64,7 @@
     <hr />
 
     {# Article content #}
-    <div class="article">{{ Purifier.clean(article.text, Config.get('purifier.settings.selfservice')) }}</div>
+    <div class="article">{{ article.purified_text|raw }}</div>
 
     <!-- Attachments -->
     {% if not article.getAttachments().isEmpty() %}
@@ -117,7 +117,7 @@
 
         <h2>{{ Lang.choice('selfservice.comment', 2) }}</h2>
 
-        <div class="add-comment">
+        <div class="add-comment-form">
             {% if Session.has('comment_success') %}
                 <div class="success box">{{ Session.get('comment_success') }}</div>
             {% elseif Session.has('comment_error') %}
@@ -163,9 +163,6 @@
         var typeId = {{ type.id }};
         var commentRoute = "{{ route('selfservice.operator.internal.comment') }}";
     </script>
-
-    <!-- Attachment file icons -->
-    <link href="{{ asset_rev('resources/assets/libs/file-icon-vectors/file-icon-vivid.min.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/article.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/article-print.css') }}">

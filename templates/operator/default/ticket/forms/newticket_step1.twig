@@ -41,12 +41,17 @@
             <div class="form-row small-selectize">
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
-                    {% if brand_count() > 1 and selected_brand is not empty %}
-                        {{ form_select('department', departments, selected_department) }}
-                    {% elseif brand_count() > 1 and user is empty %}
+                    {% if brand_count() > 1 and user is empty %}
                         {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
                     {% else %}
-                        {{ form_select('department', departments, selected_department) }}
+                        <select name="department" id="department">
+                            <option></option>
+                            {% for id, department in departments %}
+                                <option {% if selected_department == id %}selected='selected'{% endif %} data-data='{{ department|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ id }}'>
+                                    {{ department.dashes|raw }}{{ department.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
                     {% endif %}
                 </div>
             </div>
@@ -112,7 +117,7 @@
                         <div class="internal-ticket">
                             {{ form_hidden('user', auth_user.id, { 'disabled': 'disabled' }) }}
 
-                            <label>{{ form_radio('internal', 1) }} {{ Lang.get('ticket.internal_ticket') }}</label> -
+                            <label>{{ form_radio('internal', 1) }} {{ Lang.choice('ticket.internal_ticket', 1) }}</label> -
                             <span class="description">{{ Lang.get('ticket.internal_ticket_desc') }}</span>
                         </div>
                     </div>
@@ -137,7 +142,4 @@
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 {% endblock %}

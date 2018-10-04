@@ -1,6 +1,6 @@
 {% if not otherBrands.isEmpty() %}
     <div class="other-brands warning box">
-        {{ Lang.choice('user.also_registered_other_brand', otherBrands|length, {'brands': otherBrands.implode(', ')})|raw }}
+        {{ Lang.choice('user.also_registered_other_brand', otherBrands|length > 1 ? 2 : 1, {'brands': otherBrands.implode(', ')})|raw }}
     </div>
 {% endif %}
 
@@ -11,7 +11,7 @@
         {% if route == 'user.operator.user.edit' or route == 'user.operator.user.show' %} class="active"{% endif %}>
         {{ Lang.get('user.profile') }}
     </a>
-    {% if auth_user().hasPermission('view.ticket') %}
+    {% if auth_user().hasPermission('view.ticket') and isModuleEnabled('Ticket') %}
         <a href="{{ route('user.operator.user.ticket', [ record.id ]) }}"
             {% if route == 'user.operator.user.ticket' %} class="active"{% endif %}>
             {{ Lang.choice('ticket.ticket', 2) }}

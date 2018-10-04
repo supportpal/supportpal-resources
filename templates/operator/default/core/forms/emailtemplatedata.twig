@@ -1,4 +1,4 @@
-<div class="section-item form-container {% if brands|length == 2 %}first{% endif %} open {% if hide|default is not empty %}hide{% endif %}">
+<div class="section-item form-container {% if brands|length == 1 %}first{% endif %} open {% if hide|default is not empty %}hide{% endif %}">
 
     <div class="form-row form-full">
         {{ form_label('template[' ~ brand.id ~ '][' ~ language_code ~ '][language]', Lang.choice('general.language', 1)) }}
@@ -13,17 +13,16 @@
 
             <span class="item-type">
                 {% if email_template.language.name is empty %}
-                    {{ Lang.get('general.default') }}
+                    -- {{ Lang.get('general.any') }} --
                 {% else %}
                     {{ email_template.language.name }}
                 {% endif %}
             </span> &nbsp;
 
-            {% if email_template.language.name is empty %}
-                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button hide' }) }}
-            {% else %}
-                {{ form_button(Lang.get('general.remove'), { 'class': 'remove-button' }) }}
-            {% endif %}
+            <!-- Only don't show on default brand, -- Any -- department -->
+            {{ form_button(Lang.get('general.remove'),
+                { 'class': 'remove-button' ~ (brand.id == 'Default' and email_template.language.name is empty ? ' hide' : '') }
+            ) }}
         </div>
     </div>
 

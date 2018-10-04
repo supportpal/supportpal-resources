@@ -285,7 +285,7 @@ input[type='checkbox'] {
 /* Show/Hide Password */
 
 .hideShowPassword-toggle {
-    background: #e5e5e5;
+    background: #e5e5e5 !important;
     border: 0;
     color: #777;
     cursor: pointer;
@@ -301,7 +301,7 @@ input[type='checkbox'] {
 }
 
 .hideShowPassword-toggle:hover {
-    background: #f0f0f0;
+    background: #f0f0f0 !important;
     color: #454545;
 }
 

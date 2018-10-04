@@ -13,6 +13,8 @@
             </div>
         </div>
         <div class="option_content hide960">
+            {{ View.fireHook('operator.ticket_reply_options') }}
+
             {% if not forward and not note and extendedViews['reply_options']|default is not empty %}
                 {% for view in extendedViews['reply_options'] %}
                     {% include view %}

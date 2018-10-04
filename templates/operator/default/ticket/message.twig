@@ -5,7 +5,7 @@
          data-id="{{ message.id }}">
 
     	<div class="header">
-    		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
+    		<img src="{{ message.user.avatar_url }}" class="avatar left" />
     		<span class="name {% if message.by == 0 %}staff{% else %}user{% endif %}">
                 {{ message.user.formatted_name }}
             </span>
@@ -66,7 +66,7 @@
                 {% if message.type == 2 %}
                     {{ Lang.get('ticket.forwarded_to') }} <strong>{{ message.getForwardRecipients() }}</strong>
                     {% set emaillog = message.emaillog.where('type', 0).first() %}
-                    {% if emaillog is not empty %}
+                    {% if emaillog is not null %}
                         &nbsp;(<a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>)
                     {% endif %}
                 {% else %}
@@ -86,7 +86,7 @@
                 {% endif %}
                 &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                 {% set emaillog = message.emaillog.where('type', 1).first() %}
-                {% if emaillog is not empty %}
+                {% if emaillog is not null %}
                     <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
                     <div class="webui-popover-content form-row recipients email-details">
                         {% if emaillog.to is not empty %}

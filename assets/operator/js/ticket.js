@@ -956,6 +956,18 @@ $(document).ready(function() {
     $('.unlock-ticket').click(function() {
         ticketAction(laroute.route('ticket.operator.action.unlock'));
     });
+    // Process watch button
+    $('.watch-ticket').click(function() {
+        ticketAction(laroute.route('ticket.operator.action.watch'));
+        $('.watch-ticket').hide();
+        $('.unwatch-ticket').show();
+    });
+    // Process unwatch button
+    $('.unwatch-ticket').click(function() {
+        ticketAction(laroute.route('ticket.operator.action.unwatch'));
+        $('.watch-ticket').show();
+        $('.unwatch-ticket').hide();
+    });
 
     // Process delete button
     $('.delete-ticket').on('click', function() {
@@ -1573,6 +1585,20 @@ $(document).ready(function() {
                     $form.find('.draft-success').text(response.message).show();
                     // Show discard button
                     $form.find('.discard-draft').show();
+                    // Add attachment-id data to each attachment.
+                    var attachments = response.data.attachments;
+                    for (var upload_hash in attachments) {
+                        if (! attachments.hasOwnProperty(upload_hash)) {
+                            continue;
+                        }
+
+                        var id = attachments[upload_hash];
+                        $form.find('.deleteAttachment').each(function () {
+                            if ($(this).data('hash') === upload_hash || $(this).prop('data-hash') === upload_hash) {
+                                $(this).data('attachment-id', id);
+                            }
+                        });
+                    }
                 }
             },
             dataType: "json"
@@ -1753,9 +1779,6 @@ $(document).ready(function() {
         $(this).parents('.dropdown').hide();
     });
 
-    // Regex for email
-    var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
     // From email input
     var fromSelectizeConfig = {
         persist: false,
@@ -1765,35 +1788,8 @@ $(document).ready(function() {
     $('select[name="department_email"]').selectize(fromSelectizeConfig);
 
     // CC email input
-    var emailSelectize = {
-        plugins: ['restore_on_backspace', 'remove_button'],
-        delimiter: ',',
-        persist: false,
-        dropdownParent: 'body',
-        placeholder: Lang.get('ticket.enter_email_address'),
-        render: {
-            item: function(item, escape) {
-                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
-            }
-        },
-        createFilter: function(input) {
-            var match = input.match(re);
-            if (match) return !this.options.hasOwnProperty(match[0]);
-
-            return false;
-        },
-        create: function(input) {
-            if (re.test(input)) {
-                return {
-                    value: input,
-                    text: input
-                };
-            }
-
-            return false;
-        }
-    };
-    $ccSelectize = $('.message-form select[name="cc[]"]').selectize($.extend({ }, emailSelectize, {
+    var enablePlugins = ['restore_on_backspace', 'remove_button', 'max_items'];
+    $ccSelectize = $('.message-form select[name="cc[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), {
         onChange: function(input) {
             if (! input) {
                 // In case of removing all emails
@@ -1839,9 +1835,9 @@ $(document).ready(function() {
      */
 
     var $forwardFromSelectize = $('select[name="from_address"]').selectize(fromSelectizeConfig),
-        $forwardToSelectize = $('select[name="to_address[]"]').selectize(emailSelectize),
-        $forwardCcSelectize = $('select[name="cc_address[]"]').selectize(emailSelectize),
-        $forwardBccSelectize = $('select[name="bcc_address[]"]').selectize(emailSelectize);
+        $forwardToSelectize = $('select[name="to_address[]"]').selectize(emailSelectizeConfig(enablePlugins)),
+        $forwardCcSelectize = $('select[name="cc_address[]"]').selectize(emailSelectizeConfig(enablePlugins)),
+        $forwardBccSelectize = $('select[name="bcc_address[]"]').selectize(emailSelectizeConfig(enablePlugins));
 
     $('.add-bcc').on('click', function() {
         $('.bcc-emails').toggle();
@@ -1866,7 +1862,7 @@ $(document).ready(function() {
             },
             option: function(item, escape) {
                 return '<div>' +
-                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                    '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                     escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
                     (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
                     '</div>';
@@ -2040,13 +2036,13 @@ $(document).ready(function() {
         render: {
             item: function(item, escape) {
                 return '<div class="item">'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             },
             option: function(item, escape) {
                 return '<div>'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             }
@@ -2071,6 +2067,10 @@ $(document).ready(function() {
                 .done(function(data) {
                     if (data.status == 'success') {
                         $('.ticket-update.success').show(500).delay(5000).hide(500);
+
+                        // Poll for new replies and updates
+                        pollReplies();
+
                         return;
                     }
 
@@ -2729,7 +2729,7 @@ function applyMacro(macroId) {
 
 function refreshFollowUpTab() {
     // Show loading icon
-    $('#tabFollowup').html('<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>');
+    $('#tabFollowup').html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
 
     // Fetch view
     $.get(
@@ -2847,7 +2847,7 @@ function pollReplies(allMessages) {
                     $assignSelectize[0].selectize.clear(true);
                     $assignSelectize[0].selectize.refreshOptions(false);
                     $.each(response.data.details.assigned, function(index, value) {
-                        $assignSelectize[0].selectize.addOption({ id: value.id, formatted_name: value.formatted_name, avatar: value.avatar });
+                        $assignSelectize[0].selectize.addOption({ id: value.id, formatted_name: value.formatted_name, avatar_url: value.avatar_url });
                         $assignSelectize[0].selectize.refreshOptions(false);
                         $assignSelectize[0].selectize.addItem(value.id, true);
                     });
@@ -2883,18 +2883,28 @@ function pollReplies(allMessages) {
 
                     // Update reply options status and if closed, hide close button
                     if (response.data.details.status == closedStatusId) {
-                        $('.close-ticket').hide();
+                        $('.close-ticket').addClass('hide');
                     } else {
-                        $('.close-ticket').show();
+                        $('.close-ticket').removeClass('hide');
+                    }
+
+                    // Show/hide take button depending if self is assigned to ticket and only one assigned.
+                    var assigned = response.data.details.assigned.some(function(obj) {
+                        return obj.hasOwnProperty('id') && obj['id'] == operatorId;
+                    });
+                    if (assigned && response.data.details.assigned.length === 1) {
+                        $('.take-ticket').addClass('hide');
+                    } else {
+                        $('.take-ticket').removeClass('hide');
                     }
 
                     // If locked, show unlock button instead
                     if (response.data.details.locked) {
-                        $('.lock-ticket').hide();
-                        $('h1 .fa-lock, .unlock-ticket').show();
+                        $('.lock-ticket').addClass('hide');
+                        $('h1 .fa-lock, .unlock-ticket').removeClass('hide');
                     } else {
-                        $('.lock-ticket').show();
-                        $('h1 .fa-lock, .unlock-ticket').hide();
+                        $('.lock-ticket').removeClass('hide');
+                        $('h1 .fa-lock, .unlock-ticket').addClass('hide');
                     }
 
                     // Update log and escalation rules tables

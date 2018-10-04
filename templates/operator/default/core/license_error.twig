@@ -20,14 +20,14 @@
             {{ Lang.get('core.javascript_required') }}
         </noscript>
 
-        {% if Session.has('error') and errors|default is empty and not errors.has() %}
+        {% if Session.has('error') and errors|default is empty and not errors.count() %}
             <div class="error">{{ Session.get('error') }}</div>
         {% endif %}
         {% if Session.has('success') %}
             <div class="success">{{ Session.get('success') }}</div>
         {% endif %}
 
-        {% if errors|default is not empty and errors.has() %}
+        {% if errors|default is not empty and errors.count() %}
             <div class="error box">
                 <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
                 {% for error in errors.all() %}
@@ -87,10 +87,6 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <!-- Sweet Alert 2 -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <script type="text/javascript">
         $(document).ready(function() {
             // Handle forgotten click

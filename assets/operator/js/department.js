@@ -137,13 +137,13 @@ jQuery(function($){
          render: {
              item: function(item, escape) {
                  return '<div class="item">'
-                     + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                     + '<img class="avatar" src=' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                      + escape(item.formatted_name)
                      + '</div>';
              },
              option: function(item, escape) {
                  return '<div>'
-                     + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                     + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                      + escape(item.formatted_name)
                      + '</div>';
              }
@@ -164,13 +164,13 @@ jQuery(function($){
         render: {
             item: function(item, escape) {
                 return '<div class="item">'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             },
             option: function(item, escape) {
                 return '<div>'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             }

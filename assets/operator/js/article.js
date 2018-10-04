@@ -125,9 +125,6 @@ $(document).ready(function() {
      */
     var article = new Article({ 'className': '.category' });
 
-    // Focus the article title.
-    $('input[name="title"]').focus();
-
     /*
      * Add a new type selection
      */

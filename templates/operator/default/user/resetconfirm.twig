@@ -19,7 +19,7 @@
 
 		<div class="loginBox white-box">
 
-			{% if errors|default is not empty and errors.has() %}
+			{% if errors|default is not empty and errors.count() %}
 				<div class="error">
 					<strong>{{ Lang.get('messages.please_correct') }}</strong><br />
 					{% for error in errors.all() %}
@@ -59,7 +59,6 @@
 		{{ jsValidator|raw }}
 	{% endif %}
 
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle

@@ -46,7 +46,7 @@ var sideBar = (function ()
         $('ul.recent-activity').empty();
         $.each(data.recentActivity, function(key, value) {
             $("ul.recent-activity").append('<li class="clear">'
-                + '<img src="data:image/png;base64,' + value.user.avatar + '" width="21" height="21" alt="'
+                + '<img src="' + value.user.avatar_url + '" width="21" height="21" alt="'
                 + encode(value.user.formatted_name) + '"' + 'class="avatar" /> <strong>' + encode(value.user.formatted_name)
                 + '</strong><br />' + value.event + '<div class="description">' + value.created_at + '</div>'
                 + '</li>');
@@ -63,7 +63,7 @@ var sideBar = (function ()
         $.each(data.activeOperators, function(key, value) {
             count++;
             $("ul.active-operators").append('<li ' + (count > 10 ? 'class="hide"' : '') + '>' +
-                '<img src="data:image/png;base64,' + value.avatar
+                '<img src="' + value.avatar_url
                 + '" width="21" height="21" alt="' + encode(value.formatted_name) + '"'
                 + 'class="avatar" /> ' + encode(value.formatted_name)
                 + '</li>');

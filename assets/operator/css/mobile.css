@@ -86,6 +86,7 @@ html {
 
 	#sidebar {
 		height: 100%;
+		height: calc(100% - 50px);
 	    overflow: auto;
 		position: fixed;
 		z-index: 99;
@@ -96,9 +97,10 @@ html {
 	}
 
 	#sidebar.sidebar-close {
+		padding-top: 50px;
 		position: static;
 		width: 51px;
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 
 	#sidebar.sidebar-close .sidebox {
@@ -152,7 +154,7 @@ html {
 		bottom: 0;
 	    color: #777;
 	    cursor: pointer;
-	    display: block;
+	    display: block !important;
 	    font-size: 18px;
 	    position: fixed;
 	    text-align: center;
@@ -302,13 +304,13 @@ html {
 	}
 
 	.reply-box {
-		border-bottom: 0;
-		float: none;
-		width: 100%;
+		border-bottom: 0 !important;
+		float: none !important;
+		width: 100% !important;
 	}
 
 	.reply-form {
-		padding-right: 0;
+		padding-right: 0 !important;
 	}
 
 	#redactor-modal-box {
@@ -350,6 +352,7 @@ html {
 	}
 
 	.quick-actions button i {
+		font-size: 14px;
 		margin: 0;
 	}
 
@@ -509,6 +512,7 @@ html {
 	}
 
 	.ticket-options button i {
+		font-size: 14px;
 		margin: 0;
 	}
 
@@ -646,19 +650,19 @@ html {
 	    height: calc(100% - 50px);
 	}
 
-	#sidebar, #main {
+	#sidebar, #sidebar.sidebar-close, #main {
 	    padding-top: 0;
 	}
 
 	body.sidebar-open #header {
-		position: fixed;
+	    position: fixed;
 	}
 
 	body.sidebar-open #content {
 	    height: 100%;
 	}
 
-	body.sidebar-open #sidebar, body.sidebar-open #main {
+	body.sidebar-open #main {
 	    padding-top: 50px;
 	}
 
@@ -674,11 +678,11 @@ html {
 	}
 
 	.quick-actions {
-		position: static;
+		position: static !important;
 	}
 
     .ticket-viewing {
-        top: 0;
+        top: 0 !important;
     }
 
 }
@@ -693,6 +697,15 @@ html {
 		border: 0;
 		padding: 0;
 		position: static;
+	}
+
+}
+
+@media (max-height: 720px) and (min-width: 1080px) {
+
+	#sidebar {
+		position: static;
+		height: auto;
 	}
 
 }

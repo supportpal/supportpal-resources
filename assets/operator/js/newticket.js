@@ -55,7 +55,15 @@ $(document).ready(function() {
             labelField: 'name',
             searchField: 'name',
             create: false,
-            placeholder: Lang.get('ticket.select_a_department')
+            placeholder: Lang.get('ticket.select_a_department'),
+            render: {
+                item: function(item, escape) {
+                    return '<div class="item">' + item.dashes + escape(item.name) + '</div>';
+                },
+                option: function(item, escape) {
+                    return '<div>' + item.dashes + escape(item.name) + '</div>';
+                }
+            },
         });
 
         // Enable user search
@@ -68,14 +76,14 @@ $(document).ready(function() {
                 render: {
                     item: function(item, escape) {
                         return '<div class="item">' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                            '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                             escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
                             (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
                             '</div>';
                     },
                     option: function(item, escape) {
                         return '<div>' +
-                            '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                            '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                             escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
                             (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
                             '</div>';
@@ -142,9 +150,6 @@ $(document).ready(function() {
     } else {
         // STEP 2
 
-        // Focus the subject input box.
-        $('input[name="subject"]').focus();
-
         // Tags
         $('select[name="tag[]"]').selectize({
             plugins: ['remove_button'],
@@ -184,13 +189,13 @@ $(document).ready(function() {
             render: {
                 item: function(item, escape) {
                     return '<div class="item">'
-                        + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                        + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                         + escape(item.formatted_name)
                         + '</div>';
                 },
                 option: function(item, escape) {
                     return '<div>'
-                        + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                        + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                         + escape(item.formatted_name)
                         + '</div>';
                 }
@@ -234,7 +239,13 @@ $(document).ready(function() {
 
         // CC email input
         $('select[name="cc[]"]').selectize({
-            plugins: ['restore_on_backspace', 'remove_button'],
+            plugins: {
+                'restore_on_backspace': {},
+                'remove_button': {},
+                'max_items': {
+                    'message': Lang.get('general.show_count_more')
+                }
+            },
             delimiter: ',',
             persist: false,
             dropdownParent: 'body',

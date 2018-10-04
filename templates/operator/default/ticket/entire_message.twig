@@ -8,10 +8,8 @@
     <title>{{ ticket.subject }}</title>
 
     <!-- CSS Stylesheets -->
-    <link href="{{ asset_rev('resources/assets/libs/webui-popover/css/jquery.webui-popover.min.css') }}" rel="stylesheet" />
     <link href="{{ asset_rev('resources/assets/frontend/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/general/css/entiremessage.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- jQuery -->
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
@@ -36,7 +34,7 @@
         <div class="desk_content_padding" style="padding: 25px 25px 0; margin-bottom: 25px;">
 
             <div class="header">
-                <img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
+                <img src="{{ message.user.avatar_url }}" class="avatar left" />
                 <span class="name {% if message.by == 0 %}staff{% else %}user{% endif %}">
                     {{ message.user.formatted_name }}
                 </span>
@@ -52,7 +50,7 @@
                     {% if message.type == 2 %}
                         {{ Lang.get('ticket.forwarded_to') }} <strong>{{ message.getForwardRecipients() }}</strong>
                         {% set emaillog = message.emaillog.where('type', 0).first() %}
-                        {% if emaillog is not empty %}
+                        {% if emaillog is not null %}
                             &nbsp;(<a href="{{ route('core.operator.emaillog.show', [ emaillog.id ]) }}" target="_blank" class="description">{{ Lang.get('user.view_email') }}</a>)
                         {% endif %}
                     {% else %}
@@ -72,7 +70,7 @@
                     {% endif %}
                     &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
                     {% set emaillog = message.emaillog.where('type', 1).first() %}
-                    {% if emaillog is not empty %}
+                    {% if emaillog is not null %}
                         <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>
                         <div class="webui-popover-content form-row recipients email-details">
                             {% if emaillog.to is not empty %}
@@ -119,13 +117,12 @@
     </div>
 </div>
 
-<!-- Redactor -->
-<script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
+<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/common.min.js') }}"></script>
+<link href="{{ asset_rev('resources/assets/libs/css/common.min.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 
-<!-- WebUI Popover -->
-<script src="{{ asset_rev('resources/assets/libs/webui-popover/js/jquery.webui-popover.min.js') }}"></script>
+<!-- Redactor -->
+<script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
 <script type="text/javascript">
     $(document).ready(function() {

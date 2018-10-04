@@ -1,6 +1,6 @@
 {% if not message.attachments.isEmpty() %}
     <div class="attachments">
-        <h4>{{ message.attachments.count() }} {{ Lang.choice('general.attachment', message.attachments.count()) }}</h4>
+        <h4>{{ Lang.choice('general.attachment', 2) }}</h4>
         <ul>
             {% for attachment in message.attachments %}
                 <li>
@@ -18,7 +18,7 @@
                         {% if attachment.upload.isPreviewableVideo() or attachment.upload.isPreviewableAudio() %}
                             <div class="hide" id="html5player-{{ attachment.id }}">
                                 <video class="lg-video-object lg-html5" controls preload="none"
-                                    {% if attachment.upload.isPreviewableAudio() %}poster="{{ asset_rev('resources/assets/libs/file-icon-vectors/icons/vivid/' ~ attachment.upload.icon ~ '.svg') }}"{% endif %}>
+                                    {% if attachment.upload.isPreviewableAudio() %}poster="{{ asset_rev('resources/assets/libs/css/icons/vivid/' ~ attachment.upload.icon ~ '.svg') }}"{% endif %}>
                                     <source src="{{ attachment.previewOperatorUrl(true) }}"
                                             type="{{ attachment.upload.mime }}">
                                     Your browser does not support HTML5 audio/video.

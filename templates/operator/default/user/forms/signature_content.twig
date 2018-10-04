@@ -1,4 +1,4 @@
-<div class="section-item form-container {% if brands|length <= 2 %}first{% endif %} open {% if hide|default is not empty %}hide{% endif %}">
+<div class="section-item form-container {% if brands|length == 1 %}first{% endif %} open {% if hide|default is not empty %}hide{% endif %}">
 
     <div class="form-row form-full">
         {{ form_label('signature[' ~ brand.id ~ '][' ~ department ~ '][department]', Lang.choice('ticket.department', 1)) }}

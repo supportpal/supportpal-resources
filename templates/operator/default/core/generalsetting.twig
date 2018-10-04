@@ -267,4 +267,13 @@
 
 {% block scripts_footer %}
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/settings.js') }}"></script>
+    <script type="text/javascript">
+        var sslWarning = new SslWarning({
+            route: "{{ mail_route('core.frontend.home') }}"
+        });
+        
+        $(function () {
+            sslWarning.init(); 
+        });
+    </script>
 {% endblock %}

@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice("ticket.macro", 2) }}
 {% endblock %}
@@ -28,65 +24,170 @@
         {{ Lang.get('messages.error_ordering') }}
     </div>
 
-	<div class="grid-options options box">
-	    <a href="{{ route('ticket.operator.macro.create') }}">
-	        <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.macro', 1)}) }}
-	    </a>
-        &nbsp;&nbsp;
-        <a class="filter-results">
-            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
-        </a>
+    <ul class="tabs">
+        <li id="Manual" class="active">{{ Lang.get('general.manual') }}</li>
+        <li id="Automatic">{{ Lang.get('general.automatic') }}</li>
+        <li id="Hook">{{ Lang.get('general.hook') }}</li>
+    </ul>
 
-        <div class="filters hide">
-            <div>
-                <label>{{ Lang.get('general.name') }}:</label>
-                <div id="filter_name"></div>
-            </div>
-            <div>
-                <label>{{ Lang.get('general.description') }}:</label>
-                <div id="filter_description"></div>
-            </div>
-            <div>
-                <label>{{ Lang.get('general.type') }}:</label>
-                <div id="filter_type"></div>
+    <div id="tabManual" class="tabContent">
+        <div class="grid-options options box">
+            <a href="{{ route('ticket.operator.macro.create') }}?type=0">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.macro', 1)}) }}
+            </a>
+            &nbsp;&nbsp;
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_manual_name"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.description') }}:</label>
+                    <div id="filter_manual_description"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.enabled') }}:</label>
+                    <div id="filter_manual_enabled"></div>
+                </div>
             </div>
         </div>
-	</div>
 
-	{{ table.render()|raw }}
-	{{ table.script()|raw }}
+        {{ manualTable.render()|raw }}
+        {{ manualTable.script()|raw }}
 
-    <div class="note box bottombox" id="dndOrderNote">
-        <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('ticket.macro_order') }}
+        <div class="note box bottombox" id="dndOrderNote">
+            <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('ticket.macro_order_drag') }}
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                /**
+                 * Initialise the filters
+                 */
+                oTable.yadcf([
+                    {column_number : 0, column_data_type: "text", filter_container_id: "filter_manual_name", filter_type: "text", filter_delay: 500},
+                    {column_number : 1, filter_container_id: "filter_manual_description", filter_type: "text", filter_delay: 500},
+                    {column_number : 2, filter_container_id: "filter_manual_enabled"}
+                ]);
+            });
+        </script>
+    </div>
+
+    <div id="tabAutomatic" class="tabContent hide">
+        <div class="grid-options options box">
+            <a href="{{ route('ticket.operator.macro.create') }}?type=2">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.macro', 1)}) }}
+            </a>
+            &nbsp;&nbsp;
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_automatic_name"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.description') }}:</label>
+                    <div id="filter_automatic_description"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.enabled') }}:</label>
+                    <div id="filter_automatic_enabled"></div>
+                </div>
+            </div>
+        </div>
+
+        {{ automaticTable.render()|raw }}
+        {{ automaticTable.script()|raw }}
+
+        <div class="note box bottombox" id="dndOrderNote">
+            <strong>{{ Lang.choice('general.note', 1) }}:</strong>
+            {{ Lang.get('ticket.macro_order_processed', { 'type': Lang.get('general.automatic') }) }} {{ Lang.get('ticket.macro_order_drag') }}
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                /**
+                 * Initialise the filters
+                 */
+                oTable.yadcf([
+                    {column_number : 0, column_data_type: "text", filter_container_id: "filter_automatic_name", filter_type: "text", filter_delay: 500},
+                    {column_number : 1, filter_container_id: "filter_automatic_description", filter_type: "text", filter_delay: 500},
+                    {column_number : 2, filter_container_id: "filter_automatic_enabled"}
+                ]);
+            });
+        </script>
+    </div>
+
+    <div id="tabHook" class="tabContent hide">
+        <div class="grid-options options box">
+            <a href="{{ route('ticket.operator.macro.create') }}?type=1">
+                <i class="fa fa-plus"></i>&nbsp; {{ Lang.get('general.add_item', {'item': Lang.choice('ticket.macro', 1)}) }}
+            </a>
+            &nbsp;&nbsp;
+            <a class="filter-results">
+                <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+            </a>
+
+            <div class="filters hide">
+                <div>
+                    <label>{{ Lang.get('general.name') }}:</label>
+                    <div id="filter_hook_name"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.description') }}:</label>
+                    <div id="filter_hook_description"></div>
+                </div>
+                <div>
+                    <label>{{ Lang.get('general.enabled') }}:</label>
+                    <div id="filter_hook_enabled"></div>
+                </div>
+            </div>
+        </div>
+
+        {{ hookTable.render()|raw }}
+        {{ hookTable.script()|raw }}
+
+        <div class="note box bottombox" id="dndOrderNote">
+            <strong>{{ Lang.choice('general.note', 1) }}:</strong>
+            {{ Lang.get('ticket.macro_order_processed', { 'type': Lang.get('general.hook') }) }} {{ Lang.get('ticket.macro_order_drag') }}
+        </div>
     </div>
 
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
     <!-- Ordering -->
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/TableDnD/js/jquery.tablednd.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/ordering.js') }}"></script>
-    
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-    <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
+    <!-- Filtering and delay loading some tables -->
+    <script src="{{ asset_rev('resources/assets/operator/js/datatable/deferloading.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             /**
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
-                {column_number : 1, filter_container_id: "filter_description", filter_type: "text", filter_delay: 500},
-                {column_number : 2, filter_container_id: "filter_type"}
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_hook_name", filter_type: "text", filter_delay: 500},
+                {column_number : 1, filter_container_id: "filter_hook_description", filter_type: "text", filter_delay: 500},
+                {column_number : 2, filter_container_id: "filter_hook_enabled"}
             ]);
+
+            /**
+             * Defer loading some datatables
+             */
+            defferedDatatables({
+                'Automatic': false,
+                'Hook': false
+            });
         });
     </script>
 {% endblock %}

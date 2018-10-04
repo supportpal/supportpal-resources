@@ -34,7 +34,7 @@
                     <td width="30%" style="border-bottom: 0">
                         <select name="brand">
                             <option></option>
-                            {% for brand in assignedBrands.whereLoose('enabled', 1) %}
+                            {% for brand in assignedBrands.where('enabled', 1) %}
                                 {% if ticket.brand_id != brand.id %}
                                     <option value="{{ brand.id }}">
                                         {{ brand.name }}
@@ -110,13 +110,6 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     
     <script type="text/javascript">
         $(function () {
@@ -173,6 +166,14 @@
                 searchField: 'name',
                 create: false,
                 placeholder: "{{ Lang.get('ticket.select_a_department') }}",
+                render: {
+                    item: function(item, escape) {
+                        return '<div class="item">' + item.dashes + escape(item.name) + '</div>';
+                    },
+                    option: function(item, escape) {
+                        return '<div>' + item.dashes + escape(item.name) + '</div>';
+                    }
+                },
                 onChange: function (value) {
                     var selectize = $departmentEmail[0].selectize;
 

@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block sidebar %}
     {% if not customSearch and record is not defined %}
         {% include 'operator.' ~ template ~ '.ticket.sidebar-grid' %}
@@ -153,42 +149,17 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <!-- Datatables, fixed header extension -->
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables.net-fixedheader/css/fixedHeader.dataTables.min.css') }}">
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <!-- File upload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
-
-    <!-- Pikaday -->
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-
-    <!-- Remember collapsible side box state -->
-    <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
@@ -269,7 +240,7 @@
                 // The #FollowUp node will be empty if we haven't loaded it before.
                 if ($('form.conditiongroup').is(':empty')) {
                     // Show loading icon
-                    $('form.conditiongroup').html('<div style="padding: 10px;"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+                    $('form.conditiongroup').html('<div style="padding: 10px;"><i class="fa fa-spinner fa-pulse fa-fw"></i></div>');
 
                     // Fetch view
                     $.get(
@@ -433,6 +404,14 @@
             $tfoot.on('click', '.unlock-ticket', function() {
                 ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.unlock'));
             });
+            // Process watch button
+            $tfoot.on('click', '.watch-ticket', function() {
+                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.watch'));
+            });
+            // Process unwatch button
+            $tfoot.on('click', '.unwatch-ticket', function() {
+                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.unwatch'));
+            });
             // Process link button
             $tfoot.on('click', '.link-ticket', function() {
                 ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.linked.link'));
@@ -472,6 +451,17 @@
                         unassign = true;
                     }
                     assignOperator(getSelectedRows(), $(this).val(), unassign);
+                    // Reset dropdown
+                    $(this).val('');
+                    event.stopPropagation();
+                }
+            });
+
+            // Process macros.
+            $tfoot.on('change', '.ticket-options select[name=macro]', function (event) {
+                if ($(this).val() !== '') {
+                    ticketAction({ ticket: getSelectedRows(), macro_id: $(this).val() }, laroute.route('ticket.operator.action.macro'));
+
                     // Reset dropdown
                     $(this).val('');
                     event.stopPropagation();

@@ -3,12 +3,13 @@
 <div class="form-row">
     {{ form_label(elements.name.name, Lang.get('general.name')) }}
     <div class="input-container">
-        {{ form_text(elements.name.name, elements.name.value, { 'size': 45 }|merge(attributes)) }}
+        {% set nameAttributes = { 'size': 45 }|merge(attributes) %}
+        {{ form_text(elements.name.name, elements.name.value, elements.name.attributes ? nameAttributes|merge(elements.name.attributes) : nameAttributes) }}
     </div>
 </div>
 
 <div class="form-row form-full">
-    {{ form_label(elements.text.name, Lang.choice('ticket.response', 2)) }}
+    {{ form_label(elements.text.name, Lang.choice('ticket.response', 1)) }}
     <div class="input-container">
         {{ form_redactor_mf(elements.text.name, elements.text.value, attributes) }}
     </div>

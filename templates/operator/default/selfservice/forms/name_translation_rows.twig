@@ -4,7 +4,7 @@
     <div class="form-row">
         {{ form_label(elements.name.name, Lang.get('general.name')) }}
         <div class="input-container name-input translatable small-translatable">
-            {{ form_text(elements.name.name, elements.name.value, attributes) }}
+            {{ form_text(elements.name.name, elements.name.value, elements.name.attributes ? attributes|merge(elements.name.attributes) : attributes) }}
         </div>
     </div>
 

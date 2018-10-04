@@ -1,0 +1,16 @@
+<div class='expandable'></div>
+<div class='supportpal_quote'>
+    <span>{{ Lang.get('ticket.forwarded_message') }}</span><br />
+    {% for message in messages %}
+        <strong>{{ Lang.get('ticket.from') }}:</strong> {{ message.user.formatted_name }}<br />
+        <strong>{{ Lang.get('customfield.date') }}:</strong> {{ formatDate(message.created_at)  }} <br />
+        <strong>{{ Lang.get('ticket.subject') }}:</strong> {{ ticket.subject }}<br />
+        {% set attachments = message.attachments.where('isInvalid', false) %}
+        {% if attachments.count() > 0 %}
+            <strong>{{ Lang.choice('general.attachment', 2) }}:</strong> {{ attachments.implode('original_name', ', ') }}<br />
+        {% endif %}
+        <br />
+        {{ message.purified_text|raw }}
+        {% if not loop.last %}<br /><br />{% endif %}
+    {% endfor %}
+</div>

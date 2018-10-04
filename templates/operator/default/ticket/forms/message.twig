@@ -139,7 +139,7 @@
                 <div>
                     {{ form_label('from_address', Lang.get('ticket.from')) }}
                     <div class="input-container">
-                        {{ form_select('from_address', fromEmails|merge({'me': auth_user().formatted_name ~ ' <' ~ auth_user().email ~ '>'}),
+                        {{ form_select('from_address', fromEmails + {'me': auth_user().formatted_name ~ ' <' ~ auth_user().email ~ '>'},
                             draft_forward is not empty ? draft_forward.extra.from_address : ticket.department_email_id)
                         }}
                     </div>

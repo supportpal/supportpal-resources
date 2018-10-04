@@ -45,8 +45,11 @@ $(document).ready(function() {
         if ($(this).width() > 1080) {
             $('#navarea').css('display', 'block');
         } else {
-            $('#navarea').css('display', 'none');
-            $('.mobile-nav').removeClass('active');
+            // Only do it if the mobile navigation isn't already open, else this breaks when you try to search as the
+            // keyboard opening resizes the browser.
+            if (! $('.mobile-nav').hasClass('active')) {
+                $('#navarea').css('display', 'none');
+            }
         }
         
         // Adjust DataTable footer.
@@ -71,17 +74,17 @@ $(document).ready(function() {
         if ($('.toggle-sidebar').is(':visible')) {
             $('body').removeClass('sidebar-open');
             $('#sidebar').addClass('sidebar-close');
-            $('.toggle-sidebar').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+            $('.toggle-sidebar i').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
         }
     });
 
     // Toggle sidebar
     $('#sidebar').on('click', '.toggle-sidebar, .icon', function(e) {
         // For icons, only if responsive view and sidebar is closed
-        if ($(this).hasClass('toggle-sidebar') || ($(window).width() < 960 && !$('body').hasClass('sidebar-open'))) {
+        if ($(this).hasClass('toggle-sidebar') || ($(window).width() < 1080 && !$('body').hasClass('sidebar-open'))) {
             $('body').toggleClass('sidebar-open');
             $('#sidebar').toggleClass('sidebar-close');
-            $('.toggle-sidebar').toggleClass('fa-angle-double-right fa-angle-double-left');
+            $('.toggle-sidebar i').toggleClass('fa-angle-double-right fa-angle-double-left');
 
             // Close header
             closeHeader();

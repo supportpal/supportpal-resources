@@ -25,12 +25,12 @@
                     </span>
                 {% endif %}
 
-                <img src='data:image/png;base64,{{ message.user.avatar }}' width='24' height='24' alt='{{ Lang.choice('user.operator', 1) }}' class='avatar left' />
+                <img src='{{ message.user.avatar_url }}' width='24' height='24' alt='{{ Lang.choice('general.operator', 1) }}' class='avatar left' />
                 <span class="name {% if message.user_id == auth_user().id %}staff{% else %}user{% endif %}">{{ message.user.formatted_name }}</span><br />
                 <span class="description">{{ timeago(message.created_at) }}</span>
             </div>
             <div class="text">
-                {{ Purifier.clean(message.message) }}
+                {{ message.purified_message|raw }}
             </div>
         </div>
         {% endfor %}
@@ -57,19 +57,11 @@
     
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
@@ -78,7 +70,6 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('textarea').redactor($.extend($.Redactor.default_opts, {
-                focus: true,
                 plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']
             }));
 

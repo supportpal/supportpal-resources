@@ -1,8 +1,11 @@
+var tableDndHandle = '.handle';
 function tableDnd(route)
 {
     var $table = $(".dataTable");
     $table.tableDnD({
+        dragHandle: tableDndHandle,
         onDragStart: function(table, row) {
+            row = $(row).parents('tr');
             // Don't do anything if the table is filtered
             if ($(row).hasClass('nodrag') || $(row).hasClass('nodrop')) {
                 return;
@@ -15,6 +18,7 @@ function tableDnd(route)
             }, 1500);
         },
         onDrop: function(table, row) {
+            row = $(row).parents('tr');
             $(row).css("background-color", "");
             // Convert to a comma delimited list
             var newOrder = '';
@@ -83,7 +87,8 @@ function tableDnd(route)
  */
 function enableDndOrdering()
 {
-    $(".dataTable").find('tr').removeClass('nodrag nodrop').css('cursor', 'move');
+    $(".dataTable").find('tr').removeClass('nodrag nodrop')
+        .find(tableDndHandle).css('cursor', 'move');
     $('#dndOrderNote').show();
 }
 
@@ -92,6 +97,7 @@ function enableDndOrdering()
  */
 function disableDndOrdering()
 {
-    $(".dataTable").find('tr').addClass('nodrag nodrop').css('cursor', '');
+    $(".dataTable").find('tr').addClass('nodrag nodrop')
+        .find(tableDndHandle).css('cursor', '');
     $('#dndOrderNote').hide();
 }

@@ -4,7 +4,7 @@
     <div class="form-row form-full">
         {{ form_label(elements.title.name, Lang.get('selfservice.title')) }}
         <div class="input-container name-input">
-            {{ form_text(elements.title.name, elements.title.value, attributes) }}
+            {{ form_text(elements.title.name, elements.title.value, elements.title.attributes ? attributes|merge(elements.title.attributes) : attributes) }}
         </div>
     </div>
 
@@ -28,7 +28,7 @@
         </div>
     </div>
     
-    <div class="form-row">
+    <div class="form-row form-full">
         {{ form_label(elements.excerpt.name, Lang.get('selfservice.excerpt')) }}
         <div class="input-container">
             {{ form_textarea(elements.excerpt.name, elements.excerpt.value, { 'style': 'resize: none;', 'rows': 2, 'cols': 40, 'class': 'not-redactor' }|merge(attributes)) }}

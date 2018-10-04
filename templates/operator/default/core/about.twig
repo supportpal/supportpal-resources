@@ -69,7 +69,7 @@
         <div class="form-row">
             <label>{{ Lang.get('core.license_valid_ip') }}</label>
             <div class="input-container">
-                {{ licenseInformation.licenseIP }}{% if licenseInformation.externalIP is not empty %}, {{ licenseInformation.externalIP }}{% endif %}
+                {{ licenseInformation.licenseIP }}
             </div>
         </div>
 
@@ -154,9 +154,6 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <script type="text/javascript">
         $(function () {
             $('#spanLicenseUpdate').click(function () {

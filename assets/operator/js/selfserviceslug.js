@@ -58,9 +58,6 @@ var SupportPalSlugGenerator = function (parameters)
                 $brandUri.text($brandUri.text().replace(regex, "/" + (typeof locale === 'undefined' ? default_frontend_locale : locale)));
                 
                 $slug.show();
-
-                // Reset form validation.
-                $('form.validate').validate().resetForm();
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR.responseText);

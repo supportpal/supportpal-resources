@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice("ticket.cannedresponse", 2) }}
 {% endblock %}
@@ -50,16 +46,9 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
     <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             /**

@@ -1,0 +1,16 @@
+{% extends 'operator.' ~ template ~ '.index' %}
+
+{% block title %}
+    403 - {{ Lang.get('messages.forbidden') }}
+{% endblock %}
+
+{% block content %}
+
+{# There is an error, print it #}
+<div class="fail box">
+    <i class="fa fa-ban left"></i>
+    <span class="title">{{ Lang.get('messages.error') }}!</span><br />
+    {{ Lang.get('messages.not_permitted') }}
+</div>
+
+{% endblock %}

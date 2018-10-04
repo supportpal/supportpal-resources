@@ -31,7 +31,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}<br />
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}<br />
                     <span class="description">{{ Lang.get('core.brand_name_desc') }}</span>
                 </div>
             </div>
@@ -237,27 +237,27 @@
     {% endif %}
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
-
-    <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
-    <!-- Minicolors -->
-    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
-
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/settings.js') }}"></script>
-
     <script type="text/javascript">
+        var sslWarning = new SslWarning({
+            route: "{{ mail_route('core.frontend.home', null, record.id) }}"
+        });
+
         $(document).ready(function() {
+            sslWarning.init();
+            
             $('select[name="group[]"]').selectize({
                 plugins: ['remove_button']
+            });
+
+            $('input[name="system_url"]').on('change', function() {
+                sslWarning.setRoute($(this).val());
             });
 
             $('input[name="brand_colour"]').minicolors();

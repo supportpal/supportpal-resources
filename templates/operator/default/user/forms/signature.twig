@@ -1,7 +1,6 @@
 <div id="sectionWrapper">
 
-    {# if brands|length == 2 then then only one exists in the system - Default (fake brand) and Brand 1 #}
-    <ul class="tabs" style="margin: 0; {% if brands|length <= 2 %}display: none;{% endif %}">
+    <ul class="tabs" style="margin: 0; {% if brands|length == 1 %}display: none;{% endif %}">
         {% for brand in brands %}
             <li id="{{ brand.id }}" {% if loop.first %}class="active"{% endif %}>
                 {{ brand.name }}
@@ -25,8 +24,10 @@
                     <div class="input-container">
                         <select name="brand[{{ brand.id }}][department]" title="{{ Lang.get('ticket.add_for_department') }}" class="add-item-selectize">
                             <option></option>
-                            {% for id, name in brand.departments %}
-                                <option value="{{ id }}">{{ name }}</option>
+                            {% for id, department in brand.departments %}
+                                <option data-data='{{ department|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ id }}'>
+                                    {{ department.dashes|raw }}{{ department.name }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>

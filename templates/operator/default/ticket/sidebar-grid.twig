@@ -1,5 +1,9 @@
 <div id="sidebar" class="sidebar-close left">
-    <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
+    {{ View.fireHook('operator.sidebar_start') }}
+
+    <span class="toggle-sidebar hide">
+        <i class="fa fa-angle-double-right"></i>
+    </span>
 
     {% if filters is not empty and not filters.isEmpty() %}
         <div class="sidebox">
@@ -162,6 +166,8 @@
         </ul>
     </div>
     {% endif %}
+
+    {{ View.fireHook('operator.sidebar_end') }}
 
     <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
 </div>
