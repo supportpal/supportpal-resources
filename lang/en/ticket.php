@@ -33,7 +33,6 @@ return array(
     "existing_user"             => "Existing User",
     "new_user"                  => "New User",
     "internal"                  => "Internal",
-    "internal_ticket"           => "Internal Ticket",
     "internal_ticket_desc"      => "Open a ticket for internal use only. This ticket will be associated with you, rather than a user.",
     "ticket_opened"             => "Your ticket has successfully been opened.",
     "enter_user_details"        => "Please enter your details below, or login to your account if you have one.",
@@ -176,11 +175,7 @@ return array(
     "macro"                     => "Macro|Macros",
     "macro_type"                => "Macro Type",
     "macro_type_desc"           => "By default the macro has to be manually called in the ticket view. It can be set to be an automatic macro that is checked and actioned when new tickets come in or on all tickets via a scheduled task, in either case the conditions will be checked and if true then the actions will be performed automatically. A macro can only run once on a ticket automatically, there is no limit for running it manually.",
-    "manual"                    => "Manual",
-    "macro_type_auto1"          => "Automatic - On new tickets only",
-    "macro_type_auto2"          => "Automatic - All tickets (scheduled task)",
     "macro_condition"           => "Macro Conditions",
-    "macro_condition_desc"      => "Define the conditions for which tickets this macro will be available to. By default, with no conditions, it will apply to all tickets.",
     "macro_action"              => "Macro Actions",
     "macro_action_desc"         => "Define actions that are performed out when a macro is carried out. Please ensure actions are valid for the department the ticket is in or else they will be ignored.",
 
@@ -355,7 +350,7 @@ return array(
     "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
     "opened_by"                 => "(Opened by :name)",
     "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='https://docs.supportpal.com/current/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
-    "not_assigned_department"   => "Sorry, you're not permitted to view tickets in the :department department. If you think this has been shown in error, please contact your administrator.",
+
     /*
      * 2.0.3
      */
@@ -389,7 +384,6 @@ return array(
     "ticket_reply_order_default" => "System default will use the value that is currently selected in the ticket general settings.",
     "select_a_parent"           => "Select a parent department...",
     "select_a_department"       => "Select a department...",
-    "not_assigned_brand"        => "Sorry, you're not permitted to view tickets in this brand. If you think this has been shown in error, please contact your administrator.",
     "department_operator_desc"  => "You may also assign individual operators to the department. These operators will be in addition to any groups assigned above.",
     "department_group"          => "Department Groups",
     "department_group_desc"     => "You may assign whole operator groups to the department, recommended if your list of operators is large and/or changes frequently.",
@@ -457,7 +451,6 @@ return array(
     /*
      * 2.2.0
      */
-    "macro_order"               => "Automatic macros are processed in the order they appear. Drag the rows to change the order of the macros.",
     "user_ticket_existing_desc" => "Open new ticket on behalf of an existing user.",
     "canned_response_tag"       => "Canned Response Tag|Canned Response Tags",
     "response"                  => "Response|Responses",
@@ -509,5 +502,28 @@ return array(
     "record_public_desc"        => "Toggle to only let the :record be accessible by yourself.",
     "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups, leave blank to make visible to all operators.",
     "ticket_format_desc"        => "Can contain alphanumeric characters and special characters <code>-_.+!*,</code><br />The following variables may also be used: %S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
+
+    /*
+     * 2.4.0
+     */
+    "macro_enabled_desc"        => "Toggle to disable the macro and prevent it from running automatically or showing in the ticket interface.",
+    "macro_order_drag"          => "Drag the rows to change the order of the macros.",
+    "macro_order_processed"     => ":type macros are processed in the order they appear.",
+    "macro_type"                => "Macro Type",
+    "macro_type_desc"           => "There are three types of macros available. Manual macros can only be ran from the ticket view or grid, automatic macros run on non-resolved tickets every hour, and hook macros run on specified ticket events. Automatic and hook macros can also be set to only run within specific schedules. Any hook macro actions won't trigger other hook macros to avoid the risk of loops.",
+    "macro_run_at_most"         => "Run At Most",
+    "macro_run_times"           => "times", // As in '5 times'
+    "macro_run_at_most_desc"    => "Limit how many times an automatic macro can run on a single ticket, leave blank to let it run an unlimited number of times.",
+    "macro_events_desc"         => "Select one or more events that the macro should run on. The conditions set below will be checked before the macro runs.",
+    "macro_schedules_desc"      => "By default the macro will run 24/7, but you can select one or more help desk schedules so the macro is only active during those times.",
+    "macro_condition_desc"      => "Define the conditions for which tickets this macro will be available to. By default, with no conditions, it will apply to all tickets. At least one condition must be defined for automatic macros.",
+    "add_remove_headers"        => "Add/Remove Headers",
+    "webhook_merge_fields"      => "Merge fields can be used in the URL and content field, <a href=\"https://docs.supportpal.com/current/Merge+Fields\">learn more</a>.",
+    "webhook_ticket_required"   => "A ticket must exist for this functionality to work.",
+    "not_permitted"             => "Sorry, you're not permitted to view the requested ticket(s). If you think this has been shown in error, please contact your administrator.",
+    "watch"                     => "Watch",
+    "unwatch"                   => "Unwatch",
+    "watching"                  => "Watching",
+    "internal_ticket"           => "Internal Ticket|Internal Tickets",
 
 );

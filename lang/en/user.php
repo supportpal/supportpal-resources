@@ -315,4 +315,11 @@ return array(
     "resend_confirmation"           => "<strong><a href=':link'>Click here</a></strong> to be sent a new confirmation email.",
     "resend_confirmation_sent"      => "A new confirmation email has been queued and will be sent to you shortly.",
 
+    /*
+     * 2.4.0
+     */
+    "must_have_permission"          => "must have \":permission\" permission",
+    "deleted_user"                  => "Deleted User",
+    "access_level_not_owner"        => "It is not possible to change the access level of organisation owners. Transfer organisation ownership to another user first by viewing the organisation and clicking the 'Users' tab.",
+
 );

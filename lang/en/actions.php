@@ -59,5 +59,14 @@ return array(
      * 2.3.1
      */
     "exclude_cc"                => "Exclude CC email addresses",
+    
+    /*
+     * 2.4.0
+     */
+    "trigger_webhook"           => "Trigger webhook",
+    "forward_ticket"            => "Forward ticket",
+    "watch_ticket"              => "Set operator to watch ticket",
+    "unwatch_ticket"            => "Unset operator watching ticket",
+    "all_watching_operators"    => "All watching operators",
 
 );

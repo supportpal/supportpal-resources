@@ -42,7 +42,6 @@ return array(
     "time"                      => "Time",
     "id"                        => "ID",
     "log"                       => "Log",
-    "event"                     => "Event",
     "filter"                    => "Filter",
     "ip_address"                => "IP Address",
     "ip"                        => "IP",
@@ -313,5 +312,15 @@ return array(
     "export"                    => "Export|Exports",
     "generate"                  => "Generate",
     "entry"                     => "Entry",
+
+    /*
+     * 2.4.0
+     */
+    "show_count_more"           => "Show :count more...",
+    "manual"                    => "Manual",
+    "automatic"                 => "Automatic",
+    "hook"                      => "Hook",
+    "event"                     => "Event|Events",
+    "test"                      => "Test",
 
 );

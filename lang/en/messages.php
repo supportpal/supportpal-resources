@@ -147,4 +147,11 @@ return array(
     "linked_account"        => "The social account has successfully been linked with your account.",
     "already_linked"        => "The social account is already linked with another account. Please login to the other account and unlink it.",
 
+    /*
+     * 2.4.0
+     */
+    "does_look_correct"     => "Does this look correct?",
+    "no_revert"             => "No! Revert",
+    "attachment_not_found"  => "The attachment was not found.",
+
 );

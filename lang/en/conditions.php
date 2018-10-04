@@ -70,4 +70,10 @@ return array(
     "user_organisation_notes"           => "User organisation notes",
     "user_organisation_timezone"        => "User organisation timezone",
 
+    /*
+     * 2.4.0
+     */
+    "watching_operator"                 => "Watching operator",
+    "exact_search_quotes"               => "To do an exact search for the phrase, wrap it in quotes like \"my phrase\".",
+
 );
