@@ -25,7 +25,7 @@
 
         <div class="form-row form-full">
             {{ form_label('email', Lang.get('general.email')) }}
-            {{ form_text('email') }}
+            {{ form_text('email', null, { 'autofocus': 'autofocus' }) }}
         </div>
         <div class="form-row form-full">
             {{ form_label('password', Lang.get('general.password')) }}

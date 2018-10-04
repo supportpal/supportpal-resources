@@ -1,7 +1,7 @@
 <div class="message clear" data-id="{{ message.id }}">
 
 	<div class="header">
-		<img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
+		<img src="{{ message.user.avatar_url }}" class="avatar left" />
 		<span class="name {% if (message.by == 0) %} staff {% else %} user {% endif %}">
             {{ message.user.formatted_name }}
         </span>
@@ -23,17 +23,17 @@
 
 	{% if not message.attachments.isEmpty() %}
 		<div class="attachments">
-			<h4 class="attachments-title">{{ message.attachments.count() }} {{ Lang.choice('general.attachment', message.attachments.count()) }}</h4>
+			<h4 class="attachments-title">{{ message.attachments.count() }} {{ Lang.choice('general.attachment', message.attachments.count() > 1 ? 2 : 1) }}</h4>
 			<ul>
 				{% for attachment in message.attachments %}
 					<li>
 						{% if (message.by != 0) %}
-							<div class="deleteAttachment" title="{{ Lang.get('general.delete') }}">
-								<i class="fa fa-times"
-								   data-url="{{ route('ticket.frontend.attachment.destroy') }}"
-								   data-token="{{ Input.get('token', '') }}"
-								   data-attachment-id="{{ attachment.id }}"
-								   data-hash="{{ attachment.upload_hash }}"></i>
+							<div class="deleteAttachment" title="{{ Lang.get('general.delete') }}"
+								 data-url="{{ route('ticket.frontend.attachment.destroy') }}"
+								 data-token="{{ Input.get('token', '') }}"
+								 data-attachment-id="{{ attachment.id }}"
+								 data-hash="{{ attachment.upload_hash }}">
+								<i class="fa fa-times"></i>
 							</div>
 						{% endif %}
 
@@ -41,7 +41,7 @@
 							{% if attachment.upload.isPreviewableVideo() or attachment.upload.isPreviewableAudio() %}
 								<div class="hide" id="html5player-{{ attachment.id }}">
 									<video class="lg-video-object lg-html5" controls preload="none"
-										   {% if attachment.upload.isPreviewableAudio() %}poster="{{ asset_rev('resources/assets/libs/file-icon-vectors/icons/vivid/' ~ attachment.upload.icon ~ '.svg') }}"{% endif %}>
+										   {% if attachment.upload.isPreviewableAudio() %}poster="{{ asset_rev('resources/assets/libs/css/icons/vivid/' ~ attachment.upload.icon ~ '.svg') }}"{% endif %}>
 										<source src="{{ attachment.previewFrontendUrl(true) }}"
 												type="{{ attachment.upload.mime }}">
 										Your browser does not support HTML5 audio/video.

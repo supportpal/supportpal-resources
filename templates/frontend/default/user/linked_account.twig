@@ -2,10 +2,6 @@
 
 {% block title %}{{ Lang.get('user.linked_accounts') }}{% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block breadcrumb %}
     {{ parent() }}
     {{ Lang.get('user.linked_accounts') }}
@@ -38,14 +34,6 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         deleteAlert.translationKeys.title = 'user.unlink_account';

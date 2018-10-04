@@ -49,14 +49,20 @@ $(document).ready(function() {
     });
 
     // Redactor
-    redactor = $('textarea[name=text]').redactor($.extend($.Redactor.default_opts, { focus: true }));
+    redactor = $('textarea[name=text]').redactor($.Redactor.default_opts);
 
     // Regex for email
     var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
     // CC email input
     $('select[name="cc[]"]').selectize({
-        plugins: ['restore_on_backspace', 'remove_button'],
+        plugins: {
+            'restore_on_backspace': {},
+            'remove_button': {},
+            'max_items': {
+                'message': Lang.get('general.show_count_more')
+            }
+        },
         delimiter: ',',
         persist: false,
         dropdownParent: 'body',

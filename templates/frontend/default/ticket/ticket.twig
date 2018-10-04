@@ -172,20 +172,14 @@
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/ticket-print.css') }}">
 
     <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/max_items.js') }}"></script>
 
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
     <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
@@ -194,18 +188,6 @@
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-
-    <!-- Attachment previews -->
-    <link href="{{ asset_rev('resources/assets/libs/file-icon-vectors/file-icon-vivid.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/lightgallery/css/lightgallery.min.css') }}" />
-    <script src="{{ asset_rev('resources/assets/libs/lightgallery/js/lightgallery.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/lg-zoom/js/lg-zoom.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/lg-video/js/lg-video.min.js') }}"></script>
 
     <script type="text/javascript">
         var ticketNumber = "{{ ticket.number }}",

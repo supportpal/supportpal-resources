@@ -1,9 +1,13 @@
+    {{ View.fireHook('frontend.content_end') }}
+
 </div>
 
 <div id="desk_sidebar" class="right">
+    {{ View.fireHook('frontend.sidebar_start') }}
+
     {% if auth_check() %}
         <div class="desk_box account">
-            <img class="avatar left" src="data:image/jpeg;base64, {{ auth_user().avatar }}" />
+            <img class="avatar left" src="{{ auth_user().avatar_url }}" />
                     <span class="name">
                         <strong>{{ auth_user().formatted_name }}</strong>
                     </span>
@@ -100,6 +104,8 @@
         {% endif %}
 
     {% endblock %}
+
+    {{ View.fireHook('frontend.sidebar_end') }}
 </div>
 
 <div class="clear"></div>

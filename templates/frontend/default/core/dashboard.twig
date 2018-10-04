@@ -57,40 +57,42 @@
             {% endfor %}
         {% endif %}
 
-        {% if isModuleEnabled('Selfservice') %}
+    {% endif %}
 
-            {% if types.contains('show_on_dashboard', 1) %}
+    {{ View.fireHook('frontend.dashboard') }}
 
-                <ul class="desk-tabs">
-                    {% for type in types %}
-                        {% if type.content == 0 and type.show_on_dashboard %}
-                            <li id="{{ type.slug }}" {% if firstTab is not defined %} class="active" {% set firstTab = true %} {% endif %}>
-                                {% if type.view == 0 %}
-                                    {{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}
-                                {% else %}
-                                    {{ Lang.get('selfservice.type_latest_items', {'type': type.name}) }}
-                                {% endif %}
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
+    {% if isModuleEnabled('Selfservice') %}
 
-                <div class="desk-tabs-content">
-                    {% for type in types %}
-                        {% if type.content == 0 and type.show_on_dashboard %}
-                            <div id="tab{{ type.slug }}" class="desk-tab {% if firstContent is defined %} hide {% else %} {% set firstContent = true %} {% endif %}">
-                                {% if type.view == 0 %}
-                                    <h2 class="tab-title">{{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}</h2>
-                                {% else %}
-                                    <h2 class="tab-title">{{ Lang.get('selfservice.type_latest_items', {'type': type.name}) }}</h2>
-                                {% endif %}
-                                {% include 'frontend.' ~ template ~ '.selfservice.article_list' with {'articles': type.articles, 'noRssFeed': true} %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        {% if types.contains('show_on_dashboard', 1) %}
 
-            {% endif %}
+            <ul class="desk-tabs">
+                {% for type in types %}
+                    {% if type.content == 0 and type.show_on_dashboard %}
+                        <li id="{{ type.slug }}" {% if firstTab is not defined %} class="active" {% set firstTab = true %} {% endif %}>
+                            {% if type.view == 0 %}
+                                {{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}
+                            {% else %}
+                                {{ Lang.get('selfservice.type_latest_items', {'type': type.name}) }}
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+            <div class="desk-tabs-content">
+                {% for type in types %}
+                    {% if type.content == 0 and type.show_on_dashboard %}
+                        <div id="tab{{ type.slug }}" class="desk-tab {% if firstContent is defined %} hide {% else %} {% set firstContent = true %} {% endif %}">
+                            {% if type.view == 0 %}
+                                <h2 class="tab-title">{{ Lang.get('selfservice.type_popular_items', {'type': type.name}) }}</h2>
+                            {% else %}
+                                <h2 class="tab-title">{{ Lang.get('selfservice.type_latest_items', {'type': type.name}) }}</h2>
+                            {% endif %}
+                            {% include 'frontend.' ~ template ~ '.selfservice.article_list' with {'articles': type.articles, 'noRssFeed': true} %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
         {% endif %}
 

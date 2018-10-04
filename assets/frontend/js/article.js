@@ -143,9 +143,14 @@ $(document).ready(function() {
             name = $.trim(name.replace(/\s/g, ''));
             $(".add-comment").find('textarea').val('@' + $.trim(name) + ' ').focus();
 
+            // Show reply form if it's not already visible
+            if (! $('.add-comment-form').next().is(':visible')) {
+                $('.add-comment-form').click();
+            }
+
             // Hover to the reply form
             $('html, body').animate({
-                scrollTop: $(".add-comment").offset().top - 68
+                scrollTop: $(".add-comment-form").offset().top - 25
             }, 500);
         })
 

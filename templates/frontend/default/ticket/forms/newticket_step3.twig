@@ -27,14 +27,14 @@
                 {{ form_label('department', Lang.choice('ticket.department', 1)) }}
                 <div class="input-container">
                     {{ form_hidden('department', department.id) }}
-                    <span class="department-name">{{ Purifier.clean(department.name) }}</span>
+                    <span class="department-name">{{ department.frontend_name }}</span>
                 </div>
             </div>
 
             <div class="form-row">
                 {{ form_label('priority', Lang.choice('ticket.priority', 1)) }}
                 <div class="input-container">
-                    {{ form_select('priority', department_priorities) }}
+                    {{ form_select('priority', department_priorities, null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -56,13 +56,9 @@
                 </div>
             </div>
 
-            {% include 'frontend.' ~ template ~ '.forms.customfields' with {'new': true} %}
-
         </div>
 
         <hr />
-
-        <h2>{{ Lang.get('ticket.enter_subject_message') }}</h2>
 
         <div class="fail attachment box hide"></div>
 
@@ -139,6 +135,8 @@
                 </div>
             </div>
 
+            {% include 'frontend.' ~ template ~ '.forms.customfields' with {'new': true} %}
+
         </div>
 
         {% if Config.get('settings.captcha_type') != 0
@@ -168,19 +166,11 @@
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/newticket.js') }}"></script>
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
 
     <!-- Attachments: dependencies = sweet alerts and jquery fileupload -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
@@ -189,11 +179,6 @@
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
     {% if Config.get('settings.captcha_type') != 0
         and (Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1))
