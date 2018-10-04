@@ -2,12 +2,10 @@
     jQuery(document).ready(function(){
 
         /**
-         * Don't ignore hidden elements. Overrides:
-         *  - Fixed #189 - :hidden elements are now ignored by default
-         *    see: http://jquery.bassistance.de/validate/changelog.txt
+         * Ignore hidden fields, except for those listed below.
          */
         $.validator.setDefaults({
-            ignore: []
+            ignore: ':hidden:not(.redactor):not(input[type=hidden])'
         });
 
         /**
@@ -137,8 +135,7 @@
                 }
             },
 
-            // Do not focus the last invalid input.
-            focusInvalid: false,
+            focusInvalid: true,
 
             invalidHandler: function(event, validator) {
                 // Enable submit button again (necessary for invalid remote validation).
@@ -161,7 +158,6 @@
                 $('html, body').animate({
                     scrollTop: $(validator.errorList[0].element).offset().top - 46
                 }, <?php echo Config::get('jsvalidation.duration_animate') ?>);
-                $(validator.errorList[0].element).focus();
 
             },
 
