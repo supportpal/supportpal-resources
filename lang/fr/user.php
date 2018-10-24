@@ -2,10 +2,10 @@
 
 return array(
 
-    "user"                          => "Usager|Usagers",
+    "user"                          => "Utilisateur|Utilisateurs",
     "user_details"                  => "Détails de l'usager",
-    "add_user"                      => "Ajouter usager",
-    "account_active"                => "Compte inactif",
+    "add_user"                      => "Ajouter utilisateur",
+    "account_active"                => "Compte actif",
     "account_active_desc"           => "Activer pour autoriser/empêcher l'accès aux sections qui nécessitent une authentification.",
 
     "operator_settings"             => "Paramètres opérateurs",
@@ -76,7 +76,7 @@ return array(
 
     "firstname"                     => "Prénom",
     "lastname"                      => "Nom de famille",
-    "formatted_name"                => "Formatted Name",
+    "formatted_name"                => "Nom formatté",
     "country"                       => "Pays",
     "avatar"                        => "Avatar",
     "generate_password"             => "Générer mot de passe automatiquement",
@@ -86,12 +86,12 @@ return array(
     "confirmed_desc"                => "Toggle to enable and disable access to authenticated sections.",
     "unconfirmed"                   => "Non confirmé",
 
-    "group"                         => "Groupe d'usager|Groupes d'usagers",
+    "group"                         => "Groupe d'utilisateurs|Groupes d'utilisateurs",
     "group_members"                 => "Membres du groupe",
-    "operator_group"                => "Group opérateur|Groupes opérateurs",
+    "operator_group"                => "Groupe d'opérateurs|Groupes d'opérateurs",
     "add_group"                     => "Ajouter au groupe",
 
-    "customfield"                   => "Champ usager sur mesure|Champs usagers sur mesure",
+    "customfield"                   => "Champ personnalisé utilisateur|Champs personnalisés utilisateurs",
     "customfield_order"             => "Drag the rows to change the order custom fields appear to users.",
 
     "role"                          => "Rôle|Rôles",
@@ -105,7 +105,7 @@ return array(
     "choose_template"               => "Choisir gabarit...",
 
     "ldap_account"                  => "Compte LDAP|Comptes LDAP ",
-    "ldap_operator_desc"            => "Recherche d'un Collaborateur existant, ou en créer un nouveau.",
+    "ldap_operator_desc"            => "Recherche d'un opérateur existant, ou en créer un nouveau.",
     "ldap_server"                   => "Serveur LDAP",
     "ldap_server_desc"              => "Le nom d'hôte du serveur. Alternativement, vous pouvez spécifier la pleine LDAP URI. Par exemple: ldaps: //ldap.server: 1234 / se connecter via SSL au port 1234",
     "ldap_username"                 => "LDAP Nom d'Client",
@@ -207,7 +207,7 @@ return array(
      * 2.0.3
      */
     "taking_a_break"                => "En pause...",
-    "operator_session_expired"      => "Vous avez été inactif pour un moment ou vous vous êtes connecté à partir d'un autre système donc j'ai fait une sieste. Réveillez-moi en vous reconnectant.",
+    "operator_session_expired"      => "Vous avez été inactif pendant un moment ou vous vous êtes connecté à partir d'un autre appareil, donc j'ai fait une sieste. Réveillez-moi en vous reconnectant.",
     "log_back_in"                   => "Se reconnecter",
     "all_users"                     => "Tous les usagesr",
     "all_operators"                 => "Tous les opérateurs",
@@ -228,8 +228,8 @@ return array(
     /*
      * 2.1.0
      */
-    "organisation_customfield"      => "Champ sur mesure organisation|Champs sur mesure organisation",
-    "recent_users"                  => "Usagers récents",
+    "organisation_customfield"      => "Champ personnalisé organisation|Champs personnalisés organisation",
+    "recent_users"                  => "Utilisateurs récents",
     "recent_organisations"          => "Organisations récentes",
     "group_brand_desc"              => "Select which brands the operators in this group will be able to view, create and delete (depending on permissions) tickets and other content.",
     "select_operators"              => "Sélectionner opérateur(s)...",
@@ -278,5 +278,38 @@ return array(
      */
     "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
     "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
+
+  /*
+     * 2.3.1
+     */
+    "social_login"                  => "Social Login",
+    "social_login_provider_desc"    => "Allow users to register and log in using their :provider account.",
+    "social_login_provider_docs"    => "Please check over our documentation for setting up <a href=':link'>:provider Login</a>.",
+    "facebook_app_id"               => "App ID",
+    "facebook_app_secret"           => "App Secret",
+    "facebook_redirect_url"         => "The following URL <strong>must</strong> be entered for the Facebook Login 'Valid OAuth redirect URIs':",
+    "google_client_id"              => "Client ID",
+    "google_client_secret"          => "Client Secret",
+    "google_redirect_url"           => "The following URL <strong>must</strong> be entered for the Google 'Authorized redirect URIs':",
+    "steam_api_key"                 => "API Key",
+    "twitter_consumer_key"          => "Consumer Key",
+    "twitter_consumer_secret"       => "Consumer Secret",
+    "twitter_redirect_url"          => "The following URL <strong>must</strong> be entered for the Twitter Application 'Callback URL':",
+    "login_via"                     => "Authentification avec :provider",
+    "register_with"                 => "Enregistrement avec :provider",
+    "idp"                           => "SSO",
+    "social_linking_login"          => "Please log in to complete linking of your social account.",
+    "social_linking_register"       => "Please fill in the details below to complete registration of your account. Your social account will be automatically linked.",
+    "already_registered"            => "Already registered?",
+    "linked_accounts"               => "Linked Accounts",
+    "unlink_account"                => "Unlink :record Account",
+    "unlink_account_warning"        => "Unlinking the social account will mean it can no longer be used to log in directly to the account.",
+    "failed_login"                  => "Failed Login|Failed Logins",
+    "confirmaton_token_expired"     => "Token has expired, please try to register again.",
+    "confirmaton_token_invalid"     => "Invalid token, please verify details are correct or try to register again.",
+    "unconfirmed_account"           => "Your account is currently unconfirmed, please check your email for a confirmation link to complete your account registration.",
+    "resend_confirmation"           => "<strong><a href=':link'>Click here</a></strong> to be sent a new confirmation email.",
+    "resend_confirmation_sent"      => "A new confirmation email has been queued and will be sent to you shortly.",
+
 
 );
