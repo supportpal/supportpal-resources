@@ -2,22 +2,22 @@
 
 return array(
 
-    "feedback_question"         => "Question à afficher à l'usager.",
-    "open_new"                  => "Poser une question",
+    "feedback_question"         => "Billet à afficher à l'usager.",
+    "open_new"                  => "Ouvrir un billet",
     "select_department"         => "Choisir un département",
-    "select_department_desc"    => "Veuillez choisir le département en lien avec votre question.",
+    "select_department_desc"    => "Veuillez choisir le département en lien avec votre demande.",
     "no_departments"            => "Aucun département trouvé.",
-    "department_user_details"   => "Détails du département et de l'usager",
+    "department_user_details"   => "Informations sur le département et l'utilisateur",
     "enter_your_details"        => "Entrez vos informations",
     "enter_ticket_details"      => "Entrez informations",
     "enter_subject_message"     => "Entrez sujet et message",
     "invalid_user"              => "Assurez-vous d'entrer des données valides avant de poursuivre.",
 
     "registered_users"          => "Usagers enregistrés uniquement",
-    "registered_users_desc"     => "Activer pour n'importer que des questions d'usagers qui détiennent un compte valide dans le portail sécurisé.",
+    "registered_users_desc"     => "Activer pour n'importer que des billets d'usagers qui détiennent un compte valide dans le portail sécurisé.",
 
-    "tickets"                   => "Question(s)",
-    "ticket"                    => "Question|Questions",
+    "tickets"                   => "Billet(s)",
+    "ticket"                    => "Billet|Billets",
     "subject"                   => "Sujet",
     "no_subject"                => "Aucun sujet",
     "last_action"               => "Dernière action",
@@ -25,27 +25,27 @@ return array(
     "created_time"              => "Ajouté à",
     "submitted"                 => "Soumis",
     "add_reply"                 => "Ajouter réponse",
-    "ticket_reply"              => "Réponse à une question",
-    "ticket_note"               => "Note sur une question",
-    "ticket_type"               => "Type de question",
+    "ticket_reply"              => "Répondre à l'utilisateur",
+    "ticket_note"               => "Ajouter une note interne",
+    "ticket_type"               => "Type de billet",
 
-    "user_ticket"               => "Question d'usager",
-    "user_ticket_desc"          => "Poser nouvelle question pour un nouvel usager ou un usager existant.",
-    "existing_user"             => "Usager existant",
-    "new_user"                  => "Nouvel usager",
+    "user_ticket"               => "Billet d'utilisateur",
+    "user_ticket_desc"          => "Ouvre un nouveau billet au nom d'un utilisateur.",
+    "existing_user"             => "Utilisateur existant",
+    "new_user"                  => "Nouvel utilisateur",
     "internal"                  => "Interne",
-    "internal_ticket"           => "Usager interne",
-    "internal_ticket_desc"      => "Ajouter une question pour usage interne seulement. Cette question sera associée à vous et non pas à un usager.",
-    "ticket_opened"             => "Votre question a été ajoutée.",
-    "enter_user_details"        => "Veuillez entrer vos détails ci-desosus, ou vous connecter à votre compte si vous en avez un.",
-    "already_have_account"      => "Vous avez déjà un compte, veuillez vous connecter et ouvrir la question. Veuillez utiliser la fonction 'Mot de passe oublié' au besoin.",
+    "internal_ticket"           => "Billet interne",
+    "internal_ticket_desc"      => "Ouvre un billet pour usage interne seulement. Le billet sera associé à vous et non pas à un utilisateur.",
+    "ticket_opened"             => "Votre billet a été ouvert.",
+    "enter_user_details"        => "Veuillez entrer vos détails ci-dessous ou vous connecter à votre compte si vous en avez un.",
+    "already_have_account"      => "Si vous avez déjà un compte, veuillez vous connecter d'abord et ouvrez ensuite votre billet. Veuillez utiliser la fonction 'Mot de passe oublié' au besoin.",
 
-    "recent_tickets"            => "Questions récentes",
+    "recent_tickets"            => "Billets récents",
     "last_message_text"         => "Dernier message",
 
     "set_due_time"              => "Dû pour",
 
-    "settings"                  => "Paramètres de la question",
+    "settings"                  => "Paramètres du billet",
 
     "priority"                  => "Priorité|Priorités",
 
@@ -66,10 +66,10 @@ return array(
     "due_to_be_sent"            => "Doit être envoyé",
     "send_now"                  => "Envoyer maintenant",
 
-    "tag"                       => "Libellé|Libellés",
+    "tag"                       => "Etiquette|Etiquettes",
 
-    "track_ticket"              => "Suivre question",
-    "view_ticket"               => "Voir question",
+    "track_ticket"              => "Suivre les billets",
+    "view_ticket"               => "Voir le billet",
 
     // Recent activity
     "recent_activity"           => "Activité récente",
@@ -78,19 +78,19 @@ return array(
     // Active operators
     "active_operators"          => "Opérateurs actifs",
 
-    "ticket_number"             => "No de la question",
-    "ticket_format"             => "Format du no de la question",
+    "ticket_number"             => "Numéro du billet",
+    "ticket_format"             => "Format du numéro du billet",
     "ticket_format_desc"        => "Les variables suivantes peuvent être utilisées:<br />%S pour un numéro séquentiel | %N pour un nombre aléatoire | %L pour une lettre aléatoire<br />Utiliser {number} pour répéter <strong>uniquement</strong> après %N ou %L, p.ex. %N{4} équivaut à 4 nombres aléatoires, %L{3} équivaut à 3 lettres aléatoires<br />Voici <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Paramètres préfixées % Y,y,m,d,j,g,G,h,H,i,s",
 
     // Departments
     "department_public_desc"    => "Si le département est visible pour les clients sur le Web Help Desk.",
     "department_parent_desc"    => "Si le département est un sous-département, s'il vous plaît sélectionner un parent. Les rayons auxiliaires sont destinés à l'escalade et la gestion interne, donc la définition de cette supprimera certaines des options ci-dessous.",
-    "department_priority"       => "Priorités de Département",
+    "department_priority"       => "Priorités du département",
     "department_priority_desc"  => "Les priorités qui seront disponibles pour les clients lors de l'ouverture d'un ticket dans ce département, au moins un doit être sélectionné. Par défaut, toutes les priorités seront disponibles dans le département.",
     "department_no_format"      => "En option, uniquement mettre pour remplacer le format de numéro de ticket par défaut, laissez en blanc autrement.",
-    "department_operator"       => "Département du Collaborateur",
-    "department_default_assign" => "Par défaut attribué à",
-    "dept_default_assign_desc"  => "Utilisez cette option si vous souhaitez des tickets qui sont ouverts dans ce département pour être automatiquement affecté à un ou plusieurs opérateurs.",
+    "department_operator"       => "Opérateurs du département",
+    "department_default_assign" => "Assigner à par défaut",
+    "dept_default_assign_desc"  => "Utilisez ceci si vous souhaitez attribuer automatiquement les nouveaux billets à un ou des opérateurs.",
 
     // Department emails
     "email_accounts_desc"       => "Utilisez cette option si vous souhaitez des tickets qui sont ouverts dans ce département pour être automatiquement affecté à un ou plusieurs opérateurs.",
@@ -113,20 +113,20 @@ return array(
 
     // Department email options
     "email_options"             => "Options courriels",
-    "email_auto_close"          => "Envoyer un courriel aux usagers lors de la fermeture d'une question",
+    "email_auto_close"          => "Envoyer un courriel aux utilisateurs lors de la fermeture d'un billet",
     "email_auto_close_desc"     => "Sélectionnez si les clients doivent être envoyées par courriel lorsque les tickets qui leur appartiennent sont automatiquement fermés par le système.",
     "email_closed_by_operator"  => "Email clients lorsque Ticket fermé par l'opérateur",
     "email_closed_by_op_desc"   => "Sélectionnez si les clients doivent être envoyées par courriel lorsque les tickets leur appartenant sont fermés par un opérateur.",
-    "email_user_on_email"       => "Envoyer courriel aux usagers quand une question est posée par courriel",
+    "email_user_on_email"       => "Envoyer courriel aux usagers quand un billet est ouvert par courriel",
     "email_user_on_email_desc"  => "Sélectionnez si les clients doivent être informés par courriel lorsqu'un email ils envoient des résultats dans un nouveau ticket étant ouvert.",
     "email_operators"           => "Notifier opérateurs",
     "email_operators_desc"      => "Indiquez si vous souhaitez transmettre les réponses de l'opérateur à d'autres opérateurs. Vérifie par défaut les opérateurs de messagerie option dans le panneau de commande, et enverra automatiquement un e-mail pour les réponses par courriel par les opérateurs.",
     // Department email templates
-    "new_ticket_reply"          => "Nouvelle réponse à une question",
-    "new_ticket_opened"         => "Nouvelle question ouverte",
-    "reply_to_locked"           => "Réponse à une question bloquée",
+    "new_ticket_reply"          => "Nouvelle réponse à un billet",
+    "new_ticket_opened"         => "Nouveau billet ouvert",
+    "reply_to_locked"           => "Réponse à un billet verrouillé",
     "waiting_for_response"      => "En attente d'une réponse",
-    "ticket_auto_closed"        => "Questions fermées automatiquement",
+    "ticket_auto_closed"        => "Billets fermés automatiquement",
     "closed_by_operator"        => "Fermé par l'opérateur",
 
     // Feedback
@@ -135,7 +135,7 @@ return array(
     "feedback_form_desc"        => "Des formulaires de Feedback sont traitées dans l'ordre où ils apparaissent. Faites glisser les lignes à réorganiser et ajuster la priorité des formulaires de Feedback.",
     "view_feedback_report"      => "Afficher rapport de feedback",
     "view_feedback"             => "Afficher feedback",
-    "ticket_feedback"           => "Feedback sur la question",
+    "ticket_feedback"           => "Feedback sur le billet",
     "feedback_fields_error"     => "Il y avait un problème de la récupération des champs de Feedback.",
     "time_after_resolved"       => "Durée de temps après la résolution",
     "time_after_resolved_desc"  => "Le temps après lequel un ticket est marqué comme résolu que le formulaire de Feedback est envoyé au client.",
@@ -158,14 +158,14 @@ return array(
     "feedback_malformed_token"  => "Vos commentaires ne pouvait être acceptée en raison d'un jeton malformé. S'il vous plaît ouvrir un ticket avec nous si vous souhaitez partager vos commentaires.",
     "feedback_already_done"     => "Vous avez déjà fourni vos commentaires pour ce ticket, je vous remercie.",
     "feedback_expired"          => "Le ticket a été résolu pendant un certain temps, et il ne peut malheureusement plus être classé.",
-    "feedback_questions"        => "Si vous pouviez épargner quelques instants, s'il vous plaît répondre aux questions suivantes pour nous aider à améliorer encore le soutien que nous offrons.",
+    "feedback_questions"        => "Pouvez-vous prendre un court moment pour répondre aux questions suivantes afin d'améliorer l'assistance que nous vous fournissons?",
     "feedback_thank_you"        => "Merci de fournir vos commentaires sur ce ticket.",
     "feedback_for_ticket"       => "Feedback pour Ticket #:number",
     "feedback_rating_desc"      => "Le soutien reçu sur ce ticket a été classé comme <strong>:rating</strong> par le client.",
 
     // Custom fields
-    "customfield"               => "Champ sur mesure de la question|Champ sur mesure de la question",
-    "customfield_order"         => "Faites glisser les lignes à modifier l'ordre des champs personnalisés sont présentés aux clients lors de l'ouverture des tickets via le web.",
+    "customfield"               => "Champ personalisé|Champs personalisés",
+    "customfield_order"         => "Faites glisser les lignes afin de modifier l'ordre des champs personnalisés qui sont présentés aux clients lors de l'ouverture des billets via le web.",
 
     // Canned responses
     "cannedresponse"            => "Réponses pré-enregistrée|Réponses pré-enregistrées",
@@ -185,8 +185,8 @@ return array(
     "macro_type"                => "Type de macro",
     "macro_type_desc"           => "Par défaut, la macro doit être appelée manuellement dans la vue du ticket. Il peut être configuré pour être une macro automatique qui est vérifié et quand de nouveaux tickets actionnées viennent dans ou sur tous les tickets via une tâche planifiée, dans les deux cas les conditions seront vérifiées et si vrai, alors les actions seront réalisées automatiquement. Une macro ne peut fonctionner une fois sur un ticket automatiquement, il n'y a aucune limite pour l'exécuter manuellement.",
     "manual"                    => "Manuel",
-    "macro_type_auto1"          => "Automatique - Sur les nouvelles questions seulement",
-    "macro_type_auto2"          => "Automatique - Sur toutes les questions - (tâches prévues)",
+    "macro_type_auto1"          => "Automatique - Sur les nouveaux billets seulement",
+    "macro_type_auto2"          => "Automatique - Sur tous les billets - (tâches prévues)",
     "macro_condition"           => "Conditions des macros",
     "macro_condition_desc"      => "Définir les conditions pour lesquelles les tickets de cette macro sera disponible pour. Par défaut, sans conditions, il appliquera à tous les tickets.",
     "macro_action"              => "Actions des macros",
@@ -195,23 +195,23 @@ return array(
     "from"                      => "De",
     "to"                        => "À",
     "cc"                        => "CC",
-    "cc_desc"                   => "Vous pouvez CC autres personnes à ce ticket en entrant les adresses e-mail ci-dessus.",
+    "cc_desc"                   => "Vous pouvez CC autres personnes à ce billet en entrant leurs adresses courriels ci-dessus.",
 
-    "allowed_files"             => "Types de fichiers autorisés pour attachement",
+    "allowed_files"             => "Types de fichiers autorisés pour pièces jointes",
 
     // Drafts
-    "also_viewing"              => "<strong>:name</strong> regarde aussi ce ticket.",
+    "also_viewing"              => "<strong>:name</strong> regarde aussi ce billet.",
     "draft_saved"               => "Brouillon enregistré à :time",
     "save_draft"                => "Enregistrer le brouillon",
-    "discard_draft"             => "Projet Supprimer",
+    "discard_draft"             => "Supprimer le billet",
 
     // Locked
-    "error_ticket_locked"       => "Ce ticket a été verrouillé et ne peut pas être mis à jour à nouveau, s'il vous plaît ouvrir un nouveau ticket si vous avez besoin d'aide.",
+    "error_ticket_locked"       => "Ce billet a été verrouillé et ne peut pas être modifié à nouveau, veuillez ouvrir un nouveau billet si vous avez besoin d'assistance supplémentaire.",
 
     // Ticket Followups
-    "follow_up"                 => "Suivre",
-    "follow_up_status_desc"     => "Réglez le ticket pour un statut différent jusqu'à la date de suivi.",
-    "exact_date_time"           => "Date et temps exacte",
+    "follow_up"                 => "Suivi",
+    "follow_up_status_desc"     => "Défini un statut différent jusqu'à la date de suivi.",
+    "exact_date_time"           => "Date et heure exacte",
     "time_from_now"             => "Temps à partir de maintenant",
 
     // Schedule
@@ -220,9 +220,9 @@ return array(
     "business_hour_desc"        => "Heures de travail indiquent le temps que le personnel sont disponibles pour répondre aux requêtes de l'horaire. Les heures sont pris en considération pour le calcul de temps de résolution du ticket.",
 
     // Holidays
-    "holiday"                   => "Vacances|Vacances",
-    "all_holidays"              => "Toutes les vacances",
-    "specific_holidays"         => "Vacances spécifiques",
+    "holiday"                   => "Jour férié|Jours fériés",
+    "all_holidays"              => "Tous les jours fériés",
+    "specific_holidays"         => "Férié spécifique",
     "holiday_or_on_the"         => "ou bien, au ",
     "holiday_month_year_desc"   => "Année est facultative si le jour férié est récurrent. Sélectionnez une année seulement si le jour férié se produit à cette date dans une année donnée.",
 
@@ -249,23 +249,23 @@ return array(
 
     // Reply options
     "reply_options"             => "Options de réponses",
-    "send_email_to_users"       => "Envoyer courriel à/aux usager(s)",
-    "send_email_to_operators"   => "Envoyer courriel à/aux opérateur(s)",
-    "back_to_grid"              => "Retour à la grille des questions",
+    "send_email_to_users"       => "Envoyer courriel à l'utilisateur",
+    "send_email_to_operators"   => "Envoyer courriel aux opérateurs",
+    "back_to_grid"              => "Retour à la grille des billets",
     "take"                      => "Prendre",
     "take_ownership"            => "Prendre propriété",
     "pause_duetime"             => "Pauser l'heure due",
     "add_to_canned_responses"   => "Ajouter aux réponses pré-enregistrées",
     "visible_to_all_operators"  => "Rendre visible à tous les opérateurs",
-    "set_status"                => "Définir statut",
+    "set_status"                => "Modifier le statut",
     "add_selfservice_link"      => "Ajouter lien libre-service",
     "search_selfservice"        => "Recherche d'article libre-service",
     "add_canned_response"       => "Ajouter réponse pré-enregistrée",
     "search_canned"             => "Recherche de réponse pré-enregistrée",
 
-    "mark_resolved"             => "Identifier comme résolu",
+    "mark_resolved"             => "Marquer comme résolu",
 
-    "ticket_signature"          => "Signature question",
+    "ticket_signature"          => "Signature du billet",
 
     "default_open_status"       => "Statut d'ouverture par défaut",
 
@@ -275,11 +275,11 @@ return array(
     "waiting_response_time"      => "En attente de réponse Email",
     "waiting_response_time_desc" => "Le temps après les clients reçoivent un e-mail sur les tickets inactifs, en demandant si ils considèrent le ticket comme résolu. Mettre à 0 pour désactiver cet e-mail. ",
 
-    "close_inactive_tickets"    => "Fermer questions inactives",
-    "close_inactive_tickets_desc" => "Le temps au bout duquel les tickets inactifs sont automatiquement fermés, mis à 0 pour ne jamais fermer automatiquement des tickets.",
+    "close_inactive_tickets"    => "Fermer les billets inactifs",
+    "close_inactive_tickets_desc" => "Le temps au bout duquel les billets inactifs sont automatiquement fermés, mis à 0 pour ne jamais fermer automatiquement des tickets.",
     "close_inactive_status_desc" => "Fermer automatiquement les tickets qui sont devenus inactifs sans suivi du client (défini par le nombre de jours depuis la dernière réponse par un collaborateur dans les paramètres généraux de ticket).",
 
-    "ticket_reply_order"        => "Ordre de réponse des questions",
+    "ticket_reply_order"        => "Ordre de réponse des billets",
     "ticket_reply_order_desc"   => "Sélectionnez l'ordre dans lequel les messages de tickets sont présentés, par ordre croissant, où le dernier message est le dernier ou descendant où le dernier message est le premier.",
 
     "ticket_notes_position"     => "Ticket Position des Remarques",
@@ -305,7 +305,7 @@ return array(
     "default_priority_desc"     => "La priorité par défaut définie pour tous les tickets entrants via ce canal.",
     "verbose_email_log"         => "Tous l'historique Email",
 
-    "adjust_columns"            => "Ajuster colonnes",
+    "adjust_columns"            => "Ajuster les colonnes",
     "last_reply"                => "Dernière réponse",
     "opened_at"                 => "Ouvert à",
 
@@ -318,16 +318,16 @@ return array(
     "no_departments_found"      => "Aucun départements trouvé. Cliquez <a href=':route'>ici</a> pour en créer un.",
     "no_operators_found"        => "Aucun collaborateurs trouvé. Cliquez <a href=':route'>ici</a> pour en créer un.",
     "change_priority"           => "Changer priorité",
-    "add_tag"                   => "Ajouter libellé",
+    "add_tag"                   => "Ajouter une étiquette",
 
-    "unlock"                    => "Débloquer",
+    "unlock"                    => "Déverouiller",
     "merge"                     => "Fusionner",
     "merged"                    => "Fusionné",
     "unmerge"                   => "Défusionner",
-    "close_and_lock"            => "Fermer et bloquer",
-    "delete_and_block"          => "Effacer et bloquer",
+    "close_and_lock"            => "Fermer et verrouiller",
+    "delete_and_block"          => "Supprimer et verrouiller",
 
-    "block_warning"             => "L'email du client sera également bloqué et ne peut plus ouvrir des tickets.",
+    "block_warning"             => "L'adresse courriel de l'utilisateur sera également bloqué et ne pourra plus ouvrir des billets.",
 
     "mass_reply"                => "Réponse de groupe",
 
@@ -348,11 +348,11 @@ return array(
     "web_settings"              => "Paramètres web",
     "split_selected_replies"    => "Séparer les réponses sélectionnées",
 
-    "track_ticket_not_found"    => "Impossible de trouver ticket avec numéro de ticket et adresse e-mail du client indiquée.",
+    "track_ticket_not_found"    => "Aucun billet trouvé correspondant au numéro de billet et l'adresse courriel fournies.",
 
-    "channel_deactivated"       => "Le canal de tickets est actuellement désactivée, une réponse ne peut pas être affichée.",
+    "channel_deactivated"       => "Le canal de billet est actuellement désactivée, une réponse ne peut pas être affichée.",
 
-    "type_in_tags"              => "Entrer libellés",
+    "type_in_tags"              => "Saisir étiquettes",
 
     /*
      * 2.0.1
@@ -384,16 +384,16 @@ return array(
     "message_clipped"           => "[Message attaché]",
     "view_entire_message"       => "Voir message entier",
     "no_custom_fields"          => "Aucun champs personnalisés trouvés. Cliquez <a href=':route'>ici</a> pour en créer un.",
-    "follow_up_active"          => "Un <a class='view-followup' style='text-decoration :underline;'>suivi</a> est actuellement actif sur ce ticket et se déroulera peu après <strong>:time </strong>",
+    "follow_up_active"          => "Un <a class='view-followup' style='text-decoration :underline;'>suivi</a> est actuellement actif sur ce ticket et se déroulera <strong>:time </strong>",
     "disable_user_email_replies" => "Désactiver les réponses du client",
 
     /*
      * 2.1.0
      */
-    "default_ticket_filter"     => "Filtre des questions par défaut",
+    "default_ticket_filter"     => "Filtre des billets par défaut",
     "default_ticket_filter_desc" => "The ticket filter that is used by default when clicking the 'Manage Tickets' link. Can be set to 'None', the default option, which will show all unresolved tickets.",
     "recent_filters"            => "Filtres récents",
-    "inactive_tickets"          => "Questions inactives",
+    "inactive_tickets"          => "Billets inactifs",
     "default_open_status_desc"  => "Select the default status that should be automatically set when a user opens a new ticket or replies to a ticket without an operator response yet.",
     "default_reply_status"      => "Statut par défaut des réponses",
     "default_reply_status_desc" => "Select the default status that should be automatically set when a user replies to a ticket, only applies after an operator has replied to the ticket.",
@@ -405,21 +405,21 @@ return array(
     "department_operator_desc"  => "You may also assign individual operators to the department. These operators will be in addition to any groups assigned above.",
     "department_group"          => "Groupes de départements",
     "department_group_desc"     => "You may assign whole operator groups to the department, recommended if your list of operators is large and/or changes frequently.",
-    "ticket_other_brands"       => "Questions dans les autres marques",
+    "ticket_other_brands"       => "Billets dans les autres marques",
     "add_for_department"        => "Ajouter pour le département...",
     "record_order"              => "Drag the rows to change the order of records.",
-    "ticket_token"              => "Jeton de la question",
+    "ticket_token"              => "Jeton du billet",
     "reply_all"                 => "Répondre à tous",
     "reply_without_cc"          => "Répondre (sans CC)",
-    "open_new_for_user"         => "Ouvrir nouvelle question pour usager",
+    "open_new_for_user"         => "Ouvrir un nouveau billet pour l'utilisateur",
     "email_accounts"            => "Comptes courriel",
     "add_another_email"         => "Ajouter une autre adresse courriel",
-    "follow_up_date"            => "Date de suivu",
+    "follow_up_date"            => "Date du suivi",
     "post_reply"                => "Répondre",
     "post_note"                 => "Ajouter une note",
-    "ticket_details"            => "Détails de la question",
-    "organisation_tickets"      => "Questions de l'organisation",
-    "manage_tickets"            => "Gérer questions",
+    "ticket_details"            => "Détails du billet",
+    "organisation_tickets"      => "Billets de l'organisation",
+    "manage_tickets"            => "Gérer les billets",
     "via_channel"               => "via :channel",
     "department_parent"         => "Département parent",
     "department_brands"         => "Marques du département",
@@ -479,5 +479,71 @@ return array(
     "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
     "run_macro"                 => "Run Macro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
+
+/*
+     * 2.3.0
+     */
+    "registered_users_desc"     => "Toggle to only show the department to logged in users and only accept emails from users actively registered in the help desk. If enabled, a bounce back email will be sent to unregistered users who email this department, to change or disable the email please see the 'Registered Users Only' template option below.",
+    "form_fields_desc"          => "If you'd like to collect additional information when the user provides their feedback, you may set up custom fields to show on the form here. The field type will be locked once the form has been completed by a user.",
+    "feedback_ratings"          => "Customer Satisfaction Ratings (affecting your Customer Satisfaction score)",
+    "email_and_other_accounts"  => "Email and other channel accounts",
+    "delete_message"            => "Supprimer le message",
+    "linked_tickets"            => "Billets liés",
+    "add_linked_ticket"         => "Ajouter un billet lié",
+    "add_linked_ticket_desc"    => "Rechercher par numéro de billet ou par sujet:",
+    "create_linked_ticket"      => "Créer un billet lié",
+    "copy_link"                 => "Copier le lien",
+    "forward_message"           => "Transférer ce message",
+    "forward_from_here"         => "Transférer le billet à partir d'ici",
+    "forward"                   => "Transférer",
+    "forward_options"           => "Options de transfert",
+    "forwarded_to"              => "Transféré à",
+    "new_operator_reply"        => "Nouvelle réponse d'un opérateur",
+    "new_user_reply"            => "Nouvelle réponse d'un utilisateur",
+    "add_bcc"                   => "Ajouter BCC",
+    "at_least_one_recipient"    => "Veuillez spécifier au moins un destinataire",
+    "forwarded_message"         => "---------- Message transféré ----------",
+    
+    /*
+     * 2.3.1
+     */
+    "inactive_ticket_note"      => "Note: only affects tickets belonging to a status with 'Close Inactive Tickets' enabled.",
+    "close_inactive_status_desc" => "Toggle to enable/disable automatic closure of inactive tickets and inactivity email reminders ('Waiting For Response' and 'Ticket Auto Closed' templates). If enabled, the time before reminders are sent can be configured via the ticket general settings.",
+    "from_header_missing"       => "From: header missing from email.",
+    "move_ticket"               => "Déplacer le billet",
+    "move_ticket_step1"         => "Étape 1: choisir une nouvelle marque où déplacer le billet",
+    "move_ticket_step2"         => "Étape 2: choisir un département",
+    "move_ticket_step3"         => "Étape 3: choisir un utilisateur",
+    "current_record"            => "Current :record",
+    "new_record"                => "New :record",
+    "department_email"          => "Department Email",
+    "select_a_department_email" => "Select a department email...",
+    "record_public_desc"        => "Toggle to only let the :record be accessible by yourself.",
+    "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups, leave blank to make visible to all operators.",
+    "ticket_format_desc"        => "Can contain alphanumeric characters and special characters <code>-_.+!*,</code><br />The following variables may also be used: %S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
+
+    /*
+     * 2.4.0
+     */
+    "macro_enabled_desc"        => "Toggle to disable the macro and prevent it from running automatically or showing in the ticket interface.",
+    "macro_order_drag"          => "Drag the rows to change the order of the macros.",
+    "macro_order_processed"     => ":type macros are processed in the order they appear.",
+    "macro_type"                => "Macro Type",
+    "macro_type_desc"           => "There are three types of macros available. Manual macros can only be ran from the ticket view or grid, automatic macros run on non-resolved tickets every hour, and hook macros run on specified ticket events. Automatic and hook macros can also be set to only run within specific schedules. Any hook macro actions won't trigger other hook macros to avoid the risk of loops.",
+    "macro_run_at_most"         => "Run At Most",
+    "macro_run_times"           => "times", // As in '5 times'
+    "macro_run_at_most_desc"    => "Limit how many times an automatic macro can run on a single ticket, leave blank to let it run an unlimited number of times.",
+    "macro_events_desc"         => "Select one or more events that the macro should run on. The conditions set below will be checked before the macro runs.",
+    "macro_schedules_desc"      => "By default the macro will run 24/7, but you can select one or more help desk schedules so the macro is only active during those times.",
+    "macro_condition_desc"      => "Define the conditions for which tickets this macro will be available to. By default, with no conditions, it will apply to all tickets. At least one condition must be defined for automatic macros.",
+    "add_remove_headers"        => "Add/Remove Headers",
+    "webhook_merge_fields"      => "Merge fields can be used in the URL and content field, <a href=\"https://docs.supportpal.com/current/Merge+Fields\">learn more</a>.",
+    "webhook_ticket_required"   => "A ticket must exist for this functionality to work.",
+    "not_permitted"             => "Sorry, you're not permitted to view the requested ticket(s). If you think this has been shown in error, please contact your administrator.",
+    "watch"                     => "S'abonner",
+    "unwatch"                   => "Se désabonner",
+    "watching"                  => "Abonné",
+    "internal_ticket"           => "Billet interne|Billets internes",
+
 
 );

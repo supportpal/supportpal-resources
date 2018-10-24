@@ -11,7 +11,7 @@ return array(
     "article"                   => "Article|Articles",
     "category"                  => "Catégorie|Catégories",
     "comment"                   => "Commentaire|Commentaires",
-    "tag"                       => "Libellé|Libellés",
+    "tag"                       => "Etiquette|Etiquettes",
     "type"                      => "Type|Types",
 
     "type_enabled_desc"         => "La désactivation du type va arrêter l'affichage dans le frontend.",

@@ -62,7 +62,7 @@ return array(
     "ticket_deleted"                    => "Ticket supprimé ':old_value' (#:rel).",
 
     "ticket_followup_set"               => "Un suivi a été mis en place sur le ticket #:rel.",
-    "ticket_followup_updated"           => "Le suivi sur le ticket #:rel a été mis à jour.",
+    "ticket_followup_updated"           => "Le suivi sur le ticket #:rel a été modifié.",
     "ticket_followup_deleted"           => "Le suivi sur le ticket #:rel a été supprimé.",
 
     "ticket_message_reply"              => "Nouvelle réponse posté sur ticket #:rel.",

@@ -63,7 +63,7 @@ return array(
     "reportdashboard"   => "Voir panneau de contrôle",
 
     // General
-    "tag"               => "Gérer libellés",
+    "tag"               => "Gérer les étiquettes",
 
     /*
      * 2.0.2
