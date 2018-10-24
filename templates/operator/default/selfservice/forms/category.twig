@@ -33,6 +33,55 @@
         {{ form_open({ 'route': [ 'selfservice.operator.category.store' ], 'class': 'validate' }) }}
     {% endif %}
 
+        <div id="sectionWrapper">
+    
+            <h2>{{ Lang.get('general.name') }}</h2>
+    
+            {# Required by multidimensionaldata.js #}
+            <div class="tabContent">
+    
+                {# Hidden option for multidimensionaldata.js #}
+                {% include 'operator.' ~ template ~ '.selfservice.forms.name_translation' with { 'hide': true } %}
+    
+                <div class="section-items">
+                    {# Default #}
+                    <div class="form-container first open">
+                        {%
+                            include 'operator.' ~ template ~ '.selfservice.forms.name_translation_rows'
+                            with {
+                            'elements': {
+                                'name': { 'name': 'name', 'value': record.getOriginal('name'), 'attributes': {'autofocus': 'autofocus'} },
+                                'slug': { 'name': 'slug', 'value': record.getOriginal('slug') },
+                            }
+                        }
+                        %}
+                    </div>
+    
+                    {# Existing Translations #}
+                    {% for locale, translation in translations %}
+                        {% include 'operator.' ~ template ~ '.selfservice.forms.name_translation' %}
+                    {% endfor %}
+                </div>
+    
+                <div class="form-container open {% if not availableLanguages|length %}hide{% endif %}">
+                    <div class="form-row small-selectize">
+                        <div class="input-container">
+                            <select name="languages" title="{{ Lang.get('core.add_another_language') }}" class="add-item-selectize">
+                                <option></option>
+                                {% for code, name in availableLanguages %}
+                                    <option value="{{ code }}">{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+    
+        </div>
+
+        <h2>{{ Lang.get('customfield.options') }}</h2>
+
         <div class="form-container first open">
 
             <div class="form-row small-selectize">
@@ -44,21 +93,16 @@
                             {% if auth_user().isAssignedToBrand(brand.id) %}
                                 <optgroup label="{{ brand.name }}">
                                     {% for brand_type in brand.types %}
-                                        <option value="{{ brand_type.id }}" {% if brand_type.id == record.type_id %}selected="selected"{% endif %}>
-                                            {{ brand_type.name }}
-                                        </option>
+                                        {% if brand_type.content == 0 %}
+                                            <option value="{{ brand_type.id }}" {% if brand_type.id == record.type_id %}selected="selected"{% endif %}>
+                                                {{ brand_type.name }}
+                                            </option>
+                                        {% endif %}
                                     {% endfor %}
                                 </optgroup>
                             {% endif %}
                         {% endfor %}
                     </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                {{ form_label('text', Lang.get('general.name')) }}
-                <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
                 </div>
             </div>
 
@@ -96,15 +140,47 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <!-- selfserviceslug.js dependencies: Sweetalert2, donetyping -->
+    <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selfserviceslug.js') }}"></script>
+
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
 
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
+
+    <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script type="text/javascript">
+        // List of valid translatable attributes.
+        var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
+
+        // Custom attribute mapper for multidimensionaldata.js
+        attributeMapper = function(elem, value, attribute) {
+            var attr = elem.attr(attribute);
+            if (typeof attr !== 'undefined') {
+                elem.attr(attribute, translatableAttributes[value][attr.replace(':default', '')]);
+            }
+        };
+    </script>
     
     <script type="text/javascript">
         $(document).ready(function() {
+            // Initialise the slug generator.
+            new SupportPalSlugGenerator({
+                route: {
+                    url: '{{ route('selfservice.operator.category.slug') }}',
+                    parameters: function ($slug) {
+                        var typeId = $slug.parents('form').find('select[name="type_id"]').val();
+                        var locale = $slug.parents('.form-container').find('input[name="locale"][type="hidden"]').val();
+                        if (typeof locale === 'undefined') {
+                            locale = null;
+                        }
+
+                        return { category: '{{ record.id }}', type: typeId, locale: locale };
+                    }
+                }
+            });
+
             /**
              * AJAX instance for type dropdown.
              */

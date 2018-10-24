@@ -1,4 +1,5 @@
 <div class="option translatable small-translatable {% if hide|default is not empty %}hide{% endif %}">
+    <i class="fa fa-bars fa-lg handle" aria-hidden="true"></i> &nbsp;
     {{ form_hidden('options[' ~ (option is defined ? option.id : '') ~ '][id]',
         (option is defined ? option.id : null))
     }}

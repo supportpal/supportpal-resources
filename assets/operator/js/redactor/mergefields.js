@@ -30,6 +30,13 @@
         var show_organisations = false;
 
         /**
+         * Whether to show canned response merge field.
+         *
+         * @type {boolean}
+         */
+        var show_canned_responses = false;
+
+        /**
          * Ticket merge fields template.
          *
          * @returns {string}
@@ -39,7 +46,7 @@
             return String()
                 + '<div class="item item50">'
                 + '<strong class="title">' + Lang.choice('ticket.ticket', 2) + '</strong>'
-                + "<table>"
+                + '<table>'
                     + '<tr>'
                         + '<td colspan="2"><strong>' + Lang.get('operator.strings') + '</strong></td>'
                     + '</tr>'
@@ -105,7 +112,7 @@
                     + '</tr>'
                     + '<tr>'
                         + '<td>' + Lang.choice('ticket.ticket', 1) + ' ' + Lang.get('ticket.last_message_text') + '</td>'
-                        + '<td><button class="as-link">{{ ticket.lastReply.text }}</button></td>'
+                        + '<td><button class="as-link">{{ ticket.lastReply.purified_text|raw }}</button></td>'
                     + '</tr>'
                     + '<tr>'
                         + '<td>' + Lang.choice('ticket.ticket', 1) + ' ' + Lang.get('operator.frontend_url') + '</td>'
@@ -130,6 +137,17 @@
                         + '<td>' + Lang.choice('ticket.customfield', 2) + '</td>'
                         + '<td><button class="as-link">{{ ticket.customfields }}</button></td>'
                     + '</tr>'
+                    + (! show_canned_responses ? '' :
+                        '<tr>'
+                            + '<td colspan="2"><br /></td>'
+                        + '</tr>'
+                        + '<tr>'
+                            + '<td><strong class="title">' + Lang.choice('ticket.cannedresponse', 2) + '</strong></td>'
+                            + '<td><button class="as-link">{{ canned_response.[hash]|raw }}</button></td>'
+                        + '</tr>'
+                        + '<tr>'
+                            + '<td colspan="2"><span class="description">' + Lang.get('operator.merge_field_canned_desc') + '</span></td>'
+                        + '</tr>')
                 + '</table>'
                 + '</div>';
         };
@@ -169,10 +187,10 @@
                         + '<td><button class="as-link">{{ user.email }}</button></td>'
                     + '</tr>'
                     + (! show_organisations ? '' :
-                      '<tr>'
-                        + '<td>' + Lang.choice('user.user', 1) + ' ' + Lang.choice('user.organisation', 1) + ' ' + Lang.get('general.name') + '</td>'
-                        + '<td><button class="as-link">{{ user.organisation.name }}</button></td>'
-                    + '</tr>')
+                        '<tr>'
+                            + '<td>' + Lang.choice('user.user', 1) + ' ' + Lang.choice('user.organisation', 1) + ' ' + Lang.get('general.name') + '</td>'
+                            + '<td><button class="as-link">{{ user.organisation.name }}</button></td>'
+                        + '</tr>')
                     + '<tr>'
                         + '<td>' + Lang.choice('user.user', 1) + ' ' + Lang.get('user.confirmed') + '</td>'
                         + '<td><button class="as-link">{{ user.confirmed }}</button></td>'
@@ -243,6 +261,8 @@
                 // Load plugin config.
                 show_tickets = this.opts.mergeFields.tickets || false;
                 show_organisations = this.opts.mergeFields.organisations || false;
+                show_canned_responses = typeof this.opts.mergeFields.canned_responses !== 'undefined'
+                    ? this.opts.mergeFields.canned_responses : true;
 
                 // Force config options.
                 this.opts.sourceCallback = function () {

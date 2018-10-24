@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-row {% if Config.get('settings.captcha_type') == 0 %}hide{% endif %}">
                 {{ form_label('comment_captcha', Lang.get('selfservice.show_captcha')) }}
                 <div class="input-container">
                     {{ form_select('comment_captcha', { 0: Lang.get('general.never'), 1: Lang.get('selfservice.unregistered_users'), 2: Lang.get('general.always') }) }}<br />

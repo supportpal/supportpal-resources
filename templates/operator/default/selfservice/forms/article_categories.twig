@@ -1,6 +1,8 @@
 <div class="category form-container open {% if loop.first %}first{% endif %} {% if hide|default is not empty %} hide {% endif %}">
 
-    {{ form_hidden('category[' ~ (i is defined ? i : '') ~ '][id]', record_type|default is not empty ? record_type.id : '') }}
+    {% set id = record_type|default is not empty ? record_type.id : '' %}
+    {% set attributes = hide|default is not empty ? { 'disabled': 'disabled' } : {} %}
+    {{ form_hidden('category[' ~ (i is defined ? i : '') ~ '][id]', id, attributes) }}
 
     <div class="form-row small-selectize">
         {{ form_label('category[' ~ (i is defined ? i : '') ~ '][type]', Lang.choice('selfservice.type', 1)) }}
@@ -12,15 +14,17 @@
                 {% for brand in assignedBrands %}
                 <optgroup label="{{ brand.name }}">
                     {% for brand_type in brand.types %}
-                        {% if brand_type.id == record_type.id or (not record.exists and type.id == brand_type.id) %}
-                            {% set selected = true %}
-                        {% else %}
-                            {% set selected = false %}
-                        {% endif %}
+                        {% if brand_type.content == 0 %}
+                            {% if brand_type.id == record_type.id or (not record.exists and type.id == brand_type.id) %}
+                                {% set selected = true %}
+                            {% else %}
+                                {% set selected = false %}
+                            {% endif %}
 
-                        <option value="{{ brand_type.id }}" {% if selected %}selected="selected"{% endif %}>
-                            {{ brand_type.name }}
-                        </option>
+                            <option value="{{ brand_type.id }}" {% if selected %}selected="selected"{% endif %}>
+                                {{ brand_type.name }}
+                            </option>
+                        {% endif %}
                     {% endfor %}
                 </optgroup>
                 {% endfor %}
@@ -60,7 +64,8 @@
         <div class="form-row type-url">
             <label>{{ Lang.get('general.url') }}</label>
             <div class="input-container">
-                <a href="{{ record.frontendUrl(record_type, true) }}" target="_blank">{{ urldecode(record.frontendUrl(record_type, true)) }}</a>
+                {% set url = record.url(record_type, true) %}
+                <a href="{{ url }}" target="_blank">{{ urldecode(url) }}</a>
             </div>
         </div>
     {% endif %}

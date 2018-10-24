@@ -1,9 +1,13 @@
+    {{ View.fireHook('frontend.content_end') }}
+
 </div>
 
 <div id="desk_sidebar" class="right">
+    {{ View.fireHook('frontend.sidebar_start') }}
+
     {% if auth_check() %}
         <div class="desk_box account">
-            <img class="avatar left" src="data:image/jpeg;base64, {{ auth_user().avatar }}" />
+            <img class="avatar left" src="{{ auth_user().avatar_url }}" />
                     <span class="name">
                         <strong>{{ auth_user().formatted_name }}</strong>
                     </span>
@@ -28,7 +32,7 @@
 
                 {% if SamlAuth.exists('frontend') and not SamlAuth.guard('frontend').isDualLogin() %}
                     <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
-                           value="{{ Lang.get('user.login_via_idp') }}" />
+                           value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
                 {% else %}
                     {{ form_open({ 'route': 'user.login', 'method': 'post' }) }}
 
@@ -51,14 +55,32 @@
                             <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
                         {% endif %}
 
-
                         {% if SamlAuth.exists('frontend') %}
                             <div class="strike">
                                 <span>{{ Lang.get('general.or') }}</span>
                             </div>
                             <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
-                                   value="{{ Lang.get('user.login_via_idp') }}" />
+                                   value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
                         {% endif %}
+
+                        {% if not socialite_providers.isEmpty() %}
+                            <div class="strike">
+                                <span>{{ Lang.get('general.or') }}</span>
+                            </div>
+                            {{ Lang.get('user.login_via', {'provider': ''}) }}
+                            {% for provider, metadata in all_providers %}
+                                {% if socialite_providers.contains('name', provider) %}
+                                    &nbsp;
+                                    <a href="{{ route('user.oauth_redirect', {'provider': provider}) }}" class="social-login round-button" style="background: {{ metadata.colour }};">
+                                        <span class="icon">
+                                            <i class="fa fa-{{ provider }} fa-fw"></i>
+                                        </span>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+
                     </div>
 
                     {{ form_close() }}
@@ -82,6 +104,8 @@
         {% endif %}
 
     {% endblock %}
+
+    {{ View.fireHook('frontend.sidebar_end') }}
 </div>
 
 <div class="clear"></div>

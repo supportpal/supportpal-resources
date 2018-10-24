@@ -314,7 +314,6 @@ return array(
     "log"                       => "Log|Logs",
     "invalid_department_brand"  => "Department is not assigned to ticket brand.",
     "incoming_rejected"         => "Incoming (Rejected)",
-    "twig_operator_signature"   => "The {{ operator.signature }} merge field will be processed at runtime hence the preview may be incorrect.",
 
     /*
      * 2.1.1
@@ -326,7 +325,6 @@ return array(
     "email_logs"                => "Email Logs",
     "email_logs_desc"           => "Details about incoming emails are stored in these files when they are being parsed and imported as tickets.",
     "query_logs"                => "SQL Query Logs",
-    "query_logs_desc"           => "These logs contain all MySQL queries that are run when utilising the help desk and are only stored when debug mode is enabled.",
 
     /*
      * 2.1.2
@@ -405,5 +403,13 @@ return array(
     "record_permanent_delete"   => "The records will be permanently deleted. This will impact reports.",
     "record_delete_relations"   => "The records will be permanently deleted along with the following related data: :relations. This will impact reports.",
     "manually_prune"            => "Manually delete records created before",
+
+    /*
+     * 2.4.0
+     */
+    "enable_ssl_warning"        => "If you enable this setting when the page doesn't load correctly, you may be locked out of SupportPal!",
+    "verify_frontend_loads"     => "Please verify that the frontend loads correctly below.",
+    "query_logs_desc"           => "These logs contain all MySQL queries that are run when utilising the help desk. The logs are only stored when debug mode is manually enabled in the app configuration file.",
+    "twig_operator_signature"   => "The {{ operator.signature|raw }} merge field will be processed at runtime hence the preview may be incorrect.",
 
 );

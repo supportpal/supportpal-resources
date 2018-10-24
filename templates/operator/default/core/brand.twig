@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice('core.brand', 2) }}
 {% endblock %}
@@ -50,7 +46,7 @@
     <br />
 
     <div class="note box">
-        {{ Lang.choice('core.brand_limit_allowed', allowedBrands, {'allowed': allowedBrands}) }}
+        {{ Lang.choice('core.brand_limit_allowed', allowedBrands > 1 ? 2 : 1, {'allowed': allowedBrands}) }}
         {% if activeBrands >= allowedBrands %}
             {{ Lang.get('core.brand_limit_purchase', {'id': serviceId, 'route': route('core.operator.about')})|raw }}
         {% endif %}
@@ -59,16 +55,9 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
     <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $(document.body).on('delete-successful', '.delete-confirm', function() {
@@ -80,8 +69,8 @@
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 1, column_data_type: "text", filter_container_id: "filter_enabled"},
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
+                {column_number : 1, column_data_type: "text", filter_container_id: "filter_enabled", filter_delay: 500},
             ]);
         });
     </script>

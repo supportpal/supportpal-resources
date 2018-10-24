@@ -11,7 +11,7 @@ $(document).ready(function() {
 
         // Make call
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -47,7 +47,7 @@ $(document).ready(function() {
         var $this = $(this);
         $this.prop('disabled', 'disabled');
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -87,7 +87,7 @@ $(document).ready(function() {
         var $this = $(this);
         $this.prop('disabled', 'disabled');
         $.get(
-            laroute.route('selfservice.comment'),
+            typeof commentRoute !== 'undefined' ? commentRoute : laroute.route('selfservice.comment'),
             {
                 "articleId": articleId,
                 "typeId": typeId,
@@ -143,9 +143,14 @@ $(document).ready(function() {
             name = $.trim(name.replace(/\s/g, ''));
             $(".add-comment").find('textarea').val('@' + $.trim(name) + ' ').focus();
 
+            // Show reply form if it's not already visible
+            if (! $('.add-comment-form').next().is(':visible')) {
+                $('.add-comment-form').click();
+            }
+
             // Hover to the reply form
             $('html, body').animate({
-                scrollTop: $(".add-comment").offset().top - 68
+                scrollTop: $(".add-comment-form").offset().top - 25
             }, 500);
         })
 
@@ -191,7 +196,6 @@ $(document).ready(function() {
         // Clear textarea
         $(".add-comment").find('textarea').val('');
     });
-
 
     // Handles the rating of an article
     $('a.rate-article').on('click', function() {

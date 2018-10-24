@@ -4,7 +4,6 @@
 
 .ticket-options {
     line-height: 41px;
-    position: relative;
 }
 
 .ticket-options .processing {
@@ -38,29 +37,29 @@ table.dataTable tbody tr.ticket-viewed.selected td {
 
 /* Ticket View */
 
-#main h1.ticket-subject {
-    line-height: 34px;
+span.subject {
+    display: inline-block;
+    padding: 3px 0;
 }
 
 span.subject:hover {
     border: 1px solid #ddd;
-    cursor: pointer;
-    margin-bottom: -12px;
-    padding: 2px 9px;
+    padding: 2px 42px 2px 9px;
+    position: relative;
 }
 
-span.subject:hover:after {
+span.subject:hover:before {
     background: #F6F8F8;
-    border: 1px solid #ddd;
-    border-left-color: #eee;
+    border-left: 1px solid #eee;
     content: "\f040";
+    cursor: pointer;
     display: inline-block;
     font-family: 'FontAwesome';
     font-size: 14px;
-    padding: 1px 6px 2px;
-    margin-left: 9px;
-    margin-top: -3px;
+    margin-top: -2px;
+    padding: 2px 9px;
     position: absolute;
+    right: 0;
 }
 
 .message {
@@ -71,6 +70,10 @@ span.subject:hover:after {
 
 .message:first-child {
     padding-top: 0;
+}
+
+.message:last-child {
+    min-height: 230px;
 }
 
 .message .header {
@@ -162,12 +165,17 @@ span.subject:hover:after {
     width: 20px;
 }
 
+.message.forward {
+    background: #ece2f9;
+    border-left: 2px solid #c293e6;
+}
+
 .message div.expandable:hover:before {
     background-color: #d8d8d8;
     cursor: pointer;
 }
 
-div.supportpal_quote {
+.message div.expandable + div.supportpal_quote {
     display: none;
     color: #500050;
 }
@@ -246,6 +254,12 @@ div.collapsed-messages span {
     color: #333;
 }
 
+.reply-type .option[data-type='2'].active {
+    background: #8e44ad;
+    border: 1px solid #8e44ad;
+    color: #fff;
+}
+
 .reply-type .option.active:after {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
@@ -280,15 +294,11 @@ div.collapsed-messages span {
     font-weight: normal;
     padding-left: 10px;
     text-align: left;
-    width: 52px;
+    width: 60px;
 }
 
-.recipients.with-cc.form-row label {
-    padding-left: 63px;
-}
-
-.recipients.form-row .input-container {
-    margin-left: 55px;
+.recipients.with-cc.form-row label, .recipients.form-row .input-container {
+    margin-left: 63px;
 }
 
 .recipients.with-cc.form-row .input-container {
@@ -307,12 +317,22 @@ div.collapsed-messages span {
     display: none;
 }
 
-.recipients .add-cc {
+.recipients .add-cc, .recipients .add-bcc {
     color: #777;
     margin-right: 10px;
 }
 
-.recipients .selectize-control .selectize-input, .recipients .selectize-control .selectize-input.has-items {
+.forward-form .recipients .add-cc, .forward-form .recipients .add-bcc {
+    float: right;
+    position: relative;
+    z-index: 10;
+}
+
+.recipients input[type="text"] {
+    font-size: 100%;
+}
+
+.recipients input[type="text"], .recipients .selectize-control .selectize-input, .recipients .selectize-control .selectize-input.has-items {
     border: 0 !important;
     padding: 1px 0 !important;
 }
@@ -328,64 +348,6 @@ div.collapsed-messages span {
     padding: 10px;
     position: absolute;
     z-index: 5;
-}
-
-.recipients .reply-all div.button {
-    background: #eee;
-    border: 1px solid #e0e0e0;
-    cursor: pointer;
-    line-height: 28px;
-    padding: 0 7px;
-}
-
-.recipients .reply-all div.button:hover {
-    background: #e5e5e5;
-}
-
-.recipients .reply-all div.button span.icon {
-    display: inline-block;
-}
-
-.recipients .reply-all div.button span.pointer {
-    float: right;
-    margin: -3px 0 0 5px;
-}
-
-.recipients .reply-all div.button span.pointer .fa {
-    color: #999;
-    font-size: 8px;
-}
-
-.recipients .reply-all div.dropdown {
-    position: absolute;
-    z-index: 5;
-}
-
-.recipients .reply-all div.dropdown ul {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    -moz-box-shadow: 1px 1px 1px #eee;
-    -webkit-box-shadow: 1px 1px 1px #eee;
-    box-shadow: 1px 1px 1px #eee;
-    list-style: none;
-    margin: 2px 0 0;
-    padding: 0;
-    width: 170px;
-}
-
-.recipients .reply-all div.dropdown ul li {
-    color: #666;
-    cursor: pointer;
-    padding: 0 8px;
-}
-
-.recipients .reply-all div.dropdown ul li:hover {
-    color: #333;
-}
-.recipients .reply-all div.dropdown ul li.selected,
-.recipients .reply-all div.dropdown ul li.selected:hover {
-    color: #333;
-    background: #eee;
 }
 
 .email-details.form-row {
@@ -407,6 +369,10 @@ div.collapsed-messages span {
 .email-details.form-row .input-container,
 .email-details.form-row .input-container::first-line {
     line-height: 24px;
+}
+
+.message .email-details {
+    display: none;
 }
 
 .text .recipients {
@@ -446,9 +412,116 @@ div.collapsed-messages span {
 }
 
 .attachments ul li {
-    background: #E9F3F9;
-    margin-top: 1px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    display: inline-block;
+    margin-right: 5px;
+    position: relative;
+    width: 200px;
+}
+
+.attachments ul li a {
+    display: block;
+    text-decoration: none;
+}
+
+.attachments ul li a:hover {
+    color: #333;
+}
+
+.attachments ul li div.deleteAttachment {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-top: 0;
+    border-right: 0;
+    float: right;
+    line-height: 1em;
+    margin: 0;
+    padding: 4px 2px;
+    position: absolute;
+    right: 0;
+    z-index: 90;
+}
+
+.attachments ul li div.deleteAttachment:hover {
+    background: #eee;
+}
+
+.attachments ul li .deleteAttachment .fa {
+    color: #777;
+}
+
+.attachments ul li .deleteAttachment:hover .fa {
+    color: #333;
+}
+
+.attachments ul li .preview {
+    height: 88px;
+    line-height: 88px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.attachments ul li .preview .fiv-viv {
+    font-size: 64px;
+    padding: 12px;
+}
+
+.attachments ul li .name {
+    background: #f5f5f5;
+    border-top: 1px solid #eee;
     padding: 4px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachments ul li .name .underline {
+    text-decoration: underline;
+}
+
+.attachments ul li .preview-hover {
+    background: #454545;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    height: 100%;
+    line-height: 1.2em;
+    padding: 12px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.attachments ul li .preview-hover .fiv-viv {
+    font-size: 20px;
+}
+
+.attachments ul li .preview-hover .attachment-details {
+    margin-left: 10px;
+    max-width: 142px;
+}
+
+.attachments ul li .preview-hover .hover-name {
+    display: block;
+    max-height: 46px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.attachments ul li .preview-hover .description {
+    color: #999;
+}
+
+.attachments ul li a:hover .preview-hover {
+    display: block;
+}
+
+#main .attachments ul li a:hover .preview-hover .fa {
+    color: #fff;
+}
+
+.attachments ul li a:hover .preview:not(.hover) {
+    opacity: 0.5;
 }
 
 .messages-button-group {
@@ -461,18 +534,6 @@ div.collapsed-messages span {
     width: 269px;
     z-index: 500;
     word-wrap: break-word;
-}
-
-.ticket-viewing.box {
-    border-bottom: 1px solid #DFE5E6;
-    margin-bottom: 0;
-    position: fixed;
-    width: 100%;
-    z-index: 60;
-}
-
-.ticket-viewing[style*="display: block"] + .desk_content_padding {
-    margin-top: 47px;
 }
 
 .reply-form {
@@ -493,15 +554,167 @@ div.collapsed-messages span {
     word-wrap: break-word;
 }
 
-.jump-to-reply {
-    bottom: 0;
-    position: fixed;
+.quoteMessage .fa {
+    color: #777;
+}
+
+.quoteMessage:hover .fa {
+    color: #333;
+}
+
+.message-actions.dropdown-container div.dropdown {
     right: 25px;
+}
+
+.message-actions.dropdown-container ul button,
+.message-actions.dropdown-container div.dropdown ul li a {
+    display: block;
+    text-decoration: none;
+}
+
+.message-actions.dropdown-container div.dropdown ul li {
+    padding: 2px 10px;
+}
+
+.message-actions.dropdown-container div.dropdown ul li:hover {
+    background: #f5f5f5;
+}
+
+.quick-actions, .ticket-viewing {
+    border-bottom: 1px solid #eee;
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 50px;
+    z-index: 98;
+}
+
+.quick-actions {
+    background: #fff;
+}
+
+.quick-actions, .ticket-viewing.box {
+    margin-bottom: 0;
+    padding: 10px 25px;
+}
+
+.ticket-viewing:not([style*="display: none"]) + .quick-actions {
+    top: 93px;
+}
+
+#sidebar .linked-tickets a {
+    text-decoration: underline;
+}
+
+#sidebar .linked-tickets a.unlink {
+    position: relative;
     z-index: 100;
 }
 
-.jump-to-reply button {
+.add-link-form input[name="linked_search"], .add-link-form .results {
+    width: 90%;
+}
+
+.add-link-form .results {
+    border: 1px solid #eee;
+    border-top: 0;
+    list-style: none;
+    margin: auto;
+    max-height: 180px;
+    padding: 0;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.add-link-form .results li {
+    border-bottom: 1px solid #eee;
+    font-size: 90%;
+    line-height: 1em;
+    padding: 6px 10px 3px;
+}
+
+.add-link-form .results li:last-child {
     border-bottom: 0;
+}
+
+.add-link-form .results li:not(.no-results):hover {
+    background: #F3F5F5;
+    cursor: pointer;
+}
+
+/*
+ * Dropdown (Reply all/message actions)
+ */
+
+.dropdown-container div.main-action,
+.dropdown-container div.button {
+    background: #eee;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 28px;
+    padding: 0 7px;
+}
+
+.dropdown-container div.main-action {
+    padding: 0 10px;
+}
+
+.dropdown-container div.main-action:hover,
+.dropdown-container div.button:hover {
+    background: #e5e5e5;
+}
+
+.dropdown-container div.button span.icon {
+    display: inline-block;
+}
+
+.dropdown-container div.button span.pointer {
+    float: right;
+    margin: -3px 0 0 5px;
+}
+
+.dropdown-container div.main-action + div.button span.pointer {
+    margin: -3px 0 0 0;
+}
+
+.dropdown-container div.button span.pointer .fa {
+    color: #999;
+    font-size: 8px;
+}
+
+.dropdown-container div.dropdown {
+    position: absolute;
+    z-index: 5;
+}
+
+.dropdown-container div.dropdown ul {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    -moz-box-shadow: 1px 1px 1px #eee;
+    -webkit-box-shadow: 1px 1px 1px #eee;
+    box-shadow: 1px 1px 1px #eee;
+    list-style: none;
+    margin: 1px 0 0;
+    padding: 0;
+    min-width: 170px;
+}
+
+.dropdown-container div.dropdown ul li {
+    color: #666;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+.dropdown-container div.dropdown ul li:hover {
+    color: #333;
+}
+.dropdown-container div.dropdown ul li.selected,
+.dropdown-container div.dropdown ul li.selected:hover {
+    color: #333;
+    background: #eee;
 }
 
 /*
@@ -648,4 +861,26 @@ table.ticket-details .create-new-user .fa {
 
 .message-block .message:first-child {
     padding: 0;
+}
+
+/* lightGallery */
+
+body.lg-on {
+    overflow: hidden;
+}
+
+.lg-backdrop, .lg-toolbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.lg-actions .lg-next, .lg-actions .lg-prev {
+    background: rgba(0,0,0,.45);
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    padding-top: 5px !important;
+}
+
+.lg-video-object {
+    background: #111;
 }

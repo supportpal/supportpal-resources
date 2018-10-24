@@ -9,20 +9,60 @@
 
 {% block content %}
 
-    <h2>{{ Lang.get('ticket.select_department') }}</h2>
-    <p class="light">{{ Lang.get('ticket.select_department_desc') }}</p>
+    {{ form_open({ 'route': [ 'ticket.frontend.ticket.storeStep1' ], 'class': 'validate' }) }}
 
-    <div class="form-container open first">
+    <h2>{{ Lang.get('ticket.enter_your_details') }}</h2>
 
-        {% for department in departments %}
-            <a class="department" href="{{ route('ticket.frontend.ticket.createStep2', [ department.id ]) }}">
-                <h4>{{ Purifier.clean(department.name) }}</h4>
-                <p>{{ department.description }}</p>
-            </a>
-        {% else %}
-            {{ Lang.get('ticket.no_departments') }}
-        {% endfor %}
+    <p class="light">{{ Lang.get('ticket.enter_user_details') }}</p>
+
+    <div class="form-container first">
+        
+        {% set email = Input.old('email') %}
+        {% if email %}
+        <div class="form-row">
+            {{ form_label('firstname', Lang.get('user.firstname')) }}
+            <div class="input-container">
+                {{ form_text('firstname', null, { 'autofocus': 'autofocus' }) }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            {{ form_label('lastname', Lang.get('user.lastname')) }}
+            <div class="input-container">
+                {{ form_text('lastname') }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-row">
+            {{ form_label('email', Lang.get('general.email')) }}
+            <div class="input-container">
+                {{ form_email('email', email, (email ? {} : { 'autofocus': 'autofocus' })) }}
+            </div>
+        </div>
+
+        {% if email and Config.get('settings.organisations_enabled') %}
+            <div class="form-row">
+                {{ form_label('organisation', Lang.choice('user.organisation', 1)) }}
+                <div class="input-container">
+                    {{ form_text('organisation') }} &nbsp;
+                    <span class="description">({{ Lang.get('general.optional') }})</span>
+                </div>
+            </div>
+        {% endif %}
 
     </div>
 
+    <div class="form-button">
+        {{ form_submit(Lang.choice('general.submit', 1)) }}
+    </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
 {% endblock %}

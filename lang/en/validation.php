@@ -98,14 +98,14 @@ return array(
     "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
     "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
     "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
-    
+
     /*
      * 2.3.0
      */
     "required_translation"      => "The :translation translation for the :attribute field is required.",
     "customfield_not_cyclic"    => "The field cannot depend on one of it's children.",
     "distinct"                  => "The :attribute field has a duplicate value.",
-    
+
     /*
      * 2.3.1
      */
@@ -119,6 +119,51 @@ return array(
     "ticket_number_format"      => "The ticket number format is invalid.",
 
     /*
+     * 2.4.0
+     */
+    "after_or_equal"            => "The :attribute must be a date after or equal to :date.",
+    "before_or_equal"           => "The :attribute must be a date before or equal to :date.",
+    "dimensions"                => "The :attribute has invalid image dimensions.",
+    "distinct"                  => 'The :attribute field has a duplicate value.',
+    "file"                      => "The :attribute must be a file.",
+    "filled"                    => "The :attribute field must have a value.",
+    "gt"                        => array(
+        "numeric" => "The :attribute must be greater than :value.",
+        "file"    => "The :attribute must be greater than :value kilobytes.",
+        "string"  => "The :attribute must be greater than :value characters.",
+        "array"   => "The :attribute must have more than :value items.",
+    ),
+    "gte"                       => array(
+        "numeric" => "The :attribute must be greater than or equal :value.",
+        "file"    => "The :attribute must be greater than or equal :value kilobytes.",
+        "string"  => "The :attribute must be greater than or equal :value characters.",
+        "array"   => "The :attribute must have :value items or more.",
+    ),
+    "in_array"                  => "The :attribute field does not exist in :other.",
+    "ipv4"                      => "The :attribute must be a valid IPv4 address.",
+    "ipv6"                      => "The :attribute must be a valid IPv6 address.",
+    "json"                      => "The :attribute must be a valid JSON string.",
+    "lt"                        => array(
+        "numeric" => "The :attribute must be less than :value.",
+        "file"    => "The :attribute must be less than :value kilobytes.",
+        "string"  => "The :attribute must be less than :value characters.",
+        "array"   => "The :attribute must have less than :value items.",
+    ),
+    "lte"                       => array(
+        "numeric" => "The :attribute must be less than or equal :value.",
+        "file"    => "The :attribute must be less than or equal :value kilobytes.",
+        "string"  => "The :attribute must be less than or equal :value characters.",
+        "array"   => "The :attribute must not have more than :value items.",
+    ),
+    "mimetypes"                 => "The :attribute must be a file of type: :values.",
+    "not_regex"                 => "The :attribute format is invalid.",
+    "present"                   => "The :attribute field must be present.",
+    "required_unless"           => "The :attribute field is required unless :other is in :values.",
+    "string"                    => "The :attribute must be a string.",
+    "timezone"                  => "The :attribute must be a valid zone.",
+    "uploaded"                  => "The :attribute failed to upload.",
+
+    /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------
@@ -130,13 +175,6 @@ return array(
     */
 
     "custom" => array(
-        "data.*.subject" => array(
-            "required" => "A subject is required for each provided email."
-        ),
-        "data.*.contents" => array(
-            "required"  => "The content field is required for each provided email.",
-            "twig_lint" => "Each email must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
-        ),
         "roles.*" => array(
             "exists" => "The selected role is invalid.",
         ),
@@ -150,23 +188,18 @@ return array(
         "brand.*" => array(
             "exists" => "The selected brand is invalid.",
         ),
-        "signature.Default.*.department" => array(
-            "exists" => "Each signature must belong to a valid department.",
-        ),
-        "signature.Default.*.contents" => array(
+        "signature.*.*.contents" => array(
             "twig_lint" => "Each signature must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
-        "template.Default.*.language" => array(
-            "exists" => "Each template must belong to a valid language.",
+        "template.*.*.subject" => array(
+            "required" => "The subject field is required for each email.",
+            "min" => "Each subject field must be greater than 1 character.",
+            "max" => "Each subject field must be less than 255 characters.",
         ),
-        "template.Default.*.subject" => array(
-            "min" => "Each email template subject must be greater than 1 character.",
-            "max" => "Each email template subject must be less than 255 characters.",
-        ),
-        "template.Default.*.contents" => array(
-            "required_with" => "Each email template requires content when a subject is present.",
-            "min" => "Each email template must be greater than 1 character.",
-            "twig_lint" => "Each email template must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
+        "template.*.*.contents" => array(
+            "required" => "The contents field is required for each email.",
+            "min" => "Each contents field must be greater than 1 character.",
+            "twig_lint" => "Each contents field must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 

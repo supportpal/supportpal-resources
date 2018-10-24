@@ -20,7 +20,7 @@
                     <div class="success">{{ Session.get('success') }}</div>
                 {% endif %}
 
-                {% if errors|default is not empty and errors.has() %}
+                {% if errors|default is not empty and errors.count() %}
                     <div class="error box">
                         <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
                         {% for error in errors.all() %}
@@ -30,9 +30,12 @@
                 {% endif %}
 
                 <div class="form-row">
-                    {{ form_text('email', null, Config.get('settings.ldap_enabled', 0)
-                        ? {'class': 'email', 'placeholder': Lang.get('general.email') ~ '/' ~ Lang.get('general.username')}
-                        : {'class': 'email', 'placeholder': Lang.get('general.email')}) }}
+                    {% if Config.get('settings.ldap_enabled', 0) %}
+                        {% set emailPlaceholder = Lang.get('general.email') ~ '/' ~ Lang.get('general.username') %}
+                    {% else %}
+                        {% set emailPlaceholder = Lang.get('general.email') %}
+                    {% endif %}
+                    {{ form_text('email', null, {'class': 'email', 'placeholder': emailPlaceholder, 'autofocus': 'autofocus'}) }}
                 </div>
                 <div class="form-row">
                     {{ form_password('password', { 'class': 'password', 'placeholder': Lang.get('general.password') }) }}
@@ -45,7 +48,7 @@
                         <span>{{ Lang.get('general.or') }}</span>
                     </div>
                     <input type="button" class="saml" onclick="location.href='{{ route('operator.saml_login') }}';"
-                           value="{{ Lang.get('user.login_via_idp') }}" />
+                           value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
                 {% endif %}
 
             </div>

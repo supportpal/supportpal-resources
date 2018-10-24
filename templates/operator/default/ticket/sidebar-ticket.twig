@@ -1,5 +1,9 @@
 <div id="sidebar" class="sidebar-close left">
-    <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
+    {{ View.fireHook('operator.sidebar_start') }}
+
+    <span class="toggle-sidebar hide">
+        <i class="fa fa-angle-double-right"></i>
+    </span>
 
     <div class="success box ticket-update hide">
         {{ Lang.get('messages.success_updated', { 'item': mb_strtolower(Lang.choice('ticket.ticket', 1), 'UTF-8') }) }}
@@ -16,176 +20,191 @@
                 <i class="fa fa-chevron-down"></i>
             </div>
         </h3>
-        <table class="ticket-details" cellspacing="0">
-            <tr>
-                <th>{{ Lang.get('general.number') }}</th>
-                <td>#{{ ticket.number }}</td>
-            </tr>
-            <tr>
-                <th>{{ Lang.choice('user.user', 1) }}</th>
-                <td>
-                    {% if can_update_ticket(auth_user(), ticket) %}
-                        <a class="link edit-user">{{ ticket.user.formatted_name }}</a>
-                    {% else %}
-                        {{ ticket.user.formatted_name }}
-                    {% endif %}
-                </td>
-            </tr>
-            <tr class="update-user hide">
-                <td colspan="2">
-                    {{ form_select('user') }}
-                    {% if auth_user().hasPermission('create.user') %}
-                        <div class="create-new-user">
-                            <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
-                        </div>
-                    {% endif %}
-                </td>
-            </tr>
-            {% if brand_count() > 1 %}
-            <tr>
-                <th>{{ Lang.choice('core.brand', 1) }}</th>
-                <td>
-                    {{ ticket.brand.name }}
-                </td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>{{ Lang.choice('ticket.channel', 1) }}</th>
-                <td>
-                    {{ ticket.channel.name }}
-                </td>
-            </tr>
-            <tr>
-                <th>{{ Lang.choice('ticket.department', 1) }}</th>
-                <td>
-                    {{
-                        form_select(
-                            'department',
-                            array_column(departments.toArray(), 'name', 'id'),
-                            ticket.department_id,
-                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
-                        )
-                    }}
-                </td>
-            </tr>
-            <tr>
-                <th>{{ Lang.choice('general.status', 1) }}</th>
-                <td>
-                    {{
-                        form_select(
-                            'status',
-                            array_column(statuses.toArray(), 'name', 'id'),
-                            ticket.status_id,
-                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
-                        )
-                    }}
-                </td>
-            </tr>
-            <tr>
-                <th>{{ Lang.choice('ticket.priority', 1) }}</th>
-                <td>
-                    {{
-                        form_select(
-                            'priority',
-                            array_column(priorities.toArray(), 'name', 'id'),
-                            ticket.priority_id,
-                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
-                        )
-                    }}
-                </td>
-            </tr>
-            {% if can_update_ticket(auth_user(), ticket) %}
-            <tr>
-                <td colspan="2">
-                    <select class="assign-tags" name="tag[]" multiple="multiple">
-                        {% for tag in ticket.tags.sortBy('name') %}
-                            <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.original_name }}'>
-                                {{ tag.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <select id="assignOperator" name="operator[]" multiple="multiple">
-                        {% for operator in ticket.assigned %}
-                            <option selected="selected" data-data='{{ operator|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ operator.id }}'>
-                                {{ operator.formatted_name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            {% endif %}
-            {% if not slaplans.isEmpty() %}
-            <tr>
-                <th>{{ Lang.choice('ticket.sla_plan', 1) }}</th>
-                <td>
-                    {{
-                        form_select(
-                            'slaplan',
-                            {
-                                0: Lang.get('general.none')
-                            } + array_column(slaplans.toArray(), 'name', 'id'),
-                            ticket.slaplan|default is not empty ? ticket.slaplan.id : 0,
-                            can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
-                        )
-                    }}
-                </td>
-            </tr>
-            {% endif %}
-            <tr>
-                <th>{{ Lang.get('general.due') }}</th>
-                <td>
-                    {% if can_update_ticket(auth_user(), ticket) %}
-                        <a class="edit-duetime link">
+        <div>
+            <table class="ticket-details" cellspacing="0">
+                <tr>
+                    <th>{{ Lang.get('general.number') }}</th>
+                    <td>#{{ ticket.number }}</td>
+                </tr>
+                <tr>
+                    <th>{{ Lang.choice('user.user', 1) }}</th>
+                    <td>
+                        {% if can_update_ticket(auth_user(), ticket) %}
+                            <a class="link edit-user">{{ ticket.user.formatted_name }}</a>
+                        {% else %}
+                            {{ ticket.user.formatted_name }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="update-user hide">
+                    <td colspan="2">
+                        {{ form_select('user') }}
+                        {% if auth_user().hasPermission('create.user') %}
+                            <div class="create-new-user">
+                                <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if brand_count() > 1 %}
+                <tr>
+                    <th>{{ Lang.choice('core.brand', 1) }}</th>
+                    <td>
+                        {% if can_update_ticket(auth_user(), ticket) and assignedBrands.count() > 1 %}
+                            <a class="link" href="{{ route('ticket.operator.ticket.move', ticket.id) }}">
+                                {{ ticket.brand.name }}
+                            </a>
+                        {% else %}
+                            {{ ticket.brand.name }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>{{ Lang.choice('ticket.channel', 1) }}</th>
+                    <td>
+                        {{ ticket.channel.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ Lang.choice('ticket.department', 1) }}</th>
+                    <td>
+                        {{
+                            form_select(
+                                'department',
+                                array_column(departments.toArray(), 'name', 'id'),
+                                ticket.department_id,
+                                can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                            )
+                        }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ Lang.choice('general.status', 1) }}</th>
+                    <td>
+                        {{
+                            form_select(
+                                'status',
+                                array_column(statuses.toArray(), 'name', 'id'),
+                                ticket.status_id,
+                                can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                            )
+                        }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ Lang.choice('ticket.priority', 1) }}</th>
+                    <td>
+                        {{
+                            form_select(
+                                'priority',
+                                array_column(priorities.toArray(), 'name', 'id'),
+                                ticket.priority_id,
+                                can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                            )
+                        }}
+                    </td>
+                </tr>
+                {% if can_update_ticket(auth_user(), ticket) %}
+                <tr>
+                    <td colspan="2">
+                        <select class="assign-tags" name="tag[]" multiple="multiple">
+                            {% for tag in ticket.tags.sortBy('name') %}
+                                <option selected="selected" data-data='{{ tag|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ tag.original_name }}'>
+                                    {{ tag.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <select id="assignOperator" name="operator[]" multiple="multiple">
+                            {% for operator in ticket.assigned %}
+                                <option selected="selected" data-data='{{ operator|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ operator.id }}'>
+                                    {{ operator.formatted_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                {% endif %}
+                {% if not slaplans.isEmpty() %}
+                <tr>
+                    <th>{{ Lang.choice('ticket.sla_plan', 1) }}</th>
+                    <td>
+                        {{
+                            form_select(
+                                'slaplan',
+                                {
+                                    0: Lang.get('general.none')
+                                } + array_column(slaplans.toArray(), 'name', 'id'),
+                                ticket.slaplan|default is not empty ? ticket.slaplan.id : 0,
+                                can_update_ticket(auth_user(), ticket) ? {} : {'disabled': 'disabled'}
+                            )
+                        }}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>{{ Lang.get('general.due') }}</th>
+                    <td>
+                        {% if can_update_ticket(auth_user(), ticket) %}
+                            <a class="edit-duetime link">
+                                {% if ticket.due_time|default is not empty %}
+                                    {{ format_due_time(ticket.due_time) }}
+                                {% else %}
+                                    {{ Lang.get('ticket.set_due_time') }}
+                                {% endif %}
+                            </a>
+                        {% else %}
                             {% if ticket.due_time|default is not empty %}
                                 {{ format_due_time(ticket.due_time) }}
                             {% else %}
-                                {{ Lang.get('ticket.set_due_time') }}
+                                {{ Lang.get('general.na') }}
                             {% endif %}
-                        </a>
-                    {% else %}
-                        {% if ticket.due_time|default is not empty %}
-                            {{ format_due_time(ticket.due_time) }}
-                        {% else %}
-                            {{ Lang.get('general.na') }}
                         {% endif %}
-                    {% endif %}
-                </td>
-            </tr>
-            <tr class="update-duetime hide">
-                <td colspan="2">
-                    {{ form_text('duetime_date',
-                            ticket.due_time|default is not empty
-                                ? timeWithOffset(ticket.due_time, false)|date(Config.get('settings.date_format'))
-                                : "now"|date(Config.get('settings.date_format'), getTimezone()),
-                            { 'class': 'datepicker', 'placeholder': '&#xf073;', 'style': 'width: 90px;' }
-                        )
-                    }}{{ form_text('duetime_time',
-                            ticket.due_time|default is not empty
-                                ? timeWithOffset(ticket.due_time, false)|date('g:ia')
-                                : "now"|date('g:ia', getTimezone()),
-                            { 'class': 'timepicker', 'placeholder': '&#xf017;', 'style': 'border-left: 0; width: 76px;' }
-                        )
-                    }}
-                    &nbsp; <button class="as-link update"><i class="fa fa-check"></i></button>
-                    <span class="remove-duetime {% if ticket.due_time|default is empty %}hide{% endif %}">
-                        &nbsp; <button class="as-link remove"><i class="fa fa-trash"></i></button>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th>{{ Lang.get('ticket.last_action') }}</th>
-                <td>
-                    <span class="last-action">
-                        {{ timeago(ticket.updated_at) }}
-                    </span>
-                </td>
-            </tr>
-        </table>
+                    </td>
+                </tr>
+                <tr class="update-duetime hide">
+                    <td colspan="2">
+                        {{ form_text('duetime_date',
+                                ticket.due_time|default is not empty
+                                    ? timeWithOffset(ticket.due_time, false)|date(Config.get('settings.date_format'))
+                                    : "now"|date(Config.get('settings.date_format'), getTimezone()),
+                                { 'class': 'datepicker', 'placeholder': '&#xf073;', 'style': 'width: 90px;' }
+                            )
+                        }}{{ form_text('duetime_time',
+                                ticket.due_time|default is not empty
+                                    ? timeWithOffset(ticket.due_time, false)|date('g:ia')
+                                    : "now"|date('g:ia', getTimezone()),
+                                { 'class': 'timepicker', 'placeholder': '&#xf017;', 'style': 'border-left: 0; width: 76px;' }
+                            )
+                        }}
+                        &nbsp; <button class="as-link update"><i class="fa fa-check"></i></button>
+                        <span class="remove-duetime {% if ticket.due_time|default is empty %}hide{% endif %}">
+                            &nbsp; <button class="as-link remove"><i class="fa fa-trash"></i></button>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>{{ Lang.get('ticket.last_action') }}</th>
+                    <td>
+                        <span class="last-action">
+                            {{ timeago(ticket.updated_at) }}
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <div class="linked-tickets-list">
+                {% include 'operator.' ~ template ~ '.ticket.linked' %}
+            </div>
+        </div>
     </div>
+
+    {{ View.fireHook('operator.sidebar_ticket') }}
+
     {% if extendedViews['sidebar-ticket'] is not empty %}
         {% for view in extendedViews['sidebar-ticket'] %}
             {% include view %}
@@ -195,121 +214,7 @@
     {% if overriddenViews['sidebar-ticket'] is not empty %}
         {% include overriddenViews['sidebar-ticket'] %}
     {% else %}
-        <div class="sidebox details">
-            <h3 class="collapsable" id="userDetailsSidebox">
-                <i class="fa fa-user icon"></i>
-                {{ Lang.get('user.user_details') }}
-                <div class="arrow">
-                    <i class="fa fa-chevron-down"></i>
-                </div>
-            </h3>
-            <div style="white-space: normal;">
-                <img src="data:image/png;base64,{{ ticket.user.avatar }}"
-                    width="{% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}44{% else %}24{% endif %}"
-                    class="avatar left" style="margin-top: 0" />
-                &nbsp; <strong>{{ ticket.user.formatted_name }}</strong>
-                {% if ticket.user.groups is not empty %}
-                    {% for group in ticket.user.groups %}
-                    <span class="userGroup" style="background: {{ group.colour }};" title="{{ group.name }}"></span>
-                    {% endfor %}
-                {% endif %}
-                <br />
-                {% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}
-                    &nbsp; <i class="fa fa-building-o"></i> &nbsp;
-                    <a href="{{ ticket.user.organisation.url|raw }}">{{ ticket.user.organisation.name }}</a><br />
-                {% endif %}
-
-                {% if ticket.user.email|default is not empty %}
-                    <br />
-                    <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}<br />
-                    {% if ticket.user.confirmed %}
-                        <i class="fa fa-check-square fa-fw"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
-                        <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ timeago(ticket.user.created_at) }}<br />
-
-                        {% if ticket.user.last_active_at > 0 %}
-                            <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ timeago(ticket.user.last_active_at) }}<br />
-                        {% endif %}
-                    {% else %}
-                        <i class="fa fa-square fa-fw"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
-                    {% endif %}
-                {% endif %}
-
-                {% if ticket.user.country|default is not empty %}
-                    {% if ticket.user.email|default is empty %}
-                    <br />
-                    {% endif %}
-                    <i class="fa fa-globe fa-fw"></i> &nbsp; {{ countries()[ticket.user.country] }}<br />
-                {% endif %}
-
-                {% if ticket.user.notes is not empty %}
-                    <br />
-                    <i class="fa fa-sticky-note"></i> &nbsp; <strong>{{ Lang.choice('general.note', 2) }}</strong>
-                    <br />
-                    <div class="text-shorten">{{ ticket.user.notes|nl2br }}</div>
-                {% endif %}
-
-                {% if userTickets.count() %}
-                <br />
-                <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.recent_tickets') }}</strong>
-                &nbsp;&nbsp;
-                <a class="description" href="{{ route('user.operator.user.ticket', [ ticket.user_id ]) }}">{{ Lang.get('general.view_all') }} &raquo;</a>
-                <ul class="recent-tickets">
-                    {% for userTicket in userTickets %}
-                    <li>
-                        <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
-                            title="{{ userTicket.status.name }}"></span> &nbsp;
-                        <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}" target="_blank">
-                            {{ str_limit(userTicket.subject, 28, '...') }}
-                        </a>
-                        <div class="description">
-                            {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                {% if not ticket.internal and organisationTickets.count() %}
-                <br />
-                <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.organisation_tickets') }}</strong>
-                &nbsp;&nbsp;
-                <a class="description" href="{{ route('user.operator.organisation.ticket', [ ticket.user.organisation_id ]) }}">{{ Lang.get('general.view_all') }} &raquo;</a>
-                <ul class="recent-tickets">
-                    {% for organisationTicket in organisationTickets %}
-                    <li>
-                        <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
-                            title="{{ organisationTicket.status.name }}"></span> &nbsp;
-                        <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}" target="_blank">
-                            {{ str_limit(organisationTicket.subject, 28, '...') }}
-                        </a>
-                        <div class="description">
-                            {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                {% if not ticket.internal and otherBrandTickets.count() %}
-                    <br />
-                    <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.ticket_other_brands') }}</strong>
-                    <ul class="recent-tickets">
-                        {% for otherBrandTicket in otherBrandTickets %}
-                            <li>
-                                <span class="statusIcon" style="background: {{ otherBrandTicket.status.colour }};"
-                                    title="{{ otherBrandTicket.status.name }}"></span> &nbsp;
-                                <a href="{{ route('ticket.operator.ticket.show', [ otherBrandTicket.id ]) }}" target="_blank">
-                                    {{ str_limit(otherBrandTicket.subject, 28, '...') }}
-                                </a>
-                                <div class="description">
-                                    {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
+        {% include 'operator.' ~ template ~ '.ticket.sidebar-ticket_user' %}
     {% endif %}
 
     {% if not macros.isEmpty() and can_update_ticket(auth_user(), ticket) %}
@@ -364,7 +269,7 @@
             <ul>
                 {% for operator in activeOperators %}
                 <li class="clear">
-                    <img src="data:image/png;base64,{{ operator.avatar }}" width="18" height="18" alt="{{ operator.formatted_name }}"
+                    <img src="{{ operator.avatar_url }}" width="18" height="18" alt="{{ operator.formatted_name }}"
                          class="avatar"/>
                     {{ operator.formatted_name }}
                 </li>
@@ -373,6 +278,8 @@
         </div>
     </div>
     {% endif %}
+
+    {{ View.fireHook('operator.sidebar_end') }}
 
     <div class="copyright">
         {{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.

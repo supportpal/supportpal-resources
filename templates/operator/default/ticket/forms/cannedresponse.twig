@@ -34,11 +34,21 @@
                 <div class="section-items">
                     {# Default response #}
                     <div class="form-container first open">
+                        {% if record.exists %}
+                        <div class="form-row">
+                            {{ form_label('mergefield', Lang.get('operator.merge_field')) }}
+                            <div class="input-container">
+                                {{ '{{ ' ~ merge_field_key ~ '.' ~ record.hash ~ '|raw }}' }}<br />
+                                <span class="description">{{ Lang.get('operator.response_merge_field') }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                         {%
                             include 'operator.' ~ template ~ '.ticket.forms.cannedresponse_rows'
                             with {
                                 'elements': {
-                                    'name': { 'name': 'name', 'value': record.getOriginal('name') },
+                                    'name': { 'name': 'name', 'value': record.getOriginal('name'), 'attributes': { 'autofocus': 'autofocus' } },
                                     'text': { 'name': 'text', 'value': record.getOriginal('text') }
                                 }
                             }
@@ -92,7 +102,7 @@
                     {{ form_check('public', 1, record.user_id|default is empty, { 'class': 'toggle', 'id': 'toggle_public' }) }}
                     <label for="toggle_public"></label>
                     <br />
-                    <span class="description">{{ Lang.get('ticket.canned_public_desc') }}</span>
+                    <span class="description">{{ Lang.get('ticket.record_public_desc', { 'record': mb_strtolower(Lang.choice('ticket.cannedresponse', 1)) }) }}</span>
                 </div>
             </div>
 
@@ -100,7 +110,7 @@
                 {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
                 <div class="input-container">
                     {{ form_select('groups[]', groups, userGroups, { 'multiple': 'multiple' }) }}
-                    <span class="description">{{ Lang.get('ticket.canned_group_desc') }}</span>
+                    <span class="description">{{ Lang.get('ticket.record_group_desc', { 'record': mb_strtolower(Lang.choice('ticket.cannedresponse', 1)) }) }}</span>
                 </div>
             </div>
 
@@ -120,26 +130,19 @@
     {% endif %}
 
     <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/no_results.js') }}"></script>
 
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/visibility.js') }}"></script>
     <script type="text/javascript">
         // List of valid translatable attributes.
         var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
@@ -148,7 +151,8 @@
         var opts = {
             mergeFields: {
                 tickets: true,
-                organisations: '{{ Config.get('settings.organisations_enabled') }}'
+                organisations: '{{ Config.get('settings.organisations_enabled') }}',
+                canned_responses: false
             },
             plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
         };
@@ -161,12 +165,6 @@
         };
         
         $(document).ready(function() {
-            // Focus the canned response name input box.
-            $('input[name="name"]').focus();
-
-            var $select = $('select[name="groups[]"]').selectize({
-                plugins: ['remove_button']
-            })[0].selectize;
             $('div.section-items textarea').redactor($.extend($.Redactor.default_opts, opts));
 
             // Tags
@@ -181,24 +179,6 @@
                 },
                 maxItems: null,
                 placeholder: Lang.get("ticket.associate_response_tag")
-            });
-
-            // On page load, toggle the user groups box depending on whether public is set/not
-            var $public = $('input[name="public"]');
-            $('.usergroups').toggle($public.is(":checked"));
-
-            // Toggle user groups, as we update the checkbox
-            $public.change(function() {
-                if (this.checked) {
-                    $('.usergroups').show();
-                    $('select[name="groups[]"]').prop("disabled", false);
-                    $select.enable();
-                } else {
-                    $('.usergroups').hide();
-                    $('select[name="groups[]"]').prop("disabled", true);
-                    $select.clear();
-                    $select.disable();
-                }
             });
         });
     </script>

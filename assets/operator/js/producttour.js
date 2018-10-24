@@ -66,13 +66,14 @@ var tour = {
             yOffset: '-15px',
             showPrevButton: true,
             onNext: function() {
+                $('#generalSettingsBox').trigger('click');
                 $('#ticketSettingsBox').trigger('click');
             },
             onShow: function() {
                 $('#Email').trigger('click');
             },
             onPrev: function() {
-                $('#Website').trigger('click');
+                $('#General').trigger('click');
             }
         },
         {
@@ -112,6 +113,7 @@ var tour = {
             placement: 'top',
             showPrevButton: true,
             onNext: function() {
+                $('#ticketSettingsBox').trigger('click');
                 $('#generalSettingsBox').trigger('click');
             }
         },
@@ -142,6 +144,7 @@ var tour = {
             placement: 'top',
             showPrevButton: false,
             onNext: function() {
+                $('#generalSettingsBox').trigger('click');
                 $('#ticketSettingsBox').trigger('click');
             }
         },
@@ -176,26 +179,23 @@ var tour = {
         {
             title: Lang.choice('user.user', 2),
             content: Lang.get('core.user_desc'),
-            target: 'userHeaderDropdown',
+            target: 'manageUserSetting',
             placement: 'right',
-            xOffset: '100px',
-            yOffset: '40px'
+            yOffset: '-13px',
         },
         {
             title: Lang.choice('user.organisation', 2),
             content: Lang.get('core.organisation_desc'),
-            target: 'userHeaderDropdown',
+            target: 'manageOrgSetting',
             placement: 'right',
-            xOffset: '100px',
-            yOffset: '75px'
+            yOffset: '-13px',
         },
         {
             title: Lang.choice('general.operator', 2),
             content: Lang.get('core.operator_desc'),
-            target: 'userHeaderDropdown',
+            target: 'manageOperatorSetting',
             placement: 'right',
-            xOffset: '100px',
-            yOffset: '110px',
+            yOffset: '-13px',
             onNext: function() {
                 // Open the Tickets drop down in the header
                 $('#ticketHeaderDropdown').addClass('hover');
@@ -224,8 +224,8 @@ var tour = {
         {
             title: Lang.get('core.ticket_toolbar'),
             content: Lang.get('core.ticket_desc3'),
-            target: 'ticketGridTable',
-            placement: 'bottom',
+            target: 'gridFooter',
+            placement: 'top',
             multipage: true,
             onNext: function() {
                 window.location = laroute.route('core.operator.dashboard');

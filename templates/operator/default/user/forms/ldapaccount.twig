@@ -1,5 +1,9 @@
 {% extends parent_template %}
 
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
 {% block title %}
     {% if record|default is not empty and record.exists %}
         {{ Lang.get('general.edit_item', {'item': Lang.choice('user.ldap_account', 1)}) }}
@@ -28,7 +32,7 @@
             <div class="form-row">
                 {{ form_label('ldap_server', Lang.get('user.ldap_server')) }}
                 <div class="input-container">
-                    {{ form_text('ldap_server') }}<br />
+                    {{ form_text('ldap_server', null, {'autofocus': 'autofocus'}) }}<br />
                     <span class="description">{{ Lang.get('user.ldap_server_desc') }}</span>
                 </div>
             </div>
@@ -124,9 +128,6 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
             // Search for an existing operator
@@ -141,7 +142,7 @@
                 render: {
                     option: function(item, escape) {
                         return '<div data-data="' + escape(item) + '">' +
-                                '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp; ' +
+                                '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp; ' +
                                 '<span class="title">' +
                                 '<span class="name">' + escape(item.formatted_name) + '</span> ' +
                                 '</span>' +

@@ -2,12 +2,10 @@
     jQuery(document).ready(function(){
 
         /**
-         * Don't ignore hidden elements. Overrides:
-         *  - Fixed #189 - :hidden elements are now ignored by default
-         *    see: http://jquery.bassistance.de/validate/changelog.txt
+         * Ignore hidden fields, except for those listed below.
          */
         $.validator.setDefaults({
-            ignore: []
+            ignore: ':hidden:not(.redactor):not(input[type=hidden])'
         });
 
         /**
@@ -38,10 +36,11 @@
             errorPlacement: function(error, element) {
                 var position = element;
 
-                // If it's redactor, codemirror, show/hide button, a checkbox or radio, add after parent
-                if (element.parent('.redactor-box').length || element.parent('.merge-field_container').length ||
-                    element.parent('.hideShowPassword-wrapper').length || element.parent('.input-group').length ||
-                    element.prop('type') === 'checkbox' || element.prop('type') === 'radio'
+                // If it's redactor, codemirror, show/hide button, recaptcha, a checkbox or radio, add after parent
+                if (element.parent('.redactor-box').length || element.parent('.merge-field_container').length
+                    || element.parent('.hideShowPassword-wrapper').length || element.parent('.input-group').length
+                    || element.parent().parent('.g-recaptcha').length || element.prop('type') === 'checkbox'
+                    || element.prop('type') === 'radio'
                 ) {
                     position = element.parent();
                 }
@@ -109,7 +108,7 @@
             
             // Custom submit handler.
             submitHandler: function (form) {
-                $(form).find(':submit').prop('disabled', 'disabled');
+                $(form).find('input[type="submit"], button[type="submit"]').prop('disabled', 'disabled');
 
                 // Validate the form.
                 if (validator.form()) {
@@ -126,18 +125,17 @@
                     if (typeof $(form).data('ajax') !== "undefined") {
                         return false;
                     }
-                    
+
                     // Submit the form (will cause the page to refresh etc).
                     form.submit();
                 } else {
-                    $(form).find(':submit').prop('disabled', false);
+                    $(form).find('input[type="submit"], button[type="submit"]').prop('disabled', false);
                     validator.focusInvalid();
                     return false;
                 }
             },
 
-            // Do not focus the last invalid input.
-            focusInvalid: false,
+            focusInvalid: true,
 
             invalidHandler: function(event, validator) {
                 // Enable submit button again (necessary for invalid remote validation).
@@ -151,7 +149,7 @@
                     // Get tab ID
                     var id = $(validator.errorList[0].element).parents('.tabContent').attr('id');
                     // Get name from ID and click on the tab
-                    if (id.substring(0, 3) == 'tab') {
+                    if (typeof id !== 'undefined' && id.substring(0, 3) == 'tab') {
                         $('.tabs li#' + id.substring(3)).click();
                     }
                 }
@@ -160,7 +158,6 @@
                 $('html, body').animate({
                     scrollTop: $(validator.errorList[0].element).offset().top - 46
                 }, <?php echo Config::get('jsvalidation.duration_animate') ?>);
-                $(validator.errorList[0].element).focus();
 
             },
 

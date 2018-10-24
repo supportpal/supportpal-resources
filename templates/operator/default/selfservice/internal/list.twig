@@ -1,0 +1,32 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ type.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {% if auth_user().hasPermission('create.article') %}
+        <a href="{{ route('selfservice.operator.article.create', { 'type': type.id }) }}" class="manage-article right">
+            <i class="fa fa-plus"></i>&nbsp;
+            {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
+        </a>
+    {% endif %}
+
+    {{ parent() }}
+    {{ type.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.selfservice.internal.sidebar' %}
+{% endblock %}
+
+{% block content %}
+
+    {# Show all the articles (paginated), starting with most recent #}
+    {% include 'operator.' ~ template ~ '.selfservice.internal.article_list' with {'show_pinned': true} %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/selfservice.css') }}">
+{% endblock %}

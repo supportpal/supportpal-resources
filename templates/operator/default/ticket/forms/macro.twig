@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -37,17 +37,84 @@
             </div>
 
             <div class="form-row">
-                {{ form_label('run_type', Lang.get('ticket.macro_type')) }}
+                {{ form_label('enabled', Lang.get('general.enabled')) }}
                 <div class="input-container">
-                    {{ form_select('run_type', {
-                            0: Lang.get('ticket.manual'),
-                            1: Lang.get('ticket.macro_type_auto1'),
-                            2: Lang.get('ticket.macro_type_auto2')
-                    }) }}<br />
-                    <span class="description">{{ Lang.get('ticket.macro_type_desc') }}</span>
+                    {{ form_check('enabled', 1, record.exists ? record.enabled : true, { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
+                    <label for="toggle_enabled"></label>
+                    <br />
+                    <span class="description">{{ Lang.get('ticket.macro_enabled_desc') }}</span>
                 </div>
             </div>
 
+        </div>
+
+        <h2>{{ Lang.get('ticket.macro_type') }}</h2>
+        <h2 class="description">{{ Lang.get('ticket.macro_type_desc') }}</h2>
+
+        <div class="form-container open first">
+            <div class="form-row">
+                {{ form_label('type', Lang.get('general.type')) }}
+                <div class="input-container">
+                    <span class="input-group">
+                        <label>
+                            <input type="radio" name="type" value="0" {% if Input.old('type') == 0 or (Input.old('type') is null and record.type == 0) %}checked="checked"{% endif %} />
+                            {{ Lang.get('general.manual') }}
+                        </label> &nbsp;
+                        <label>
+                            <input type="radio" name="type" value="2" {% if Input.old('type') == 2 or (Input.old('type') is null and record.type == 2) %}checked="checked"{% endif %} />
+                            {{ Lang.get('general.automatic') }}
+                        </label> &nbsp;
+                        <label>
+                            <input type="radio" name="type" value="1" {% if Input.old('type') == 1 or (Input.old('type') is null and record.type == 1) %}checked="checked"{% endif %} />
+                            {{ Lang.get('general.hook') }}
+                        </label>
+                    </span>
+                </div>
+            </div>
+
+            <div class="macro-visibility {% if (Input.old('type') is not null and Input.old('type') != 0) or (Input.old('type') is null and record.type != 0) %}hide{% endif %}">
+                <div class="form-row">
+                    {{ form_label('public', Lang.get('general.public')) }}
+                    <div class="input-container">
+                        {{ form_check('public', 1, record.user_id|default is empty, { 'class': 'toggle', 'id': 'toggle_public' }) }}
+                        <label for="toggle_public"></label>
+                        <br />
+                        <span class="description">{{ Lang.get('ticket.record_public_desc', { 'record': mb_strtolower(Lang.choice('ticket.macro', 1), 'UTF-8') }) }}</span>
+                    </div>
+                </div>
+
+                <div class="form-row form-full usergroups">
+                    {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
+                    <div class="input-container">
+                        {{ form_select('groups[]', operatorGroups, record.groups.pluck('id').all(), { 'multiple': 'multiple' }) }}
+                        <span class="description">{{ Lang.get('ticket.record_group_desc', { 'record': mb_strtolower(Lang.choice('ticket.macro', 1), 'UTF-8') }) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row macro-limit {% if (Input.old('type') is not null and Input.old('type') != 2) or (Input.old('type') is null and record.type != 2) %}hide{% endif %}">
+                {{ form_label('run_at_most', Lang.get('ticket.macro_run_at_most')) }}
+                <div class="input-container">
+                    {{ form_text('run_at_most', null, { 'size': '2' }) }} &nbsp;{{ Lang.get('ticket.macro_run_times') }}<br/>
+                    <span class="description">{{ Lang.get('ticket.macro_run_at_most_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full macro-events {% if (Input.old('type') is not null and Input.old('type') != 1) or (Input.old('type') is null and record.type != 1) %}hide{% endif %}">
+                {{ form_label('events', Lang.choice('general.event', 2)) }}
+                <div class="input-container">
+                    {{ form_select('events[]', events, record.events.pluck('event_id').all(), { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.macro_events_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row form-full macro-schedules {% if (Input.old('type') is not null and Input.old('type') == 0) or (Input.old('type') is null and record.type == 0) %}hide{% endif %}">
+                {{ form_label('schedules', Lang.choice('ticket.schedule', 2)) }}
+                <div class="input-container">
+                    {{ form_select('schedules[]', schedules, record.schedules.pluck('id').all(), { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.macro_schedules_desc') }}</span>
+                </div>
+            </div>
         </div>
 
         <h2>{{ Lang.get('ticket.macro_condition') }}</h2>
@@ -82,17 +149,18 @@
         <h2>{{ Lang.get('ticket.macro_action') }}</h2>
         <h2 class="description">{{ Lang.get('ticket.macro_action_desc') }}</h2>
 
-        <div class="form-container open first">
+        <div class="form-container open first is-sortable">
 
             <table class="rule-table settings">
                 <thead>
                     <tr>
-                        <th width="220">{{ Lang.choice('general.action', 1) }}</th>
+                        <th width="14"></th>
+                        <th>{{ Lang.choice('general.action', 1) }}</th>
                         <th>{{ Lang.get('general.value') }}</th>
-                        <th></th>
+                        <th width="14"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="sortable">
                     {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule' with { 'hide': true } %}
 
                     {% if oldActions|default is not empty and oldActions is not empty %}
@@ -128,21 +196,13 @@
     {% endif %}
 
     <!-- Translatable.js dependencies: Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
     
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
@@ -153,16 +213,61 @@
         var organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}";
 
         $(document).ready(function() {
-            $('input[name="name"]').focus();
+            var $inputPublic = $('input[name="public"]');
+
+            var $selectGroups = $('select[name="groups[]"]').selectize()[0].selectize;
+
+            var $inputLimit = $('input[name="run_at_most"]');
+
+            var $selectEvents = $('select[name="events[]"]').selectize({
+                plugins: ['remove_button']
+            })[0].selectize;
+
+            var $selectSchedules = $('select[name="schedules[]"]').selectize({
+                plugins: ['remove_button']
+            })[0].selectize;
+
+            // Toggle type, handle the various options.
+            $('input[name="type"]').click(function() {
+                if ($(this).is(':checked')) {
+                    if ($(this).val() == 0) {
+                        $('.macro-visibility').show();
+                        $('.macro-limit, .macro-events, .macro-schedules').hide();
+                        $inputPublic.prop('disabled', false);
+                        $selectGroups.enable();
+                        $selectEvents.clear();
+                        $selectEvents.disable();
+                        $inputLimit.prop('disabled', true);
+                        $selectSchedules.clear();
+                        $selectSchedules.disable();
+                    } else if ($(this).val() == 1) {
+                        $('.macro-visibility, .macro-limit').hide();
+                        $('.macro-events, .macro-schedules').show();
+                        $inputPublic.prop('disabled', true);
+                        $selectGroups.clear();
+                        $selectGroups.disable();
+                        $inputLimit.prop('disabled', true);
+                        $selectEvents.enable();
+                        $selectSchedules.enable();
+                    } else if ($(this).val() == 2) {
+                        $('.macro-visibility, .macro-events').hide();
+                        $('.macro-limit, .macro-schedules').show();
+                        $inputPublic.prop('disabled', true);
+                        $selectGroups.clear();
+                        $selectGroups.disable();
+                        $inputLimit.prop('disabled', false);
+                        $selectEvents.clear();
+                        $selectEvents.disable();
+                        $selectSchedules.enable();
+                    }
+                }
+            });
+            // Want to disable fields not needed on page load.
+            $('input[name="type"]:checked').click();
         });
     </script>
 
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
-
-    <!-- Date picker -->
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset_rev('resources/assets/operator/js/visibility.js') }}"></script>
 {% endblock %}

@@ -11,6 +11,12 @@
 
 <div class="login-container">
 
+    {% if not Session.has('error') and Session.has('social_metadata') %}
+        <div class="box options">
+            {{ Lang.get('user.social_linking_login') }}
+        </div>
+    {% endif %}
+
     {{ form_open({ 'route': 'user.login', 'method': 'post', 'class': 'validate' }) }}
 
         {% if intended_url is not null %}
@@ -19,36 +25,58 @@
 
         <div class="form-row form-full">
             {{ form_label('email', Lang.get('general.email')) }}
-            {{ form_text('email') }}
+            {{ form_text('email', null, { 'autofocus': 'autofocus' }) }}
         </div>
         <div class="form-row form-full">
             {{ form_label('password', Lang.get('general.password')) }}
             {{ form_password('password') }}
         </div>
-        <div class="form-checkbox form-center">
+        <div class="form-checkbox">
             {{ form_check('remember_me', '1') }} &nbsp; {{ form_label('remember_me', Lang.get('user.remember_me')) }}
         </div>
-        <div class="form-button form-center">
+        <div class="form-button">
+            <span class="right" style="margin-top: 3px;">
+                <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a>
+            </span>
             {{ form_submit(Lang.get('user.login')) }}
         </div>
 
-        <br />
+        {% if not Input.has('social') %}
+            <div class="textcenter">
+                {% if SamlAuth.exists('frontend') %}
+                    <div class="strike" style="margin: 20px 0;">
+                        <span>{{ Lang.get('general.or') }}</span>
+                    </div>
 
-        <div class="textcenter">
-            <a href="{{ route('user.reset') }}">{{ Lang.get('user.forgot_password') }}</a>
-            <br /><br />
-            {% if Config.get('settings.registration_enabled') == 1 %}
-                <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
-            {% endif %}
+                    <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
+                        value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
+                {% endif %}
 
-            {% if SamlAuth.exists('frontend') %}
-                <div class="strike" style="margin: 20px 0 25px;">
-                    <span>{{ Lang.get('general.or') }}</span>
-                </div>
-                <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
-                       value="{{ Lang.get('user.login_via_idp') }}" />
-            {% endif %}
-        </div>
+                {% if not socialite_providers.isEmpty() %}
+                    <div class="strike" style="margin: 20px 0;">
+                        <span>{{ Lang.get('general.or') }}</span>
+                    </div>
+
+                    {% for provider, metadata in all_providers %}
+                        {% if socialite_providers.contains('name', provider) %}
+                            <a href="{{ route('user.oauth_redirect', {'provider': provider}) }}" class="social-login" style="background: {{ metadata.colour }};">
+                                <span class="icon">
+                                    <i class="fa fa-{{ provider }} fa-fw"></i>
+                                </span> &nbsp;
+                                {{ Lang.get('user.login_via', {'provider': metadata.name }) }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="textcenter">
+                {% if Config.get('settings.registration_enabled') == 1 %}
+                    <hr />
+                    <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
+                {% endif %}
+            </div>
+        {% endif %}
 
     {{ form_close() }}
 

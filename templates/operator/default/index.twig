@@ -15,26 +15,30 @@
     <title>{% if title is not empty %}{{ title|raw }} - {% endif %} SupportPal Operator Panel</title>
 
     <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset_rev('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
-    <link rel="icon" type="image/png" href="{{ asset_rev('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ get_favicon('resources/assets/operator/images/favicon/apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-196x196.png') }}" sizes="196x196" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-96x96.png') }}" sizes="96x96" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-16x16.png') }}" sizes="16x16" />
+    <link rel="icon" type="image/png" href="{{ get_favicon('resources/assets/operator/images/favicon/favicon-128.png') }}" sizes="128x128" />
     <meta name="application-name" content="SupportPal"/>
     <meta name="msapplication-TileColor" content="#FFFFFF" />
-    <meta name="msapplication-TileImage" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
-    <meta name="msapplication-square70x70logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
-    <meta name="msapplication-square150x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
-    <meta name="msapplication-wide310x150logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
-    <meta name="msapplication-square310x310logo" content="{{ asset_rev('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+    <meta name="msapplication-TileImage" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-144x144.png') }}" />
+    <meta name="msapplication-square70x70logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-70x70.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-150x150.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x150.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ get_favicon('resources/assets/operator/images/favicon/mstile-310x310.png') }}" />
+
+    <!-- CSS -->
+    <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
 
     <!-- jQuery -->
     <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
@@ -43,27 +47,33 @@
 
     {% block scripts_header %}{% endblock %}
 
-    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
+    {{ View.fireHook('operator.head') }}
 
-    <link href="{{ asset_rev('resources/assets/operator/css/main.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset_rev('resources/assets/operator/css/mobile.css') }}" rel="stylesheet" type="text/css" media="screen" />
+    {# Brand styling - delete this block if you don't want to apply the automatic brand colour styling. #}
+    {% if operatorCSS is not empty %}
+        <style>
+            {{ operatorCSS|raw }}
+        </style>
+    {% endif %}
 </head>
 
 <body>
 
+{{ View.fireHook('operator.body_start') }}
+
 <div id="header">
+    {{ View.fireHook('operator.header_start') }}
+
     {% block header %}
         <a href="{{ route('core.operator.dashboard') }}" class="logo left">
-            <img src="{{ asset_rev('resources/assets/operator/images/logo_icon.png') }}"
-                 alt="{{ Lang.get('core.product_name') }}" class="2x logo-icon" height="32" />
-            <img src="{{ asset_rev('resources/assets/operator/images/logo.png') }}"
-                 alt="{{ Lang.get('core.product_name') }}" class="2x logo-full hide" height="32" />
+            <img src="{{ get_icon('resources/assets/operator/images/logo_icon.png') }}"
+                 alt="{{ Config.get('settings.brand_name') }}" {% if Config.get('settings.operator_icon') is empty %}class="2x"{% endif %} height="32" />
         </a>
 
         <div class="opsettings right">
             <ul id="nav" class="dropdown2 dropdown-horizontal">
                 <li class="dir" aria-haspopup="true">
-                    <img src="data:image/png;base64,{{ auth_user().avatar }}" width="24" height="24"
+                    <img src="{{ auth_user().avatar_url }}" width="24" height="24"
                          alt="{{ Lang.choice('general.operator', 1) }}" class="avatar left"/>
                     &nbsp;
                     <i class="fa fa-chevron-down"></i>
@@ -72,9 +82,11 @@
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.personalsetting') }}">{{ Lang.get('user.personal_settings') }}</a>
                         </li>
+                        {% if isModuleEnabled('Ticket') %}
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.signature') }}">{{ Lang.choice('user.signature', 2) }}</a>
                         </li>
+                        {% endif %}
                         <li aria-haspopup="false">
                             <a href="{{ route('user.operator.logout') }}">{{ Lang.get('user.logout') }}</a>
                         </li>
@@ -86,6 +98,38 @@
         <div class="mobile-nav hide right">
             <i class="fa fa-bars"></i>
         </div>
+
+        {% if isModuleEnabled('Selfservice') and internalTypes.whereIn('brand_id', assignedBrands.pluck('id').all()).count() %}
+            <div class="selfservice right">
+                <ul id="nav" class="dropdown2 dropdown-horizontal">
+                    <li class="dir" aria-haspopup="true">
+                        <i class="fa fa-book left" aria-hidden="true"></i>
+                        &nbsp;
+                        <span>
+                        <i class="fa fa-chevron-down"></i>
+                        </span>
+
+                        <ul>
+                            {% for brand in assignedBrands %}
+                                {% if internalTypes.where('brand_id', brand.id).count() %}
+                                <li aria-haspopup="false">
+                                    <div class="brand">
+                                        <div class="title">{{ brand.name }}</div>
+                                        {% for type in internalTypes.where('brand_id', brand.id) %}
+                                            <a href="{{ type.content == 1 ? type.url : route('selfservice.operator.internal.index', {'brand': type.brand_id, 'type': type.slug}) }}"
+                                                {% if type.content == 1 %}target="_blank"{% endif %}>
+                                                {{ type.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
 
         <div class="divider right" id="privateMessages">
             <a href="{{ route('core.operator.message.index') }}">
@@ -213,7 +257,7 @@
                                 {% endif %}
                             {% endif %}
                             {% if auth_user().hasPermission('view.operator') %}
-                                <li aria-haspopup="false">
+                                <li aria-haspopup="false" id="manageOperatorSetting">
                                     <a href="{{ route('user.operator.operator') }}">
                                         {{ Lang.get('user.manage_operators') }}
                                     </a>
@@ -401,6 +445,8 @@
                     </li>
                 {% endif %}
 
+                {{ View.fireHook('operator.navigation') }}
+
                 <li class="dir mobile-only hide" aria-haspopup="false">
                     <a href="{{ route('user.operator.personalsetting') }}" class="nav">
                         {{ Lang.get('user.personal_settings') }}
@@ -419,15 +465,21 @@
             </ul>
         </div>
     {% endblock %}
+
+    {{ View.fireHook('operator.header_end') }}
 </div>
 
 <div class="clear"></div>
 
 <div id="content">
+    {{ View.fireHook('operator.wrapper_start') }}
+
     {% block sidebar %}
     {% endblock %}
 
     <div id="main">
+        {{ View.fireHook('operator.content_start') }}
+
         {% if Config.get('settings.maintenance_mode') %}
             <div class="box warning" style="margin-bottom: 0">
                 {{ Lang.get('messages.maintenance_mode') }}
@@ -438,6 +490,7 @@
         {% endblock %}
 
         <div class="desk_content_padding">
+            {{ View.fireHook('operator.content_inner_start') }}
 
             {% block pageTitle %}
                 {% if title is not empty %}
@@ -475,23 +528,39 @@
                 </div>
             {% endif %}
 
-            {% if errors|default is not empty and errors.has() %}
+            {% if errors|default is not empty and errors.count() %}
                 <div class="fail box">
                     <strong>{{ Lang.get('messages.please_correct') }}</strong><br />
-                    {% for error in errors.all() %}
+                    {% for error in errors.unique() %}
                         {{ Purifier.clean(error) }}<br />
                     {% endfor %}
                 </div>
             {% endif %}
 
             {% block content %}{% endblock %}
+
+            {{ View.fireHook('operator.content_inner_end') }}
         </div>
         <div class="clear"></div>
+
+        {{ View.fireHook('operator.content_end') }}
     </div>
+
+    {{ View.fireHook('operator.wrapper_end') }}
 </div>
 
-<!-- Laravel Javascript Validation -->
-<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/jquery-validation/js/jquery.validate.min.js')}}"></script>
+{{ View.fireHook('operator.footer') }}
+
+<!-- Vendor -->
+<script type="text/javascript">
+    paceOptions = {
+        "ajax": {
+            "ignoreURLs": [ "notification", "pollReplies" ]
+        }
+    }
+</script>
+<script type="text/javascript" src="{{ asset_rev('resources/assets/libs/common.min.js') }}"></script>
+<link href="{{ asset_rev('resources/assets/libs/css/common.min.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 
 <!-- Laravel Localisation -->
 <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/lang.min.js') }}"></script>
@@ -511,7 +580,6 @@
 </script>
 
 <!-- Timeago.js -->
-<script src="{{ asset_rev('resources/assets/libs/timeago.js/js/timeago.min.js') }}"></script>
 <script src="{{ asset_rev('resources/assets/general/js/main.js') }}"></script>
 
 <!-- Global Javascript Functions -->
@@ -535,11 +603,6 @@
 {% endif %}
 
 <!-- Notifications library -->
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.core.js') }}" type="text/javascript"></script>
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.buttons.js') }}" type="text/javascript"></script>
-<script src="{{ asset_rev('resources/assets/libs/pnotify/js/pnotify.desktop.js') }}" type="text/javascript"></script>
-<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.buttons.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
-<link href="{{ asset_rev('resources/assets/libs/pnotify/css/pnotify.core.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 <script src="{{ asset_rev('resources/assets/operator/js/notification.js') }}" type="text/javascript"></script>
 <script type="text/javascript">
     var notifications = new SupportPalNotifications({
@@ -550,10 +613,7 @@
     notifications.poll();
 </script>
 
-<!-- Pace - AJAX notifications -->
-<script data-pace-options='{ "ajax": { "ignoreURLs": [ "notification", "pollReplies" ] } }'
-        src="{{ asset_rev('resources/assets/libs/pace/js/pace.min.js') }}" type="text/javascript"></script>
-<link href="{{ asset_rev('resources/assets/operator/css/pace.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
+{{ View.fireHook('operator.body_end') }}
 
 </body>
 

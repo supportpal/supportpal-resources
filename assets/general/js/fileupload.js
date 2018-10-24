@@ -34,7 +34,8 @@ function FileUpload(parameters)
     /*
      * Instance variables.
      */
-    var total_files_uploaded = 0,
+    var self = this,
+        total_files_uploaded = 0,
         cumulative_file_size = 0,
         MAX_FILE_SIZE = FileUpload.MAX_FILE_SIZE,
         DEFAULT_OPTIONS = {
@@ -54,26 +55,14 @@ function FileUpload(parameters)
      */
     var $fileupload = settings.$element.fileupload($.extend({}, DEFAULT_OPTIONS, settings.blueimp, {
         add: function (e, data) {
-            var $container = settings.$container,
-                $this = $(this),
+            var $this = $(this),
                 that = $this.data('blueimp-fileupload') || $this.data('fileupload'),
                 options = that.options;
 
             // Foreach file add it to the DOM
             $.each(data.files, function (index, file) {
-                var ul = $container.find('.attached-files');
-
-                // Copy the first li instance
-                ul.find('li:first').clone(true).appendTo(ul);
-
-                // Set the file information
-                ul.find('li:last span.information span.filename').text(file.name);
-                ul.find('li:last span.information span.filesize').text('(' + file.size.fileSize() + ')');
-                ul.find('li:last').removeClass('hide');
-                ul.find('li:last .deleteAttachment').hide();
-
-                // Set the context of this file upload (where it is in the DOM) so we can manipulate it later
-                data.context = ul.find('li:last');
+                // Add file information to the view.
+                data.context = self.addFile(file.name, file.size);
 
                 // Increment the counter
                 total_files_uploaded++;
@@ -114,17 +103,16 @@ function FileUpload(parameters)
             
             // Calculate cumulative size of attachments.
             $.each(data.files, function (index, file) {
-                cumulative_file_size += file.size;
-                $(data.context).find('.deleteAttachment').data('size', file.size);
+                self.incrementTotalUploadedFileSize(file.size);
             });
             
             // Block upload that exceed the cumulative limit.
             if (typeof options.cumulativeMaxFileSize !== 'undefined'
-                && cumulative_file_size > options.cumulativeMaxFileSize
+                && self.totalUploadedFileSize() > options.cumulativeMaxFileSize
             ) {
                 handleFailedUpload(
                     data,
-                    Lang.get('core.attachment_limit_reached', { size: MAX_FILE_SIZE.fileSize() }),
+                    Lang.get('core.attachment_limit_reached', { size: options.cumulativeMaxFileSize.fileSize() }),
                     $this
                 );
 
@@ -141,21 +129,8 @@ function FileUpload(parameters)
                     return true; // continue;
                 }
 
-                // The file successfully uploaded
-                $(data.context).find('.progress').hide();
-                $(data.context).find('.deleteAttachment').show();
-                $(data.context).find('.deleteAttachment').data('id', file.id);
-                $(data.context).find('.deleteAttachment').data('hash', file.hash);
-                $(data.context).find('.deleteAttachment').data('url', file.delete_url);
-
-                // Create attachment input - we use this to link it to the ticket message
-                var input = settings.$container.find('input[name="' + settings.inputName + '[]"]')
-                        .clone()
-                        .removeAttr('disabled')
-                        .appendTo( settings.$container.find('.attachment-details') );
-                input.attr('name', settings.inputName + '[' + file.hash + ']');
-                input.attr('id', settings.inputName + '[' + file.hash + ']');
-                input.val(file.filename);
+                // The file successfully uploaded.
+                self.registerFile($(data.context), file.filename, file.hash, file.delete_url);
             });
 
             // Renable the form after all files have uploaded.
@@ -187,7 +162,7 @@ function FileUpload(parameters)
         
         // Decrement cumulative file size count.
         $.each(data.files, function (index, file) {
-            cumulative_file_size -= file.size;
+            self.decrementTotalUploadedFileSize(file.size);
         });
 
         // Remove the list item
@@ -218,6 +193,121 @@ function FileUpload(parameters)
     };
 
     /**
+     * The cumulative max file size if it's been set.
+     */
+    this.cumulativeMaxFileSize = settings.blueimp.cumulativeMaxFileSize;
+
+    /**
+     * Get the cumulative size of all uploaded files.
+     *
+     * @returns {number}
+     */
+    this.totalUploadedFileSize = function ()
+    {
+        return cumulative_file_size;
+    };
+
+    /**
+     * Increment the total size of files that have been uploaded.
+     *
+     * @param size
+     */
+    this.incrementTotalUploadedFileSize = function (size)
+    {
+        cumulative_file_size += size;
+    };
+
+    /**
+     * Decrement the total size of files that have been uploaded.
+     *
+     * @param size
+     */
+    this.decrementTotalUploadedFileSize = function (size)
+    {
+        cumulative_file_size -= size;  
+    };
+
+    /**
+     * Show an uploaded file in the view.
+     *
+     * @param filename
+     * @param filesize
+     * @return {*|jQuery}
+     */
+    this.addFile = function (filename, filesize)
+    {
+        var ul = settings.$container.find('.attached-files');
+
+        // Copy the first li instance
+        ul.find('li:first').clone(true).appendTo(ul);
+
+        // Set the file information
+        ul.find('li:last span.information span.filename').text(filename);
+        ul.find('li:last span.information span.filesize').text('(' + filesize.fileSize() + ')');
+        ul.find('li:last').removeClass('hide');
+        ul.find('li:last .deleteAttachment').attr('data-size', filesize).hide();
+        
+        return ul.find('li:last');
+    };
+
+    /**
+     * Register a completed upload.
+     *
+     * @param $item
+     * @param filename
+     * @param hash
+     * @param delete_url
+     */
+    this.registerFile = function ($item, filename, hash, delete_url)
+    {
+        // The file successfully uploaded
+        $item.find('.progress').hide();
+        $item.find('.deleteAttachment').show();
+        $item.find('.deleteAttachment').data('hash', hash);
+        $item.find('.deleteAttachment').data('url', delete_url);
+
+        // Create attachment input - we use this to link it to the ticket message
+        var input = settings.$container.find('input[name="' + settings.inputName + '[]"]')
+            .clone()
+            .removeAttr('disabled')
+            .appendTo( settings.$container.find('.attachment-details') );
+        input.attr('name', settings.inputName + '[' + hash + ']');
+        input.attr('id', settings.inputName + '[' + hash + ']');
+        input.val(filename);
+    };
+
+    /**
+     * Delete a file that hasn't been attached to a final record (uploaded but form hasn't been submit). May have been
+     * attached to a draft so we do still need to feed an ID if we have.
+     *
+     * @param context
+     * @param silent
+     */
+    this.deleteNewFile = function (context, silent)
+    {
+        var data = [];
+        data.push({ name: 'hash', value: $(context).data('hash') });
+        if (typeof $(context).data('attachment-id') !== 'undefined') {
+            data.push({ name: 'id', value: $(context).data('attachment-id') });
+        }
+
+        return FileUpload.deleteAttachment(
+            context,
+            $(context).data('url'),
+            data,
+            $(context).parents('li'),
+            function(context) {
+                settings.$container.find('input[name="' + settings.inputName + '['+ $(context).data().hash +']"]')
+                    .remove();
+
+                // Decrement cumulative file size.
+                self.decrementTotalUploadedFileSize($(context).data('size'));
+            },
+            silent
+        );
+    };
+
+    /**
      * Register file upload events.
      *
      * @return void
@@ -228,11 +318,16 @@ function FileUpload(parameters)
          * Handle deleting an existing attachment that belongs to a ticket message.
          */
         $(document).on('click', '.message .deleteAttachment', function (e) {
+            var data = [];
+            data.push({ name: 'id', value: $(this).data('attachment-id') });
+            if (typeof $(this).data('token') !== 'undefined') {
+                data.push({ name: 'token', value: $(this).data('token') });
+            }
 
             FileUpload.deleteAttachment(
                 this,
                 $(this).data('url'),
-                $(this).data('hash'),
+                data,
                 $(this).parents('li'),
                 function(context) {
                     // Grab the message that the attachment belongs to
@@ -244,29 +339,17 @@ function FileUpload(parameters)
                     }
                     
                     // Decrement cumulative file size.
-                    cumulative_file_size -= $(context).data('size');
-                }
+                    self.decrementTotalUploadedFileSize($(context).data('size'));
+                },
+                false
             );
         });
 
         /**
          * Handle removing attachments from a new ticket reply (they aren't actually associated with anything yet).
          */
-        $(document).on('click', '.attached-files .deleteAttachment', function () {
-
-            FileUpload.deleteAttachment(
-                this,
-                $(this).data('url'),
-                $(this).data('hash'),
-                $(this).parents('li'),
-                function(context) {
-                    settings.$container.find('input[name="' + settings.inputName + '['+ $(context).data().hash +']"]')
-                        .remove();
-
-                    // Decrement cumulative file size.
-                    cumulative_file_size -= $(context).data('size');
-                }
-            );
+        $(settings.$container).on('click', '.attached-files .deleteAttachment', function () {
+            self.deleteNewFile(this, $(this).data('silent') === true);
         });
 
         /*
@@ -314,51 +397,63 @@ FileUpload.MAX_FILE_SIZE = Number($('meta[name="max_file_size"]').prop('content'
 /*
  * Static FileUpload functions.
  */
-FileUpload.deleteAttachment = function (context, url, hash, $listItem, successCallback) {
+FileUpload.deleteAttachment = function (context, url, data, $listItem, successCallback, silent) {
 
-    swal({
-        title: Lang.get('messages.are_you_sure'),
-        text: Lang.get('messages.warn_delete'),
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: Lang.get('messages.yes_im_sure'),
-        closeOnConfirm: false
-    }, function() {
+    var name = $('<div/>').text($listItem.find('.filename').text()).html(),
+        success = function () {
+            // Call the success callback
+            if (typeof successCallback === 'function') {
+                successCallback.call(this, context);
+            }
 
-        swal.disableButtons();
+            // Remove the list item from the interface
+            if (! silent) {
+                swal(
+                    Lang.get('messages.deleted'),
+                    Lang.get('messages.success_deleted', {'item': Lang.choice('general.attachment', 1)}),
+                    'success'
+                );
+            }
 
-        // DELETE the file!
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            data: { 'hash': hash },
-            success: function(result) {
-                if (result.success == true
-                    && (typeof $listItem !== 'undefined' && $listItem instanceof jQuery)
-                ) {
-                    // Call the success callback
-                    if (typeof successCallback === 'function') {
-                        successCallback.call(this, context);
-                    }
-
-                    // Remove the list item from the interface
-                    swal(
-                        Lang.get('messages.deleted'),
-                        Lang.get('messages.success_deleted', {'item': Lang.choice('general.attachment', 1)}),
-                        'success'
-                    );
-
-                    $listItem.remove();
-                }
-            },
-            error: function( jqXHR, textStatus, errorThrown ) {
+            $listItem.remove();
+        },
+        error = function () {
+            if (! silent) {
                 swal(
                     Lang.get('messages.error'),
-                    Lang.get('messages.error_deleted', {'item':Lang.choice('general.attachment', 1)}),
+                    Lang.get('messages.error_deleted', {'item': Lang.choice('general.attachment', 1)}),
                     'error'
                 );
             }
+        },
+        destroy = function () {
+            // Special case, if there's no URL then there's no database record so just remove the item from the view.
+            if (typeof url === 'undefined') {
+                return success();
+            } else {
+                return $.ajax({ url: url, type: 'DELETE', data: data }).then(
+                    function (result) {
+                        if (result.success == true) {
+                            success();
+                        } else {
+                            error();
+                        }
+                    },
+                    function (jqXHR, textStatus, errorThrown) {
+                        error();
+                    }
+                );
+            }
+        };
+
+    // Send AJAX call to delete the attachment.
+    if (! silent) {
+        swal(deleteAlert.getDefaultOpts(Lang.choice('general.attachment', 1), name), function () {
+            deleteAlert.disableButtons();
+
+            destroy();
         });
-    });
+    } else {
+        return destroy();
+    }
 };

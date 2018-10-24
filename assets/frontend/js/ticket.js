@@ -7,6 +7,9 @@ $(document).ready(function() {
     // Enable hide / show password toggle
     callHideShowPassword();
 
+    // Load attachment previews
+    loadAttachmentPreviews($('.message'));
+
     // Ajax load messages.
     $(document).on('click', '.show_message', function (e) {
         e.preventDefault();
@@ -46,14 +49,20 @@ $(document).ready(function() {
     });
 
     // Redactor
-    redactor = $('textarea[name=text]').redactor($.extend($.Redactor.default_opts, { focus: true }));
+    redactor = $('textarea[name=text]').redactor($.Redactor.default_opts);
 
     // Regex for email
     var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
     // CC email input
     $('select[name="cc[]"]').selectize({
-        plugins: ['restore_on_backspace', 'remove_button'],
+        plugins: {
+            'restore_on_backspace': {},
+            'remove_button': {},
+            'max_items': {
+                'message': Lang.get('general.show_count_more')
+            }
+        },
         delimiter: ',',
         persist: false,
         dropdownParent: 'body',
@@ -161,7 +170,7 @@ function saveMessage(form) {
         dataType: 'json'
     }).done(function(response) {
         if (response.status == 'success') {
-            $('.ticket-update.success').show(500).delay(5000).hide(500);
+            $('.ticket-reply.success').show(500).delay(5000).hide(500);
 
             // Show new message
             showMessage(response.data.view);
@@ -176,18 +185,18 @@ function saveMessage(form) {
             $('.ticket-status').text(response.data.status_name);
             $('.ticket-status').css("background-color", response.data.status_colour);
         } else {
-            if (typeof response.message != 'undefined') {
+            if (typeof response.message != 'undefined' && response.message != '') {
                 // Custom message
                 $('.ticket-custom.fail').text(response.message).show(500).delay(5000).hide(500);
             } else {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                $('.ticket-reply.fail').show(500).delay(5000).hide(500);
             }
             // Re-enable textarea
             form.find('textarea[name="text"]').prop('disabled', false);
         }
     }).fail(function() {
         // Show error
-        $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        $('.ticket-reply.fail').show(500).delay(5000).hide(500);
         // Re-enable textarea
         form.find('textarea[name="text"]').prop('disabled', false);
     }).always(function() {
@@ -274,9 +283,59 @@ function showMessage(message) {
     // Show new message
     var message = $(message).insertAfter($('.message').last());
 
+    // Load attachment previews if needed
+    loadAttachmentPreviews(message);
+
     // Special effects
     message.css('border-left','3px solid #a4d0e9');
     setTimeout(function(){ message.css('border-left','0'); }, 10000);
     message.css('background','#e5f1f9');
     setTimeout(function(){ message.css('background',''); }, 10000);
+}
+
+
+/**
+ * Load attachment previews within message div if needed.
+ *
+ * @param $message
+ */
+function loadAttachmentPreviews(message) {
+    // Preview certain attachments
+    $(message).find(".attachments").lightGallery({
+        selector: '.attachment-preview',
+        counter: false
+    });
+
+    // Load preview image if it exists
+    $(message).find('span[data-preview-url]').each(function(index) {
+        var $this = $(this);
+
+        // Set it in image so it tries to download it
+        $('<img>').attr("src", $this.data('preview-url')).prependTo($(this));
+
+        // Handle image load/error
+        $(this).find('img').bind('load', function() {
+            // Handler for .load() called.
+            $this.find('.fa').remove();
+        }).bind('error', function() {
+            // If 404 or other error
+            // Replace preview link with download link
+            $this.parents('a').removeClass('attachment-preview').attr('href', $this.data('download-url'));
+            $this.parents('li').find('.preview-hover strong').html('<i class="fa fa-download"></i> &nbsp; '
+                + Lang.get('general.download'));
+
+            // Stop the lightbox working for this item
+            var $lg = $this.parents('.attachments');
+            $lg.data('lightGallery').destroy(true);
+            $lg.lightGallery({
+                selector: '.attachment-preview',
+                counter: false
+            });
+
+            // Show the default icon
+            $this.replaceWith('<span class="fiv-viv fiv-icon-' + $this.data('icon') + '"></span>');
+        })
+
+        $(this).removeAttr('data-preview-url');
+    });
 }

@@ -1,10 +1,11 @@
-{% extends 'errors.error' %}
+{% extends parent_template %}
 
 {% block title %}
     404 - {{ Lang.get('messages.page_not_found') }}
 {% endblock %}
 
-{% block header %}
+{% block breadcrumb %}
+    {{ parent() }}
     {{ Lang.get('messages.error') }} (404)
 {% endblock %}
 
@@ -12,6 +13,6 @@
 
     <p>{{ Lang.get('messages.cant_find_page') }} {{ Lang.get('messages.please_report') }}</p>
 
-    <p>{{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ mb_strtolower(Lang.get('general.support_portal'), 'UTF-8') ~ '</a>'})|raw }}</p>
+    {{ Lang.get('messages.return_to', {'page': '<a href="' ~ route('core.frontend.home') ~ '">' ~ mb_strtolower(Lang.get('general.support_portal'), 'UTF-8') ~ '</a>'})|raw }}
 
 {% endblock %}

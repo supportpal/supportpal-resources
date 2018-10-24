@@ -26,7 +26,7 @@
     <div class="form-row">
         {{ form_label('firstname', Lang.get('user.firstname')) }}
         <div class="input-container">
-            {{ form_text('firstname', null, {'size': 30}) }}
+            {{ form_text('firstname', null, record.exists ? {'size': 30} : {'autofocus': 'autofocus', 'size': 30}) }}
         </div>
     </div>
 
@@ -40,7 +40,11 @@
     <div class="form-row">
         {{ form_label('email', Lang.get('general.email')) }}
         <div class="input-container">
-            {{ form_email('email', record.email, {size: 45}) }}
+            {% set emailAttributes = { size: 45 } %}
+            {% if auth_check() and record.id == auth_user().id and auth_user().loggedInViaSSO() %}
+                {% set emailAttributes = emailAttributes|merge({ 'readonly': 'readonly' }) %}
+            {% endif %}
+            {{ form_email('email', record.email, emailAttributes) }}
         </div>
     </div>
 
@@ -121,9 +125,7 @@
     <div class="form-row">
         {{ form_label('avatar', Lang.get('user.avatar')) }}
         <div class="input-container">
-            {% if record.avatar|default is not empty %}
-                <img class="avatar" src="data:image/jpeg;base64, {{ record.avatar }}" />
-            {% endif %}
+            <img class="avatar" src="{{ record.avatar_url }}" />
             {{ form_file('avatar') }}
         </div>
     </div>
@@ -160,7 +162,7 @@
     <div class="form-row form-customfields">
         {{ form_label('notes', Lang.choice('general.note', 2)) }}
         <div class="input-container">
-            {{ form_textarea('notes') }}
+            {{ form_redactor('notes') }}
         </div>
     </div>
     {% endif %}

@@ -2,6 +2,12 @@
     {{ form_label('opsettings[email_notifications]', Lang.get('user.email_notifications')) }}
     <div class="input-container">
         <div class="input-group">
+            <div class="description">
+                <button class="as-link check_all">{{ Lang.get('general.check_all') }}</button>
+                &nbsp;|&nbsp;
+                <button class="as-link uncheck_all">{{ Lang.get('general.uncheck_all') }}</button>
+            </div>
+            {% if isModuleEnabled('Ticket') %}
             <label>
                 {{ form_check(
                     'opsettings[email_notifications][ticket]',
@@ -12,6 +18,8 @@
                 ) }}
                 {{ Lang.choice('ticket.ticket', 2) }}
             </label><br />
+            {% endif %}
+            {% if auth_user().id != record.id or auth_user().hasPermission('update.operator') %}
             <label>
                 {{ form_check(
                     'opsettings[email_notifications][login]',
@@ -21,7 +29,11 @@
                         : 1
                 ) }}
                 {{ Lang.get('notification.failed_logins') }}
+                {% if auth_user().id != record.id %}
+                    <span class="description">&nbsp;({{ Lang.get('user.must_have_permission', {'permission': Lang.get('permission.operator')}) }})</span>
+                {% endif %}
             </label><br />
+            {% endif %}
             <label>
                 {{ form_check(
                     'opsettings[email_notifications][comment]',

@@ -1,7 +1,7 @@
     <div class="form-row">
         {{ form_label('firstname', Lang.get('user.firstname')) }}
         <div class="input-container">
-            {{ form_text('firstname', null, { 'size': '50%' }) }}
+            {{ form_text('firstname', null, record.exists ? { 'size': '50%' } : { 'autofocus': 'autofocus', 'size': '50%' }) }}
         </div>
     </div>
 
@@ -15,7 +15,11 @@
     <div class="form-row">
         {{ form_label('email', Lang.get('general.email')) }}
         <div class="input-container">
-            {{ form_email('email', null, { 'size': '50%' }) }}
+            {% set emailAttributes = { 'size': '50%' } %}
+            {% if auth_check() and auth_user().loggedInViaSSO() %}
+                {% set emailAttributes = emailAttributes|merge({ 'readonly': 'readonly' }) %}
+            {% endif %}
+            {{ form_email('email', null, emailAttributes) }}
         </div>
     </div>
 
@@ -70,9 +74,7 @@
     <div class="form-row">
         {{ form_label('avatar', Lang.get('user.avatar')) }}
         <div class="input-container">
-            {% if record.avatar|default is not empty %}
-                <img class="avatar" src="data:image/jpeg;base64, {{ record.avatar }}" />
-            {% endif %}
+            <img class="avatar" src="{{ record.avatar_url }}" />
             {{ form_file('avatar') }}
         </div>
     </div>

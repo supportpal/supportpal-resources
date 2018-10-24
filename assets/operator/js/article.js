@@ -42,6 +42,9 @@ function Article(parameters)
                     return;
                 }
 
+                // Reset form validation, the slug may now be valid.
+                $('form.validate').validate().resetForm();
+
                 // Load the categories for the selected self-service type.
                 select_categories = select_categories[0].selectize;
 
@@ -122,19 +125,6 @@ $(document).ready(function() {
      */
     var article = new Article({ 'className': '.category' });
 
-    // Focus the article title.
-    $('input[name="title"]').focus();
-
-    /*
-     * Remove the dummy element when submitting the form...
-     */
-    $('form#articleForm').submit(function() {
-        $('select[name^="category[]["]').remove();
-
-        // Return true to send the form.
-        return true;
-    });
-
     /*
      * Add a new type selection
      */
@@ -179,20 +169,35 @@ $(document).ready(function() {
         valueField: 'id',
         labelField: 'name',
         searchField: 'name',
-        create: true,
+        create: tagPermission ? true : false,
         createFilter: function(input) {
             return input.length <= 45;
         },
         maxItems: null,
         placeholder: Lang.get("selfservice.associate_tag")
     });
+    
+    // Only show published_at when article is published.
+    $('#toggle_published').on('change', function () {
+        var $published_at = $('.published_at');
+        if (this.checked) {
+            $published_at.show();
+            $published_at.find(':input').removeAttr('disabled');
 
-    /*
-     * Only show the toggle_protected row if the article is published
-     */
-    $('#toggle_public').on('change', function() {
-        var $container = $('#toggle_protected_container');
-        this.checked ? $container.show() : $container.hide();
+            // If the article is currently not published
+            if ($published_at.hasClass('not-published')) {
+                // Update the pickers to the current date and time.
+                var date = new Date();
+                $published_at.find('.datepicker').data('pikaday').setDate(date);
+                $published_at.find('.timepicker').timepicker('setTime', date);
+
+                // Remove class so it doesn't automatically get set if it's toggled again
+                $published_at.removeClass('not-published');
+            }
+        } else {
+            $published_at.hide();
+            $published_at.find(':input').prop('disabled', 'disabled');
+        }
     });
 
 });

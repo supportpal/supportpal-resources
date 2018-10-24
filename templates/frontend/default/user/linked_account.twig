@@ -1,0 +1,46 @@
+{% extends parent_template %}
+
+{% block title %}{{ Lang.get('user.linked_accounts') }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    {{ Lang.get('user.linked_accounts') }}
+{% endblock %}
+
+{% block content %}
+
+    {% if not socialite_providers.isEmpty() %}
+        <div class="textcenter">
+            {% for provider, metadata in all_providers %}
+                {% if socialite_providers.contains('name', provider) %}
+                    &nbsp;
+                    <a href="{{ route('user.oauth_redirect', {'provider': provider}) }}" class="social-login" style="background: {{ metadata.colour }};">
+                        <span class="icon">
+                            <i class="fa fa-{{ provider }} fa-fw"></i>
+                        </span> &nbsp;
+                        {{ Lang.get('user.login_via', {'provider': metadata.name }) }}
+                    </a>
+                    &nbsp;
+                {% endif %}
+            {% endfor %}
+
+            <hr />
+        </div>
+    {% endif %}
+
+    {{ table.render()|raw }}
+    {{ table.script()|raw }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript">
+        deleteAlert.translationKeys.title = 'user.unlink_account';
+        deleteAlert.translationKeys.warning = 'user.unlink_account_warning';
+        deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+        deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+        var unlinkRoute = "{{ route('user.linked_account.unlink') }}";
+    </script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/linked_account.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends parent_template %}
+
+{% block title %}
+	{{ type.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {% if auth_user().hasPermission('create.article') %}
+        <a href="{{ route('selfservice.operator.article.create', { 'type': type.id }) }}" class="manage-article right">
+            <i class="fa fa-plus"></i>&nbsp;
+            {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
+        </a>
+    {% endif %}
+
+    {{ parent() }}
+    {{ type.name }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.selfservice.internal.sidebar' %}
+{% endblock %}
+
+{% block content %}
+
+	{# Show all the parent categories #}
+
+    {% include 'operator.' ~ template ~ '.selfservice.internal.category_list' with { 'categories': parent_categories } %}
+
+    <br /><br />
+
+	{# Latest / Most Popular articles #}
+
+	<ul class="tabs">
+		<li id="Popular" class="active">{{ Lang.get('selfservice.popular_items') }}</li>
+		<li id="Latest">{{ Lang.get('selfservice.latest_items') }}</li>
+	</ul>
+
+    <div id="tabPopular" class="tabContent">
+        {% include 'operator.' ~ template ~ '.selfservice.internal.article_list' with { 'articles': popular } %}
+    </div>
+    <div id="tabLatest" class="tabContent hide">
+        {% include 'operator.' ~ template ~ '.selfservice.internal.article_list' with { 'articles': latest } %}
+    </div>
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/selfservice.css') }}">
+{% endblock %}

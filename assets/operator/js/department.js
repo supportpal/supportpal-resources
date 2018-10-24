@@ -137,13 +137,13 @@ jQuery(function($){
          render: {
              item: function(item, escape) {
                  return '<div class="item">'
-                     + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                     + '<img class="avatar" src=' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                      + escape(item.formatted_name)
                      + '</div>';
              },
              option: function(item, escape) {
                  return '<div>'
-                     + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                     + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                      + escape(item.formatted_name)
                      + '</div>';
              }
@@ -164,13 +164,13 @@ jQuery(function($){
         render: {
             item: function(item, escape) {
                 return '<div class="item">'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             },
             option: function(item, escape) {
                 return '<div>'
-                    + '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;'
+                    + '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;'
                     + escape(item.formatted_name)
                     + '</div>';
             }
@@ -261,6 +261,11 @@ jQuery(function($){
     $('input[name="disable_user_email_replies"]').on('change', function () {
         $('#disableRepliesTemplate').toggle();
     });
+
+    // Handle Registered Users Only.
+    $('input[name="registered_only"]').on('change', function () {
+        $('#registeredOnlyTemplate').toggle();
+    });
     
     // Convert email template dropdowns to use selectize.
     $('.department-templates').find('select').selectize({
@@ -280,7 +285,7 @@ function addNewEmail()
     var $selectize = initBrandDropdown('select[name="emails['+index+'][brand_id]"]');
 
     // Clear the selected values (fix the "fix for firefox" in addNewItem).
-    if (typeof $selectize[0] !== 'undefined') {
+    if (typeof $selectize !== 'undefined') {
         $selectize[0].selectize.clear();
     }
 }

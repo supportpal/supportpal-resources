@@ -10,7 +10,6 @@
         {% block title %}{{ Lang.get('messages.error') }}{% endblock %}
     </title>
 
-    <link href="{{ asset_rev('resources/assets/libs/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset_rev('resources/assets/operator/css/error.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
@@ -27,6 +26,10 @@
 
         </div>
     </div>
+
+    <script src="{{ asset_rev('resources/assets/libs/jquery/js/jquery.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/common.min.js') }}"></script>
+    <link href="{{ asset_rev('resources/assets/libs/css/common.min.css') }}" rel="stylesheet" type="text/css" property="stylesheet" />
 
 </body>
 

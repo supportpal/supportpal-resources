@@ -27,16 +27,15 @@
     {% if attachments is not empty and not attachments.isEmpty() %}
         {% for attachment in attachments %}
             <li>
-                <i class="fa fa-paperclip"></i>
+                <i class="fa fa-file"></i>
                 &nbsp;
-                <a href='{{ route(downloadRoute, [ attachment.upload_hash ]) }}'>
-                    {{ attachment.original_name }}
-                </a>
+                <a href='{{ route(downloadRoute, [ attachment.upload_hash ]) }}'>{{ attachment.original_name }}</a>
                 &nbsp;
                 ({{ attachment.upload.size }})
-                &nbsp;
-                <i class="fa fa-times deleteAttachment"
-                   data-url="{{ route(route ~ ".destroy") }}"
+
+                <i class="fa fa-times deleteAttachment right"
+                   {% if deleteFromServer is not defined or deleteFromServer %}data-url="{{ route(route ~ ".destroy") }}"{% endif %}
+                   data-attachment-id="{{ attachment.id }}" 
                    data-hash="{{ attachment.upload_hash }}"></i>
             </li>
         {% endfor %}
@@ -48,12 +47,10 @@
                 <span class="information">
                     <span class="filename ellipsis">{{ file }}</span>
                 </span>
+
                 <i class="fa fa-times deleteAttachment right"
-                    data-url="{{ route(route ~ ".destroy") }}"
+                   {% if deleteFromServer is not defined or deleteFromServer %}data-url="{{ route(route ~ ".destroy") }}"{% endif %}
                     data-hash="{{ hash }}"></i>
-                <div class="progress">
-                    <div class="bar"></div>
-                </div>
             </li>
         {% endfor %}
     {% endif %}
@@ -67,14 +64,3 @@
     <i class="fa fa-paperclip"></i>&nbsp; {{ Lang.get('general.add_attachment') }}
     <input class="fileupload" type="file" name="files[]" data-url="{{ route(route ~ ".upload") }}" multiple="multiple">
 </label>
-
-<!-- Sweet alert 2 -->
-<script>
-    // Load JavaScript
-    window.swal || document.write('<script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}">\x3C/script>');
-
-    // Load CSS
-    var path = '{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}';
-    if (!$("link[href='"+path+"']").length)
-        $('<link href="'+path+'" rel="stylesheet">').appendTo("head");
-</script>

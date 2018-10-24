@@ -42,7 +42,6 @@ return array(
     "time"                      => "Time",
     "id"                        => "ID",
     "log"                       => "Log",
-    "event"                     => "Event",
     "filter"                    => "Filter",
     "ip_address"                => "IP Address",
     "ip"                        => "IP",
@@ -287,6 +286,42 @@ return array(
     "sunday"                    => "Sunday",
     "inactive"                  => "Inactive",
     "run"                       => "Run",
+    
+    /*
+     * 2.3.0
+     */
+    "regex"                     => "Regex Validation",
+    "check_all"                 => "Check All",
+    "uncheck_all"               => "Uncheck All",
+    "after_and_including"       => "After (and including)",
+    "add_link"                  => "Add Link",
+    "unlink"                    => "Unlink",
+    "link"                      => "Link",
+
+    /*
+     * 2.3.1
+     */
+    "clone"                     => "Clone",
+    "created_date"              => "Created Date",
+    "alphabetical"              => "Alphabetical",
+    "random"                    => "Random",
+    "blocked"                   => "Blocked",
+    "private_to"                => "Private to",
+    "refresh"                   => "Refresh",
+    "provider"                  => "Provider|Providers",
+    "export"                    => "Export|Exports",
+    "generate"                  => "Generate",
+    "entry"                     => "Entry",
+
+    /*
+     * 2.4.0
+     */
+    "show_count_more"           => "Show :count more...",
+    "manual"                    => "Manual",
+    "automatic"                 => "Automatic",
+    "hook"                      => "Hook",
+    "event"                     => "Event|Events",
+    "test"                      => "Test",
 
     /*
      * 2.3.1

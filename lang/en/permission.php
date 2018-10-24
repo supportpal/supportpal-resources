@@ -95,4 +95,10 @@ return array(
     // Core
     "logfiles"          => "Manage Log Files",
 
+    /*
+     * 2.4.0
+     */
+    // User
+    "sociallogin"       => "Manage Social Login",
+
 );

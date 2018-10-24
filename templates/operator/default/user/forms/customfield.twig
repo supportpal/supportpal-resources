@@ -41,7 +41,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -52,6 +52,12 @@
                     <span class="description">{{ Lang.get('customfield.description_desc') }}</span>
                 </div>
             </div>
+            
+        </div>
+
+        <h2>{{ Lang.get('general.type') }}</h2>
+    
+        <div class="form-container first open">
 
             <div class="form-row">
                 {{ form_label('type', Lang.get('general.type')) }}
@@ -67,42 +73,62 @@
                         '7': Lang.get('customfield.radio'),
                         '8': Lang.get('customfield.text'),
                         '9': Lang.get('customfield.textarea')
-                    }, null, typeLocked is defined and typeLocked ? {'disabled': 'disabled'} : {}) }}
-                    {% if typeLocked %}
+                    }, null, record|default is not empty and record.exists ? {'disabled': 'disabled'} : {}) }}
+                    {% if record|default is not empty and record.exists %}
                         {{ form_hidden('type') }}
                     {% endif %}
                 </div>
             </div>
 
-            <div class="customfield-options {% if record.type != 2 and record.type != 4 and record.type != 5 and record.type != 7 %}hide{% endif %}">
+            <div class="customfield-options {% if form_getValueAttribute('type') not in [2,4,5,7] %}hide{% endif %}">
 
-                {% include 'operator.' ~ template ~ '.forms.customfield_option' with { 'hide': true } %}
+                <div id="sortable">
+                    {% include 'operator.' ~ template ~ '.forms.customfield_option' with { 'hide': true } %}
 
-                {% for key, option in record.options %}
-                    {% include 'operator.' ~ template ~ '.forms.customfield_option' %}
-                {% endfor %}
+                    {% for key, option in form_getValueAttribute('options') %}
+                        {% include 'operator.' ~ template ~ '.forms.customfield_option' %}
+                    {% endfor %}
+                </div>
 
                 <div class="form-row">
-                    <div class="input-container">
+                    <div class="input-container field-add-option">
                         {{ form_button(Lang.get('general.add_item', {'item': Lang.get('general.option')}), { 'class': 'add-option' }) }}
+                        {% if record.exists and record.options is not empty %}
+                            <div class="note box bottombox">
+                                <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('customfield.option_warning') }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
             </div>
 
-            {% if brand_count() > 1 %}
-                <div class="form-row">
-                    {{ form_label('brand[]', Lang.choice('core.brand', 2)) }}
-                    <div class="input-container">
-                        {{ form_select('brand[]', brand_config(null).pluck('name', 'id'), recordBrands, {'multiple': 'multiple'}) }}
-                        <span class="description">{{ Lang.get('customfield.brand_desc') }}</span>
-                    </div>
-                </div>
-            {% else %}
-                <input type="hidden" name="brand[]" value="{{ brand_config(null)|first.id }}" />
-            {% endif %}
+        </div>
 
-            <div class="form-row required-field {% if record.type == 1 or record.type == 2 or record.type == 4 %}hide{% endif %}">
+        {% set searchRoute = organisations ? 'user.operator.organisationcustomfield.search' : 'user.operator.customfield.search' %}
+        {% include 'operator.' ~ template ~ '.forms.customfield_depends' with {'route': searchRoute} %}
+
+        {% include 'operator.' ~ template ~ '.forms.customfield_regex' %}
+            
+        <h2>{{ Lang.get('customfield.options') }}</h2>
+    
+        <div class="form-container first open">
+
+            <div class="visibility" {% if record.depends_on_option_id is not empty %}style="display: none"{% endif %}>
+                {% if brand_count() > 1 %}
+                    <div class="form-row">
+                        {{ form_label('brand[]', Lang.choice('core.brand', 2)) }}
+                        <div class="input-container">
+                            {{ form_select('brand[]', brand_config(null).pluck('name', 'id'), recordBrands, {'multiple': 'multiple'}) }}
+                            <span class="description">{{ Lang.get('customfield.brand_desc') }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <input type="hidden" name="brand[]" value="{{ brand_config(null)|first.id }}" />
+                {% endif %}
+            </div>
+
+            <div class="form-row required-field">
                 {{ form_label('required', Lang.get('general.required')) }}
                 <div class="input-container">
                     {{ form_check('required', 1, record.required|default is not empty ? record.required : 0, { 'class': 'toggle', 'id': 'toggle_required' }) }}
@@ -122,11 +148,20 @@
                 </div>
             </div>
 
-            <div class="form-row encrypt-field {% if record.type != 6 and record.type != 8 and record.type != 9 %}hide{% endif %}">
+            <div class="form-row encrypt-field {% if form_getValueAttribute('type') not in [6,8,9] %}hide{% endif %}">
                 {{ form_label('encrypted', Lang.get('customfield.encrypted')) }}
                 <div class="input-container">
-                    {{ form_check('encrypted', 1, record.encrypted|default is not empty ? record.encrypted : 0, { 'class': 'toggle', 'id': 'toggle_encrypted' }) }}
-                    <label for="toggle_encrypted"></label>
+                    {% if record|default is not empty and record.exists %}
+                        <input type="hidden" name="encrypted" value="{{ record.encrypted }}" />
+                        {% if record.encrypted %}
+                            <strong style="color: #27ae60;">{{ Lang.get('general.yes') }}</strong>
+                        {% else %}
+                            <strong style="color: #c0392b;">{{ Lang.get('general.no') }}</strong>
+                        {% endif %}
+                    {% else %}
+                        {{ form_check('encrypted', 1, record.encrypted|default is not empty ? record.encrypted : 0, { 'class': 'toggle', 'id': 'toggle_encrypted' }) }}
+                        <label for="toggle_encrypted"></label>
+                    {% endif %}
                     <br />
                     <span class="description">{{ Lang.get('customfield.encrypted_desc') }}</span>
                 </div>
@@ -156,9 +191,6 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>

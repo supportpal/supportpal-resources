@@ -18,8 +18,11 @@
                 '10': Lang.get('customfield.rating'),
                 '8': Lang.get('customfield.text'),
                 '9': Lang.get('customfield.textarea')
-            }, (field is defined ? field.type : null)) 
+            }, (field is defined ? field.type : null), field.isTypeLocked() ? {'disabled': 'disabled'} : {})
         }}
+        {% if field.isTypeLocked() %}
+            {{ form_hidden('fields[' ~ (field is defined ? field.id : '') ~ '][type]', field.type) }}
+        {% endif %}
     </td>
     <td class="field-option form-row">
         <div class="translatable">
@@ -27,9 +30,9 @@
                 { 'style': 'width: 100%', 'placeholder': Lang.get('ticket.feedback_question') })
             }}
         </div>
-        <div class="field-option-container">
+        <div class="sortable field-option-container">
             {% include 'operator.' ~ template ~ '.ticket.forms.formfield_option' with { 'field': (field is defined ? field : null), 'hide': true } %}
-            
+
             {% if field|default is not empty %}
                 {% for option in field.options %}
                     {% include 'operator.' ~ template ~ '.ticket.forms.formfield_option' %}
@@ -38,6 +41,11 @@
         </div>
         <div class="field-add-option {% if field is not defined or (field.type != '2' and field.type != '4' and field.type != '5' and field.type != '7' and field.type != '10') %}hide{% endif %}">
             {{ form_button(Lang.get('general.add_item', {'item': Lang.get('general.option')}), { 'class': 'add-option' }) }}
+            {% if field.exists and field.options is not empty %}
+                <div class="description">
+                    <strong>{{ Lang.choice('general.note', 1) }}:</strong> {{ Lang.get('customfield.option_warning') }}
+                </div>
+            {% endif %}
         </div>
     </td>
     <td width="16">

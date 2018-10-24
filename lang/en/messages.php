@@ -99,7 +99,6 @@ return array(
     /*
      * 2.0.3
      */
-    "warn_delete"           => "Once this record has been deleted, it cannot be recovered. Deleting this record may also affect other areas in the system where this record is currently being used.",
     "only_ssl_connections"  => "Only SSL connections are allowed, you should update your request to a secure connection.",
     "queued_emails"         => "Success - The emails will begin being queued and sent shortly.",
     "error_loading_message" => "An error occurred while loading the message. Please try again.",
@@ -127,6 +126,33 @@ return array(
      * 2.1.2
      */
     "field_required"        => "Field is required.",
+    
+    /*
+     * 2.3.0
+     */
+    "delete_record"         => "Delete :record?",
+    "cannot_be_undone"      => "This action cannot be undone.",
+    "warn_delete"           => "This will permanently delete the <strong>:name</strong> :record from the system.",
+    "delete_confirm"        => "Yes, Delete :record",
+    "keep_record"           => "No, Keep :record",
+    "delete_relations"      => "Deleting the <strong>:name</strong> :record will also permanently delete all of the following related data:",
+    "please_check"          => "You must check all of the boxes above to confirm you understand the result of this irreversible action.",
+    "failed_attachments"    => "Failed to attach some files.",
+
+    /*
+     * 2.3.1
+     */
+    "sent_email"            => "Success - the email has been sent.",
+    "task_already_running"  => "Scheduled task is running automatically currently, please try again shortly.",
+    "linked_account"        => "The social account has successfully been linked with your account.",
+    "already_linked"        => "The social account is already linked with another account. Please login to the other account and unlink it.",
+
+    /*
+     * 2.4.0
+     */
+    "does_look_correct"     => "Does this look correct?",
+    "no_revert"             => "No! Revert",
+    "attachment_not_found"  => "The attachment was not found.",
 
     /*
      * 2.3.1

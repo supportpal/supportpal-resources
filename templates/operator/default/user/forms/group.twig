@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {% if operator|default is not empty and operator %}
         {% if record|default is not empty and record.exists %}
@@ -42,7 +38,7 @@
         <div class="form-row">
             {{ form_label('name', Lang.get('general.name')) }}
             <div class="input-container translatable small-translatable">
-                {{ form_translatable_text(record, 'name') }}
+                {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
             </div>
         </div>
 
@@ -130,20 +126,14 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
+    
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
+    <script type="text/javascript">
+        deleteAlert.translationKeys.title = 'user.remove_from';
+        deleteAlert.translationKeys.warning = 'user.remove_from_warn';
+        deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+        deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+    </script>
 
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
@@ -234,14 +224,14 @@
                     render: {
                         item: function(item, escape) {
                             return '<div class="item">' +
-                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                    '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                                     escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
                                     (item.email ? ' <span class="description">' + escape('<' + item.email + '>' || '') + '</span>' : '') +
                                     '</div>';
                         },
                         option: function(item, escape) {
                             return '<div>' +
-                                    '<img class="avatar" src="data:image/jpeg;base64, ' + escape(item.avatar) + '" width="16" /> &nbsp;' +
+                                    '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                                     escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
                                     (item.email || item.brand ? '<br /><span class="description">' +
                                         (item.email ? escape(item.email || '') : '') +

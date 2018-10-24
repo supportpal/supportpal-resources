@@ -64,7 +64,7 @@
                         {% for user in record.users %}
                         <tr class="existing-row">
                             <td>
-                                <img class="avatar" src="data:image/jpeg;base64,{{ user.avatar }}" width="24" />
+                                <img class="avatar" src="{{ user.avatar_url }}" width="24" />
                                 &nbsp;
                                 {{ user.formattedname }} {% if user.email %}<span class="light">{{ '<' ~ user.email ~ '>' }}</span>{% endif %}
                                 {% if record.isOwner(user.id) %}
@@ -155,22 +155,8 @@
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
-    <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -182,5 +168,12 @@
         });
     </script>
 
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    <script type="text/javascript">
+        deleteAlert.translationKeys.title = 'user.remove_from';
+        deleteAlert.translationKeys.warning = 'user.remove_from_warn';
+        deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+        deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+    </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/organisation.js') }}"></script>
 {% endblock %}

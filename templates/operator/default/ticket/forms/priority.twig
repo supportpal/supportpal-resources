@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -40,10 +40,20 @@
                 {{ form_label('depts', Lang.get('ticket.department_applicable')) }}
                 <div class="input-container">
                     <div class="input-group">
-                    {% for department in departments %}
-                        {{ form_checkbox('depts[]', department['id'], in_array(department['id'], recordDepts, true)) }}
-                        {{ Purifier.clean(department['name']) }}<br />
-                    {% endfor %}
+                        <div class="description">
+                            <button class="as-link check_all">{{ Lang.get('general.check_all') }}</button>
+                            &nbsp;|&nbsp;
+                            <button class="as-link uncheck_all">{{ Lang.get('general.uncheck_all') }}</button>
+                        </div>
+                        {% for department in departments %}
+                            {{ form_checkbox('depts[]', department['id'], in_array(department['id'], recordDepts, true)) }}
+                            {% if department.dashes|default is not empty %}
+                                {{ department.dashes|raw }}{{ department.name|replace({ (department.dashes): '' }) }}
+                            {% else %}
+                                {{ department.name }}
+                            {% endif %}
+                            <br />
+                        {% endfor %}
                     </div>
                     <span class="description">{{ Lang.get('ticket.department_applicable_desc') }}</span>
                 </div>
@@ -67,12 +77,8 @@
     {% endif %}
 
     <!-- Translatable.js dependencies: Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 
-    <script src="{{ asset_rev('resources/assets/libs/jquery-minicolors/js/jquery.minicolors.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/jquery-minicolors/css/jquery.minicolors.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             if ($('input[name="colour"]').val() === '') {

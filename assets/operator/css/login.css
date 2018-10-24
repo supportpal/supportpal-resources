@@ -51,10 +51,11 @@ body, h1, input, button {
 }
 
 h1 {
-	color: #333;
+	color: #fff;
 	font-size: 2.5em;
 	font-weight: 300;
-	margin: 30px 0 40px;
+	line-height: 1em;
+	margin: 15px 0 0;
 }
 
 h2 {
@@ -62,6 +63,13 @@ h2 {
 	font-size: 1.6em;
 	font-weight: 400;
 	margin: 0 0 40px;
+}
+
+h3 {
+	color: #777;
+	font-size: 1.3em;
+	font-weight: 600;
+	margin: 0 0 20px;
 }
 
 /* Containers */
@@ -79,6 +87,11 @@ h2 {
 	height: 100%;
 	position: absolute;
 	width: 100%;
+}
+
+.logo-container {
+	background: #3B91CE;
+	padding: 25px;
 }
 
 /* Form boxes */
@@ -122,6 +135,10 @@ input[type="button"], input[type="submit"], button {
 
 input[type="button"]:hover, input[type="submit"]:hover {
 	background: #3480B6;
+}
+
+button:disabled, input[type="button"]:disabled, input[type="submit"]:disabled {
+	opacity: 0.5;
 }
 
 a.button {
@@ -268,7 +285,7 @@ input[type='checkbox'] {
 /* Show/Hide Password */
 
 .hideShowPassword-toggle {
-    background: #e5e5e5;
+    background: #e5e5e5 !important;
     border: 0;
     color: #777;
     cursor: pointer;
@@ -284,7 +301,7 @@ input[type='checkbox'] {
 }
 
 .hideShowPassword-toggle:hover {
-    background: #f0f0f0;
+    background: #f0f0f0 !important;
     color: #454545;
 }
 

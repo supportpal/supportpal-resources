@@ -1,5 +1,9 @@
 <div id="sidebar" class="sidebar-close left">
-    <i class="fa fa-angle-double-right toggle-sidebar hide"></i>
+    {{ View.fireHook('operator.sidebar_start') }}
+
+    <span class="toggle-sidebar hide">
+        <i class="fa fa-angle-double-right"></i>
+    </span>
 
     <div class="sidebox">
         <h2>{{ Lang.choice('report.report', 2) }}</h2>
@@ -27,4 +31,6 @@
             </ul>
         </div>
     {% endfor %}
+
+    {{ View.fireHook('operator.sidebar_end') }}
 </div>

@@ -108,7 +108,7 @@ $(function() {
             $this = $(this).parent();
 
         // Replace button with spinner icon
-        $(this).replaceWith('<i class="fa fa-spinner fa-pulse fa-3x fa-fw description"></i>');
+        $(this).replaceWith('<i class="fa fa-spinner fa-pulse fa-fw description"></i>');
 
         // Fire the AJAX
         $.get(laroute.route('ticket.operator.cannedresponse.search',
@@ -197,7 +197,7 @@ $(function() {
                             + '<h3>' + Lang.choice('ticket.tag', 2) + '</h3>'
                             + '<input name="cannedResponseTag" type="hidden" value="0" />'
                             + '<ul id="cannedResponseTags"' + (languageCount > 1 ? ' class="with-language"' : '') + '>'
-                                + '<li class="description"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i> ' + Lang.get('ticket.loading_tags') + '...</li>'
+                                + '<li class="description"><i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('ticket.loading_tags') + '...</li>'
                             + '</ul>'
                         + '</div>'
                         + '<div class="search-column">'

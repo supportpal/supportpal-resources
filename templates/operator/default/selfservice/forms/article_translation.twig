@@ -27,6 +27,10 @@
                     'name': translation.titleAttr|default is empty ? 'title:default' : translation.titleAttr,
                     'value': hide|default is not empty ? '' : translation.title
                 },
+                'slug': {
+                    'name': translation.slugAttr|default is empty ? 'slug:default' : translation.slugAttr,
+                    'value': hide|default is not empty or clone is not empty ? '' : translation.slug
+                },
                 'keywords':  {
                     'name': translation.keywordsAttr|default is empty ? 'keywords:default' : translation.keywordsAttr,
                     'value': hide|default is not empty ? '' : translation.keywords

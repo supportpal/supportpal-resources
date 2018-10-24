@@ -17,19 +17,20 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
-            {% if not is_english %}
             <div class="form-row">
                 {{ form_label('enabled', Lang.get('general.enabled')) }}
                 <div class="input-container">
                     {{ form_check('enabled', 1, record.enabled, { 'class': 'toggle', 'id': 'toggle_enabled' }) }}
                     <label for="toggle_enabled"></label>
+                    {% if Config.get('settings.default_frontend_language') == record.code or Config.get('settings.default_operator_language') == record.code %}
+                        <div class="warning box bottombox">{{ Lang.get('core.disabling_default_language') }}</div>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
 
         </div>
 
@@ -47,7 +48,5 @@
     {% endif %}
 
     <!-- Translatable.js dependencies: Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,72 @@
+{% extends parent_template %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
+{% endblock %}
+
+{% block title %}
+    {{ Lang.get('general.edit_item', {'item': Lang.get('user.social_login')}) }} - {{ providerName }}
+{% endblock %}
+
+{% block content %}
+
+    {{ form_open({ 'route': [ 'user.operator.sociallogin.update', provider ], 'method': 'PUT', 'class': 'validate' }) }}
+
+        {{ form_hidden('provider', provider) }}
+
+        <ul class="tabs {% if brands|length == 1 %}hide{% endif %}" style="margin: 10px 0;">
+            {% for brand in brands %}
+                <li id="{{ brand.id }}" {% if loop.first %}class="active"{% endif %}>
+                    {{ brand.name }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% for brand in brands %}
+            <div id="tab{{ brand.id }}" class="tabContent {% if not loop.first %}hide{% endif %}">
+
+                <div class="form-row">
+                    {{ form_label('config[' ~ brand.id ~ '][enabled]', Lang.get('general.enabled')) }}
+                    <div class="input-container">
+                        {{ form_check('config[' ~ brand.id ~ '][enabled]', 1,
+                            providers[brand.id] is not empty ? providers[brand.id].enabled : true,
+                            { 'class': 'toggle', 'id': 'toggle_config[' ~ brand.id ~ '][enabled]' })
+                        }}
+                        <label for="{{ 'toggle_config[' ~ brand.id ~ '][enabled]' }}"></label>
+                    </div>
+                </div>
+
+                {% for input, name in inputs %}
+                    <div class="form-row">
+                        {{ form_label('config[' ~ brand.id ~ '][' ~ input ~ ']', name) }}
+                        <div class="input-container">
+                            {{ form_text('config[' ~ brand.id ~ '][' ~ input ~ ']', providers[brand.id][input], {'size': 45}) }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="box warning">
+                    {{ Lang.get('user.social_login_provider_docs', {'link': docsLink, 'provider': providerName})|raw }}
+                    {% if callback_url_needed %}
+                        <br /><br />
+                        {{ Lang.get('user.' ~ provider ~ '_redirect_url')|raw }}
+                        <input type="text" class="callback_url" value="{{ route('user.oauth_callback', provider) }}" style="width: 100%;" />
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+
+        <div class="form-button">
+            {{ form_submit(Lang.choice('general.submit', 1)) }}
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

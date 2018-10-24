@@ -4,6 +4,9 @@
     {% if download %}
         <meta http-equiv="refresh" content="2;{{ download.direct_operator_url }}" />
     {% endif %}
+
+    <meta name="notes-url-id" content="{{ notesUrlId }}" />
+    <meta name="messages-url-id" content="{{ messagesUrlId }}" />
 {% endblock %}
 
 {% block title %}
@@ -11,8 +14,6 @@
 {% endblock %}
 
 {% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset_rev('resources/assets/libs/webui-popover/css/jquery.webui-popover.min.css') }}" rel="stylesheet" />
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
 
     {% if extendedViews['scripts_header']|default is not empty %}
@@ -28,6 +29,42 @@
 
 {% block precontent %}
     {% include 'operator.' ~ template ~ '.ticket.also_viewing' %}
+
+    <div class="quick-actions">
+        <span class="button-group messages-button-group right hide480">
+            {{ form_button('<i class="fa fa-expand"></i> ' ~ Lang.get('general.expand_all'), { 'class': 'expand-messages hide' }) }}<!--
+            -->{{ form_button('<i class="fa fa-compress"></i> ' ~ Lang.get('general.collapse_all'), { 'class': 'collapse-messages hide' }) }}<!--
+            {% if can_update_ticket(auth_user(), ticket) %}
+                --><span class="split-ticket-button hide"><!--
+                    -->{{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ], 'style': 'display: inline-block;' }) }}<!--
+                    -->{{ form_button('<i class="fa fa-columns"></i> ' ~ Lang.get('ticket.split_selected_replies'), { 'disabled': 'disabled' }) }}<!--
+                    -->{{ form_close() }}<!--
+                --></span><!--
+            {% endif %}
+            --><span class="jump-to-reply hide">{{ form_button('<i class="fa fa-arrow-up"></i> ' ~ Lang.get('general.reply')) }}</span>
+        </span>
+
+        <span class="button-group">
+            <button class="take-ticket {% if in_array(auth_user().id, ticket.assigned.pluck('id').all()) and ticket.assigned.count() == 1 %}hide{% endif %}"><i class="fa fa-thumb-tack"></i> {{ Lang.get('ticket.take') }}</button><!--
+            --><button class="close-ticket {% if ticket.status_id == Config.get('settings.default_resolved_status') %}hide{% endif %}"><i class="fa fa-check"></i> {{ Lang.get('general.close') }}</button><!--
+            --><button class="lock-ticket {% if ticket.locked %}hide{% endif %}"><i class="fa fa-lock"></i> {{ Lang.get('ticket.close_and_lock') }}</button><!--
+            --><button class="unlock-ticket {% if not ticket.locked %}hide{% endif %}"><i class="fa fa-unlock"></i> {{ Lang.get('ticket.unlock') }}</button>
+        </span>
+        &nbsp;&nbsp;&nbsp;
+        <button class="watch-ticket {% if in_array(auth_user().id, ticket.watching.pluck('id').all()) %}hide{% endif %}"><i class="fa fa-eye"></i> {{ Lang.get('ticket.watch') }}</button>
+        <button class="unwatch-ticket {% if not in_array(auth_user().id, ticket.watching.pluck('id').all()) %}hide{% endif %}"><i class="fa fa-eye-slash"></i> {{ Lang.get('ticket.unwatch') }}</button>
+        {% if (auth_user().hasPermission('delete.ticket')) %}
+            &nbsp;&nbsp;&nbsp;
+            <span class="button-group">
+                <button class="delete-ticket" type="button"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
+                {% if not ticket.internal %}
+                    --><button class="block-ticket" type="button"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
+                {% else %}
+                    -->
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block pageTitle %}
@@ -46,7 +83,7 @@
         {% if ticket.internal %}
             <span class="tag internal">{{ Lang.get('ticket.internal') }}</span>
         {% endif %}
-        &nbsp;<i class="fa fa-lock {% if not ticket.locked %}hide {% endif %}"></i>
+        &nbsp;<i class="fa fa-lock" style="{% if not ticket.locked %}display: none{% endif %}"></i>
     </h1>
     <h2 class="ticketview">
         {{ Lang.get('general.submitted_by') }}
@@ -73,21 +110,6 @@
         </div>
     {% endif %}
 
-    <span class="button-group messages-button-group right hide720">
-        {{ form_button('<i class="fa fa-expand"></i> ' ~ Lang.get('general.expand_all'),
-            { 'class': 'expand-messages hide' }) }}<!--
-        -->{{ form_button('<i class="fa fa-compress"></i> ' ~ Lang.get('general.collapse_all'),
-            { 'class': 'collapse-messages hide' }) }}<!--
-        {% if can_update_ticket(auth_user(), ticket) %}
-            -->{{ form_open({ 'route': [ 'ticket.operator.ticket.split', ticket.id ], 'style': 'display: inline-block;' }) }}
-                {{ form_button('<i class="fa fa-columns"></i> ' ~ Lang.get('ticket.split_selected_replies'),
-                    { 'disabled': 'disabled', 'class': 'split-ticket hide' }) }}
-            {{ form_close() }}
-        {% else %}
-            -->
-        {% endif %}
-    </span>
-
     <ul class="tabs">
         <li id="Messages" class="active">{{ Lang.choice('general.message', 2) }}</li>
         <li id="Log">{{ Lang.get('general.log') }}</li>
@@ -97,6 +119,9 @@
         {% if auth_user().hasPermission('update.ticket') or ticket.followup is not empty %}
             <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
         {% endif %}
+
+        {{ View.fireHook('operator.ticket_tab') }}
+
         {% if extendedViews['ticket_tab']|default is not empty %}
             {% for view in extendedViews['ticket_tab'] %}
                 {% include view %}
@@ -105,10 +130,6 @@
     </ul>
 
     <div id="tabMessages" class="tabContent">
-        <div class="jump-to-reply hide">
-            {{ form_button('<i class="fa fa-arrow-up"></i> ' ~ Lang.get('general.reply')) }}
-        </div>
-
         {% if Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 2
                 or (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 0
                     and Config.get('settings.ticket_reply_order') == 1)
@@ -121,6 +142,8 @@
                 {% include 'operator.' ~ template ~ '.ticket.forms.message' with { 'ticketId': ticket.id } %}
 
             {% endif %}
+
+            {{ View.fireHook('operator.ticket_messages') }}
 
             {% if extendedViews['ticket']|default is not empty %}
                 {% for view in extendedViews['ticket'] %}
@@ -158,6 +181,8 @@
                     and Config.get('settings.ticket_reply_order') == 0))
         %}
 
+            {{ View.fireHook('operator.ticket_messages') }}
+
             {% if extendedViews['ticket']|default is not empty %}
                 {% for view in extendedViews['ticket'] %}
                     {% include view %}
@@ -192,6 +217,8 @@
         <div id="tabFollowup" class="tabContent hide"></div>
     {% endif %}
 
+    {{ View.fireHook('operator.ticket_tab_content') }}
+
     {% if extendedViews['ticket_tab_content']|default is not empty %}
         {% for view in extendedViews['ticket_tab_content'] %}
             {% include view %}
@@ -202,68 +229,60 @@
 
 {% block scripts_footer %}
     <!-- Actions for FollowUp tab -->
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/escalationrule.js') }}"></script>
-    
-    <!-- Datatables -->
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
 
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
 
     <!-- File upload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script type="text/javascript">
         new FileUpload({
             $element: $('.message-form .fileupload'),
+            $container: $('.message-form'),
             blueimp: {
                 dropZone: $('.message-form').find('.attachment-dragover')
             }
         });
         new FileUpload({
             $element: $('.notes-form .fileupload'),
+            $container: $('.notes-form'),
             blueimp: {
                 dropZone: $('.notes-form').find('.attachment-dragover')
+            }
+        });
+        var forwardFileUpload = new FileUpload({
+            $element: $('.forward-form .fileupload'),
+            $container: $('.forward-form'),
+            blueimp: {
+                cumulativeMaxFileSize: {{ cumulative_attachment_limit }},
+                dropZone: $('.forward-form').find('.attachment-dragover')
             }
         });
     </script>
 
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-    <script src="{{ asset_rev('resources/assets/libs/jt.timepicker/js/jquery.timepicker.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/jt.timepicker/css/jquery.timepicker.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- Reply options & Redactor plugins -->
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/done_typing.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/sanitize.js') }}"></script>
 
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
+    
     <script type="text/javascript">
         var ticketId = "{{ ticket.id }}",
             userId = "{{ ticket.user_id }}",
+            operatorId = "{{ auth_user().id }}",
             brandId = "{{ ticket.brand_id }}",
             internal = {{ ticket.internal }},
             closedStatusId = {{ Config.get('settings.default_resolved_status') }},
@@ -271,7 +290,8 @@
             organisationsEnabled = "{{ Config.get('settings.organisations_enabled', 1) }}",
             departmentTemplates = {{ ticket.department.email_templates|json_encode()|raw }},
             userLanguage = "{{ ticket.user.languageOrDefault() }}",
-            allLanguages = {{ languages|sort|json_encode()|raw }};
+            allLanguages = {{ languages|sort|json_encode()|raw }},
+            deleteRelations = {{ deleteRelations|json_encode|raw }};
 
         var signature = '';
         {% if signature is not empty %}
@@ -289,11 +309,11 @@
         {% endif %}
         var notesPosition = {{ Config.get('settings.ticket_notes_position') }};
 
-        var cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
+        var tagPermission = {% if auth_user().hasPermission('create.tickettag') %}1{% else %}0{% endif %},
+            cannedResponsePermission = {% if auth_user().hasPermission('view.cannedresponse') %}1{% else %}0{% endif %};
 
         // Initialise redactor.
         var redactor_config = {
-            focus: true,
             plugins: [
                 'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize',
                 {% if isModuleEnabled('Selfservice') %}'ssLink', {% endif %}
@@ -311,9 +331,8 @@
         }
 
         $(document).ready(function() {
-
             // Register redactor
-            $('#newMessage, #newNote').redactor($.extend($.Redactor.default_opts, redactor_config, {
+            $('#newMessage, #newNote, #newForward').redactor($.extend($.Redactor.default_opts, redactor_config, {
                 changeCallback: function() {
                     var id = this.$textarea.prop('id');
 
@@ -338,21 +357,13 @@
     </script>
 
     <!-- Selectize -->
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/selectize/disable_delete.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/webui-popover/js/jquery.webui-popover.min.js') }}"></script>
-
-    <!-- Remember collapsible side box state -->
-    <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/selectize/max_items.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/ticket.js') }}"></script>
     <script type="text/javascript">
         var ticket = new Ticket("");
     </script>
-
-    <script src="{{ asset_rev('resources/assets/libs/he/js/he.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/general/js/shorten.js') }}"></script>
 

@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block sidebar %}
     {% if not customSearch and record is not defined %}
         {% include 'operator.' ~ template ~ '.ticket.sidebar-grid' %}
@@ -153,39 +149,17 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <!-- Datatables -->
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <!-- Sweetalert -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
-
     <!-- Redactor -->
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/plugins.min.js') }}"></script>
 
     <!-- Code Editor -->
-    <script src="{{ asset_rev('resources/assets/libs/codemirror/js/codemirror.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset_rev('resources/assets/libs/codemirror/css/codemirror.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
 
     <!-- File upload -->
-    <script src="{{ asset_rev('resources/assets/libs/blueimp-file-upload/js/jquery.fileupload.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
-
-    <!-- Pikaday -->
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-
-    <!-- Remember collapsible side box state -->
-    <script src="{{ asset_rev('resources/assets/libs/js-cookie/js/js.cookie.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/replyoptions.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
@@ -198,14 +172,16 @@
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/datatable/selectall.js') }}"></script>
 
+    {# Only load the sidebar on the main ticket grid. #}
+    {% if not customSearch and record is not defined %}
+        <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/sidebar.js') }}"></script>
+    {% endif %}
+    
     <script type="text/javascript">
         // Schedule first grid refresh in 60 seconds.
         var gridTimeout = setTimeout(function() {
             refreshGrid();
         }, 60000);
-
-        // Force refresh of the sidebar to load the latest counts and store it in local storage
-        refreshSidebar();
 
         $(document).ready(function() {
             // Reference to fileupload.js instance, from mass reply box.
@@ -264,7 +240,7 @@
                 // The #FollowUp node will be empty if we haven't loaded it before.
                 if ($('form.conditiongroup').is(':empty')) {
                     // Show loading icon
-                    $('form.conditiongroup').html('<div style="padding: 10px;"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i></div>');
+                    $('form.conditiongroup').html('<div style="padding: 10px;"><i class="fa fa-spinner fa-pulse fa-fw"></i></div>');
 
                     // Fetch view
                     $.get(
@@ -367,13 +343,7 @@
                         // Cancel button was pressed. Clear any uploaded attachments
                         $('input[name="attachment[]"]:not(:first)').remove();
                         // Remove the uploads from the file system and the database
-                        var re = /^\w+\[(\w+)]$/, m;
-                        $('input[name^="attachment"]:not(:first)').each(function() {
-                            if ((m = re.exec($(this).attr('name'))) !== null && typeof m[1] != 'undefined') {
-                                // Fire AJAX to delete the upload
-                                FileUpload.deleteAttachment('{{ route("ticket.operator.attachment.destroy") }}', m[1]);
-                            }
-                        });
+                        $('.attached-files li:not(.hide) .deleteAttachment').click();
                     }
                 });
                 $('textarea').redactor($.extend($.Redactor.default_opts, {
@@ -434,6 +404,18 @@
             $tfoot.on('click', '.unlock-ticket', function() {
                 ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.unlock'));
             });
+            // Process watch button
+            $tfoot.on('click', '.watch-ticket', function() {
+                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.watch'));
+            });
+            // Process unwatch button
+            $tfoot.on('click', '.unwatch-ticket', function() {
+                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.unwatch'));
+            });
+            // Process link button
+            $tfoot.on('click', '.link-ticket', function() {
+                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.linked.link'));
+            });
             // Process merge button
             $tfoot.on('click', '.merge-ticket', function() {
                 ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.merge'));
@@ -469,6 +451,17 @@
                         unassign = true;
                     }
                     assignOperator(getSelectedRows(), $(this).val(), unassign);
+                    // Reset dropdown
+                    $(this).val('');
+                    event.stopPropagation();
+                }
+            });
+
+            // Process macros.
+            $tfoot.on('change', '.ticket-options select[name=macro]', function (event) {
+                if ($(this).val() !== '') {
+                    ticketAction({ ticket: getSelectedRows(), macro_id: $(this).val() }, laroute.route('ticket.operator.action.macro'));
+
                     // Reset dropdown
                     $(this).val('');
                     event.stopPropagation();
@@ -603,25 +596,20 @@
             // Are we also blocking?
             block = typeof block !== 'undefined' ? block : false;
 
+            var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 2), '', {{ deleteRelations|json_encode|raw }});
+
             // Set the URL
             var url = laroute.route('ticket.operator.action.destroy');
             if (block) {
                 url = laroute.route('ticket.operator.action.block');
+                opts.html = $('<div/>').html(opts.html).append('<span style="text-align: left">'+Lang.get('ticket.block_warning')+'</span>').html();
             }
 
             // Show the alert
-            swal({
-                title: Lang.get('messages.are_you_sure'),
-                text: Lang.get('ticket.delete_warning') + (block ? ' ' + Lang.get('ticket.block_warning') : ''),
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#e74c3c",
-                confirmButtonText: Lang.get('messages.yes_im_sure'),
-                closeOnConfirm: false
-            }, function(isConfirm) {
+            swal(opts, function(isConfirm) {
                 if (isConfirm) {
                     // Disable submit button
-                    swal.disableButtons();
+                    deleteAlert.disableButtons();
                     // Delete record and reload table if successful
                     $.ajax({
                         url: url,
@@ -666,15 +654,17 @@
                     var array = selection.split(","); // explode the selected rows
 
                     // Trigger a row click for each previously selected row, this will trigger the necessary properties
-                    // and events
+                    // and events. Keep a track of how many we click.
+                    var number_selected = 0;
                     $.each(array, function(index, item) {
-                        if (item != '') {
+                        if (item != '' && $('tr#'+item).length) {
                             $('tr#'+item).trigger('click');
+                            number_selected++;
                         }
                     });
 
-                    // Re-check the select all checkbox.
-                    if (all_selected) {
+                    // Re-check the select all checkbox (only if all rows were selected still).
+                    if (all_selected && number_selected === array.length) {
                         $('input[name="select-all"]').prop('checked', true);
                     }
                 }
@@ -685,7 +675,9 @@
                 }
 
                 // Refresh sidebar
-                refreshSidebar();
+                if (typeof sideBar !== 'undefined') {
+                    sideBar.refresh();
+                }
             }, false);
 
             // Schedule next grid update in 60 seconds.
@@ -693,108 +685,6 @@
                 refreshGrid();
             }, 60000);
         }
-
-        // Only if in main ticket grid
-        {% if record|default is empty %}
-            var storageName = 'sidebarData';
-            var storageExpiry = 3600000;
-
-            // If we have the sidebar data stored in local storage, use that initially before refreshing it
-            getSidebarDataFromStorage();
-            function getSidebarDataFromStorage() {
-                var sidebarData = localStorage.getItem(storageName);
-                if (sidebarData !== null) {
-                    sidebarData = JSON.parse(sidebarData);
-                    if (sidebarData !== 'undefined' && sidebarData.expires !== 'undefined'
-                        && sidebarData.expires < (new Date).getTime() + storageExpiry
-                    ) {
-                        updateSidebar(sidebarData.data);
-                    } else {
-                        localStorage.removeItem(storageName);
-                    }
-                }
-            }
-
-            // Fetch the latest sidebar data
-            function refreshSidebar() {
-                // Only run on the main grid and not on search or user/organisation tickets grid
-                {% if not customSearch and record is not defined %}
-                    $.get(laroute.route('ticket.operator.ticket.sidebar'))
-                        .success(function (response) {
-                            if (response.status == 'success') {
-                                // Update the sidebar
-                                updateSidebar(response.data);
-
-                                // Store the latest sidebar data in local storage.
-                                localStorage.setItem(storageName, JSON.stringify({ data: response.data, expires: (new Date).getTime() + storageExpiry }))
-                            }
-                        });
-                {% endif %}
-            }
-
-            // Update the sidebar data
-            function updateSidebar(data) {
-                // Update counts
-                $.each(data.filters, function(key, value) {
-                    updateCount($('ul.filter-list .badge[data-id="' + key + '"]'), value);
-                });
-                $.each(data.obj_statuses, function(key, value) {
-                    updateCount($('ul.status-list .badge[data-id="' + key + '"]'), value);
-                });
-                $.each(data.obj_departments, function(key, value) {
-                    updateCount($('ul.department-list .badge[data-id="' + key + '"]'), value);
-                });
-                $.each(data.obj_brands, function(key, value) {
-                    updateCount($('ul.brand-list .badge[data-id="' + key + '"]'), value);
-                });
-
-                // Update recent activity
-                $('ul.recent-activity').empty();
-                $.each(data.recentActivity, function(key, value) {
-                    $("ul.recent-activity").append('<li class="clear">'
-                        + '<img src="data:image/png;base64,' + value.user.avatar + '" width="21" height="21" alt="'
-                        + value.user.formatted_name + '"' + 'class="avatar" /> <strong>' + value.user.formatted_name
-                        + '</strong><br />' + value.event + '<div class="description">' + value.created_at + '</div>'
-                        + '</li>');
-                });
-                if ($('ul.recent-activity li').length == 0) {
-                    $('ul.recent-activity').parent().hide();
-                } else {
-                    $('ul.recent-activity').parent().show();
-                }
-
-                // Update active operators
-                $('ul.active-operators').empty();
-                var count = 0;
-                $.each(data.activeOperators, function(key, value) {
-                    count++;
-                    $("ul.active-operators").append('<li ' + (count > 10 ? 'class="hide"' : '') + '>' +
-                        '<img src="data:image/png;base64,' + value.avatar
-                        + '" width="21" height="21" alt="' + value.formatted_name + '"'
-                        + 'class="avatar" /> ' + value.formatted_name
-                        + '</li>');
-                });
-                if (count == 0) {
-                    $('ul.active-operators').parent().hide();
-                } else {
-                    $('ul.active-operators').parent().show();
-                }
-
-                // Refresh timeago.
-                if (typeof timeAgo !== 'undefined') {
-                    timeAgo.render($('time.timeago'));
-                }
-            }
-
-            // Update the count in the sidebar for a given badge
-            function updateCount($item, value) {
-                if (value == 0) {
-                    $item.hide();
-                } else {
-                    $item.text(value > 999 ? '999+' : value).show();
-                }
-            }
-        {% endif %}
 
         // Read a page's GET URL variables and return them as an associative array.
         function getUrlVars()

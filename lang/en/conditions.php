@@ -28,7 +28,6 @@ return array(
     "user_email"                        => "User email",
     "user_full_name"                    => "User full name",
     "user_group"                        => "User group",
-    "user_organisation"                 => "User organisation",
 
     /*
      * 2.1.0
@@ -57,5 +56,25 @@ return array(
     "user_country"                      => "User country",
     "user_language"                     => "User language",
     "user_timezone"                     => "User timezone",
+
+    /*
+     * 2.3.0
+     */
+    "ticket_cc"                         => "Ticket CC",
+    "ticket_custom_field"               => "Ticket custom field",
+    "user_custom_field"                 => "User custom field",
+    "user_organisation_custom_field"    => "User organisation custom field",
+    "user_organisation"                 => "User organisation name",
+    "user_organisation_brand"           => "User organisation brand",
+    "user_organisation_country"         => "User organisation country",
+    "user_organisation_language"        => "User organisation language",
+    "user_organisation_notes"           => "User organisation notes",
+    "user_organisation_timezone"        => "User organisation timezone",
+
+    /*
+     * 2.4.0
+     */
+    "watching_operator"                 => "Watching operator",
+    "exact_search_quotes"               => "To do an exact search for the phrase, wrap it in quotes like \"my phrase\".",
 
 );

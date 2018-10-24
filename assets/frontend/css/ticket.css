@@ -97,7 +97,158 @@
     background: #c0392b;
 }
 
+/* Attachments */
 
+.attachments {
+    margin-left: 68px;
+}
+
+.attachments ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.attachments ul li {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 5px;
+    position: relative;
+    width: 200px;
+}
+
+.attachments ul li a {
+    display: block;
+    text-decoration: none;
+}
+
+.attachments ul li a:hover {
+    color: #333;
+}
+
+.attachments ul li div.deleteAttachment {
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    float: right;
+    line-height: 1em;
+    margin: 3px;
+    padding: 3px 4px;
+    position: absolute;
+    right: 0;
+    z-index: 100;
+}
+
+.attachments ul li div.deleteAttachment:hover {
+    background: #eee;
+}
+
+.attachments ul li .deleteAttachment .fa {
+    color: #777;
+}
+
+.attachments ul li .deleteAttachment:hover .fa {
+    color: #333;
+}
+
+.attachments ul li .preview {
+    height: 88px;
+    line-height: 88px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.attachments ul li .preview .fiv-viv {
+    font-size: 64px;
+    padding: 12px;
+}
+
+.attachments ul li .name {
+    background: #f5f5f5;
+    border-top: 1px solid #eee;
+    padding: 4px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachments ul li .name .underline {
+    text-decoration: underline;
+}
+
+.attachments ul li .preview-hover {
+    background: #454545;
+    background: rgba(0,0,0,0.8);
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #fff;
+    height: 100%;
+    line-height: 1.2em;
+    padding: 12px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.attachments ul li .preview-hover .fiv-viv {
+    font-size: 20px;
+}
+
+.attachments ul li .preview-hover .attachment-details {
+    margin-left: 10px;
+    max-width: 142px;
+}
+
+.attachments ul li .preview-hover .hover-name {
+    display: block;
+    max-height: 46px;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.attachments ul li .preview-hover .light {
+    color: #999;
+}
+
+.attachments ul li a:hover .preview-hover {
+    display: block;
+}
+
+.desk_content_padding .attachments ul li a:hover .preview-hover .fa {
+    color: #fff;
+}
+
+.attachments ul li a:hover .preview:not(.hover) {
+    opacity: 0.5;
+}
+
+/* lightGallery */
+
+body.lg-on {
+    overflow: hidden;
+}
+
+.lg-backdrop, .lg-toolbar {
+    background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.lg-actions .lg-next, .lg-actions .lg-prev {
+    padding-top: 5px !important;
+}
+
+.lg-video-object {
+    background: #111;
+}
+
+/* Mobile */
 
 @media only screen and (max-width: 480px) {
 
@@ -112,6 +263,29 @@
 
     .message .text {
         padding: 0;
+    }
+
+    .message .attachments {
+        margin-left: 0;
+    }
+
+    .attachments ul li {
+        font-size: 85%;
+        margin-right: 0;
+        width: 138px;
+    }
+
+    .attachments ul li .preview-hover .fiv-viv {
+        display: none;
+    }
+
+    .attachments ul li .preview-hover .attachment-details {
+        margin-left: 0;
+        max-width: 100%;
+    }
+
+    .attachments ul li .preview-hover .hover-name {
+        max-height: 50px;
     }
 
 }

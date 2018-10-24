@@ -26,7 +26,7 @@
             <div class="desk_content_padding" style="padding: 25px 25px 0; margin-bottom: 25px;">
 
                 <div class="header">
-                    <img src="data:image/png;base64,{{ message.user.avatar }}" class="avatar left" />
+                    <img src="{{ message.user.avatar_url }}" class="avatar left" />
                     <span class="name {% if message.by == 0 %}staff{% else %}user{% endif %}">
                         {{ message.user.formatted_name }}
                     </span>

@@ -26,18 +26,15 @@ $(function () {
      * Toggle the visibility of a given side box.
      *
      * @param context
-     * @param slide   (optional) If we want an animation to occur, does by default.
      */
-    function toggleSidebox(context, slide) {
-        if (! $sidebar.hasClass('sidebar-close') || $(window).width() > 960) {
+    function toggleSidebox(context) {
+        if (! $sidebar.hasClass('sidebar-close') || $(window).width() > 1080) {
+            // Change direction of arrow.
             $(context).find('.arrow .fa').toggleClass('fa-chevron-down fa-chevron-up');
             $(context).toggleClass('closed');
 
-            if (typeof slide === 'undefined' || slide) {
-                $(context).next().slideToggle(500);
-            } else {
-                $(context).next().toggle();
-            }
+            // Toggle sidebox content.
+            $(context).next().toggle();
         }
     }
 
@@ -52,7 +49,7 @@ $(function () {
 
                 // Side box is currently open but cookie says it should be closed.
                 if (! $(this).hasClass('closed') && cookie == 'collapsed') {
-                    toggleSidebox(this, false);
+                    toggleSidebox(this);
                 }
             }
         });

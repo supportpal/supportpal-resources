@@ -20,6 +20,30 @@
 
     {% else %}
 
+        {% if Session.has('social_metadata') %}
+            <div class="box options">
+                {{ Lang.get('user.social_linking_register') }}
+                <br /><br />
+                {{ Lang.get('user.already_registered') }} <a href="{{ route('user.login', {'social': 1}) }}">{{ Lang.get('user.login') }} &raquo;</a>
+            </div>
+        {% else %}
+            {% if not socialite_providers.isEmpty() %}
+                {% for provider, metadata in all_providers %}
+                    {% if socialite_providers.contains('name', provider) %}
+                        <a href="{{ route('user.oauth_redirect', {'provider': provider}) }}" class="social-login" style="background: {{ metadata.colour }};">
+                            <span class="icon">
+                                <i class="fa fa-{{ provider }} fa-fw"></i>
+                            </span> &nbsp;
+                            {{ Lang.get('user.register_with', {'provider': metadata.name }) }}
+                        </a>
+                        &nbsp;&nbsp;
+                    {% endif %}
+                {% endfor %}
+
+                <hr />
+            {% endif %}
+        {% endif %}
+
         {{ form_open({ 'route': [ 'user.register' ], 'method': 'post', 'files': true, 'class': 'validate' }) }}
 
             {% include 'frontend.' ~ template ~ '.user.forms.user_profile' %}
@@ -28,12 +52,13 @@
 
             {% include 'frontend.' ~ template ~ '.forms.customfields' with {'new': true} %}
 
-            {% if Config.get('settings.registration_captcha') %}
+            {% if Config.get('settings.captcha_type') != 0 and Config.get('settings.registration_captcha') %}
                 {{ Captcha.getHtml() }}
-                <br />
             {% endif %}
 
-            {{ form_submit(Lang.get('user.register'), { 'class': 'btn btn-primary' }) }}
+            <div class="form-button">
+                {{ form_submit(Lang.get('user.register'), { 'class': 'btn btn-primary' }) }}
+            </div>
 
         {{ form_close() }}
 
@@ -44,14 +69,8 @@
 {% block scripts_footer %}
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle
@@ -61,6 +80,10 @@
             callPikaday();
         });
     </script>
+
+    {% if Config.get('settings.captcha_type') != 0 and Config.get('settings.registration_captcha') %}
+        {{ Captcha.getJs() }}
+    {% endif %}
 
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}

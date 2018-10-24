@@ -9,8 +9,10 @@
             {% if route == 'user.operator.organisation.user' %} class="active"{% endif %}>
         {{ Lang.choice('user.user', 2) }}
     </a>
+    {% if isModuleEnabled('Ticket') %}
     <a href="{{ route('user.operator.organisation.ticket', [ record.id ]) }}"
         {% if route == 'user.operator.organisation.ticket' %} class="active"{% endif %}>
         {{ Lang.choice('ticket.ticket', 2) }}
     </a>
+    {% endif %}
 </ul>

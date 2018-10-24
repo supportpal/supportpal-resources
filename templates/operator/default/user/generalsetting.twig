@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="form-row">
+            <div class="form-row {% if Config.get('settings.captcha_type') == 0 %}hide{% endif %}">
                 {{ form_label('registration_captcha', Lang.get('user.user_reg_captcha')) }}
                 <div class="input-container">
                     {{ form_check('registration_captcha', 1, null, { 'class': 'toggle', 'id': 'toggle_registration_captcha' }) }}

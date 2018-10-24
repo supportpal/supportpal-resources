@@ -2,9 +2,9 @@
 
 {% block content %}
 
-    <h2>{{ Lang.get('user.two_fa') }}</h2>
-
     <div class="loginBox white-box">
+
+        <h3>{{ Lang.get('user.two_fa') }}</h3>
 
         {{ form_open({ 'route': 'operator.twofa', 'method': 'POST', 'class': 'validate' }) }}
 
@@ -14,7 +14,7 @@
             {{ form_hidden('remember', remember) }}
 
             <div class="form-row">
-                {{ form_text('twofa_code', null, {'class': 'twofa-code', 'placeholder': Lang.get('user.two_fa_code')}) }}
+                {{ form_text('twofa_code', null, {'class': 'twofa-code', 'placeholder': Lang.get('user.two_fa_code'), 'autofocus': 'autofocus'}) }}
             </div>
 
             {{ form_submit(Lang.get('user.login')) }}

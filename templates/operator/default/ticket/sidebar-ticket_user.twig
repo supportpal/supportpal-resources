@@ -1,0 +1,115 @@
+<div class="sidebox details">
+    <h3 class="collapsable" id="userDetailsSidebox">
+        <i class="fa fa-user icon"></i>
+        {{ Lang.get('user.user_details') }}
+        <div class="arrow">
+            <i class="fa fa-chevron-down"></i>
+        </div>
+    </h3>
+    <div style="white-space: normal;">
+        <img src="{{ ticket.user.avatar_url }}"
+            width="{% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}44{% else %}24{% endif %}"
+            class="avatar left" style="margin-top: 0" />
+        &nbsp; <strong>{{ ticket.user.formatted_name }}</strong>
+        {% if ticket.user.groups is not empty %}
+            {% for group in ticket.user.groups %}
+            <span class="userGroup" style="background: {{ group.colour }};" title="{{ group.name }}"></span>
+            {% endfor %}
+        {% endif %}
+        <br />
+        {% if Config.get('settings.organisations_enabled') and ticket.user.organisation is not empty %}
+            &nbsp; <i class="fa fa-building-o"></i> &nbsp;
+            <a href="{{ ticket.user.organisation.url|raw }}">{{ ticket.user.organisation.name }}</a><br />
+        {% endif %}
+
+        {% if ticket.user.email|default is not empty %}
+            <br />
+            <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}<br />
+            {% if ticket.user.confirmed %}
+                <i class="fa fa-check-square fa-fw"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
+                <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ timeago(ticket.user.created_at) }}<br />
+
+                {% if ticket.user.last_active_at > 0 %}
+                    <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ timeago(ticket.user.last_active_at) }}<br />
+                {% endif %}
+            {% else %}
+                <i class="fa fa-square fa-fw"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
+            {% endif %}
+        {% endif %}
+
+        {% if ticket.user.country|default is not empty %}
+            {% if ticket.user.email|default is empty %}
+            <br />
+            {% endif %}
+            <i class="fa fa-globe fa-fw"></i> &nbsp; {{ countries()[ticket.user.country] }}<br />
+        {% endif %}
+
+        {% if ticket.user.notes is not empty %}
+            <br />
+            <i class="fa fa-sticky-note"></i> &nbsp; <strong>{{ Lang.choice('general.note', 2) }}</strong>
+            <br />
+            <div class="text-shorten">{{ Purifier.clean(ticket.user.notes) }}</div>
+        {% endif %}
+
+        {% if userTickets.count() %}
+        <br />
+        <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.recent_tickets') }}</strong>
+        &nbsp;&nbsp;
+        <a class="description" href="{{ route('user.operator.user.ticket', [ ticket.user_id ]) }}">{{ Lang.get('general.view_all') }} &raquo;</a>
+        <ul class="recent-tickets">
+            {% for userTicket in userTickets %}
+            <li>
+                <span class="statusIcon" style="background: {{ userTicket.status.colour }};"
+                    title="{{ userTicket.status.name }}"></span> &nbsp;
+                <a href="{{ route('ticket.operator.ticket.show', [ userTicket.id ]) }}" target="_blank">
+                    {{ userTicket.subject }}
+                </a>
+                <div class="description">
+                    {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if not ticket.internal and organisationTickets.count() %}
+        <br />
+        <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.organisation_tickets') }}</strong>
+        &nbsp;&nbsp;
+        <a class="description" href="{{ route('user.operator.organisation.ticket', [ ticket.user.organisation_id ]) }}">{{ Lang.get('general.view_all') }} &raquo;</a>
+        <ul class="recent-tickets">
+            {% for organisationTicket in organisationTickets %}
+            <li>
+                <span class="statusIcon" style="background: {{ organisationTicket.status.colour }};"
+                    title="{{ organisationTicket.status.name }}"></span> &nbsp;
+                <a href="{{ route('ticket.operator.ticket.show', [ organisationTicket.id ]) }}" target="_blank">
+                    {{ organisationTicket.subject }}
+                </a>
+                <div class="description">
+                    {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if not ticket.internal and otherBrandTickets.count() %}
+            <br />
+            <i class="fa fa-ticket"></i> &nbsp; <strong>{{ Lang.get('ticket.ticket_other_brands') }}</strong>
+            <ul class="recent-tickets">
+                {% for otherBrandTicket in otherBrandTickets %}
+                    <li>
+                        <span class="statusIcon" style="background: {{ otherBrandTicket.status.colour }};"
+                            title="{{ otherBrandTicket.status.name }}"></span> &nbsp;
+                        <a href="{{ route('ticket.operator.ticket.show', [ otherBrandTicket.id ]) }}" target="_blank">
+                            {{ otherBrandTicket.subject }}
+                        </a>
+                        <div class="description">
+                            {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>

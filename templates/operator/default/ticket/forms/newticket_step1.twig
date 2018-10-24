@@ -12,6 +12,10 @@
 
     {{ form_open({'route': [ 'ticket.operator.ticket.storeStep1' ], 'class': 'step1 validate'}) }}
 
+        {% if Input.has('link_message') or Input.old('link_message') %}
+            <input type="hidden" name="link_message" value="{{ Input.get('link_message', Input.old('link_message')) }}" />
+        {% endif %}
+
         <h2>{{ Lang.get('ticket.department_user_details') }}</h2>
 
         <div class="form-container first">
@@ -22,7 +26,8 @@
                         <select name="brand">
                             <option></option>
                             {% for brand in assignedBrands %}
-                            <option value="{{ brand.id }}" {% if user is not empty and user.brand_id == brand.id %}selected="selected"{% endif %}>
+                            {% set brandSelected = (user is not empty and user.brand_id == brand.id) or (selected_brand == brand.id) %}
+                            <option value="{{ brand.id }}" {% if brandSelected %}selected="selected"{% endif %}>
                                 {{ brand.name }}
                             </option>
                             {% endfor %}
@@ -39,12 +44,19 @@
                     {% if brand_count() > 1 and user is empty %}
                         {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
                     {% else %}
-                        {{ form_select('department', departments) }}
+                        <select name="department" id="department">
+                            <option></option>
+                            {% for id, department in departments %}
+                                <option {% if selected_department == id %}selected='selected'{% endif %} data-data='{{ department|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ id }}'>
+                                    {{ department.dashes|raw }}{{ department.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
                     {% endif %}
                 </div>
             </div>
         </div>
-        <div class="form-container ticket-type {% if brand_count() > 1 and user is empty %}hide{% endif %}">
+        <div class="form-container ticket-type {% if brand_count() > 1 and user is empty and selected_brand is empty %}hide{% endif %}">
             <div class="form-row">
                 {{ form_label('internal', Lang.get('ticket.ticket_type')) }}
                 <div class="input-container">
@@ -105,7 +117,7 @@
                         <div class="internal-ticket">
                             {{ form_hidden('user', auth_user.id, { 'disabled': 'disabled' }) }}
 
-                            <label>{{ form_radio('internal', 1) }} {{ Lang.get('ticket.internal_ticket') }}</label> -
+                            <label>{{ form_radio('internal', 1) }} {{ Lang.choice('ticket.internal_ticket', 1) }}</label> -
                             <span class="description">{{ Lang.get('ticket.internal_ticket_desc') }}</span>
                         </div>
                     </div>
@@ -114,7 +126,7 @@
         </div>
 
         <div class="form-button continue-button">
-            {{ form_submit(Lang.get('general.continue'), brand_count() > 1 and user is empty ? {'disabled': 'disabled'} : {}) }}
+            {{ form_submit(Lang.get('general.continue'), brand_count() > 1 and user is empty and selected_brand is empty ? {'disabled': 'disabled'} : {}) }}
         </div>
 
     {{ form_close() }}
@@ -130,7 +142,4 @@
 
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/newticket.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
-
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
 {% endblock %}

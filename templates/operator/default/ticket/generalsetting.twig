@@ -103,7 +103,10 @@
                         {{ form_text('waiting_response_time[minutes]', waitingTime['minutes'], { 'size': 3 }) }}
                         <div class="description">{{ Lang.choice('general.minute', 2) }}</div>
                     </div><br />
-                    <span class="description">{{ Lang.get('ticket.waiting_response_time_desc') }}</span>
+                    <span class="description">
+                        {{ Lang.get('ticket.waiting_response_time_desc') }}
+                        {{ Lang.get('ticket.inactive_ticket_note') }}
+                    </span>
                 </div>
             </div>
 
@@ -120,7 +123,10 @@
                         {{ form_text('inactive_close_time[minutes]', inactiveTime['minutes'], { 'size': 3 }) }}
                         <div class="description">{{ Lang.choice('general.minute', 2) }}</div>
                     </div><br />
-                    <span class="description">{{ Lang.get('ticket.close_inactive_tickets_desc') }}</span>
+                    <span class="description">
+                        {{ Lang.get('ticket.close_inactive_tickets_desc') }}
+                        {{ Lang.get('ticket.inactive_ticket_note') }}
+                    </span>
                 </div>
             </div>
 

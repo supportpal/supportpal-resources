@@ -75,16 +75,8 @@ $(document.body).ready(function() {
                                 link: "",
                                 category: ""
                             });
-                        } else {
-                            var link = laroute.route('core.operator.search', { query: encodeURI(term) });
-                            result.data.push({
-                                id: "",
-                                label: Lang.get('messages.show_all_results'),
-                                secondary: "",
-                                link: link,
-                                category: ""
-                            });
                         }
+
                         // Display results
                         response(result.data);
                     }

@@ -63,8 +63,32 @@
                     { 'class': 'email-support' }|merge((hide|default is not empty ? { 'disabled': 'disabled' } : []))
                 )
             }}
+        </div>
+    </div>
+    
+    <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %}">
+        <div class="form-row">
+            {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][consume_all]', Lang.get('ticket.consume_all')) }}
+            <div class="input-container">
+                {{
+                    form_check(
+                        'emails[' ~ (i is defined ? i : '') ~ '][consume_all]',
+                        1,
+                        email|default is not empty and email.consume_all == "1" ? true : null,
+                        {
+                            'class': 'toggle',
+                            'id': 'toggle_remote_piping_emails[' ~ (i is defined ? i : '') ~ '][consume_all]'
+                        }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                    )
+                }}
+                <label for="toggle_remote_piping_emails{{ '[' ~ (i is defined ? i : '') ~ '][consume_all]' }}"></label>
+                <br />
+                <span class="description">{{ Lang.get('ticket.department_consume_all') }}</span>
+            </div>
+        </div>
 
-            <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %} warning box" style="margin: 20px 0 0;">
+        <div class="form-row">
+            <div class="input-container warning box" style="margin-bottom: 0">
                 {{ Lang.get('ticket.remote_email_piping_desc')|raw }}
             </div>
         </div>
@@ -188,10 +212,11 @@
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][encryption]', Lang.get('ticket.encryption')) }}
             <div class="input-container">
+                {# Using no encryption before version 2.3.1 was set as -1, so we need to keep that value for backwards compatibility #}
                 {{
                     form_select(
                         'emails[' ~ (i is defined ? i : '') ~ '][encryption]',
-                        [ Lang.get('general.none'), 'SSL', 'TLS' ],
+                        {(email|default is not empty and email.encryption == '-1' ? '-1' : 0): Lang.get('general.none'), '1': 'SSL', '2': 'TLS'},
                         email|default is not empty ? email.encryption : '',
                         hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []
                     )

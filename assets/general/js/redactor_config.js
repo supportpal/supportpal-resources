@@ -3,6 +3,17 @@
     'use strict';
 
     /**
+     * Delay execution of callback.
+     */
+    var delay = (function() {
+        var timer = 0;
+        return function(callback, ms){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    /**
      * The callback function for imageUploadErrorCallback in the imagemanager.js
      * redactor plugin.
      *
@@ -39,7 +50,13 @@
         // 8  = back space
         // 46 = forward backspace or delete
         if (typeof $.fn.valid === 'function' && e.hasOwnProperty('keyCode') && e.keyCode != 8 && e.keyCode != 46) {
-            this.$textarea.valid();
+            var textarea = this.$textarea;
+
+            // Wait 1 second for the user to stop typing before checking if the textarea contents is valid. Otherwise
+            // if jquery.validate is using remote (AJAX) rules then this can fire an AJAX for every single key press.
+            delay(function () {
+                textarea.valid();
+            }, 1000);
         }
     }
 

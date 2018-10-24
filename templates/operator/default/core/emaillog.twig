@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {% if record|default is not empty %}
     	{{ record.formatted_name }} -
@@ -76,14 +72,41 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
-    
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/queryfiltering.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('click', '.retry', function () {
+                var self = this;
+
+                swal({
+                    title: "{{ Lang.get('core.reprocess_email') }}",
+                    html: '<p>'
+                        + "{{ Lang.get('core.reprocess_email_desc') }}"
+                        + '<br /><br /><input type="text" id="textEmailLogForm" size="30" /><br /><span class="description">'
+                        + "{{ Lang.get('core.consume_all') }}"
+                    + '</span></p>',
+                    showCancelButton: true,
+                    confirmButtonText: "{{ Lang.get('general.retry') }}",
+                    closeOnConfirm: false
+                }, function () {
+                    swal.disableButtons();
+
+                    var data = { 'address': $('#textEmailLogForm').val() };
+                    $.get(laroute.route('core.operator.email.log.retry', { 'id': $(self).data('id') }), data)
+                        .success(function (data) {
+                            if (data.status !== 'success') {
+                                swal(Lang.get('messages.error'), data.message, 'error');
+                            } else {
+                                $('.dataTable').dataTable().api().ajax.reload();
+                                swal.closeModal();
+                            }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            swal(Lang.get('messages.error'), jqXHR.responseText, 'error');
+                        });
+                });
+            });
+        });
+    </script>
 {% endblock %}

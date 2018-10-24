@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice('core.scheduled_task', 2) }}
 {% endblock %}
@@ -28,6 +24,7 @@
     </div>
     <div class="fail task-run box hide">
         {{ Lang.get('core.task_failed') }}
+        <span class="error-message hide"></span>
     </div>
 
 	<div class="grid-options options box">
@@ -59,12 +56,6 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-
-	<script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
-
     <script type="text/javascript">
         $(document).ready(function() {
 		    $(document.body).on('click', '.run-task', function() {
@@ -76,8 +67,8 @@
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 1, filter_container_id: "filter_description", filter_type: "text"}
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
+                {column_number : 1, filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
             ]);
         });
 
@@ -89,6 +80,11 @@
                         $('.task-run.success').show(500).delay(5000).hide(500);
                     } else {
                         $('.task-run.fail').show(500).delay(5000).hide(500);
+                        if (response.message) {
+                            $('.task-run.fail .error-message').show().html('<br />' + response.message);
+                        } else {
+                            $('.task-run.fail .error-message').hide();
+                        }
                     }
                 })
                 .fail(function() {

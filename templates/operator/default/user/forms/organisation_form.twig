@@ -45,15 +45,15 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container">
-                    {{ form_text('name', null, { 'size': '50%' }) }}
+                    {{ form_text('name', null, { 'autofocus': 'autofocus', 'size': '50%' }) }}
                 </div>
             </div>
 
             <div class="form-row">
                 {{ form_label('country', Lang.get('user.country')) }}
                 <div class="input-container">
-                    {{ form_select('country', countries(),
-                        record.country|default is not empty ? record.country : Config.get('settings.default_country')) }}
+                    {{ form_select('country', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + countries(),
+                        record.exists ? record.country : Config.get('settings.default_country')) }}
                 </div>
             </div>
 
@@ -62,8 +62,8 @@
                 <div class="form-row">
                     {{ form_label('language_code', Lang.choice('general.language', 1)) }}
                     <div class="input-container">
-                        {{ form_select('language_code', languages,
-                                record.language_code|default is not empty ? record.language_code : LanguageFactory.getUserDefault()) }}
+                        {{ form_select('language_code', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + languages,
+                            record.exists ? record.language_code : LanguageFactory.getUserDefault()) }}
                     </div>
                 </div>
             {% endif %}
@@ -71,15 +71,15 @@
             <div class="form-row">
                 {{ form_label('timezone', Lang.get('general.timezone')) }}
                 <div class="input-container">
-                    {{ form_select('timezone', timezones(),
-                        record|default is not empty and record.timezone|default is not empty ? record.timezone : Config.get('settings.default_timezone')) }}
+                    {{ form_select('timezone', {0: '-- ' ~ mb_ucfirst(Lang.get('general.not_set')) ~ ' --'} + timezones(),
+                        record.exists ? record.timezone : Config.get('settings.default_timezone')) }}
                 </div>
             </div>
 
             <div class="form-row form-customfields">
                 {{ form_label('notes', Lang.choice('general.note', 2)) }}
                 <div class="input-container">
-                    {{ form_textarea('notes') }}
+                    {{ form_redactor('notes') }}
                 </div>
             </div>
 
@@ -110,16 +110,9 @@
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
 
-    <script src="{{ asset_rev('resources/assets/libs/redactor/js/redactor.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/redactor/css/redactor.css') }}">
+    <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
 
     <script src="{{ asset_rev('resources/assets/operator/js/randomPassword.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/hideShowPassword/js/hideShowPassword.min.js') }}"></script>
-
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -145,7 +138,13 @@
                             $(this).hide();
                         } else {
                             $(this).find(':input').prop('disabled', false);
-                            $(this).show();
+
+                            var dependsOn = $(this).data('depends-on-option');
+                            if (typeof dependsOn === 'number') {
+                                $('option[value="'+dependsOn+'"]:selected').is(':visible') ? $(this).show() : $(this).hide();
+                            } else {
+                                $(this).show();
+                            }
                         }
                     });
 

@@ -1,0 +1,39 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('core.search_results') }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {% if auth_user().hasPermission('create.article') %}
+        <a href="{{ route('selfservice.operator.article.create', { 'type': type.id }) }}" class="manage-article right">
+            <i class="fa fa-plus"></i>&nbsp;
+            {{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.article', 1)}) }}
+        </a>
+    {% endif %}
+
+    {{ parent() }}
+    <a href="{{ route('selfservice.operator.internal.index', {'brand': type.brand_id, 'type': type.slug}) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {{ Lang.get('core.search_results') }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.selfservice.internal.sidebar' %}
+{% endblock %}
+
+{% block content %}
+
+    {{ Lang.get('core.found_results', { 'total': type.articles.total() }) }} '<strong>{{ Input.get('query') }}</strong>'.
+
+    <hr />
+
+    {%
+        include 'operator.' ~ template ~ '.selfservice.internal.article_list'
+        with { 'articles': type.articles, 'type': type, 'show_pinned': type.view == 1 }
+    %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/selfservice.css') }}">
+{% endblock %}

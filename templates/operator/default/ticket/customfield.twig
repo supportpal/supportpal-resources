@@ -4,10 +4,6 @@
     {% include 'operator.' ~ template ~ '.sidebar-settings' %}
 {% endblock %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {{ Lang.choice('ticket.customfield', 2) }}
 {% endblock %}
@@ -41,6 +37,10 @@
             <div>
                 <label>{{ Lang.get('general.name') }}:</label>
                 <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.get('customfield.depends_on') }}:</label>
+                <div id="filter_depends"></div>
             </div>
             <div>
                 <label>{{ Lang.get('general.type') }}:</label>
@@ -79,32 +79,25 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-    
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}">
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
-    <script type="text/javascript" src="{{ asset_rev('resources/assets/libs/TableDnD/js/jquery.tablednd.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/ordering.js') }}"></script>
 
     <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             /**
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 1, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text"},
-                {column_number : 2, filter_container_id: "filter_type"},
-                {column_number : 3, filter_container_id: "filter_required"},
-                {column_number : 4, filter_container_id: "filter_public"},
-                {column_number : 5, filter_container_id: "filter_encrypted"},
-                {column_number : 6, filter_container_id: "filter_purge"},
-                {column_number : 7, filter_container_id: "filter_locked"}
+                {column_number : 1, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
+                {column_number : 2, column_data_type: "text", filter_container_id: "filter_depends", filter_type: "text", filter_delay: 500},
+                {column_number : 3, filter_container_id: "filter_type"},
+                {column_number : 4, filter_container_id: "filter_required"},
+                {column_number : 5, filter_container_id: "filter_public"},
+                {column_number : 6, filter_container_id: "filter_encrypted"},
+                {column_number : 7, filter_container_id: "filter_purge"},
+                {column_number : 8, filter_container_id: "filter_locked"}
             ]);
         });
     </script>

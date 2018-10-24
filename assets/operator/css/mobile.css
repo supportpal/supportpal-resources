@@ -14,11 +14,6 @@ html {
 		width: 200px;
 	}
 
-	.quick-actions {
-		float: none;
-		margin: 25px 0;
-	}
-
 }
 
 /*
@@ -34,13 +29,6 @@ html {
 	#header .logo {
 		background: 0;
 		padding: 9px 25px;
-	}
-
-	#header .logo .logo-icon {
-		display: none;
-	}
-	#header .logo .logo-full {
-		display: block;
 	}
 
 	#header .mobile-nav {
@@ -63,6 +51,10 @@ html {
 		clear: left;
 		display: none;
 		float: none;
+	}
+
+	#header .selfservice .dropdown2 {
+		display: block;
 	}
 
 	#header .headerSearch {
@@ -94,6 +86,7 @@ html {
 
 	#sidebar {
 		height: 100%;
+		height: calc(100% - 50px);
 	    overflow: auto;
 		position: fixed;
 		z-index: 99;
@@ -104,9 +97,10 @@ html {
 	}
 
 	#sidebar.sidebar-close {
+		padding-top: 50px;
 		position: static;
 		width: 51px;
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 
 	#sidebar.sidebar-close .sidebox {
@@ -160,7 +154,7 @@ html {
 		bottom: 0;
 	    color: #777;
 	    cursor: pointer;
-	    display: block;
+	    display: block !important;
 	    font-size: 18px;
 	    position: fixed;
 	    text-align: center;
@@ -182,7 +176,7 @@ html {
 		width: 50px;
 	}
 
-	#sidebar.sidebar-close .ticket-update, #sidebar.sidebar-close .ticket-viewing {
+	#sidebar.sidebar-close .ticket-update {
 		position: fixed;
 	    z-index: 101;
 	    width: 100%;
@@ -310,13 +304,13 @@ html {
 	}
 
 	.reply-box {
-		border-bottom: 0;
-		float: none;
-		width: 100%;
+		border-bottom: 0 !important;
+		float: none !important;
+		width: 100% !important;
 	}
 
 	.reply-form {
-		padding-right: 0;
+		padding-right: 0 !important;
 	}
 
 	#redactor-modal-box {
@@ -348,6 +342,20 @@ html {
 		margin-left: 0;
 	}
 
+	.quick-actions button {
+		font-size: 0;
+		line-height: 35px;
+		padding-left: 10px;
+		padding-right: 10px;
+		text-align: center;
+		width: 36px;
+	}
+
+	.quick-actions button i {
+		font-size: 14px;
+		margin: 0;
+	}
+
 }
 
 /*
@@ -366,7 +374,7 @@ html {
 	    width: auto;
 	}
 
-	.form-row .input-container {
+	.form-row .input-container, .customfield-options .ui-state-highlight {
 	    margin-left: 0;
 	}
 
@@ -454,19 +462,6 @@ html {
 		margin-bottom: 15px;
 	}
 
-	.quick-actions button {
-		font-size: 0;
-		line-height: 35px;
-		padding-left: 10px;
-		padding-right: 10px;
-		text-align: center;
-		width: 36px;
-	}
-
-	.quick-actions button i {
-		margin: 0;
-	}
-
 }
 
 /*
@@ -517,6 +512,7 @@ html {
 	}
 
 	.ticket-options button i {
+		font-size: 14px;
 		margin: 0;
 	}
 
@@ -527,6 +523,10 @@ html {
  */
 
 @media (max-width: 480px) {
+
+	.hide480 {
+		display: none;
+	}
 
 	#sidebar.sidebar-close {
 		width: 31px;
@@ -556,9 +556,44 @@ html {
     }
 
     .message-block .message .text,
-    #tabMessages .message .text {
+	.message-block .message .edit-message,
+	#tabMessages .message .text,
+	#tabMessages .message .edit-message {
         padding: 0 0 20px;
     }
+
+	.message-block .message .attachments,
+	#tabMessages .message .attachments {
+		margin: 0 0 20px;
+	}
+
+	.message-block .message .attachments ul,
+	#tabMessages .message .attachments ul {
+		font-size: 0;
+	}
+
+	.message-block .message .attachments ul li,
+	#tabMessages .message .attachments ul li {
+		font-size: 11px;
+		margin-right: 2%;
+		width: 48%;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .attachment-details,
+	#tabMessages .message .attachments ul li .preview-hover .attachment-details {
+		margin-left: 0;
+		max-width: 100%;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .fiv-viv,
+	#tabMessages .message .attachments ul li .preview-hover .fiv-viv {
+		display: none;
+	}
+
+	.message-block .message .attachments ul li .preview-hover .hover-name,
+	#tabMessages .message .attachments ul li .preview-hover .hover-name {
+		max-height: 50px;
+	}
 
 	#showModal {
 		display: table;
@@ -615,19 +650,19 @@ html {
 	    height: calc(100% - 50px);
 	}
 
-	#sidebar, #main {
+	#sidebar, #sidebar.sidebar-close, #main {
 	    padding-top: 0;
 	}
 
 	body.sidebar-open #header {
-		position: fixed;
+	    position: fixed;
 	}
 
 	body.sidebar-open #content {
 	    height: 100%;
 	}
 
-	body.sidebar-open #sidebar, body.sidebar-open #main {
+	body.sidebar-open #main {
 	    padding-top: 50px;
 	}
 
@@ -635,15 +670,42 @@ html {
 	    top: 0;
 	}
 
-	.ticket-update, .ticket-viewing.box {
+	.ticket-update {
 		border-bottom: 0;
 		border-top: 1px solid #DFE5E6;
 		bottom: 0;
+		z-index: 11000;
 	}
 
-	.ticket-viewing:not([style*="display: none"]) + .desk_content_padding {
-		margin-bottom: 47px;
-		margin-top: 0;
+	.quick-actions {
+		position: static !important;
+	}
+
+    .ticket-viewing {
+        top: 0 !important;
+    }
+
+}
+
+/*
+ *	Height - under 420px
+ */
+
+@media screen and (max-height: 420px) {
+
+	.form-button.fixed-bottom {
+		border: 0;
+		padding: 0;
+		position: static;
+	}
+
+}
+
+@media (max-height: 720px) and (min-width: 1080px) {
+
+	#sidebar {
+		position: static;
+		height: auto;
 	}
 
 }

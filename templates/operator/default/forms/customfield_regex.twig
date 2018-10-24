@@ -1,0 +1,34 @@
+{% set collapseRegex = record.regex is empty %}
+{% set hideRegexContainer = form_getValueAttribute('type') not in [6, 8, 9] %}
+
+<div class="form-container first {% if collapseRegex %}collapsed{% else %}open{% endif %} customfield-regex"
+     {% if hideRegexContainer %}style="display: none;"{% endif %}>
+
+    <div class="arrow">
+        <i class="fa fa-chevron-down"></i>
+    </div>
+
+    <div class="form-row form-full">
+        {{ form_label('regex', Lang.get('general.regex')) }}
+        <div class="input-container">
+            <div class="hide" {% if not collapseRegex %}style="display: block;"{% endif %}>
+                {{ form_text('regex', null, {'style': 'width: 85%;'}) }}<br />
+            </div>
+            <span class="description">
+                {{ Lang.get('customfield.regex_basic_desc') }}
+                <div class="hide" {% if not collapseRegex %}style="display: block;"{% endif %}>
+                    {{ Lang.get('customfield.regex_desc') }}
+                </div>
+            </span>
+        </div>
+    </div>
+
+    <div class="form-row form-full hide" {% if not collapseRegex %}style="display: block;"{% endif %}>
+        {{ form_label('regex_error_message', Lang.get('customfield.regex_error_message')) }}
+        <div class="input-container translatable">
+            {{ form_translatable_text(record, 'regex_error_message') }}<br />
+            <span class="description">{{ Lang.get('customfield.regex_error_message_desc') }}</span>
+        </div>
+    </div>
+
+</div>

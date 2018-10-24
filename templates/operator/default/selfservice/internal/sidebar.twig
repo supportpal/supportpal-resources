@@ -1,0 +1,66 @@
+<div id="sidebar" class="sidebar-close left">
+    {{ View.fireHook('operator.sidebar_start') }}
+
+    <span class="toggle-sidebar hide">
+        <i class="fa fa-angle-double-right"></i>
+    </span>
+
+    <div class="sidebox">
+        <h2>{{ type.name }}</h2>
+
+        <form name="search" action="{{ route('selfservice.operator.internal.search', {'brand': type.brand_id, 'type': type.slug}) }}" method="get">
+            <input type="text" name="query" placeholder="{{ Lang.get('general.search') }}..." style="width: 100%; margin-top: 10px;" />
+        </form>
+    </div>
+
+    {% if categories is not empty and not categories.isEmpty() %}
+        <div class="sidebox">
+            <h3 class="collapsable">
+                <i class="fa fa-folder icon"></i>
+                {{ Lang.choice('selfservice.category', 2) }}
+                <div class="arrow">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+            </h3>
+            <ul>
+                {% for category in categories %}
+                    <li>
+                        <a href="{{ route('selfservice.operator.internal.category', {'brand': type.brand_id, 'type': type.slug, 'slug': category.slug}) }}">
+                            {% if category.count is not empty %}
+                                <span class="badge right">{{ category.count }}</span>
+                            {% endif %}
+                            <div class="list-item" {% if currentCategory is not empty and currentCategory == category.id %}style="font-weight: bold;"{% endif %}>
+                                {{ category.dashes|raw }}&nbsp;{{ category.name }}
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if tags is not empty and not tags.isEmpty() %}
+        <div class="sidebox">
+            <h3 class="collapsable">
+                <i class="fa fa-tags icon"></i>
+                {{ Lang.choice('selfservice.tag', 2) }}
+                <div class="arrow">
+                    <i class="fa fa-chevron-down"></i>
+                </div>
+            </h3>
+            <ul class="tags">
+                {% for tag in tags %}
+                    <li>
+                        <a href="{{ route('selfservice.operator.internal.tag', {'brand': type.brand_id, 'type': type.slug, 'slug': tag.slug}) }}">
+                            {{ tag.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {{ View.fireHook('operator.sidebar_end') }}
+
+    <div class="copyright">{{ Lang.get('core.carefully_crafted') }} <a href="https://www.supportpal.com">{{ Lang.get('core.product_name') }}</a>.</div>
+</div>

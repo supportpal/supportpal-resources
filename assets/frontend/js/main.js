@@ -124,7 +124,11 @@ $(document).ready(function() {
 // Adds a button to show/hide passwords
 function callHideShowPassword() {
     $('input[type=password]').hideShowPassword(false, 'focus', {
-        toggle: { className: 'show-hide' }
+        toggle: { className: 'show-hide' },
+        states: {
+            shown: { toggle: { attr: { title: '' } } },
+            hidden: { toggle: { attr: { title: '' } } }
+        }
     });
 }
 

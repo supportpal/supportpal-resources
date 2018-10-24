@@ -1,0 +1,175 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <a href="{{ route('selfservice.operator.internal.index', {'brand': type.brand_id, 'type': type.slug}) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {{ Lang.get('selfservice.viewing_article') }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'operator.' ~ template ~ '.selfservice.internal.sidebar' %}
+{% endblock %}
+
+{% block description %}
+
+    <a href="javascript:window.print()" class="print right">
+        <i class="fa fa-print"></i>&nbsp;
+        {{ Lang.get('general.print') }}
+    </a>
+
+    {% if auth_user().hasPermission('update.article') %}
+        <a href="{{ route('selfservice.operator.article.edit', article.id) }}" class="manage-article right">
+            <i class="fa fa-pencil"></i>&nbsp;
+            {{ Lang.get('general.edit') }}
+        </a>
+    {% endif %}
+
+    {# Stats (date, category name, views) #}
+    <ul class="details light">
+        {% if article.published %}
+            <li>
+                <i class="fa fa-calendar-o"></i> {{ formatDate(article.published_at) }}
+            </li>
+        {% endif %}
+        {% if not article.categories.isEmpty() %}
+            <li>
+                <i class="fa fa-folder-o"></i>
+                <ul class="item-list">
+                    {% for category in article.categories.sortBy('name') %}
+                    <li><a href="{{ route('selfservice.operator.internal.category', {'brand': type.brand_id, 'type': type.slug, 'slug': category.slug}) }}">{{ category.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+        {% if not article.tags.isEmpty() %}
+            <li>
+                <i class="fa fa-tag"></i>
+                <ul class="item-list">
+                    {% for tag in article.tags.sortBy('name') %}
+                    <li><a href="{{ route('selfservice.operator.internal.tag', {'brand': type.brand_id,  'type': type.slug, 'slug': tag.slug}) }}">{{ tag.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    </ul>
+
+{% endblock %}
+
+{% block content %}
+
+    <hr />
+
+    {# Article content #}
+    <div class="article">{{ article.purified_text|raw }}</div>
+
+    <!-- Attachments -->
+    {% if not article.getAttachments().isEmpty() %}
+        <h3>{{ Lang.choice('general.attachment', 2) }}</h3>
+        <ul class="attachments">
+            {% for attachment in article.getAttachments() %}
+                <li>
+                    <a href='{{ attachment.downloadLink(type) }}'>
+                        <span class="fiv-viv fiv-icon-{{ attachment.upload.icon }} left"></span>
+                        <div>{{ attachment.original_name }}</div>
+                        <span class="description">{{ attachment.upload.size }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="clear"></div>
+    {% endif %}
+
+    {% if related is defined and not related.isEmpty() %}
+        <hr />
+
+        <h3>{{ Lang.get('selfservice.related_articles') }}</h3>
+
+        {% include 'operator.' ~ template ~ '.selfservice.internal.article_related' %}
+    {% endif %}
+
+    {% if Config.get('settings.comments_enabled') and (article.comments is not empty or
+        Config.get('settings.comment_write') == 0 or auth_check()) %}
+        <hr />
+
+        <a name="_comments"></a>
+
+        <!-- Comments -->
+
+        <div class="comments-order description right">
+            {{ Lang.get('general.order_by') }}:&nbsp;
+            <select class="commentOrdering">
+                <option value="0" {{ (comment_ordering == '0') ? 'selected="selected"' : '' }}>
+                    {{ Lang.get('selfservice.oldest') }}
+                </option>
+                <option value="1" {{ (comment_ordering == '1' or comment_ordering == '2') ? 'selected="selected"' : '' }}>
+                    {{ Lang.get('selfservice.newest') }}
+                </option>
+            </select>
+
+            <span class="loading hide">
+                <i class="fa fa-refresh fa-spin"></i>&nbsp; {{ Lang.get('general.loading') }}...
+            </span>
+        </div>
+
+        <h2>{{ Lang.choice('selfservice.comment', 2) }}</h2>
+
+        <div class="add-comment-form">
+            {% if Session.has('comment_success') %}
+                <div class="success box">{{ Session.get('comment_success') }}</div>
+            {% elseif Session.has('comment_error') %}
+                <div class="fail box">{{ Session.get('comment_error') }}</div>
+            {% endif %}
+
+            {% if Config.get('settings.comment_write') == 0 or auth_check() %}
+                <h3 class="margin0">{{ Lang.get('general.add_item', {'item': Lang.choice('selfservice.comment', 1)}) }}</h3>
+                {% include 'operator.' ~ template ~ '.selfservice.internal.forms.comment' with { type: type.id } %}
+            {% endif %}
+        </div>
+
+        {% if article.comments is not empty %}
+
+            <div class="fail box comments-loading hide">
+                {{ Lang.get('messages.error_loading_comments') }}
+            </div>
+
+            {# Show all the comments #}
+            <div class="commentsBlock">
+                {% include 'operator.' ~ template ~ '.selfservice.internal.comment' with { 'comments': article.comments, 'type': type.id } %}
+            </div>
+
+            {% if comment_total > article['comments']|length %}
+                <div>
+                    <hr />
+                    <button class="more-parents" data-count="{{ article['comments']|length }}">
+                        {{ Lang.get('selfservice.show_more_comments') }}
+                    </button>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    <script type="text/javascript">
+        // Variables for asset files
+        var articleId = {{ article.id }};
+        var typeId = {{ type.id }};
+        var commentRoute = "{{ route('selfservice.operator.internal.comment') }}";
+    </script>
+
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/frontend/js/article.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/article-print.css') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/selfservice.css') }}">
+
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+{% endblock %}

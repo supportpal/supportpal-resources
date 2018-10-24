@@ -15,6 +15,6 @@
 {% block content %}
 
     {# Show all the articles (paginated), starting with most recent #}
-    {% include 'frontend.' ~ template ~ '.selfservice.article_list' %}
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with {'show_pinned': true} %}
 
 {% endblock %}

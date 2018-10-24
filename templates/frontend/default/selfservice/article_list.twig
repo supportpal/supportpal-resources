@@ -3,12 +3,19 @@
     {% for article in articles %}
         <li data-slug="{{ article.slug }}">
             <a href='{{ article.frontendUrl(type) }}'>
-                <h4>{{ article.title }}</h4>
+                <h4>
+                    {% if show_pinned|default is not empty and show_pinned and article.pinned %}
+                        <span class="left">
+                            <i class="fa fa-thumb-tack pinned" aria-hidden="true"></i> &nbsp;
+                        </span>
+                    {% endif %}
+                    {{ article.title }}
+                </h4>
                 <p>{{ article.excerpt }}</p>
             </a>
             <ul class="details light">
                 <li>
-                    <i class="fa fa-calendar-o"></i> {{ formatDate(article.created_at) }}
+                    <i class="fa fa-calendar-o"></i> {{ formatDate(article.published_at) }}
                 </li>
                 {% if not article.categories.isEmpty() %}
                 <li>

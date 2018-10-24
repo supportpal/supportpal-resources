@@ -17,15 +17,15 @@
 {{ form_model(fields, { 'method': 'PUT', 'route': [ 'core.operator.generalsetting.update' ] }) }}
 
 	<ul class="tabs">
-        <li id="Website" class="active">{{ Lang.get('core.website') }}</li>
-        <li id="Operator">{{ Lang.get('core.operator_panel') }}</li>
+        <li id="System" class="active">{{ Lang.get('general.system') }}</li>
         <li id="Email">{{ Lang.get('general.email') }}</li>
         <li id="Locale">{{ Lang.get('core.locale') }}</li>
         <li id="SimpleAuth">{{ Lang.get('core.simpleauth') }}</li>
+        <li id="Captcha">{{ Lang.get('core.captcha') }}</li>
         <li id="Debug">{{ Lang.get('core.debug') }}</li>
 	</ul>
 
-    <div id="tabWebsite" class="tabContent">
+    <div id="tabSystem" class="tabContent">
 
         {% if brand_count() > 1 %}
             <div class="form-row">
@@ -38,6 +38,14 @@
         {% else %}
             {{ form_hidden('default_brand', brand_config(null)|first.id) }}
         {% endif %}
+
+        <div class="form-row">
+            {{ form_label('admin_folder', Lang.get('core.admin_folder')) }}
+            <div class="input-container">
+                {{ form_text('admin_folder') }}<br />
+                <span class="description">{{ Lang.get('core.admin_folder_desc') }}</span>
+            </div>
+        </div>
 
         <div class="form-row">
             {{ form_label('enable_ssl', Lang.get('core.enable_ssl')) }}
@@ -63,25 +71,6 @@
                 {{ form_check('maintenance_mode', 1, null, { 'class': 'toggle', 'id': 'toggle_maintenance_mode' }) }}
                 <label for="toggle_maintenance_mode"></label><br />
                 <span class="description">{{ Lang.get('core.maintenance_mode_desc') }}</span>
-            </div>
-        </div>
-
-    </div>
-
-    <div id="tabOperator" class="tabContent hide">
-
-        <div class="form-row">
-            {{ form_label('admin_folder', Lang.get('core.admin_folder')) }}
-            <div class="input-container">
-                {{ form_text('admin_folder') }}<br />
-                <span class="description">{{ Lang.get('core.admin_folder_desc') }}</span>
-            </div>
-        </div>
-
-        <div class="form-row">
-            {{ form_label('operator_template', Lang.get('core.operator_template')) }}
-            <div class="input-container">
-                {{ form_select('operator_template', operatorTemplates) }}
             </div>
         </div>
 
@@ -201,6 +190,58 @@
 
     </div>
 
+    <div id="tabCaptcha" class="tabContent hide">
+
+        <div class="form-row">
+            {{ form_label('captcha_type', Lang.get('core.captcha_type')) }}
+            <div class="input-container input-group">
+                <label>
+                    {{ form_radio('captcha_type', 0, null,
+                        { 'onclick': "document.querySelector('.recaptcha').style.display = 'none';" })
+                    }}
+                    {{ Lang.get('general.disabled') }}
+                </label><br />
+                <label>
+                    {{ form_radio('captcha_type', 1, null,
+                        { 'onclick': "document.querySelector('.recaptcha').style.display = 'none';" })
+                    }}
+                    {{ Lang.get('core.default_captcha') }}
+                </label><br />
+                <label>
+                    {{ form_radio('captcha_type', 2, null,
+                        { 'onclick': "document.querySelector('.recaptcha').style.display = 'block';" })
+                    }}
+                    Google reCAPTCHA v2 (No CAPTCHA)
+                </label><br />
+                <label>
+                    {{ form_radio('captcha_type', 3, null,
+                        { 'onclick': "document.querySelector('.recaptcha').style.display = 'block';" })
+                    }}
+                    Google Invisible reCAPTCHA
+                </label><br />
+                <span class="description">{{ Lang.get('core.captcha_type_desc') }}</span>
+            </div>
+        </div>
+
+        <div class="recaptcha {% if fields.captcha_type != 2 and fields.captcha_type != 3 %}hide{% endif %}">
+            <div class="form-row">
+                {{ form_label('recaptcha_site_key', Lang.get('core.recaptcha_site_key')) }}
+                <div class="input-container input-group">
+                    {{ form_text('recaptcha_site_key', null, { 'size': 45 }) }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('recaptcha_secret_key', Lang.get('core.recaptcha_secret_key')) }}
+                <div class="input-container input-group">
+                    {{ form_text('recaptcha_secret_key', null, { 'size': 45 }) }}<br />
+                    <span class="description">{{ Lang.get('core.recaptcha_desc')|raw }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <div id="tabDebug" class="tabContent hide">
 
         <div class="form-row">
@@ -209,15 +250,6 @@
                 {{ form_check('debug_mode', 1, null, { 'class': 'toggle', 'id': 'toggle_debug_mode' }) }}
                 <label for="toggle_debug_mode"></label><br />
                 <span class="description">{{ Lang.get('core.debug_mode_desc') }}</span>
-            </div>
-        </div>
-
-        <div class="form-row">
-            {{ form_label('send_diagnostic', Lang.get('core.send_diagnostic')) }}
-            <div class="input-container">
-                {{ form_check('send_diagnostic', 1, null, { 'class': 'toggle', 'id': 'toggle_send_diagnostic' }) }}
-                <label for="toggle_send_diagnostic"></label><br />
-                <span class="description">{{ Lang.get('core.send_diagnostic_desc') }}</span>
             </div>
         </div>
 
@@ -235,4 +267,13 @@
 
 {% block scripts_footer %}
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/settings.js') }}"></script>
+    <script type="text/javascript">
+        var sslWarning = new SslWarning({
+            route: "{{ mail_route('core.frontend.home') }}"
+        });
+        
+        $(function () {
+            sslWarning.init(); 
+        });
+    </script>
 {% endblock %}

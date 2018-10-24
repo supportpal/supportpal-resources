@@ -1,0 +1,253 @@
+{% extends parent_template %}
+
+{% block title %}
+    {{ Lang.get('ticket.move_ticket') }} - (#{{ ticket.number }}) {{ ticket.subject }}
+{% endblock %}
+
+{% block scripts_header %}
+    <link href="{{ asset_rev('resources/assets/operator/css/ticket.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+    
+    {{ form_open({'route': [ 'ticket.operator.ticket.processMove', ticket.id ], 'class': 'validate'}) }}
+
+        <div class="step1">
+            <h2>{{ Lang.get('ticket.move_ticket_step1') }}</h2>
+
+            <hr style="margin-bottom: 0;" />
+
+            <table class="settings" style="max-width: 1200px; width: 100%;">
+                <tr>
+                    <th width="20%" class="hide720">
+                        {{ Lang.get('ticket.current_record', { 'record': Lang.choice('core.brand', 1) }) }}
+                    </th>
+                    <td width="30%" class="hide480" style="border-bottom: 0">
+                        {{ ticket.brand.name }}
+                    </td>
+                    <td width="16" class="hide480" style="border-bottom: 0">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </td>
+                    <th width="20%" class="hide720">
+                        {{ Lang.get('ticket.new_record', { 'record': Lang.choice('core.brand', 1) }) }}
+                    </th>
+                    <td width="30%" style="border-bottom: 0">
+                        <select name="brand">
+                            <option></option>
+                            {% for brand in assignedBrands.where('enabled', 1) %}
+                                {% if ticket.brand_id != brand.id %}
+                                    <option value="{{ brand.id }}">
+                                        {{ brand.name }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="margin-top: 0;" />
+
+            <div class="form-button continue-button">
+                {{ form_button(Lang.get('general.continue'), {'disabled': 'disabled'}) }}
+            </div>
+        </div>
+
+        <div class="step2 hide">
+            <h2>{{ Lang.get('ticket.move_ticket_step2') }}</h2>
+
+            <hr style="margin-bottom: 0;" />
+
+            <table class="settings" style="max-width: 1200px; width: 100%;">
+                <tr>
+                    <th width="20%" class="hide720">
+                        {{ Lang.get('ticket.current_record', { 'record': Lang.choice('ticket.department', 1) }) }}
+                    </th>
+                    <td width="30%" class="hide480" style="border-bottom: 0">
+                        {{ ticket.department.name }}
+                    </td>
+                    <td width="16" class="hide480" style="border-bottom: 0">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </td>
+                    <th width="20%" class="hide720">
+                        {{ Lang.get('ticket.new_record', { 'record': Lang.choice('ticket.department', 1) }) }}
+                    </th>
+                    <td width="30%" style="border-bottom: 0">
+                        {{ form_select('department', [], null, { 'disabled': 'disabled' }) }}
+                    </td>
+                </tr>
+                <tr class="{% if ticket.department_email_id is empty %}hide{% endif %}">
+                    <th class="hide720">
+                        {{ Lang.get('ticket.current_record', { 'record': Lang.get('ticket.department_email') }) }}
+                    </th>
+                    <td class="hide480" style="border-bottom: 0">
+                        {{ ticket.departmentEmail.address }}
+                    </td>
+                    <td class="hide480" style="border-bottom: 0">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </td>
+                    <th class="hide720">
+                        {{ Lang.get('ticket.new_record', { 'record': Lang.get('ticket.department_email') }) }}
+                    </th>
+                    <td style="border-bottom: 0">
+                        {{ form_select('department_email', [], null, { 'disabled': 'disabled' }) }}
+                    </td>
+                </tr>
+            </table>
+
+            <hr style="margin-top: 0;" />
+
+            <div class="form-button submit-button">
+                {{ form_submit(Lang.choice('general.submit', 1), {'disabled': 'disabled'}) }}
+            </div>
+        </div>
+
+    {{ form_close() }}
+
+{% endblock %}
+
+{% block scripts_footer %}
+    {% if jsValidator|default is not empty %}
+        {{ jsValidator|raw }}
+    {% endif %}
+    
+    <script type="text/javascript">
+        $(function () {
+            var deptXhr, emailXhr,
+                brandId = false;
+
+            // Automatically select first brand if there's only one option (we use 2 as we have an empty option)
+            if ($('select[name=brand] option').length === 2) {
+                $('select[name=brand]').val($('select[name=brand] option:eq(1)').val());
+            }
+
+            var $brand = $('select[name=brand]').selectize({
+                placeholder: Lang.get('core.select_brand'),
+                onChange: function (value) {
+                    brandId = value;
+
+                    // Disable the department dropdown and clear the options
+                    var deptartmentSelectize = $department[0].selectize;
+                    deptartmentSelectize.disable();
+                    deptartmentSelectize.clearOptions();
+
+                    if (value !== '') {
+                        // Load departments available in the selected brand.
+                        deptartmentSelectize.load(function (callback) {
+                            deptXhr && deptXhr.abort();
+                            deptXhr = $.ajax({
+                                url: laroute.route('ticket.operator.ticket.brand_departments', {'brand': value}),
+                                success: function (res) {
+                                    deptartmentSelectize.enable();
+                                    callback(res.data);
+
+                                    // Try to set existing department ID if possible
+                                    deptartmentSelectize.setValue({{ ticket.department_id }});
+                                },
+                                error: function () {
+                                    callback();
+                                }
+                            })
+                        });
+                        
+                        // Enable the continue to next step button.
+                        $('.step1 .continue-button button').prop('disabled', false);
+                    } else {
+                        // Brand was unselected.
+                        $('.step1 .continue-button button').prop('disabled', true);
+                    }
+                }
+            });
+
+            // Department selection.
+            var $department = $('select[name=department]').selectize({
+                valueField: 'id',
+                labelField: 'name',
+                searchField: 'name',
+                create: false,
+                placeholder: "{{ Lang.get('ticket.select_a_department') }}",
+                render: {
+                    item: function(item, escape) {
+                        return '<div class="item">' + item.dashes + escape(item.name) + '</div>';
+                    },
+                    option: function(item, escape) {
+                        return '<div>' + item.dashes + escape(item.name) + '</div>';
+                    }
+                },
+                onChange: function (value) {
+                    var selectize = $departmentEmail[0].selectize;
+
+                    // Disable the dropdown and clear the options.
+                    selectize.disable();
+                    selectize.clearOptions();
+
+                    if (value !== '') {
+                        selectize.load(function (callback) {
+                            emailXhr && emailXhr.abort();
+                            emailXhr = $.ajax({
+                                url: laroute.route('ticket.operator.department.emails', {'id': value}),
+                                data: { brand_id: brandId },
+                                success: function (res) {
+                                    selectize.enable();
+                                    callback(res.data);
+
+                                    // If only one value, set it
+                                    if (res.data.length == 1) {
+                                        selectize.setValue(res.data[0].id);
+                                    }
+
+                                    // Enable the submit button if department_email_id is NULL.
+                                    if ('{{ ticket.department_email_id }}' === '') {
+                                        $('.step2 .submit-button input').prop('disabled', false);
+                                    }
+                                },
+                                error: function () {
+                                    callback();
+                                }
+                            })
+                        });
+                    } else {
+                        $('.step2 .submit-button input').prop('disabled', true);
+                    }
+                }
+            });
+
+            // Department email selection.
+            var $departmentEmail = $('select[name="department_email"]').selectize({
+                valueField: 'id',
+                labelField: 'address',
+                searchField: 'address',
+                create: false,
+                placeholder: "{{ Lang.get('ticket.select_a_department_email') }}",
+                onChange: function (value) {
+                    if (value !== '') {
+                        $('.step2 .submit-button input').prop('disabled', false);
+                    } else {
+                        $('.step2 .submit-button input').prop('disabled', true);
+                    }
+                }
+            });
+
+            $brand[0].selectize.trigger('change', $brand[0].selectize.getValue());
+
+            $('.step1 .continue-button button').on('click', function () {
+                // Check brand is selected
+                if ($('select[name=brand]').val() !== '') {
+                    $('.step1 .continue-button').hide();
+                    $('.step2').show();
+                } else {
+                    $('.step1 .continue-button button').prop('disabled', true);
+                }
+            });
+
+            $('.step2 .submit-button input').on('click', function (e) {
+                e.preventDefault();
+
+                // Disable button.
+                $('.step2 .submit-button input').prop('disabled', true);
+                
+                $('form').submit();
+            });
+        });
+    </script>
+{% endblock %}

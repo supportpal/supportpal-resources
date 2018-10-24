@@ -143,7 +143,7 @@ return array(
      * 2.1.1
      */
     "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
-    
+
     /*
      * 2.1.2
      */
@@ -195,5 +195,13 @@ return array(
     "deleted_inactive_records"          => "Automatically deleted :old_value inactive :rel.",
     "deleted_old_records"               => "Automatically deleted old :rel records.",
     "sent_email_to_user_group"          => "Queued email to user group ':new_value' for ticket #:rel.",
+
+    /*
+     * 2.4.0
+     */
+    "ticket_watching"                   => "Watching ticket #:rel.",
+    "ticket_unwatching"                 => "No longer watching ticket #:rel.",
+    "ticket_watch_operator"             => "Set :new_value to watch ticket #:rel.",
+    "ticket_unwatch_operator"           => "Unset :new_value from watching ticket #:rel.",
 
 );

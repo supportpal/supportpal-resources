@@ -1,12 +1,13 @@
 <div class="ticket-draft {% if otherDraft is empty %}hide{% endif %}">
 	{% if otherDraft is not empty %}
 		<div class='warning box' style='border: 1px solid #f7df7a; margin: 0;'>
-            <img src='data:image/png;base64,{{ otherDraft.user.avatar }}' class='avatar' width='21' />&nbsp;
+            <img src='{{ otherDraft.user.avatar_url }}' class='avatar' width='21' />&nbsp;
             {{ Lang.get('ticket.drafting_reply', {
                 'name': otherDraft.user.formatted_name|e,
                 'time': timeago(otherDraft.created_at),
                 'type': otherDraft.type == 0 ? mb_strtolower(Lang.get('general.reply'), 'UTF-8') :
-                    mb_strtolower(Lang.choice('general.note', 1), 'UTF-8')
+                    otherDraft.type == 1 ? mb_strtolower(Lang.choice('general.note', 1), 'UTF-8') :
+                        mb_strtolower(Lang.get('ticket.forward'), 'UTF-8')
             })|raw }}
         </div>
         <div class='draft-message box'>

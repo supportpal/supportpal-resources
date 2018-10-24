@@ -25,7 +25,7 @@
             <div class="form-row">
                 {{ form_label('name', Lang.get('general.name')) }}
                 <div class="input-container translatable small-translatable">
-                    {{ form_translatable_text(record, 'name') }}
+                    {{ form_translatable_text(record, 'name', null, {'autofocus': 'autofocus'}) }}
                 </div>
             </div>
 
@@ -35,15 +35,15 @@
                     {{ form_check('public', 1, record.user_id|default is not empty ? 0 : 1, { 'class': 'toggle', 'id': 'toggle_public' }) }}
                     <label for="toggle_public"></label>
                     <br />
-                    <span class="description">{{ Lang.get('ticket.filter_public_desc') }}</span>
+                    <span class="description">{{ Lang.get('ticket.record_public_desc', { 'record': mb_strtolower(Lang.choice('ticket.filter', 1), 'UTF-8') }) }}</span>
                 </div>
             </div>
 
-            <div class="form-row form-full usergroups {% if record.user_id|default is not empty %}hide{% endif %}">
+            <div class="form-row form-full usergroups">
                 {{ form_label('groups', Lang.choice('user.operator_group', 2)) }}
                 <div class="input-container">
-                    {{ form_select('usergroups[]', operatorGroups, recordGroups, { 'multiple': 'multiple' }) }}
-                    <span class="description">{{ Lang.get('ticket.filter_group_desc') }}</span>
+                    {{ form_select('groups[]', operatorGroups, recordGroups, { 'multiple': 'multiple' }) }}
+                    <span class="description">{{ Lang.get('ticket.record_group_desc', { 'record': mb_strtolower(Lang.choice('ticket.filter', 1), 'UTF-8') }) }}</span>
                 </div>
             </div>
 
@@ -96,40 +96,9 @@
         {{ jsValidator|raw }}
     {% endif %}
 
-    <link href="{{ asset_rev('resources/assets/libs/selectize/css/selectize.css') }}" rel="stylesheet" />
-    <script src="{{ asset_rev('resources/assets/libs/selectize/js/selectize.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/operator/js/conditiongroup.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/filtering.js') }}"></script>
+    <script src="{{ asset_rev('resources/assets/operator/js/visibility.js') }}"></script>
 
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            if ($('input[name="public"]').is(':checked')) {
-                selectize();
-            }
-
-            $('input[name="public"]').change(function() {
-                if (this.checked) {
-                    $('.usergroups').show();
-                    $('select[name="usergroups[]"]').prop("disabled", false);
-                    selectize();
-                } else {
-                    $('.usergroups').hide();
-                    $('select[name="usergroups[]"]').prop("disabled", true);
-                }
-            });
-        });
-        function selectize() {
-            $('select[name="usergroups[]"]').selectize({
-                plugins: ['remove_button']
-            });
-        }
-    </script>
-
-    <!-- Date picker -->
-    <script src="{{ asset_rev('resources/assets/libs/moment/js/moment.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/pikaday/js/pikaday.jquery.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/pikaday/css/pikaday.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}

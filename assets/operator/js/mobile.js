@@ -1,12 +1,5 @@
 $(document).ready(function() {
 
-    // Removes address bar on mobiles and tablets
-    window.addEventListener("load", function() {
-        setTimeout(function() {
-            window.scrollTo(0, 0);
-        });
-    });
-
     // Mobile navigation bars button
     $('.mobile-nav').on('click', function() {
         // Toggle navigation
@@ -50,24 +43,22 @@ $(document).ready(function() {
 
         // Show/hide navigation lists depending on screen format (desktop/mobile)
         if ($(this).width() > 1080) {
-            $('#navarea, ul#nav ul').css('display', 'block');
+            $('#navarea').css('display', 'block');
         } else {
-            $('#navarea, ul#nav ul').css('display', 'none');
-            $('.mobile-nav').removeClass('active');
-        }
-
-        // Ticket viewing sticks and adds margin at top or bottom
-        if ($('.ticket-viewing').is(':visible')) {
-            if ($(this).height() <= 720) {
-                // Mobile
-                $('.desk_content_padding').css({ 'margin-bottom': $('.ticket-viewing').outerHeight(), 'margin-top': 0 });
-            } else {
-                // Desktop
-                $('.desk_content_padding').css({ 'margin-bottom': 0, 'margin-top': $('.ticket-viewing').outerHeight() });
+            // Only do it if the mobile navigation isn't already open, else this breaks when you try to search as the
+            // keyboard opening resizes the browser.
+            if (! $('.mobile-nav').hasClass('active')) {
+                $('#navarea').css('display', 'none');
             }
-        } else {
-            // Not visible so remove any margin
-            $('.desk_content_padding').css({ 'margin-bottom': 0, 'margin-top': 0 });
+        }
+        
+        // Adjust DataTable footer.
+        var $dataTable = $('.dataTable');
+        if ($dataTable.length) {
+            var table = $dataTable.dataTable().api().table();
+            if (typeof table.fixedHeader !== 'undefined') {
+                table.fixedHeader.adjust();
+            }
         }
     });
 
@@ -83,17 +74,17 @@ $(document).ready(function() {
         if ($('.toggle-sidebar').is(':visible')) {
             $('body').removeClass('sidebar-open');
             $('#sidebar').addClass('sidebar-close');
-            $('.toggle-sidebar').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+            $('.toggle-sidebar i').removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
         }
     });
 
     // Toggle sidebar
     $('#sidebar').on('click', '.toggle-sidebar, .icon', function(e) {
         // For icons, only if responsive view and sidebar is closed
-        if ($(this).hasClass('toggle-sidebar') || ($(window).width() < 960 && !$('body').hasClass('sidebar-open'))) {
+        if ($(this).hasClass('toggle-sidebar') || ($(window).width() < 1080 && !$('body').hasClass('sidebar-open'))) {
             $('body').toggleClass('sidebar-open');
             $('#sidebar').toggleClass('sidebar-close');
-            $('.toggle-sidebar').toggleClass('fa-angle-double-right fa-angle-double-left');
+            $('.toggle-sidebar i').toggleClass('fa-angle-double-right fa-angle-double-left');
 
             // Close header
             closeHeader();
@@ -129,6 +120,6 @@ function closeHeader() {
     });
 
     // Hide mobile navigation
-    $('#navarea, ul#nav ul').css('display', 'none');
+    $('#navarea').css('display', 'none');
     $('.mobile-nav').removeClass('active');
 }

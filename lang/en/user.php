@@ -20,7 +20,6 @@ return array(
     "manage_organisation"           => "Manage Organisation",
     "leave_organisation"            => "Leave Organisation",
     "user_membership"               => "User membership",
-    "organisation_no_longer"        => "This user will no longer be a part of this organisation.",
     "transfer_ownership"            => "Transfer ownership",
     "transfer_ownership_desc"       => "As the current owner of the organisation, you cannot be removed as a manager and only you can delete the organisation. You may transfer the ownership of the organisation to someone else, be aware that this action cannot be reversed.",
     "transfer_ownership_operator"   => "Only the owner can delete the organisation and cannot be removed from it. Use this option to change the ownership to another user in the organisation.",
@@ -277,6 +276,51 @@ return array(
      */
     "user_name_format_desc"         => "The format that is used to display user names throughout the system.",
     "operator_name_format_desc"     => "The format that is used to display operator names throughout the system.",
+    
+    /*
+     * 2.3.0
+     */
+    "remove_from"                   => "Remove From :record?",
+    "remove_from_warn"              => "This will permanently remove the <strong>:name</strong> user from the :record.",
+
+    /*
+     * 2.3.1
+     */
+    "social_login"                  => "Social Login",
+    "social_login_provider_desc"    => "Allow users to register and log in using their :provider account.",
+    "social_login_provider_docs"    => "Please check over our documentation for setting up <a href=':link'>:provider Login</a>.",
+    "facebook_app_id"               => "App ID",
+    "facebook_app_secret"           => "App Secret",
+    "facebook_redirect_url"         => "The following URL <strong>must</strong> be entered for the Facebook Login 'Valid OAuth redirect URIs':",
+    "google_client_id"              => "Client ID",
+    "google_client_secret"          => "Client Secret",
+    "google_redirect_url"           => "The following URL <strong>must</strong> be entered for the Google 'Authorized redirect URIs':",
+    "steam_api_key"                 => "API Key",
+    "twitter_consumer_key"          => "Consumer Key",
+    "twitter_consumer_secret"       => "Consumer Secret",
+    "twitter_redirect_url"          => "The following URL <strong>must</strong> be entered for the Twitter Application 'Callback URL':",
+    "login_via"                     => "Log in via :provider",
+    "register_with"                 => "Register with :provider",
+    "idp"                           => "IdP",
+    "social_linking_login"          => "Please log in to complete linking of your social account.",
+    "social_linking_register"       => "Please fill in the details below to complete registration of your account. Your social account will be automatically linked.",
+    "already_registered"            => "Already registered?",
+    "linked_accounts"               => "Linked Accounts",
+    "unlink_account"                => "Unlink :record Account",
+    "unlink_account_warning"        => "Unlinking the social account will mean it can no longer be used to log in directly to the account.",
+    "failed_login"                  => "Failed Login|Failed Logins",
+    "confirmaton_token_expired"     => "Token has expired, please try to register again.",
+    "confirmaton_token_invalid"     => "Invalid token, please verify details are correct or try to register again.",
+    "unconfirmed_account"           => "Your account is currently unconfirmed, please check your email for a confirmation link to complete your account registration.",
+    "resend_confirmation"           => "<strong><a href=':link'>Click here</a></strong> to be sent a new confirmation email.",
+    "resend_confirmation_sent"      => "A new confirmation email has been queued and will be sent to you shortly.",
+
+    /*
+     * 2.4.0
+     */
+    "must_have_permission"          => "must have \":permission\" permission",
+    "deleted_user"                  => "Deleted User",
+    "access_level_not_owner"        => "It is not possible to change the access level of organisation owners. Transfer organisation ownership to another user first by viewing the organisation and clicking the 'Users' tab.",
 
     /*
      * 2.3.1

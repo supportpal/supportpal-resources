@@ -5,6 +5,9 @@
 {% block breadcrumb %}
     {{ parent() }}
     <a href="{{ route('selfservice.index', [ type.slug ]) }}">{{ type.name }}</a> &nbsp;&raquo;&nbsp;
+    {% for category in breadcrumb %}
+        <a href="{{ category.frontend_url }}">{{ category.name }}</a> &nbsp;&raquo;&nbsp;
+    {% endfor %}
     {{ categoryName }}
 {% endblock %}
 
@@ -15,15 +18,15 @@
 
 {% block content %}
 
-    {% if type.view == 0 and not categories.isEmpty() %}
+    {% if type.view == 0 and not subcategories.isEmpty() %}
         {# Show any subcategories if they exist #}
-        {% include 'frontend.' ~ template ~ '.selfservice.category_list' with { 'none': false } %}
+        {% include 'frontend.' ~ template ~ '.selfservice.category_list' with { 'categories': subcategories, 'none': false } %}
 
         <hr />
     {% endif %}
 
     {# Show all articles in category #}
     <h2>{{ Lang.choice('selfservice.article', 2) }}</h2>
-    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'category': false } %}
+    {% include 'frontend.' ~ template ~ '.selfservice.article_list' with { 'category': false, 'show_pinned': type.view == 1 } %}
 
 {% endblock %}

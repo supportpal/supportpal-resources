@@ -4,7 +4,7 @@
         <li data-id="{{ comment['id'] }}">
             <a name="_comment-{{ comment['id'] }}"></a>
 
-            <img class="avatar" src="data:image/jpeg;base64, {{ comment.author.avatar }}" />
+            <img class="avatar" src="{{ comment.author.avatar_url }}" />
 
             <div class="comment">
                 <span class="author">
@@ -23,7 +23,7 @@
                     <div class="commentContents">
                 {% endif %}
 
-                    <p class="commentText">{{ comment['purified_text']|raw }}</p>
+                    <div class="commentText">{{ comment['purified_text']|raw }}</div>
 
                     <div class="commentOptions">
                         {% if Config.get('settings.comment_write') == 0 or auth_check() %}

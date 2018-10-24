@@ -1,0 +1,20 @@
+{% set collapseDepends = record.dependsOn.field_id is empty %}
+
+<div class="form-container first {% if collapseDepends %}collapsed{% else %}open{% endif %}">
+    <div class="arrow">
+        <i class="fa fa-chevron-down"></i>
+    </div>
+
+    <div class="form-row small-selectize">
+        {{ form_label('depends_on_field_id', Lang.get('customfield.depends_on')) }}
+        <div class="input-container">
+            <div class="hide" {% if not collapseDepends %}style="display: block;"{% endif %}>
+                {{ form_select('depends_on_field_id', dependentFields, record.dependsOn.field_id, {'data-route': route}) }}
+                {% set disabled = dependendFieldOptions|length > 0 ? [] : {'disabled': 'disabled'} %}
+                {{ form_select('depends_on_option_id', dependendFieldOptions, record.depends_on_option_id, disabled) }}
+                <br />
+            </div>
+            <span class="description">{{ Lang.get('customfield.depends_on_desc') }}</span>
+        </div>
+    </div>
+</div>

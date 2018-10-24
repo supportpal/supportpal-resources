@@ -212,7 +212,7 @@ input[type="submit"]:hover {
     background: #2C6384;
 }
 
-input:disabled, select:disabled, button:disabled {
+input:disabled, select:disabled, button:disabled, input[readonly="readonly"], a.button-disabled {
     filter: alpha(opacity=60);
     opacity: 0.6;
 }
@@ -488,6 +488,10 @@ h2.collapsable .fa {
     padding: 20px;
 }
 
+h4.attachments-title {
+    margin-top: 15px;
+}
+
 /* List styles */
 
 ul.article-list {
@@ -522,6 +526,10 @@ ul.article-list li a:hover > h4 {
 
 ul.article-list li.none {
     text-align: center;
+}
+
+ul.article-list .fa.pinned {
+    color: #f9ca24
 }
 
 ul.details {
@@ -901,60 +909,6 @@ ul.attached-files .deleteAttachment:hover {
     color: #000;
 }
 
-h4.attachments-title {
-    margin-top: 15px;
-}
-
-ul.attachments {
-    list-style: none;
-    margin: 8px 0 0;
-    padding: 0;
-}
-
-ul.attachments li {
-    margin-top: 8px;
-}
-
-ul.attachments a {
-    background: #f9f9f9;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-    display: inline-block;
-    padding: 4px 10px;
-}
-
-ul.attachments a:hover {
-    background: #e0e0e0;
-    text-decoration: none;
-}
-
-ul.attachments .deletable a {
-    -moz-border-radius: 3px 0 0 3px;
-    -webkit-border-radius: 3px 0 0 3px;
-    border-radius: 3px 0 0 3px;
-}
-
-ul.attachments .fa {
-    color: #454545;
-    font-size: 110%;
-}
-
-ul.attachments .deleteAttachment {
-    background: #e74c3c;
-    -moz-border-radius: 0 3px 3px 0;
-    -webkit-border-radius: 0 3px 3px 0;
-    border-radius: 0 3px 3px 0;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    padding: 10px;
-}
-
-ul.attachments .deleteAttachment:hover {
-    background: #c0392b;
-}
-
 .attachment-dragover {
     background: #ecf0f1;
     border: 2px dashed #bdc3c7;
@@ -1062,6 +1016,48 @@ ul.tags li a:hover {
 .print:hover {
     background: #e0e0e0;
     text-decoration: none;
+}
+
+.article-attachments {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.article-attachments li {
+    display: inline-block;
+    margin: 12px 10px 0 0;
+    width: 300px;
+}
+
+.article-attachments li a {
+    background: #f9f9f9;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #e0e0e0;
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.article-attachments li a:hover {
+    background: #f0f0f0;
+}
+
+.article-attachments li a .fiv-viv {
+    font-size: 32px;
+    margin: 5px 12px 0 0;
+}
+
+.article-attachments li a div {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.article-attachments li a .light {
+    font-size: 85%;
 }
 
 .share-via span {
@@ -1249,7 +1245,7 @@ ul.comments span.date {
     font-size: 80%;
 }
 
-ul.comments p.commentText {
+ul.comments div.commentText {
     margin: 5px 0;
 }
 
@@ -1349,20 +1345,63 @@ button.show-children {
     max-width: none;
 }
 
+/* Social Login */
+
+a.social-login {
+    -moz-border-radius: 99px;
+    -webkit-border-radius: 99px;
+    border-radius: 99px;
+    color: #fff;
+    display: inline-block;
+    margin: 5px 0;
+    padding: 5px 12px;
+    position: relative;
+    text-align: left;
+    width: 215px;
+}
+
+a.social-login .fa {
+    color: #fff;
+}
+
+a.social-login span.icon {
+    border-right: 1px solid #fff;
+    border-right: 1px solid rgba(255, 255, 255, .4);
+    display: inline-block;
+    padding-right: 5px;
+}
+
+a.social-login:hover {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a.social-login.round-button {
+    margin: 0;
+    padding: 2px 6px;
+    width: auto;
+}
+
+a.social-login.round-button span.icon {
+    border-right: 0;
+    padding-right: 0
+}
+
+
 /* Pagination */
 
-.pager {
+.pagination, .pager {
     padding-left: 0;
     margin: 25px 0 0;
     text-align: center;
     list-style: none;
 }
 
-.pager li {
+.pagination li, .pager li {
     display: inline;
 }
 
-.pager li > a, .pager li > span {
+.pagination li > a, .pager li > a, .pagination li > span, .pager li > span {
     display: inline-block;
     padding: 5px 12px 7px;
     border: 1px solid #e0e0e0;
@@ -1370,12 +1409,16 @@ button.show-children {
     font-size: 150%;
 }
 
-.pager li > a:hover {
-    background: #eee;
+.pagination li > a:hover, .pager li > a:hover {
+    background: #f3f5f5;
     text-decoration: none;
 }
 
-.pager li.disabled > span {
+.pagination li.active > span, .pager li.active > span {
+    background: #f3f5f5;
+}
+
+.pagination li.disabled > span, .pager li.disabled > span {
     color: #aaa;
     opacity: 0.6;
 }
@@ -1483,6 +1526,36 @@ button.show-children {
     color: #999;
 }
 
+.sweet-alert .confirm {
+    background: rgb(48, 133, 214);
+    margin-top: 5px;
+}
+.sweet-alert .cancel {
+    background: rgb(170, 170, 170);
+    margin-top: 5px;
+}
+
+.sweet-alert button.confirm[disabled] {
+    margin-bottom: 4px !important;
+    margin-top: 5px !important;
+    overflow: hidden;
+}
+
+.delete-modal .warning-box {
+    background: #fcf9e5;
+    color: #9F6000;
+    font-size: 90%;
+    font-weight: bold;
+    margin: 7px -20px 15px;
+    padding: 6px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.delete-modal button.disabled {
+    display: none !important;
+}
+
 /* jQuery validation */
 
 .has-error label {
@@ -1499,7 +1572,8 @@ button.show-children {
 
 .has-error .field-error,
 input.has-error ~ .field-error,
-.recaptcha_input_area .field-error:not(:empty) {
+.captcha .field-error:not(:empty),
+.g-recaptcha .field-error:not(:empty) {
     background: #e74c3c;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -1516,7 +1590,7 @@ input.has-error ~ .field-error,
 
 .has-error .field-error:before,
 input.has-error ~ .field-error:before,
-.recaptcha_input_area .field-error:not(:empty):before {
+.captcha .field-error:not(:empty):before {
     border-bottom: 6px solid transparent;
     border-top: 6px solid transparent;
     border-right: 12px solid #e74c3c;
@@ -1528,7 +1602,8 @@ input.has-error ~ .field-error:before,
 
 .has-error .field-error.field-error-below,
 input.has-error ~ .field-error.field-error-below,
-.has-error .redactor-box + .field-error {
+.has-error .redactor-box + .field-error,
+.g-recaptcha .field-error:not(:empty) {
     display: table;
     margin-left: 0;
     margin-top: 7px;
@@ -1543,7 +1618,7 @@ input.has-error ~ .field-error.field-error-below:before,
 
 /* Pikaday */
 input.datepicker {
-    font-family: 'FontAwesome', 'Open Sans';
+    font-family: 'FontAwesome', 'Open Sans' !important;
     line-height: 21px;
 }
 
@@ -1561,20 +1636,20 @@ input.datepicker {
 /* jQuery UI Tooltip */
 
 .ui-tooltip, .ui-tooltip .arrow:after {
-    background: #454545;
+    background: #454545 !important;
 }
 
 .ui-tooltip {
-    border: 0;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    -moz-border-radius: 20px;
-    -webkit-border-radius: 20px;
-    border-radius: 20px;
-    color: #fff;
-    font: 10px "Open Sans", Sans-Serif;
-    padding: 4px 10px;
-    text-align: center;
+    border: 0 !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    -moz-border-radius: 20px !important;
+    -webkit-border-radius: 20px !important;
+    border-radius: 20px !important;
+    color: #fff !important;
+    font: 10px "Open Sans", Sans-Serif !important;
+    padding: 4px 10px !important;
+    text-align: center !important;
 }
 
 .ui-tooltip .arrow {
@@ -1608,6 +1683,51 @@ input.datepicker {
 .ui-tooltip .arrow.top:after {
     bottom: -9px;
     top: auto;
+}
+
+/* Datatables */
+
+table.dataTable th {
+    border-bottom: 2px solid #eee !important;
+}
+
+table.dataTable th, table.dataTable td {
+    padding: 8px 10px !important;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child,
+table.dataTable.dtr-inline.collapsed > thead > tr > th:first-child {
+    padding-left: 40px !important;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    top: auto !important;
+    left: 8px !important;
+    height: 21px !important;
+    width: 21px !important;
+    line-height: 22px !important;
+    vertical-align: middle;
+    background-color: #27ae60 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    font-family: FontAwesome;
+    font-size: 14px;
+    content: "\f067" !important;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child:before {
+    content: "\f068" !important;
+    background-color: #c0392b !important;
+}
+
+table.dataTable > tbody > tr.child li {
+    border: 0 !important;
+}
+
+table.dataTable > tbody > tr.child span.dtr-title {
+    min-width: 0 !important;
 }
 
 /* Fix for iframe generated by recaptcha */

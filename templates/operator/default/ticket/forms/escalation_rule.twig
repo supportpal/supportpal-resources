@@ -1,17 +1,22 @@
+{% set inputPrefix = 'rules[' ~ (count is defined ? count : '') ~ ']' %}
 <tr class="rule {% if hide|default is not empty %} hide {% endif %}">
+    <td class="rule-drag">
+        <i class="fa fa-bars fa-lg handle" aria-hidden="true"></i>
+    </td>
+
     <td class="rule-action">
-        {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][id]', rule|default is not empty ? rule.id : '') }}
-        {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][action]', actions, rule|default is not empty ? rule.action : null) }}
+        {{ form_hidden(inputPrefix ~ '[id]', rule|default is not empty ? rule.id : '') }}
+        {{ form_select(inputPrefix ~ '[action]', actions, rule|default is not empty ? rule.action : null) }}
         {% if rule|default is not empty %}<a name="_action-{{ rule.id }}"></a>{% endif %}
     </td>
     
     {% if when|default is not empty %}
     <td class="rule-when">
-        {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][when_time]',
+        {{ form_text(inputPrefix ~ '[when_time]',
             rule|default is not empty ? number_format(rule.when_time / 3600, 2) + 0 : 1, { 'class': 'hide', 'size': 4 })
         }}
 
-        {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][when]',
+        {{ form_select(inputPrefix ~ '[when]',
             {
                 '0': Lang.get('general.overdue'),
                 '1': Lang.get('general.hours_before_overdue')
@@ -22,25 +27,53 @@
     
     <td class="rule-value">
         <div class="action" data-action="0">
-            {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
-                rule|default is not empty and rule.action == 0 ? rule.value_text : null,
-                {'class': 'text'})
-            }}
+            {% set value_text = rule|default is not empty and rule.action == 0 ?
+                (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {}
+            %}
+            <div style="margin-bottom: 10px;">
+                {{ form_redactor(inputPrefix ~ '[value_text][text]',
+                    value_text.text|default is not empty ? value_text.text : null, {'class': 'text'})
+                }}
+            </div>
+            <label>
+                {{ form_check(inputPrefix ~ '[value_text][email_operators]', 1,
+                    value_text.email_operators|default is not empty ? value_text.email_operators : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_operators') }}
+            </label>
+            </div>
         </div>
 
         <div class="action hide" data-action="1">
-            {{ form_redactor('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
-                rule|default is not empty and rule.action == 1 ? rule.value_text :
-                '<br /><br />{{ operator.signature }}',
-                {'class': 'text'})
-            }}
+            {% set value_text = rule|default is not empty and rule.action == 1 ?
+                (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {}
+            %}
+            <div style="margin-bottom: 10px;">
+                {{ form_redactor(inputPrefix ~ '[value_text][text]',
+                    value_text.text|default is not empty ? value_text.text : '<br /><br />{{ operator.signature|raw }}', {'class': 'text'})
+                }}
+            </div>
+            <label class="email-user">
+                {{ form_check(inputPrefix ~ '[value_text][email_user]', 1,
+                    value_text.email_user|default is not empty ? value_text.email_user : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_users') }}
+            </label> &nbsp;&nbsp;
+            <label class="exclude-cc {% if value_text.email_user|default is not empty and not value_text.email_user %}hide{% endif %}">
+                {{ form_check(inputPrefix ~ '[value_text][exclude_cc]', 1,
+                    value_text.exclude_cc|default is not empty ? value_text.exclude_cc : false)
+                }}&nbsp; {{ Lang.get('actions.exclude_cc') }} &nbsp;&nbsp;
+            </label>
+            <label>
+                {{ form_check(inputPrefix ~ '[value_text][email_operators]', 1,
+                    value_text.email_operators|default is not empty ? value_text.email_operators : true)
+                }}&nbsp; {{ Lang.get('ticket.send_email_to_operators') }}
+            </label>
         </div>
 
         <div class="action hide" data-action="2">
             {% if tags is not defined or tags is empty %}
                 {{ Lang.get('ticket.no_tags', { 'route': route('ticket.operator.tag.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     tags, rule|default is not empty and rule.action == 2 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -50,7 +83,7 @@
             {% if operators is not defined or operators is empty %}
                 {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     operators, rule|default is not empty and rule.action == 3 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -60,7 +93,7 @@
             {% if tags is not defined or tags is empty %}
                 {{ Lang.get('ticket.no_tags', { 'route': route('ticket.operator.tag.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     {'0': Lang.get('actions.all_tags')} + tags, rule|default is not empty and rule.action == 4 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -70,7 +103,7 @@
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     array_column(templates.toArray(), 'name', 'id'), rule|default is not empty and rule.action == 5 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -80,9 +113,15 @@
             {% if templates.isEmpty() %}
                 {{ Lang.get('ticket.no_templates', { 'route': route('core.operator.emailtemplate.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     array_column(templates.toArray(), 'name', 'id'), rule|default is not empty and rule.action == 6 ? rule.value_id : null)
                 }}
+                &nbsp;&nbsp;&nbsp;
+                <label>
+                    {{ form_check(inputPrefix ~ '[value_text]', 1,
+                        rule|default is not empty and rule.action == 6 ? rule.value_text : false)
+                    }}&nbsp; {{ Lang.get('actions.exclude_cc') }}
+                </label>
             {% endif %}
         </div>
 
@@ -90,7 +129,7 @@
             {% if departments is not defined or departments is empty %}
                 {{ Lang.get('ticket.no_departments_found', { 'route': route('ticket.operator.department.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     departments, rule|default is not empty and rule.action == 7 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -100,7 +139,7 @@
             {% if priorities is not defined or priorities is empty %}
                 {{ Lang.get('ticket.no_priorities', { 'route': route('ticket.operator.priority.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     priorities, rule|default is not empty and rule.action == 8 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -110,7 +149,7 @@
             {% if statuses is not defined or statuses is empty %}
                 {{ Lang.get('ticket.no_statuses', { 'route': route('ticket.operator.status.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     statuses, rule|default is not empty and rule.action == 9 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -123,12 +162,12 @@
                 {{ Lang.get('ticket.no_operator_groups', { 'route': route('user.operator.operatorgroup.create') })|raw }}
             {% else %}
                 {{ Lang.choice('user.operator_group', 1) }} &nbsp;
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     operatorGroups, rule|default is not empty and rule.action == 10 ? rule.value_id : null)
                 }}
                 &nbsp;
                 {{ Lang.choice('core.email_template', 1) }} &nbsp;
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                {{ form_select(inputPrefix ~ '[value_text]',
                     array_column(templates.toArray(), 'name', 'id'), rule|default is not empty and rule.action == 10 ? rule.value_text : null)
                 }}
             {% endif %}
@@ -141,12 +180,12 @@
                 {{ Lang.get('ticket.no_user_groups', { 'route': route('user.operator.usergroup.create') })|raw }}
             {% else %}
                 {{ Lang.choice('user.group', 1) }} &nbsp;
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     userGroups, rule|default is not empty and rule.action == 11 ? rule.value_id : null)
                 }}
                 &nbsp;
                 {{ Lang.choice('core.email_template', 1) }} &nbsp;
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+                {{ form_select(inputPrefix ~ '[value_text]',
                     array_column(templates.toArray(), 'name', 'id'), rule|default is not empty and rule.action == 11 ? rule.value_text : null)
                 }}
             {% endif %}
@@ -156,7 +195,7 @@
             {% if operators is not defined or operators is empty %}
                 {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     {'-1': Lang.get('actions.all_assigned_operators')} + operators, rule|default is not empty and rule.action == 12 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -166,26 +205,27 @@
             {% if ticketCustomFields is not defined or ticketCustomFields.isEmpty() %}
                 {{ Lang.get('ticket.no_custom_fields', { 'route': route('ticket.operator.customfield.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     array_column(ticketCustomFields.toArray(), 'name', 'id'),
                     rule|default is not empty and rule.action == 13 ? rule.value_id : null, {'class': 'value-id'})
-                }} &nbsp;
+                }}
+                <br />
                 {% include 'operator.' ~ template ~ '.ticket.forms.escalation_rule_customfields' with {'customfields': ticketCustomFields} %}
             {% endif %}
         </div>
 
         <div class="action hide" data-action="14">
             {{ Lang.get('general.na') }}
-            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+            {{ form_hidden(inputPrefix ~ '[value_id]', 1) }}
         </div>
 
         <div class="action hide" data-action="15">
             {{ Lang.get('general.na') }}
-            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+            {{ form_hidden(inputPrefix ~ '[value_id]', 1) }}
         </div>
 
         <div class="action hide" data-action="16">
-            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+            {{ form_text(inputPrefix ~ '[value_text]',
                 rule|default is not empty and rule.action == 16 ? rule.value_text : null, {'size': 3})
             }}&nbsp; {{ Lang.get('actions.hours_to_be_added') }}<br />
             <span class="description">{{ Lang.get('actions.only_with_due_time') }}</span>
@@ -193,23 +233,23 @@
 
         <div class="action hide" data-action="17">
             {{ Lang.get('general.na') }}
-            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+            {{ form_hidden(inputPrefix ~ '[value_id]', 1) }}
         </div>
 
         <div class="action hide" data-action="18">
             {{ Lang.get('general.na') }}
-            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+            {{ form_hidden(inputPrefix ~ '[value_id]', 1) }}
         </div>
 
         <div class="action hide" data-action="19">
-            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+            {{ form_text(inputPrefix ~ '[value_text]',
                 rule|default is not empty and rule.action == 19 ? rule.value_text : null, {'size': 3})
             }}&nbsp; {{ Lang.get('actions.hours_to_be_removed') }}<br />
             <span class="description">{{ Lang.get('actions.only_with_due_time') }}</span>
         </div>
 
         <div class="action hide" data-action="20">
-            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+            {{ form_text(inputPrefix ~ '[value_text]',
                 rule|default is not empty and rule.action == 20 ? rule.value_text : null, {'size': 3})
             }}&nbsp; {{ Lang.get('actions.hours_to_be_set') }}<br />
             <span class="description">{{ Lang.get('actions.set_due_time_desc') }}</span>
@@ -217,21 +257,21 @@
 
         <div class="action hide" data-action="21">
             {{ Lang.get('general.na') }}
-            {{ form_hidden('rules[' ~ (count is defined ? count : '') ~ '][value_id]', 1) }}
+            {{ form_hidden(inputPrefix ~ '[value_id]', 1) }}
         </div>
 
         <div class="action hide" data-action="22">
             {% if slaplans is not defined or slaplans is empty %}
                 {{ Lang.get('ticket.no_slaplans', { 'route': route('ticket.operator.slaplan.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     {'0': Lang.get('general.none')} + slaplans, rule|default is not empty and rule.action == 22 ? rule.value_id : null)
                 }}
             {% endif %}
         </div>
 
         <div class="action hide" data-action="23">
-            {{ form_text('rules[' ~ (count is defined ? count : '') ~ '][value_text]',
+            {{ form_text(inputPrefix ~ '[value_text]',
                 rule|default is not empty and rule.action == 23 ? rule.value_text : '{{ ticket.subject }}', {'style': 'width: 100%'})
             }}
             <div class="warning box bottombox">
@@ -243,7 +283,7 @@
             {% if userGroups is not defined or userGroups is empty %}
                 {{ Lang.get('ticket.no_user_groups', { 'route': route('user.operator.usergroup.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     userGroups, rule|default is not empty and rule.action == 24 ? rule.value_id : null)
                 }}
             {% endif %}
@@ -253,12 +293,116 @@
             {% if userGroups is not defined or userGroups is empty %}
                 {{ Lang.get('ticket.no_user_groups', { 'route': route('user.operator.usergroup.create') })|raw }}
             {% else %}
-                {{ form_select('rules[' ~ (count is defined ? count : '') ~ '][value_id]',
+                {{ form_select(inputPrefix ~ '[value_id]',
                     userGroups, rule|default is not empty and rule.action == 25 ? rule.value_id : null)
                 }}
             {% endif %}
         </div>
+
+        <div class="action hide" data-action="26">
+            {{ form_text(inputPrefix ~ '[value_text]',
+                rule|default is not empty and rule.action == 26 ? rule.value_text : null)
+            }}
+        </div>
+
+        <div class="action hide" data-action="27">
+            {{ form_text(inputPrefix ~ '[value_text]',
+                rule|default is not empty and rule.action == 27 ? rule.value_text : null)
+            }}<br />
+            <span class="description">{{ Lang.get('actions.remove_cc_desc') }}</span>
+        </div>
+        
+        <div class="action hide" data-action="28">
+            {% set value = rule.action == 28 ? (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {} %}
+            <div style="margin-bottom: 10px">
+                <a class="er-wh-toggle-headers" style="font-weight: bold">{{ Lang.get('ticket.add_remove_headers') }}</a>
+                <div style="{% if value.headers is empty %}display: none{% endif %}">
+                    {{ form_textarea(inputPrefix ~ '[value_text][headers]', value.headers, {'class': 'codemirror'}) }}
+                </div>
+            </div>
+            <div style="margin-bottom: 10px">
+                {% set methods = {'GET': 'GET', 'POST': 'POST', 'PUT': 'PUT', 'PATCH': 'PATCH', 'DELETE': 'DELETE'} %}
+                {{ form_select(inputPrefix ~ '[value_text][method]', methods, value.method, {'class': 'er-wh-method', 'style': 'width: 10%'}) }}
+                {{ form_text(inputPrefix ~ '[value_text][url]', value.url, {'placeholder': 'http://www.example.com/webhook', 'style': 'width: 89%'}) }}
+            </div>
+            <div class="er-wh-content" style="margin-bottom: 10px; {% if value.method not in ['POST','PUT','PATCH'] %}display: none{% endif %}">
+                <strong>{{ Lang.get('general.content') }}</strong>
+                {% set types = { 'application/json': 'application/json', 'application/xml': 'application/xml', 'application/x-www-form-urlencoded': 'application/x-www-form-urlencoded' } %}
+                {{ form_select(inputPrefix ~ '[value_text][content_type]', types, value.content_type) }}
+                <div style="margin-top: 10px">
+                    {{ form_textarea(inputPrefix ~ '[value_text][content]', value.content, {'rows': 5, 'class': 'codemirror'}) }}
+                </div>
+            </div>
+            <button class="test-webhook" data-route="{{ route('ticket.operator.macro.webhook.test') }}">
+                {{ Lang.get('general.test') }}
+            </button> &nbsp; <span class="test-webhook-response"></span><br />
+            <span class="description">{{ Lang.get('ticket.webhook_merge_fields')|raw }}</span>
+        </div>
+        
+        <div class="action hide" data-action="29">
+            {% set value = rule.action == 29 ? (rule.value_text is iterable ? rule.value_text : json_decode(rule.value_text)) : {} %}
+            <div class="form-row" style="padding: 0; margin-bottom: 10px">
+                <label style="width: 55px">{{ Lang.get('ticket.to') }}</label>
+                <div class="input-container" style="margin-left: 65px">
+                    <select name="{{ inputPrefix ~ '[value_text][to][]' }}" class="selectize" multiple="multiple">
+                        {% for value in (value.to is empty ? [] : value.to) %}
+                        <option value="{{ value }}" selected="selected">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="er-fwd-cc form-row" style="padding: 0; margin-bottom: 10px">
+                <label style="width: 55px">{{ Lang.get('ticket.cc') }}</label>
+                <div class="input-container" style="margin-left: 65px">
+                    <select name="{{ inputPrefix ~ '[value_text][cc][]' }}" class="selectize" multiple="multiple">
+                        {% for value in (value.cc is empty ? [] : value.cc) %}
+                            <option value="{{ value }}" selected="selected">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="er-fwd-bcc form-row" style="padding: 0; margin-bottom: 10px">
+                <label style="width: 55px">{{ Lang.get('ticket.bcc') }}</label>
+                <div class="input-container" style="margin-left: 65px">
+                    <select name="{{ inputPrefix ~ '[value_text][bcc][]' }}" class="selectize" multiple="multiple">
+                        {% for value in (value.bcc is empty ? [] : value.bcc) %}
+                            <option value="{{ value }}" selected="selected">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row form-full" style="padding: 0; margin-bottom: 10px">
+                <label style="width: 55px">{{ Lang.get('ticket.subject') }}</label>
+                <div class="input-container" style="margin-left: 65px">
+                    {{ form_text(inputPrefix ~ '[value_text][subject]', value.subject is empty ? 'FW: {{ ticket.subject }}' : value.subject) }}
+                </div>
+            </div>
+            <div>
+                {{ form_redactor(inputPrefix ~ '[value_text][message]', value.message is empty ? "{{ forward_messages|raw }}" : value.message, {'class': 'text'}) }}
+            </div>
+        </div>
+
+        <div class="action hide" data-action="30">
+            {% if operators is not defined or operators is empty %}
+                {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
+            {% else %}
+                {{ form_select(inputPrefix ~ '[value_id]',
+                    operators, rule|default is not empty and rule.action == 30 ? rule.value_id : null)
+                }}
+            {% endif %}
+        </div>
+
+        <div class="action hide" data-action="31">
+            {% if operators is not defined or operators is empty %}
+                {{ Lang.get('ticket.no_operators_found', { 'route': route('user.operator.operator.create') })|raw }}
+            {% else %}
+                {{ form_select(inputPrefix ~ '[value_id]',
+                    {'-1': Lang.get('actions.all_watching_operators')} + operators, rule|default is not empty and rule.action == 31 ? rule.value_id : null)
+                }}
+            {% endif %}
+        </div>
     </td>
+
     <td>
         <i class="fa fa-times right remove-button"></i>
     </td>

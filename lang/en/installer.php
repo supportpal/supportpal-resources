@@ -16,11 +16,6 @@ return array(
     "support"                   => "The license code used for this installation does not have a valid support &amp; upgrades subscription, and as such, it is not eligible to install this version of SupportPal. Please <a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>renew</a> your support &amp; updates subscription or revert your installation files.",
 
     // Upgrade
-    "upgrade_step_1"            => "Step 1 of 3: System Requirements",
-    "upgrade_step_2"            => "Step 2 of 3: Update Database",
-    "upgrade_step_3"            => "Step 3 of 3: Upgrade Complete",
-    "upgrade_step_3_support"    => "Should you find any problems or need any help using the new features in SupportPal, please read our documentation or open a ticket with us.",
-    "upgrade_step_3_continue"   => "To continue using SupportPal, log in to the operator panel here",
     "successfully_updated"      => "Congratulations, SupportPal has been successfully upgraded.",
 
     // Install
@@ -62,7 +57,6 @@ return array(
     "step_6"                    => "Step 6 of 7: Quick Set-Up",
     "step_6_desc"               => "Enter your company and website details below.",
     "locale_desc"               => "Set the locale settings for your system.",
-    "diagnostic_desc"           => "To help improve our products, we would like to receive diagnostic data from your installation when something goes wrong. You may disable this below if you do not wish to send us data.",
     "operator_success"          => "Your administrator account has been created.",
 
     // Step 7
@@ -121,10 +115,6 @@ return array(
     /*
      * 2.3.0
      */
-    "mysql_server_version"      => "Server Version >= 5.5.3",
-    "mysql_server_version_desc" => "MySQL 5.5.3 or greater is required to run SupportPal. Found: ':version'.",
-    "mysql_client_version"      => "Client Version >= 5.5.3 (5.0.9 for MySQLnd)",
-    "mysql_client_version_desc" => "MySQL client version 5.5.3 or greater (5.0.9 for MySQLnd) is required to run SupportPal. Found: ':version'.",
     "png_jpg_support"           => "PNG & JPEG Support",
     "allow_url_fopen"           => "'allow_url_fopen' Enabled",
     "allow_url_fopen_failure"   => "Enable 'allow_url_fopen' in your php.ini file to use Gravatar and other features.",
@@ -132,5 +122,21 @@ return array(
     "help_allowed_methods"      => "Your web server must permit all of the below HTTP methods. Please check our <a href='https://docs.supportpal.com/current/New+Installation#PostInstallationSteps' target='_blank'>New Installation</a> documentation for more information.",
     "view_log"                  => "View Log",
     "unexpected_response"       => "Unexpected response.",
+
+    /*
+     * 2.4.0
+     */
+    "mysql_server_version"      => "Server Version >= :min",
+    "mysql_server_version_desc" => "MySQL :min or greater is required to run SupportPal. Found: ':version'.",
+    "mysql_client_version"      => "Client Version >= :min (:mysqlnd_min for MySQLnd)",
+    "mysql_client_version_desc" => "MySQL client version :min or greater (:mysqlnd_min for MySQLnd) is required to run SupportPal. Found: ':version'.",
+
+    "upgrade_step"              => "Step :num of :total: ",
+    "accept_eula"               => "Accept EULA",
+    "system_requirements"       => "System Requirements",
+    "update_database"           => "Update Database",
+    "upgrade_complete"          => "Upgrade Complete",
+
+    "upgrade_support"           => "Should you find any problems or need any help using the new features in SupportPal, please read our documentation or open a ticket with us.",
 
 );

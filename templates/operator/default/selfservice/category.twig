@@ -1,9 +1,5 @@
 {% extends parent_template %}
 
-{% block scripts_header %}
-    <link href="{{ asset_rev('resources/assets/libs/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block title %}
     {% if type|default is not empty %}
         {{ type.name }}
@@ -61,24 +57,17 @@
 {% endblock %}
 
 {% block scripts_footer %}
-    <script src="{{ asset_rev('resources/assets/libs/datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset_rev('resources/assets/libs/datatables-responsive/js/dataTables.responsive.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/libs/datatables-responsive/css/dataTables.responsive.css') }}">
-    
     <!-- Delete records from the table -->
-    <script src="{{ asset_rev('resources/assets/libs/sweetalert2/js/sweetalert2.min.js') }}"></script>
-    <link href="{{ asset_rev('resources/assets/libs/sweetalert2/css/sweetalert2.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
 
     <!-- Filter the table -->
-    <script src="{{ asset_rev('resources/assets/libs/yadcf/js/jquery.dataTables.yadcf.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             /**
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_name", filter_type: "text"},
+                {column_number : 0, column_data_type: "text", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
                 {column_number : 1, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_type"},
                 {column_number : 2, column_data_type: "html", html_data_type: "selector", html_data_selector: "a", filter_container_id: "filter_brand"},
                 {column_number : 3, filter_container_id: "filter_public"}
