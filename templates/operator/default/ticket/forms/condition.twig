@@ -507,6 +507,11 @@
                 condition_operators|default is not empty and condition_operators is not null ? condition_operators : [ ],
                 condition|default is not empty and condition.item == 64 ? condition.value : null,
                 { 'data-item': 64, 'data-operator': 0 }) }}
+
+        {{ form_text('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                condition|default is not empty and condition.item == 65 ? condition.value : null,
+                { 'data-item': 65, 'data-operator': 4, 'class': 'hide' }) }}
+        <span class="description hide" data-item="65"><br />{{ Lang.get('conditions.exact_search_quotes') }}</span>
     </td>
     <td width="16">
         <i class="fa fa-times right remove-button"></i>

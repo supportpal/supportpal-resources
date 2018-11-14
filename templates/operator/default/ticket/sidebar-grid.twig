@@ -61,7 +61,7 @@
         <ul class="department-list with-badge">
             {% for department in obj_departments %}
                 <li>
-                    <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id }}">
+                    <a href="{{ route('ticket.operator.ticket') ~ '?department=' ~ department.id ~ '&status=' ~ non_resolved_statuses }}">
                         <span class="badge right hide" data-id="{{ department.id }}"></span>
                         <div class="list-item" {% if Input.get('department', 0) == department.id|trim %}style="font-weight: bold;"{% endif %}>
                             {% if department.dashes|default is not empty %}

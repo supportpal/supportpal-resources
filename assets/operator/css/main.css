@@ -1368,6 +1368,10 @@ ul.dropdown ul li:hover > ul {
     color: #e67e22;
 }
 
+.box .fa-times {
+    cursor: pointer;
+}
+
 /* Table styles */
 
 table {

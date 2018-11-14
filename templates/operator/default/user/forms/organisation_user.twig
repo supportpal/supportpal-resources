@@ -32,10 +32,13 @@
                         &nbsp;
                         <a href="{{ route('user.operator.user.edit', user.id) }}">{{ user.formattedname }}</a>
                         {% if user.email is not empty %}
-                            <span class="description">{{ '<' ~ user.email ~ '>' }}</span>
+                            <span class="description">{{ '<' ~ user.email ~ '>' }}</span>&nbsp;
                         {% endif %}
                         {% if record.owner_id == user.id %}
-                            <span class="tag">{{ Lang.get('user.owner') }}</span>
+                            <span class="tag" style="background: #27ae60; color: #fff;">{{ Lang.get('user.owner') }}</span>
+                        {% endif %}
+                        {% if not user.confirmed %}
+                            <span class="tag">{{ Lang.get('user.unconfirmed') }}</span>
                         {% endif %}
                     </td>
                     <td>{{ form_select('access_level[' ~ user.id ~ ']', { 0: Lang.get('user.manager'), 1: Lang.choice('user.user', 1) },

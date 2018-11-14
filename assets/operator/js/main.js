@@ -1,20 +1,4 @@
 $(document).ready(function () {
-    // For mobile retina images
-    if (window.devicePixelRatio >= 2) {
-        var images = $("img.2x");
-
-        // Loop through the images and make them hi-res
-        for (var i = 0; i < images.length; i++) {
-            // Get new image name for @2x version
-            var imageType = images[i].src.substr(-4);
-            var imageName = images[i].src.substr(0, images[i].src.length - 4);
-            imageName += "@2x" + imageType;
-
-            // Change image source
-            images[i].src = imageName;
-        }
-    }
-
     // Preserves the mouse-over on top-level menu elements when hovering over children
     // Only do this on desktop view
     $("#nav ul").each(function() {
@@ -30,7 +14,7 @@ $(document).ready(function () {
     });
 
     // Tabs toggling
-    $('ul.tabs li').on('click', function() {
+    $(document).on('click', 'ul.tabs li', function() {
         // Get name of tab
         var name = $(this).attr('id');
 

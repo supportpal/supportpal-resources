@@ -44,9 +44,15 @@
             {% else %}
                 <h3 style="margin-top: 0">{{ Lang.get('license.reasons') }}</h3>
                 <ul>
-                    {% for reason in licenseStatusReasons %}
-                    <li>{{ reason }}</li>
-                    {% endfor %}
+                    <li>{{ Lang.get('license.incorrect_license') }}</li>
+                    <li>
+                        {{ Lang.get('license.ip_changed') }}
+                        {% if not licenseInformation.multiIp %}
+                            <br />
+                            {{ Lang.get('license.multi_ip_support', {'href': 'https://www.supportpal.com/manage/upgrade.php?type=configoptions&id=' ~ licenseInformation.serviceid|e})|raw }}
+                        {% endif %}
+                    </li>
+                    <li>{{ Lang.get('license.domain_changed') }}</li>
                 </ul>
             {% endif %}
 

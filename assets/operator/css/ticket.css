@@ -805,16 +805,33 @@ table.ticket-details .create-new-user {
     background: #fdf6ea;
     border: 1px solid #ddd;
     border-top: 0;
-    cursor: pointer;
     font-size: 12px;
     font-weight: normal;
     line-height: 1em;
-    padding: 8px;
     text-align: center;
+}
+
+table.ticket-details .create-new-user div.new-user-toggle {
+    cursor: pointer;
+    padding: 8px;
 }
 
 table.ticket-details .create-new-user .fa {
     font-size: 12px;
+}
+
+table.ticket-details .new-user-form {
+    padding: 0 8px 8px;
+}
+
+table.ticket-details .new-user-form input {
+    margin-bottom: 6px;
+    width: 100%;
+}
+
+table.ticket-details .new-user-form .selectize-control {
+    margin-bottom: 6px;
+    text-align: left;
 }
 
 #sidebar a.apply-macro:hover {
@@ -845,8 +862,12 @@ table.ticket-details .create-new-user .fa {
     width: 110px;
 }
 
-.new-user input {
+.new-user label > input, .new-user .selectize-control {
     min-width: 230px;
+}
+
+.new-user .selectize-control {
+    display: inline-block;
 }
 
 /* Private Messages */

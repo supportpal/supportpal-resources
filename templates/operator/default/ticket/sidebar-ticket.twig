@@ -41,7 +41,31 @@
                         {{ form_select('user') }}
                         {% if auth_user().hasPermission('create.user') %}
                             <div class="create-new-user">
-                                <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
+                                <div class="new-user-toggle">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; {{ Lang.get('ticket.create_new_user') }}
+                                </div>
+
+                                <form class="new-user-form hide">
+                                    <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+                                    <label>
+                                        {{ form_text('firstname', null, { 'placeholder': Lang.get('user.firstname') }) }}
+                                    </label><br />
+                                    <label>
+                                        {{ form_text('lastname', null, { 'placeholder': Lang.get('user.lastname') }) }}
+                                    </label><br />
+                                    <label>
+                                        {{ form_text('email', null, { 'placeholder': Lang.get('general.email') }) }}
+                                    </label>
+                                    {% if Config.get('settings.organisations_enabled') %}
+                                        <br />
+                                        <label>
+                                            {{ form_select('organisation') }}
+                                        </label>
+                                        <input type="hidden" name="organisation_id" />
+                                    {% endif %}
+
+                                    {{ form_button(Lang.get('general.save')) }}
+                                </form>
                             </div>
                         {% endif %}
                     </td>

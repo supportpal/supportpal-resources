@@ -330,7 +330,7 @@
                 {% set types = { 'application/json': 'application/json', 'application/xml': 'application/xml', 'application/x-www-form-urlencoded': 'application/x-www-form-urlencoded' } %}
                 {{ form_select(inputPrefix ~ '[value_text][content_type]', types, value.content_type) }}
                 <div style="margin-top: 10px">
-                    {{ form_textarea(inputPrefix ~ '[value_text][content]', value.content, {'rows': 5, 'class': 'codemirror'}) }}
+                    {{ form_textarea(inputPrefix ~ '[value_text][content]', value.content, {'rows': 5, 'class': 'text', 'data-plugins': ['sourceMode']|json_encode}) }}
                 </div>
             </div>
             <button class="test-webhook" data-route="{{ route('ticket.operator.macro.webhook.test') }}">

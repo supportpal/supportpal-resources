@@ -110,6 +110,42 @@ $(document).ready(function() {
                 }
             });
 
+        // Selecting organisation for new user form.
+        $('select[name="user_organisation"]').selectize({
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            create: true,
+            placeholder: Lang.choice('user.organisation', 1),
+            allowEmptyOption: true,
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                $.ajax({
+                    url: laroute.route('user.organisation.search'),
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        q: query,
+                        brand_id: typeof $brand[0] !== "undefined" ? $brand[0].selectize.getValue() : null,
+                    },
+                    error: function() {
+                        callback();
+                    },
+                    success: function(res) {
+                        callback(res.data);
+                    }
+                });
+            },
+            onChange: function(value) {
+                // We want to set a separate input if they enter an existing organisation.
+                if (value.length > 0 && value !== this.getOption(value)[0].textContent) {
+                    $('input[name="user_organisation_id"]').val(value);
+                } else {
+                    $('input[name="user_organisation_id"]').val("");
+                }
+            }
+        });
+
         // Handle ticket type switching
         $('input[name="internal"]').change(function() {
             if ($(this).val() == 1) {
@@ -234,42 +270,42 @@ $(document).ready(function() {
             plugins: ['disableDelete']
         });
 
-        // Regex for email
-        var re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
         // CC email input
-        $('select[name="cc[]"]').selectize({
-            plugins: {
-                'restore_on_backspace': {},
-                'remove_button': {},
-                'max_items': {
-                    'message': Lang.get('general.show_count_more')
-                }
-            },
-            delimiter: ',',
-            persist: false,
-            dropdownParent: 'body',
-            placeholder: Lang.get('ticket.enter_email_address'),
+        var enablePlugins = ['restore_on_backspace', 'remove_button', 'max_items'];
+        $('select[name="cc[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), {
             render: {
                 item: function(item, escape) {
                     return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+                },
+                option: function(item, escape) {
+                    return '<div>' +
+                        '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
+                        escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                        (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
+                        '</div>';
                 }
             },
-            createFilter: function(input) {
-                var match = input.match(re);
-                if (match) return !this.options.hasOwnProperty(match[0]);
+            load: function(query, callback) {
+                if (!query.length) return callback();
 
-                return false;
-            },
-            create: function(input) {
-                if (re.test(input)) {
-                    return {
-                        value: input,
-                        text: input
-                    };
-                }
+                // Search for users
+                $.get(laroute.route('user.operator.search'), { brand_id: brandId, q: query })
+                    .done(function(res) {
+                        // Remove user from list if included.
+                        res.data = res.data
+                            .filter(function(user) {
+                                return user.id != userId;
+                            })
+                            .map(function(value) {
+                                // Add needed info for search and selected item to work.
+                                value.value = value.email;
+                                value.text = value.firstname + ' ' + value.lastname + ' <' + value.email + '>';
+                                return value;
+                            });
 
-                return false;
+                        callback(res.data);
+                    })
+                    .fail(function() { callback(); });
             },
             onDelete: function(input) {
                 var self = this;
@@ -283,7 +319,7 @@ $(document).ready(function() {
                 // We handle the deletions above, no need to carry on with deleteSelect()
                 return false;
             }
-        });
+        }));
 
         // Show CC email input
         $('.add-cc').on('click', function() {

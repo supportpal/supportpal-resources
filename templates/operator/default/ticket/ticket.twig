@@ -93,6 +93,14 @@
 {% endblock %}
 
 {% block content %}
+    {% if download %}
+        <div class="options box">
+            <i class="fa fa-times right"></i>
+            <strong>{{ Lang.get('ticket.downloading') }}</strong><br />
+            {{ Lang.get('ticket.downloading_desc', {'href': download.direct_operator_url|e})|raw }}
+        </div>
+    {% endif %}
+
     <div class="warning box followup-warning {% if ticket.followup is empty %}hide{% endif %}">
         <i class="fa fa-clock-o"></i>&nbsp;
         <span>{{ Lang.get('ticket.follow_up_active', {'time': (ticket.followup.time > "now"|date('U') ? timeago(ticket.followup.time) : Lang.get('general.shortly'))})|raw }}</span>
@@ -239,7 +247,7 @@
     <!-- Code Editor -->
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/operator/css/codeeditor.css') }}" />
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/redactor/codeeditor.js') }}"></script>
-
+    <script src="{{ asset_rev('resources/assets/operator/js/redactor/sourcemode.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/redactor/mergefields.js') }}"></script>
 
     <!-- File upload -->

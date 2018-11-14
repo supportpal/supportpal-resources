@@ -8,6 +8,8 @@
                     {{ Lang.get('user.view_organisation') }}
                 </a>
             {% endif %}
+
+            <input type="hidden" name="organisation_id" {% if userOrganisation|default is not empty %}value="{{ userOrganisation.id }}"{% endif %} />
         </div>
     </div>
     <div class="form-row access-level">

@@ -36,6 +36,11 @@
                     hide|default is not empty ? { 'disabled': 'disabled' } : []
                 )
             }}
+            {% if showSubjectWarning %}
+                <div class="warning box" style="margin: 10px 0px 0px 0px">
+                    <strong>{{ Lang.get('messages.warning') }}!</strong> - {{ Lang.get('core.ticket_number_missing')|raw }}
+                </div>
+            {% endif %}
         </div>
     </div>
 

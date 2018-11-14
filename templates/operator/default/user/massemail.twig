@@ -97,7 +97,7 @@
                 {{ form_label('contents', Lang.choice('general.message', 1)) }}
                 <div class="input-container">
                     <div>
-                        {{ form_redactor_mf('contents') }}
+                        {{ form_redactor_mf('contents', (record|default is not empty ? '<br /><br />' ~ signature : '')) }}
                         {% if cumulative_attachment_limit != 0 %}
                         <ul class="attached-files">
                             <li class="hide">
@@ -223,57 +223,51 @@
             }
 
             {% if record is not defined %}
-                $('select[name="to[]"]').selectize({
-                    persist: false,
+            var enablePlugins = ['restore_on_backspace', 'remove_button'];
+                $('select[name="to[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), {
                     maxItems: null,
-                    valueField: 'email',
-                    labelField: 'name',
-                    searchField: ['name', 'email'],
-                    plugins: ['remove_button'],
-                    delimiter: ',',
                     placeholder: Lang.get('user.select_user_groups'),
                     render: {
                         item: function(item, escape) {
-                            // validate e-mail address - we need this otherwise an unknown value gets added for user group
-                            // items i.e. item.email is "1" for admin-default
-                            var regex = new RegExp('^' + REGEX_EMAIL + '$', 'i'),
-                                match = item.email.match(regex);
+                            // Not a user
+                            if (typeof item.formatted_name === 'undefined') {
+                                item.value = item.text;
+                            }
 
-                            return '<div class="item">' +
-                                    (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '') +
-                                    (match ? '<span class="email">' + escape(item.email) + '</span>' : '') +
-                                    '</div>';
+                            return '<div class="item">' + escape(item.value) + '</div>';
+                        },
+                        option: function(item, escape) {
+                            // Not a user
+                            if (typeof item.formatted_name === 'undefined') {
+                                return '<div>' + item.text + '</div>';
+                            }
+
+                            return '<div>' +
+                                '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
+                                escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                                (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
+                                '</div>';
                         }
                     },
-                    createFilter: function(input) {
-                        var match, regex;
+                    load: function(query, callback) {
+                        if (!query.length) return callback();
 
-                        // email@address.com
-                        regex = new RegExp('^' + REGEX_EMAIL + '$', 'i');
-                        match = input.match(regex);
-                        if (match) return !this.options.hasOwnProperty(match[0]);
+                        // Search for users
+                        $.get(laroute.route('user.operator.search'), { brand_id: $(':input[name="brand_id"]').val(), q: query })
+                            .done(function(res) {
+                                res.data = res.data
+                                    .map(function(value) {
+                                        // Add needed info for search and selected item to work.
+                                        value.value = value.email;
+                                        value.text = value.firstname + ' ' + value.lastname + ' <' + value.email + '>';
+                                        return value;
+                                    });
 
-                        // name <email@address.com>
-                        regex = new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i');
-                        match = input.match(regex);
-                        if (match) return !this.options.hasOwnProperty(match[2]);
-
-                        return false;
+                                callback(res.data);
+                            })
+                            .fail(function() { callback(); });
                     },
-                    create: function(input) {
-                        if ((new RegExp('^' + REGEX_EMAIL + '$', 'i')).test(input)) {
-                            return {email: input};
-                        }
-                        var match = input.match(new RegExp('^([^<]*)\<' + REGEX_EMAIL + '\>$', 'i'));
-                        if (match) {
-                            return {
-                                email : match[2],
-                                name  : $.trim(match[1])
-                            };
-                        }
-                        return false;
-                    }
-                });
+                }));
             {% endif %}
 
             var $editor = $('textarea').redactor($.extend($.Redactor.default_opts, {
@@ -313,7 +307,7 @@
             // Clear email template
             $('.clear-form').on('click', function() {
                 $('input[name=subject]').val('');
-                $editor.redactor('code.set', '');
+                $editor.redactor('code.set', "{{ record|default is not empty ? '<br /><br />' ~ Purifier.clean(signature)|e('js') : '' }}");
                 $('select[name="load_template"]').val(0);
             });
 

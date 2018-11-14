@@ -46,6 +46,7 @@
         <div class="form-container first">
             {% include 'operator.' ~ template ~ '.user.forms.profile' with { 'managing': true } %}
 
+            {% if record|default is not empty and record.exists %}
             <div class="form-row">
                 <label>{{ Lang.choice('general.export', 2) }}</label>
                 <div class="input-container">
@@ -81,6 +82,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         {% if Config.get('settings.organisations_enabled') %}
@@ -177,7 +179,7 @@
             });
 
             if ($('select[name="organisation"]').val() == null) {
-                $('select[name="organisation_access"]').prop('disabled', true);
+                $('select[name="organisation_access_level"]').prop('disabled', true);
                 $('.access-level').hide();
             }
 
@@ -186,7 +188,7 @@
                 labelField: 'name',
                 searchField: 'name',
                 create: true,
-                placeholder: "Select an existing or enter a new organisation...",
+                placeholder: "{{ Lang.get('user.select_or_new_organisation') }}",
                 allowEmptyOption: true,
                 load: function(query, callback) {
                     if (!query.length) return callback();
@@ -207,17 +209,25 @@
                     });
                 },
                 onChange: function(value) {
-                    // Check if it's a number
-                    if (!isNaN(parseFloat(value)) && isFinite(value)) {
+                    // If they enter an existing organisation.
+                    if (value.length > 0 && value !== this.getOption(value)[0].textContent) {
+                        // Set separate field with organisation ID
+                        $('input[name="organisation_id"]').val(value);
+
                         // Re-enable dropdown
-                        $('select[name="organisation_access"]').prop('disabled', false);
+                        $('select[name="organisation_access_level"]').prop('disabled', false);
                         $('.access-level').show();
-                    } else if (value == '') {
-                        $('.access-level').hide();
                     } else {
-                        // Disable dropdown and set to owner as it's a new organisation
-                        $('select[name="organisation_access"]').val(0).prop('disabled', true);
-                        $('.access-level').show();
+                        $('input[name="organisation_id"]').val("");
+
+                        if (value == '') {
+                            // No organisation set, hide access level.
+                            $('.access-level').hide();
+                        } else {
+                            // Disable dropdown and set to owner as it's a new organisation
+                            $('select[name="organisation_access_level"]').val(0).prop('disabled', true);
+                            $('.access-level').show();
+                        }
                     }
 
                     // Handle notifications option showing/hiding

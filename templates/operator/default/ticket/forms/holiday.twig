@@ -31,7 +31,7 @@
             {{ form_label('month', Lang.choice('general.month', 1) ~ '/' ~ Lang.choice('general.year', 1)) }}
             <div class="input-container">
                 {{ form_selectMonth('month') }} &nbsp;
-                {{ form_select('year', { '': '' }|merge(years)) }}<br />
+                {{ form_select('year', { '': '' } + years) }}<br />
                 <span class="description">{{ Lang.get('ticket.holiday_month_year_desc') }}</span>
             </div>
         </div>

@@ -65,6 +65,7 @@
         return CodeMirror.fromTextArea(this[0], {
             lineNumbers: true,
             lineWrapping: true,
+            autoRefresh: true,
             mode: "htmltwig"
         });
     };

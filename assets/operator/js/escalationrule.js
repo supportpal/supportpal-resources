@@ -58,10 +58,7 @@ $(function() {
         var $wrapper = $(this).parents('tr').find('.er-wh-content');
         
         // Only show content for options listed below.
-        $wrapper.toggle($.inArray($(this).val(), ['POST','PUT','PATCH']));
-        $wrapper.find('textarea.codemirror').each(function () {
-            codeMirror($(this));
-        });
+        $wrapper.toggle($.inArray($(this).val(), ['POST','PUT','PATCH']) !== -1);
     });
     $(document).on('click', '.test-webhook', function (e) {
         e.preventDefault();
@@ -84,12 +81,15 @@ $(function() {
                 content: getCodeMirror($action.find('textarea[name$="[content]"]')),
                 ticket_id: typeof ticketId !== 'undefined' ? ticketId : null
             };
+
+        $action.find('.test-webhook-response')
+            .removeClass('text-success text-fail')
+            .html('<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...');
         
         $.post(route, data)
             .success(function (data) {
                 $action.find('.test-webhook-response')
-                    .removeClass('text-success')
-                    .removeClass('text-fail')
+                    .removeClass('text-success text-fail')
                     .addClass(data.status === 'success' ? 'text-success' : 'text-fail')
                     .text(data.message);
             })
@@ -139,19 +139,22 @@ $(function() {
         }
     });
 
-    function redactor(element) {
+    function redactor(element, plugins) {
         // Back out if it's already been initialised.
         if (element.data('init')) {
             return;
         }
 
-        var opts = {
-            mergeFields: {
-                tickets: true,
-                organisations: organisationsEnabled
-            },
-            plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields']
-        };
+        var plugins = plugins || [],
+            opts = {
+                mergeFields: {
+                    tickets: true,
+                    organisations: organisationsEnabled
+                },
+                plugins: [
+                    'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'mergeFields'
+                ].concat(plugins)
+            };
 
         // Redactor
         element.redactor($.extend($.Redactor.default_opts, opts));
@@ -202,7 +205,7 @@ $(function() {
 
         // If it's a textarea, use redactor
         $action.find('textarea.text').each(function () {
-            redactor($(this));
+            redactor($(this), $(this).data('plugins'));
         });
 
         // Initialise visible codemirror instances (we don't initialise on hidden textareas because CodeMirror
@@ -214,7 +217,37 @@ $(function() {
         // Initialise selectize, we have to do this on a per instance basis as the configuration / events is too complex
         // to do dynamically.
         $action.find('select[name$="[value_text][to][]"], select[name$="[value_text][cc][]"], select[name$="[value_text][bcc][]"]').each(function () {
-            $(this).selectize(emailSelectizeConfig(['restore_on_backspace', 'remove_button']));
+            $(this).selectize($.extend({ }, emailSelectizeConfig(['restore_on_backspace', 'remove_button']), {
+                render: {
+                    item: function(item, escape) {
+                        return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+                    },
+                    option: function(item, escape) {
+                        return '<div>' +
+                            '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
+                            escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                            (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
+                            '</div>';
+                    }
+                },
+                load: function(query, callback) {
+                    if (!query.length) return callback();
+
+                    // Search for users
+                    $.get(laroute.route('user.operator.search'), { brand_id: typeof brandId !== 'undefined' ? brandId : null, q: query })
+                        .done(function(res) {
+                            res.data = res.data.map(function(value) {
+                                // Add needed info for search and selected item to work.
+                                value.value = value.email;
+                                value.text = value.firstname + ' ' + value.lastname + ' <' + value.email + '>';
+                                return value;
+                            });
+
+                            callback(res.data);
+                        })
+                        .fail(function() { callback(); });
+                }
+            }));
         });
     }
 

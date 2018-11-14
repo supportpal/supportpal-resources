@@ -88,6 +88,34 @@
                     &nbsp;
                     (<a href="https://www.supportpal.com/manage/upgrade.php?type=configoptions&id={{ licenseInformation.serviceid }}" target="_blank">{{ Lang.get('core.purchase_more') }}</a>)
                 {% endif %}
+                <br />
+                <span class="description">{{ Lang.get('core.additional_brands_desc') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.no_branding') }}</label>
+            <div class="input-container">
+                {% if licenseInformation.noBranding %}{{ Lang.get('general.enabled') }}{% else %}{{ Lang.get('general.disabled') }}{% endif %}
+                {% if not licenseInformation.noBranding %}
+                    &nbsp;
+                    (<a href="https://www.supportpal.com/manage/upgrade.php?type=configoptions&id={{ licenseInformation.serviceid }}" target="_blank">{{ Lang.get('core.purchase') }}</a>)
+                {% endif %}
+                <br />
+                <span class="description">{{ Lang.get('core.no_branding_desc') }}</span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label>{{ Lang.get('core.multi_ip') }}</label>
+            <div class="input-container">
+                {% if licenseInformation.multiIp %}{{ Lang.get('general.enabled') }}{% else %}{{ Lang.get('general.disabled') }}{% endif %}
+                {% if not licenseInformation.multiIp %}
+                    &nbsp;
+                    (<a href="https://www.supportpal.com/manage/upgrade.php?type=configoptions&id={{ licenseInformation.serviceid }}" target="_blank">{{ Lang.get('core.purchase') }}</a>)
+                {% endif %}
+                <br />
+                <span class="description">{{ Lang.get('core.multi_ip_desc') }}</span>
             </div>
         </div>
 

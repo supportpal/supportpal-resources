@@ -1790,6 +1790,40 @@ $(document).ready(function() {
     // CC email input
     var enablePlugins = ['restore_on_backspace', 'remove_button', 'max_items'];
     $ccSelectize = $('.message-form select[name="cc[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), {
+        render: {
+            item: function(item, escape) {
+                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+            },
+            option: function(item, escape) {
+                return '<div>' +
+                    '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
+                    escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                    (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
+                    '</div>';
+            }
+        },
+        load: function(query, callback) {
+            if (!query.length) return callback();
+
+            // Search for users
+            $.get(laroute.route('user.operator.search'), { brand_id: brandId, q: query })
+                .done(function(res) {
+                    // Remove user from list if included.
+                    res.data = res.data
+                        .filter(function(user) {
+                            return user.id != userId;
+                        })
+                        .map(function(value) {
+                            // Add needed info for search and selected item to work.
+                            value.value = value.email;
+                            value.text = value.firstname + ' ' + value.lastname + ' <' + value.email + '>';
+                            return value;
+                        });
+
+                    callback(res.data);
+                })
+                .fail(function() { callback(); });
+        },
         onChange: function(input) {
             if (! input) {
                 // In case of removing all emails
@@ -1816,6 +1850,7 @@ $(document).ready(function() {
                 // Delete any items selected that don't have a 'unremovable' class.
                 if (! $('.cc-emails div[data-value="' + value + '"]').hasClass('unremovable')) {
                     self.removeItem(value);
+                    self.removeOption(value);
                 }
             });
 
@@ -1833,11 +1868,48 @@ $(document).ready(function() {
     /**
      * Initialise Forward tab.
      */
+    var userSearchSelectizeConfig = {
+        render: {
+            item: function(item, escape) {
+                return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
+            },
+            option: function(item, escape) {
+                return '<div>' +
+                    '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
+                    escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
+                    (item.email ? '<br /><span class="description">' + escape(item.email || '') + '</span>' : '') +
+                    '</div>';
+            }
+        },
+        load: function(query, callback) {
+            if (!query.length) return callback();
 
-    var $forwardFromSelectize = $('select[name="from_address"]').selectize(fromSelectizeConfig),
-        $forwardToSelectize = $('select[name="to_address[]"]').selectize(emailSelectizeConfig(enablePlugins)),
-        $forwardCcSelectize = $('select[name="cc_address[]"]').selectize(emailSelectizeConfig(enablePlugins)),
-        $forwardBccSelectize = $('select[name="bcc_address[]"]').selectize(emailSelectizeConfig(enablePlugins));
+            // Hide Add CC / Add BCC to stop spinner from overlapping.
+            var $elements = $('.add-cc:visible, .add-bcc:visible');
+            $elements.hide();
+
+            // Search for users
+            $.get(laroute.route('user.operator.search'), { brand_id: brandId, q: query })
+                .done(function(res) {
+                    res.data = res.data.map(function(value) {
+                        // Add needed info for search and selected item to work.
+                        value.value = value.email;
+                        value.text = value.firstname + ' ' + value.lastname + ' <' + value.email + '>';
+                        return value;
+                    });
+
+                    callback(res.data);
+                })
+                .fail(function() { callback(); })
+                .always(function () {
+                    $elements.show();
+                });
+        }
+    },
+        $forwardFromSelectize = $('select[name="from_address"]').selectize(fromSelectizeConfig),
+        $forwardToSelectize = $('select[name="to_address[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), userSearchSelectizeConfig)),
+        $forwardCcSelectize = $('select[name="cc_address[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), userSearchSelectizeConfig)),
+        $forwardBccSelectize = $('select[name="bcc_address[]"]').selectize($.extend({ }, emailSelectizeConfig(enablePlugins), userSearchSelectizeConfig));
 
     $('.add-bcc').on('click', function() {
         $('.bcc-emails').toggle();
@@ -1894,76 +1966,87 @@ $(document).ready(function() {
         }
     });
 
-    $('.create-new-user').click(function() {
-        // Show the alert
-        swal({
-            title: Lang.get('ticket.create_new_user'),
-            html: '<form class="new-user form-row">'
-                    + '<input type="hidden" name="ticket" value="' + ticketId + '" />'
-                    + Lang.get('ticket.create_new_user_desc')
-                    + (internal ? ' ' + Lang.get('ticket.convert_user_ticket_desc') : '')
-                    + '<br /><br />'
-                    + '<div class="input-group">'
-                        + '<label>'
-                            + '<span class="label">' + Lang.get('user.firstname') + '</span>'
-                            + '<input type="text" name="firstname" />'
-                        + '</label><br />'
-                        + '<label>'
-                            + '<span class="label">' + Lang.get('user.lastname') + '</span>'
-                            + '<input type="text" name="lastname" />'
-                        + '</label><br />'
-                        + '<label>'
-                            + '<span class="label">' + Lang.get('general.email') + ' *</span>'
-                            + '<input type="text" name="email" />'
-                        + '</label>'
-                        + (organisationsEnabled ? '<br />'
-                            + '<label>'
-                                + '<span class="label">' + Lang.choice('user.organisation', 1) + '</span>'
-                                + '<input type="text" name="organisation" />'
-                            + '</label>' : '')
-                    + '</div><br /><span class="description">* ' + Lang.get('messages.field_required') + '</span>'
-                + '</form>',
-            showCancelButton: true,
-            confirmButtonText: Lang.get('general.save'),
-            closeOnConfirm: false,
-            allowOutsideClick: false
-        }, function(isConfirm) {
-            if (isConfirm) {
-                // Disable submit button
-                swal.disableButtons();
+    /**
+     * Create new user and update ticket.
+     */
+    $('.create-new-user .new-user-toggle').click(function() {
+        // Toggle the form
+        $('form.new-user-form').toggle();
 
-                // Post destroy data
-                $.ajax({
-                    url: laroute.route('ticket.operator.action.newuser'),
-                    type: 'POST',
-                    data: $('form.new-user').serializeArray(),
-                    success: function(response) {
-                        if (response.status == 'success') {
-                            // We need to update a lot of details on the page. Quick fix, refresh the page.
-                            window.location.reload();
+        // Submit form
+        $('form.new-user-form button').on('click', function () {
+            var $button = $(this);
+            $button.prop('disabled', true);
 
-                            swal(
-                                Lang.get('messages.success'),
-                                Lang.get('messages.success_created', { item: Lang.get('general.record') }),
-                                'success'
-                            );
-                        } else {
-                            swal(
-                                Lang.get('messages.error'),
-                                response.message,
-                                'error'
-                            );
-                        }
+            $.ajax({
+                url: laroute.route('ticket.operator.action.newuser'),
+                type: 'POST',
+                data: $('form.new-user-form').serializeArray(),
+                success: function(response) {
+                    if (response.status == 'success') {
+                        // We need to update a lot of details on the page. Quick fix, refresh the page.
+                        window.location.reload();
+
+                        // Show success message while page loads
+                        $('.ticket-update.success').show(500).delay(5000).hide(500);
+                    } else {
+                        swal(
+                            Lang.get('messages.error'),
+                            response.message,
+                            'error'
+                        );
+
+                        $button.prop('disabled', false);
                     }
-                }).fail(function() {
-                    swal(
-                        Lang.get('messages.error'),
-                        Lang.get('messages.error_created', { item: Lang.get('general.record') }),
-                        'error'
-                    );
-                });
-            }
+                }
+            }).fail(function() {
+                swal(
+                    Lang.get('messages.error'),
+                    Lang.get('messages.error_created', { item: Lang.get('general.record') }),
+                    'error'
+                );
+
+                $button.prop('disabled', false);
+            });
         });
+    });
+
+    /**
+     * Selecting organisation for new user form.
+     */
+    $('form.new-user-form select[name="organisation"]').selectize({
+        valueField: 'id',
+        labelField: 'name',
+        searchField: 'name',
+        create: true,
+        placeholder: Lang.choice('user.organisation', 1),
+        allowEmptyOption: true,
+        load: function(query, callback) {
+            if (!query.length) return callback();
+            $.ajax({
+                url: laroute.route('user.organisation.search'),
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    q: query,
+                    brand_id: brandId
+                },
+                error: function() {
+                    callback();
+                },
+                success: function(res) {
+                    callback(res.data);
+                }
+            });
+        },
+        onChange: function(value) {
+            // We want to set a separate input if they enter an existing organisation.
+            if (value.length > 0 && value !== this.getOption(value)[0].textContent) {
+                $('form.new-user-form input[name="organisation_id"]').val(value);
+            } else {
+                $('form.new-user-form input[name="organisation_id"]').val("");
+            }
+        }
     });
 
     /**

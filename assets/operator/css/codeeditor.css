@@ -22,7 +22,7 @@
 }
 
 .loadinggif {
-    background: url('../../installer/img/gears.gif') no-repeat center center white;
+    background: url('../../installer/img/gears.svg') no-repeat center center white;
 }
 
 ul.attached-files {

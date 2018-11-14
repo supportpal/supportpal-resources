@@ -107,8 +107,9 @@
                                         <br />
                                         <label>
                                             <span class="label">{{ Lang.choice('user.organisation', 1) }}</span>
-                                            {{ form_text('user_organisation') }}
+                                            {{ form_select('user_organisation') }}
                                         </label> &nbsp; <span class="description">({{ Lang.get('general.optional') }})</span>
+                                        <input type="hidden" name="user_organisation_id" />
                                     {% endif %}
                                 </div>
                             {% endif %}
