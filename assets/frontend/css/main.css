@@ -759,6 +759,10 @@ ul.related-list li {
     margin-right: 15px;
 }
 
+.box .fa-times {
+    cursor: pointer;
+}
+
 /* Table style */
 
 table {

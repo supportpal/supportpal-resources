@@ -47,6 +47,14 @@
 
 {% block content %}
 
+    {% if download %}
+        <div class="options box">
+            <i class="fa fa-times right"></i>
+            <strong>{{ Lang.get('ticket.downloading') }}</strong><br />
+            {{ Lang.get('ticket.downloading_desc', {'href': download.direct_frontend_url|e})|raw }}
+        </div>
+    {% endif %}
+
     {% if ticket.locked == 1 %}
         <div class="fail box">
             {{ Lang.get('ticket.error_ticket_locked') }}
