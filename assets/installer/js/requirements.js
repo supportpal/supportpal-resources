@@ -18,7 +18,7 @@ function AllowedMethods(parameters)
     var isExpected = function (method, data)
     {
         var expected = 'method is allowed.',
-            $td = $('.allowed-methods').find('.'+method).find('td');
+            $td = $('.allowed-methods').find('.'+method.toLowerCase()).find('td');
 
         if (data === expected) {
             $td.html('<i class="fa fa-check fa-success" aria-hidden="true"></i>&nbsp;' + LANG.success);

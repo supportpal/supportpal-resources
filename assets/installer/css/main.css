@@ -5,7 +5,7 @@
 /* General */
 
 body {
-    background: #f3f5f5;
+    background: #f1f2f6;
     margin: 40px 0 50px;
 }
 
@@ -76,7 +76,7 @@ body.index h1 {
 }
 
 h2 {
-    color: #2C6384;
+    color: #06548C;
     font-size: 1.2em;
     margin: 0 0 50px;
 }
@@ -114,7 +114,7 @@ h4 {
 /* Progress Bar */
 
 #progress {
-    background: #e5e5e5;
+    background: #e1e2e6;
     height: 25px;
 }
 
@@ -317,12 +317,12 @@ input[type="button"]:hover {
 }
 
 input[type="submit"] {
-    background: #007dc7;
-    border-bottom-color: #0066a3;
+    background: #06548C;
+    border-bottom-color: #192a56;
 }
 
 input[type="submit"]:hover {
-    background: #006da3;
+    background: #192a56;
 }
 
 input[type="button"].inline,

@@ -41,3 +41,8 @@ $(document).tooltip({
         }
     }
 });
+
+// Close alerts
+$(document).on('click', '.box .fa-times', function () {
+    $(this).parent().slideToggle(300);
+});
