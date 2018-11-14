@@ -526,4 +526,10 @@ return array(
     "watching"                  => "Watching",
     "internal_ticket"           => "Internal Ticket|Internal Tickets",
 
+    /*
+     * 2.4.1
+     */
+    "downloading"               => "Downloading...",
+    "downloading_desc"          => "If the download doesn't start automatically in a few seconds, please <a href=':href'>click here</a> to access the download URL directly.",
+
 );

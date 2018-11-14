@@ -322,4 +322,9 @@ return array(
     "deleted_user"                  => "Deleted User",
     "access_level_not_owner"        => "It is not possible to change the access level of organisation owners. Transfer organisation ownership to another user first by viewing the organisation and clicking the 'Users' tab.",
 
+    /*
+     * 2.4.1
+     */
+    "select_or_new_organisation"    => "Select an existing or enter a new organisation...",
+
 );

@@ -57,4 +57,9 @@ return array(
      */
     "license_valid"     => "License Valid!",
 
+    /*
+     * 2.4.1
+     */
+    "multi_ip_support"  => "Consider enabling <a href=':href' target='_blank'>Multi-IP support</a> in the client area to define additional IP addresses.",
+
 );

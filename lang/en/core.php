@@ -412,4 +412,15 @@ return array(
     "query_logs_desc"           => "These logs contain all MySQL queries that are run when utilising the help desk. The logs are only stored when debug mode is manually enabled in the app configuration file.",
     "twig_operator_signature"   => "The {{ operator.signature|raw }} merge field will be processed at runtime hence the preview may be incorrect.",
 
+    /*
+     * 2.4.1
+     */
+    "additional_brands_desc"    => "Allows running other brands on your SupportPal installation.",
+    "no_branding"               => "No Branding",
+    "no_branding_desc"          => "Removes SupportPal branding from the client-facing end of the help desk.",
+    "multi_ip"                  => "Multi-IP Support",
+    "multi_ip_desc"             => "Allows locking SupportPal to more than one internal/external IP.",
+    "purchase"                  => "Purchase",
+    "ticket_number_missing"     => "For ticket related emails, the {{ ticket.number }} merge field should be present in the email subject and must be wrapped in either <em>[#{{ ticket.number }}]</em> or <em>(#{{ ticket.number }})</em> in order to route replies to the correct ticket. If you would like to remove the ticket number, please consider enabling <a href='https://docs.supportpal.com/current/Email+Channel#SubAddressConfiguration' target='_blank'>email sub-addressing</a>.",
+
 );

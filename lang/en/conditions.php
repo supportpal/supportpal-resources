@@ -76,4 +76,9 @@ return array(
     "watching_operator"                 => "Watching operator",
     "exact_search_quotes"               => "To do an exact search for the phrase, wrap it in quotes like \"my phrase\".",
 
+    /*
+     * 2.4.1
+     */
+    "last_message_content"              => "Last message content",
+
 );
