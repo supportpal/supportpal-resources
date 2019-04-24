@@ -236,6 +236,10 @@ html {
         font-size: 120%;
     }
 
+    .feedback a.good-button, .feedback a.bad-button {
+        display: block;
+    }
+
     .catcontainer {
         margin-right: 0;
     }

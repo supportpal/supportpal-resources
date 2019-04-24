@@ -1,6 +1,5 @@
 $(document).ready(function() {
-    // Open links (not anchors) in a new window/tab
-    $('.article a').attr('target', '_blank');
+    // Open links in comments (not anchors) in a new window/tab
     $(".commentText a:not([href^='#'])").attr('target', '_blank');
 
     // Change ordering
@@ -141,11 +140,11 @@ $(document).ready(function() {
 
             // Add to textarea
             name = $.trim(name.replace(/\s/g, ''));
-            $(".add-comment").find('textarea').val('@' + $.trim(name) + ' ').focus();
+            $(".add-comment").find('textarea').val('@' + $.trim(name) + ' ').trigger('focus');
 
             // Show reply form if it's not already visible
             if (! $('.add-comment-form').next().is(':visible')) {
-                $('.add-comment-form').click();
+                $('.add-comment-form').trigger('click');
             }
 
             // Hover to the reply form

@@ -42,11 +42,13 @@
                     </a>
                 </li>
             {% endif %}
-            <li>
-                <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
-                    {{ Lang.get('user.email_history') }}
-                </a>
-            </li>
+            {% if auth_user().confirmed %}
+                <li>
+                    <a href="{{ route('user.email_history') }}" {% if route starts with 'user.email_history' %}class="current"{% endif %}>
+                        {{ Lang.get('user.email_history') }}
+                    </a>
+                </li>
+            {% endif %}
             {% if Config.get('settings.organisations_enabled') and auth_user().organisation_id is not null and auth_user().organisation_access_level == 0 %}
                 <li>
                     <a href="{{ route('user.organisation') }}" {% if route starts with 'user.organisation' %}class="current"{% endif %}>

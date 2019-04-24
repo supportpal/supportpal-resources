@@ -30,7 +30,8 @@
             <div class="desk_box">
                 <h2>{{ Lang.get('user.login') }}</h2>
 
-                {% if SamlAuth.exists('frontend') and not SamlAuth.guard('frontend').isDualLogin() %}
+                {% set guard = SamlAuth.frontendGuard(current_brand(false)) %}
+                {% if SamlAuth.exists(guard) and not SamlAuth.guard(guard).isDualLogin() %}
                     <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
                            value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
                 {% else %}
@@ -55,7 +56,7 @@
                             <a href="{{ route('user.register') }}">{{ Lang.get('user.register_now') }}</a>
                         {% endif %}
 
-                        {% if SamlAuth.exists('frontend') %}
+                        {% if SamlAuth.exists(guard) %}
                             <div class="strike">
                                 <span>{{ Lang.get('general.or') }}</span>
                             </div>

@@ -140,31 +140,28 @@
         <hr />
     {% endif %}
 
-    <h2>{{ Lang.choice('general.message', 2) }}</h2>
+    {% set descReplyOrder = Config.get('settings.ticket_reply_order') == 1 %}
+    <div class="{% if descReplyOrder %}reverse-order{% endif %} {% if ticket.locked == 1 %}locked-ticket{% endif %}">
+        {% if not descReplyOrder %}
+            {% include 'frontend.' ~ template ~ '.ticket.ticket_messages' %}
+        {% endif %}
 
-    <div class="message-block">
-        {% for message in messages %}
-            {% if message.type == 0 %}
-                {% include 'frontend.' ~ template ~ '.ticket.message' %}
-            {% endif %}
-        {% endfor %}
+        {% if ticket.locked == 0 %}
+            <div class="add-reply">
+                {% if organisationEmails is empty and ticket.cc is empty %}
+                    <a class="button right toggle-cc">
+                        {{ Lang.get('ticket.add_cc') }}
+                    </a>
+                {% endif %}
+                <h2>{{ Lang.get('ticket.add_reply') }}</h2>
+                {% include 'frontend.' ~ template ~ '.ticket.forms.message' %}
+            </div>
+        {% endif %}
+
+        {% if descReplyOrder %}
+            {% include 'frontend.' ~ template ~ '.ticket.ticket_messages' %}
+        {% endif %}
     </div>
-
-    {% if ticket.locked == 0 %}
-        <div class="add-reply">
-            {% if organisationEmails is empty and ticket.cc is empty %}
-                <a class="button right toggle-cc">
-                    {{ Lang.get('ticket.add_cc') }}
-                </a>
-            {% endif %}
-            <h3>{{ Lang.get('ticket.add_reply') }}</h3>
-            {% include 'frontend.' ~ template ~ '.ticket.forms.message' %}
-        </div>
-    {% else %}
-        <div class="ticket-locked fail box box-bottom">
-            {{ Lang.get('ticket.error_ticket_locked') }}
-        </div>
-    {% endif %}
 
 {% endblock %}
 
@@ -199,7 +196,8 @@
 
     <script type="text/javascript">
         var ticketNumber = "{{ ticket.number }}",
-            closedStatusId = "{{ Config.get('settings.default_resolved_status') }}";
+            closedStatusId = "{{ Config.get('settings.default_resolved_status') }}",
+            descReplyOrder = {% if Config.get('settings.ticket_reply_order') == 1 %}true{% else %}false{% endif %};
     </script>
 
     <script src="{{ asset_rev('resources/assets/frontend/js/ticket.js') }}"></script>

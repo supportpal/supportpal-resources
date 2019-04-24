@@ -32,6 +32,8 @@
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset_rev('resources/assets/frontend/css/redactor.css') }}">
+
+    <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             // Enable hide/show password toggle
@@ -40,12 +42,25 @@
             // Date picker
             callPikaday();
 
+            // Update language variables.
+            deleteAlert.translationKeys.title = '{{ Lang.get('messages.leave_record', {'record': Lang.choice('user.organisation', 1)}) }}';
+            deleteAlert.translationKeys.warning = '{{ Lang.get('messages.leave_record_warn', {'record': Lang.choice('user.organisation', 1) }) }}';
+            deleteAlert.translationKeys.confirmButton = '{{ Lang.get('general.yes') }}';
+            deleteAlert.translationKeys.cancelButton = '{{ Lang.get('general.no') }}';
+
             // Leave organisation button for managers and users of an organisation
             $('.leave-organisation').on('click', function() {
-                var input = $("<input>").attr("type", "hidden")
-                    .attr("name", "_token")
-                    .val($('meta[name=csrf_token]').prop('content'));
-                $('form#leaveOrganisation').append($(input)).submit();
+                swal(deleteAlert.getDefaultOpts(Lang.choice('user.organisation', 1)), function(isConfirm) {
+                    if (isConfirm) {
+                        swal.disableButtons();
+
+                        var input = $("<input>").attr("type", "hidden")
+                            .attr("name", "_token")
+                            .val($('meta[name=csrf_token]').prop('content'));
+
+                        $('form#leaveOrganisation').append($(input)).trigger('submit');
+                    }
+                });
             });
         });
     </script>

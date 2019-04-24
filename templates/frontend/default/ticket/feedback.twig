@@ -44,7 +44,7 @@
             callPikaday();
 
             // Disable form button on click
-            $('form').submit(function() {
+            $('form').on('submit', function() {
                 $(this).find("input[type='submit']").prop('disabled',true);
             });
         });

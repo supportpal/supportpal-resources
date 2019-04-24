@@ -2,6 +2,24 @@
 
 /* Ticket View */
 
+.add-reply {
+    margin-top: 25px;
+}
+.reverse-order .add-reply {
+    border-bottom: 1px solid #eee;
+    margin: 0 -25px 25px;
+    padding: 0 25px 25px;
+}
+
+.messages-header {
+    margin: 0 -25px;
+    padding: 0 25px 25px;
+    border-bottom: 1px solid #eee;
+}
+.reverse-order .messages-header {
+    padding: 0 25px 25px;
+}
+
 .message-block, hr {
     margin-left: -25px;
     margin-right: -25px;
@@ -12,8 +30,9 @@
     padding: 25px;
 }
 
-.message:first-child {
-    padding-top: 0;
+.reverse-order .message-block .message:last-child, .locked-ticket .message-block .message:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
 }
 
 .message .header {

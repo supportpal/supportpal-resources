@@ -13,7 +13,7 @@ $(document).ready(function() {
         });
 
     // Change language
-    $('select[name=language]').change(function(e) {
+    $('select[name=language]').on('change', function(e) {
         var returnTo = $("option:selected", this).data('return-to'),
             valueSelected = this.value;
 
@@ -31,14 +31,14 @@ $(document).ready(function() {
     });
 
     // Search - Don't submit if it's empty
-    $('form[name=search]').submit(function(e) {
+    $('form[name=search]').on('submit', function(e) {
         if ($(this).find('input[name=query]').val() == '') {
             e.preventDefault();
         }
     });
 
     // Mobile navigation
-    $('.mobile_nav_button .fa').click(function() {
+    $('.mobile_nav_button .fa').on('click', function() {
         $('.mobile_nav').toggle();
     });
 
@@ -72,7 +72,7 @@ $(document).ready(function() {
     }
 
     // Smooth scrolling for anchors
-    $(document.body).on('click', 'a[href^=#]', function(event) {
+    $(document.body).on('click', 'a[href^="#"]', function(event) {
         event.preventDefault();
 
         // Check if we have a name with an underscore (used in comments)

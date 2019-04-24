@@ -43,7 +43,7 @@ $(document).ready(function() {
     var doneTypingInterval = 1000;
 
     // On keyup, start the countdown
-    $('input[name="subject"]').keyup(function() {
+    $('input[name="subject"]').on('keyup', function() {
         // Only if self-service module is enabled and setting is on
         if (relatedArticlesEnabled) {
             // Clear any existing timer

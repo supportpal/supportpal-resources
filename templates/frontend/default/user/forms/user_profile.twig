@@ -19,19 +19,25 @@
             {% if auth_check() and auth_user().loggedInViaSSO() %}
                 {% set emailAttributes = emailAttributes|merge({ 'readonly': 'readonly' }) %}
             {% endif %}
-            {{ form_email('email', null, emailAttributes) }}
+            {{ form_email('email', record.email, emailAttributes) }}
         </div>
     </div>
+
+    {% if not record.exists or (auth_user().password is not empty and not auth_user().loggedInViaSSO()) %}
+        <div class="form-row">
+            {{ form_label('password', Lang.get('general.password')) }}
+            <div class="input-container">
+                {% if not record.exists %}
+                    {{ form_password('password', { 'size': '25', 'autocomplete': 'new-password' }) }}
+                {% else %}
+                    <a href="{{ route('user.change_password') }}">{{ Lang.get('user.change_password') }}</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
 
     {% if not record.exists %}
-    <div class="form-row">
-        {{ form_label('password', Lang.get('general.password')) }}
-        <div class="input-container">
-            {{ form_password('password', { 'size': '25', 'autocomplete': 'new-password' }) }}
-        </div>
-    </div>
-
-    <div class="form-row">
+        <div class="form-row">
         {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
         <div class="input-container">
             {{ form_password('password_confirmation', { 'size': '25', 'autocomplete': 'new-password' }) }}

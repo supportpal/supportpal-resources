@@ -32,7 +32,7 @@ $(document).ready(function() {
         );
 
         $.get(route)
-            .success(function (ajax) {
+            .done(function (ajax) {
                 // Load the message in, it should already be sanitized.
                 $message.find('.text').html(ajax.data.purified_text);
             })
@@ -281,7 +281,11 @@ function pollReplies() {
  */
 function showMessage(message) {
     // Show new message
-    var message = $(message).insertAfter($('.message').last());
+    if (descReplyOrder) {
+        message = $(message).prependTo($('.message-block'));
+    } else {
+        message = $(message).insertAfter($('.message').last());
+    }
 
     // Load attachment previews if needed
     loadAttachmentPreviews(message);
@@ -314,10 +318,10 @@ function loadAttachmentPreviews(message) {
         $('<img>').attr("src", $this.data('preview-url')).prependTo($(this));
 
         // Handle image load/error
-        $(this).find('img').bind('load', function() {
+        $(this).find('img').on('load', function() {
             // Handler for .load() called.
             $this.find('.fa').remove();
-        }).bind('error', function() {
+        }).on('error', function() {
             // If 404 or other error
             // Replace preview link with download link
             $this.parents('a').removeClass('attachment-preview').attr('href', $this.data('download-url'));

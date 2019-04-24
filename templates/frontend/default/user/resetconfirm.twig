@@ -11,13 +11,13 @@
 
     {% if reset_error|default is not empty and reset_error %}
 
-		<div class="fail box">{{ Lang.get('user.confirmation_unsuccessful') }}</div>
+		<div class="fail box">{{ Lang.get('messages.error') }}</div>
 		{{ reset_error }}
 
 	{% else %}
 
         {% if error is not defined %}
-			<div class="success box">{{ Lang.get('user.confirmation_success') }}</div>
+			<div class="success box">{{ Lang.get('messages.success') }}</div>
 		{% else %}
 			<div class="fail box">{{ error }}</div>
 		{% endif %}

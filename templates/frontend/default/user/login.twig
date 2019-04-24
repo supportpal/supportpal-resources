@@ -43,7 +43,7 @@
 
         {% if not Input.has('social') %}
             <div class="textcenter">
-                {% if SamlAuth.exists('frontend') %}
+                {% if SamlAuth.exists(SamlAuth.frontendGuard(current_brand(false))) %}
                     <div class="strike" style="margin: 20px 0;">
                         <span>{{ Lang.get('general.or') }}</span>
                     </div>
