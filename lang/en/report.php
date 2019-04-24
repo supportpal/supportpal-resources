@@ -59,7 +59,6 @@ return array(
     "7_plus_day"                => "7+ Days",
     "user_feedback"             => "User Feedback",
     "user_feedback_desc"        => "The feedback provided by users about tickets in a given time period.",
-    "total_users_desc"          => "This report shows how many users there are in the system, split by how many are confirmed and how many aren't.",
     "user_by_country"           => "Users By Country",
     "user_by_country_desc"      => "This report shows the number of users per country, only includes users who have set a country.",
     "user_count"                => "User Count",
@@ -91,5 +90,10 @@ return array(
     "busiest_month_desc"        => "The number of messages received from users across each month of the year.",
     "busiest_department"        => "Busiest Department",
     "busiest_department_desc"   => "The average number of operator messages per department, tallies all operator replies and divides by the number of assigned operators per department.",
+
+    /*
+     * 2.5.0
+     */
+    "total_users_desc"          => "This report shows how many users there are in the system, split by how many have confirmed ownership of their email address.",
 
 );

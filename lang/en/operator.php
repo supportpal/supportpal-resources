@@ -2,8 +2,6 @@
 
 return array(
 
-    "templates"                 => "Templates",
-
     // Merge fields
     "merge_fields"              => "Merge Fields",
     "strings"                   => "Strings",
@@ -22,5 +20,5 @@ return array(
     "merge_field"               => "Merge Field",
     "merge_field_canned_desc"   => "The unique merge field to use can be found when editing a canned response (Settings -> Tickets -> Canned Responses).",
     "response_merge_field"      => "Copy the above to use this canned response as a merge field.",
-    
+
 );

@@ -14,7 +14,7 @@ return array(
     "invalid_user"              => "Please ensure valid user details have been entered to continue.",
 
     "registered_users"          => "Registered Users Only",
-    
+
     "tickets"                   => "Ticket(s)",
     "ticket"                    => "Ticket|Tickets",
     "subject"                   => "Subject",
@@ -57,7 +57,6 @@ return array(
 
     "department"                => "Department|Departments",
     "change_department_order"   => "Drag the rows to change the order that departments are shown to users when opening a new ticket.",
-    "department_order"          => "Department Order",
     "department_applicable"     => "Applicable Departments",
     "department_applicable_desc" => "The departments in which the priority will be available for users to select. Only applies to the frontend, all priorities will be available to operators for all departments.",
 
@@ -110,10 +109,6 @@ return array(
 
     // Department email options
     "email_options"             => "Email Options",
-    "email_auto_close"          => "Email Users on Ticket Auto-Close",
-    "email_auto_close_desc"     => "Select whether users should be emailed when tickets belonging to them are automatically closed by the system.",
-    "email_closed_by_operator"  => "Email Users when Ticket Closed by Operator",
-    "email_closed_by_op_desc"   => "Select whether users should be emailed when tickets belonging to them are closed by an operator.",
     "email_user_on_email"       => "Email Users on Tickets Opened by Email",
     "email_user_on_email_desc"  => "Select whether users should be notified by email when an email they send results in a new ticket being opened.",
     "email_operators"           => "Notify Operators",
@@ -129,7 +124,6 @@ return array(
     "feedback"                  => "Feedback",
     "feedback_form"             => "Feedback Form|Feedback Forms",
     "feedback_form_desc"        => "Feedback forms are processed in the order they appear. Drag the rows to reorder and adjust the priority of the feedback forms.",
-    "view_feedback_report"      => "View Feedback Report",
     "view_feedback"             => "View Feedback",
     "ticket_feedback"           => "Ticket Feedback",
     "feedback_fields_error"     => "There was a problem fetching the feedback fields.",
@@ -147,8 +141,8 @@ return array(
     "bad_ratings"               => "Bad Ratings",
     "customer_satisfaction"     => "Customer Satisfaction",
     "feedback_desc"             => "Thank you for contacting us and we hope we have resolved your query. Please could you rate your experience below.",
-    "good_satisfied"            => "Good, I'm satisifed",
-    "bad_not_satisfied"         => "Bad, I'm unsatisifed",
+    "good_satisfied"            => "Good, I'm satisfied",
+    "bad_not_satisfied"         => "Bad, I'm unsatisfied",
     "feedback_not_found"        => "Your feedback could not be accepted, please open a ticket with us if you wish to share your feedback.",
     "feedback_malformed_token"  => "Your feedback could not be accepted due to a malformed token. Please open a ticket with us if you wish to share your feedback.",
     "feedback_already_done"     => "You have already provided your feedback for this ticket, thank you.",
@@ -164,7 +158,6 @@ return array(
 
     // Canned responses
     "cannedresponse"            => "Canned Response|Canned Responses",
-    "canned_response_category"  => "Canned Response Category|Canned Response Categories",
 
     // Filters
     "filter"                    => "Filter|Filters",
@@ -208,8 +201,6 @@ return array(
 
     // Holidays
     "holiday"                   => "Holiday|Holidays",
-    "all_holidays"              => "All Holidays",
-    "specific_holidays"         => "Specific Holidays",
     "holiday_or_on_the"         => "or, on the",
     "holiday_month_year_desc"   => "Year is optional if the holiday is recurring. Select a year only if the holiday happens on this date in a particular year.",
 
@@ -247,7 +238,6 @@ return array(
     "set_status"                => "Set Status",
     "add_selfservice_link"      => "Add Self-Service Link",
     "search_selfservice"        => "Search for a self-service article",
-    "add_canned_response"       => "Add Canned Response",
     "search_canned"             => "Search for a canned response",
 
     "mark_resolved"             => "Mark as Resolved",
@@ -311,7 +301,6 @@ return array(
     "merged"                    => "Merged",
     "unmerge"                   => "Unmerge",
     "close_and_lock"            => "Close & Lock",
-    "delete_and_block"          => "Delete & Block",
 
     "block_warning"             => "The user's email will also be blocked and no longer able to open tickets.",
 
@@ -327,7 +316,6 @@ return array(
     "add_cc"                    => "Add CC",
     "reply_above_line"          => "Please reply above this line",
 
-    "oauth2_token"              => "OAuth2 Token",
     "email_settings"            => "Email Settings",
     "web_settings"              => "Web Settings",
     "split_selected_replies"    => "Split Selected Replies",
@@ -348,7 +336,6 @@ return array(
      */
     "no_operator_groups"        => "No operator groups found. Click <a href=':route'>here</a> to create one.",
     "no_user_groups"            => "No user groups found. Click <a href=':route'>here</a> to create one.",
-    "opened_by"                 => "(Opened by :name)",
     "remote_email_piping_desc"  => "Download the <a href='http://www.supportpal.com/manage/dl.php?type=d&id=8' target='_blank'>remote email piping script</a> and follow the <a href='https://docs.supportpal.com/current/Remote+Email+Piping' target='_blank'>documentation</a> on configuring it on your mail server.",
 
     /*
@@ -439,7 +426,6 @@ return array(
     "new_ticket_note"           => "New Ticket Note",
     "email_template_desc"       => "You may select an email template other than the default to be sent to the user or operators for any of the actions below. This template will become the default for this department only.",
     "create_new_user"           => "Create new user",
-    "create_new_user_desc"      => "Create a new user and set them as the user of this ticket.",
     "convert_user_ticket_desc"  => "The ticket will be converted from an internal to a user ticket.",
     "user_reply_internal_ticket" => "Not an operator. Only operators can reply to internal tickets.",
     "enter_email_address"       => "Enter email address...",
@@ -460,7 +446,7 @@ return array(
     "filter_performance_desc"   => "<li>Filters that match more tickets will be slower, in most cases try to exclude resolved tickets.</li><li>Filters using 'is not' conditions will usually be slower than using 'is' conditions.</li><li>Filters checking for NULL values (e.g. Ticket tag is None) will be slower.</li><li>Avoid multiple conditions that involve checking strings/words as they introduce more complexity.</li><li>Filters using 'begins with' or 'contains' conditions will generally be slower than using 'equals' or 'ends with' conditions.</li><li>Resolved tickets are excluded from the counts shown in the sidebar.</li>",
     "run_macro"                 => "Run Macro",
     "run_macro_desc"            => "<strong>:macro</strong><br /><em>:description</em>",
-    
+
     /*
      * 2.3.0
      */
@@ -484,7 +470,7 @@ return array(
     "add_bcc"                   => "Add BCC",
     "at_least_one_recipient"    => "Please specify at least one recipient.",
     "forwarded_message"         => "---------- Forwarded message ----------",
-    
+
     /*
      * 2.3.1
      */
@@ -494,7 +480,6 @@ return array(
     "move_ticket"               => "Move Ticket",
     "move_ticket_step1"         => "Step 1: Choose a new brand to move ticket to",
     "move_ticket_step2"         => "Step 2: Choose a department from new brand",
-    "move_ticket_step3"         => "Step 3: Choose a user from new brand",
     "current_record"            => "Current :record",
     "new_record"                => "New :record",
     "department_email"          => "Department Email",
@@ -531,5 +516,13 @@ return array(
      */
     "downloading"               => "Downloading...",
     "downloading_desc"          => "If the download doesn't start automatically in a few seconds, please <a href=':href'>click here</a> to access the download URL directly.",
+
+    /*
+     * 2.5.0
+     */
+    "belonging_to"              => "(Belonging to :name)",
+    "block_user"                => "Block User",
+    "merge_tickets"             => "Merge Tickets",
+    "merge_tickets_confirm"     => "Please confirm you'd like to merge the following tickets:",
 
 );

@@ -6,13 +6,11 @@ return array(
     "product_name"              => "SupportPal",
     "slogan"                    => "Customer support, smart and simple.",
     "operator_panel"            => "Operator Panel",
-    "helpdesk_software"         => "Help Desk Software by",
     "carefully_crafted"         => "Carefully crafted by",
     "welcome"                   => "Welcome to SupportPal",
     "welcome_desc"              => "You've made a smart decision. Click start to begin a quick product tour of our settings and features.",
 
     // Dashboard
-    "welcome_back"              => "Welcome back",
     "search_placeholder"        => "Search our help desk...",
     "submit_ticket"             => "Submit Ticket",
     "submit_ticket_desc"        => "Use this form to submit a support ticket to our highly trained staff.",
@@ -30,8 +28,6 @@ return array(
     "maintenance_active"        => "Maintenance mode is active.",
 
     // About
-    "development_license"       => "Development License!",
-    "development_license_desc"  => "This installation is using a development license which is only valid on RFC1918 addresses. You are not permitted to use this license in production.",
     "license_status"            => "License Status",
     "license_code"              => "License Code",
     "change_license"            => "Change License",
@@ -43,7 +39,6 @@ return array(
     "branding"                  => "Branding",
     "license_expires"           => "License Expires",
     "license_valid_ip"          => "License Valid IP(s)",
-    "license_valid_domain"      => "License Valid Domain(s)",
     "support_status"            => "Support Status",
     "support_expires"           => "Support Expires",
     "version_info"              => "Version Information",
@@ -62,10 +57,7 @@ return array(
     // Spam Rules & Filtering
     "spam_rule"                 => "Spam Rule|Spam Rules",
     "containing_text"           => "Containing Text",
-    "containing_text_desc"      => "Please enter a string (particular word to ban or email address), all strings are case-insenstive. <br />The string can also take advantage of <a href='http://www.regular-expressions.info/'>regular expressions</a>, an example of this would be: 's.{1,}p.{1,}a.{1,}m'. You do not need to worry about delimiters.",
-    "ip_filtering"              => "IP Filtering",
-    "content_filtering"         => "Content Filtering",
-    "filter_description"        => "Please select an appropriate content filter",
+    "containing_text_desc"      => "Please enter a string (particular word to ban or email address), all strings are case-insensitive. <br />The string can also take advantage of <a href='http://www.regular-expressions.info/'>regular expressions</a>, an example of this would be: 's.{1,}p.{1,}a.{1,}m'. You do not need to worry about delimiters.",
     "filter_new_message"        => "New Ticket Message (from User)",
     "filter_new_comment"        => "New Self-Service Comment (from User)",
     "filter_user_login"         => "User Login",
@@ -78,7 +70,6 @@ return array(
     // Company
     "company"                   => "Company|Companies",
     "company_name"              => "Company Name",
-    "your_company"              => "Your Company",
 
     // Email
     "default_email_addr"        => "Default Email Address",
@@ -135,7 +126,6 @@ return array(
     "plugins"                   => "Plugin|Plugins",
     "installed_plugins"         => "Installed Plugins",
     "visit_plugin"              => "Visit Plugin Site",
-    "uninstall_plugin_warning"  => "Uninstalling the plugin will delete all associated files and data. We recommend to deactivate the plugin instead.",
 
     // Messages
     "last_activity"             => "Last Activity",
@@ -163,7 +153,7 @@ return array(
     "attachments_desc"          => "Ticket attachments are stored on the file system but may take up room, you can prune attachment files before a certain date.",
     "system_activity_log_desc"  => "Stores all activity by users, operators and the system itself, you can prune records before a certain date.",
     "email_log_desc"            => "Stores all incoming and outgoing emails, you can prune records before a certain date.",
-    "operator_login_log_desc"   => "Stores each time an operator logins with their IP, you can prune records before a certain date.",
+    "operator_login_log_desc"   => "Stores each time an operator logs in, you can prune records before a certain date.",
 
     // Captcha
     "captcha"                   => "Captcha",
@@ -172,7 +162,6 @@ return array(
     // Widgets
     "dashboard"                 => "Dashboard",
     "add_remove_widget"         => "Add / Remove Widgets",
-    "todo_record"               => "to do record",
     "enable_tour"               => "Enable Product Tour",
 
     // Product Tour
@@ -218,14 +207,11 @@ return array(
     "no_enabled_languages"      => "Failed trying to update the :item. At least one language must be enabled at all times.",
 
     // General Settings
-    "website"                   => "Website",
     "locale"                    => "Locale",
     "simpleauth"                => "SimpleAuth",
     "admin_folder"              => "Admin Folder",
-    "admin_folder_desc"         => "Set the folder name to visit for the operator panel. It is recommended to change from the default \"admin\" name from a security point of view.",
+    "admin_folder_desc"         => "Set the folder name for the operator panel. It is recommended to change from the default \"admin\" name from a security point of view.",
     "enable_ssl"                => "Enable SSL",
-    "force_ssl"                 => "Force SSL for Operators",
-    "force_ssl_desc"            => "Force all operators to use the secure version of your website for the operator panel.",
     "frontend_template"         => "Frontend Template",
     "operator_template"         => "Operator Template",
     "maintenance_mode"          => "Maintenance Mode",
@@ -246,7 +232,6 @@ return array(
     "base_url_desc"             => "Enter the full web address of your installation, used to generate the URLs that are sent to users.",
     "debug"                     => "Debug",
     "debug_mode"                => "Debug Mode",
-    "debug_mode_desc"           => "Enable debug mode to display errors, only use for debugging or if instructed by support. Errors are otherwise stored in the logs at /storage/logs.",
     "pretty_urls"               => "Pretty URLs",
     "pretty_urls_desc"          => "Enabling will remove index.php from URLs, only enable if you are able to access the operator panel without index.php. Disable if you do not have mod_rewrite installed, .htaccess files are not allowed or haven't converted the Apache .htaccess rewrite rules to work with your alternative web server.",
 
@@ -302,7 +287,6 @@ return array(
     "purchase_more"             => "Purchase more",
     "brand_limit_allowed"       => "Your license is currently permitted to use :allowed brand simultaneously.|Your license is currently permitted to use :allowed brands simultaneously.",
     "brand_limit_purchase"      => "If this is incorrect, please <strong>reissue</strong> your license at our <a href='http://www.supportpal.com/manage/' target='_blank'>client area</a> and visit the <a href=':route'>License Information</a> page to synchronise your help desk with our license server.<br />To purchase additional brands, please <a href='https://www.supportpal.com/manage/upgrade.php?type=configoptions&id=:id' target='_blank'>upgrade your license</a>.",
-    "support_no_expiry"         => "Your support and updates are valid.",
     "support_expiry"            => "Your support and updates subscription is valid until :date.",
     "support_status_desc"       => "Please <a href='https://www.supportpal.com/manage/cart.php?gid=addons' target='_blank'>renew your support subscription</a> in order to get the latest support and updates from SupportPal.",
     "ip_ban"                    => "IP Ban|IP Bans",
@@ -333,7 +317,7 @@ return array(
     "and_number_others"         => "and :number other|and :number others",
     "user_templates"            => "User Templates",
     "operator_templates"        => "Operator Templates",
-    
+
     /*
      * 2.2.0
      */
@@ -422,5 +406,13 @@ return array(
     "multi_ip_desc"             => "Allows locking SupportPal to more than one internal/external IP.",
     "purchase"                  => "Purchase",
     "ticket_number_missing"     => "For ticket related emails, the {{ ticket.number }} merge field should be present in the email subject and must be wrapped in either <em>[#{{ ticket.number }}]</em> or <em>(#{{ ticket.number }})</em> in order to route replies to the correct ticket. If you would like to remove the ticket number, please consider enabling <a href='https://docs.supportpal.com/current/Email+Channel#SubAddressConfiguration' target='_blank'>email sub-addressing</a>.",
+
+    /*
+     * 2.5.0
+     */
+    "debug_mode_desc"           => "Enable debug mode to display errors, only use for debugging or if instructed by support. Errors and other useful logging messages are otherwise stored in the application logs, which can be downloaded by going to Utilities -> Logs -> Log File Manager.",
+    "record_trash_relations"    => "The records will be moved to the trash and then permanently deleted after :number days along with the following related data: :relations. This will impact reports.",
+    "uninstall_plugable_warning" => "Uninstalling the :plugable will delete all associated files and data. We recommend to deactivate the :plugable instead.",
+    "web_settings_desc"         => "The web channel settings apply to the frontend. By default tickets can be accessed by anyone who knows a unique ticket URL. You may wish to disable this and require users to login before they can access ticket information.",
 
 );

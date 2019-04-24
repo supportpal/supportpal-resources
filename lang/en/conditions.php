@@ -81,4 +81,9 @@ return array(
      */
     "last_message_content"              => "Last message content",
 
+    /*
+     * 2.5.0
+     */
+    "user_email_confirmed"              => "User email confirmed",
+
 );

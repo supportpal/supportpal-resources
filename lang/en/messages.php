@@ -62,8 +62,6 @@ return array(
 
     "general_error"         => "An error occurred. Please try again.",
 
-    "mailer_error"          => "There was an error sending an email with subject: ':subject'.",
-
     "no_results"            => "No results.",
 
     "assign_incomplete"     => "The action could not be completed in full. :names could not be assigned to some tickets.",
@@ -79,13 +77,9 @@ return array(
 
     "forbidden"             => "Forbidden",
 
-    "uncaught_exception"    => "<strong>Whoops! Something went wrong.</strong><br />The error has been logged. Please notify the system administrator if the error persists.",
-
     "not_logged_exception"  => "<strong>Whoops! Something went wrong.</strong><br />Please notify the system administrator if the error persists.",
 
     "too_many_ticket_reqs"  => "Too many ticket requests made for :email. The limit is :max in :decay minutes.",
-
-    "error_close_open"      => "Error, please close and open again.",
 
     "not_operator"          => "Something went wrong. The selected operator is not valid, please ensure they belong to an operator group and the group has an associated role.",
 
@@ -95,7 +89,7 @@ return array(
     "missing_extension"     => "Missing Extension",
     "php_ldap_missing"      => "The php-ldap extension is required to use LDAP authentication. Please enable it and refresh the page.",
     "php_imap_missing"      => "The php-imap extension is required to use Email Download. If you wish to use Email Download, please enable the extension and refresh the page.",
-    
+
     /*
      * 2.0.3
      */
@@ -103,7 +97,7 @@ return array(
     "queued_emails"         => "Success - The emails will begin being queued and sent shortly.",
     "error_loading_message" => "An error occurred while loading the message. Please try again.",
     "please_refresh"        => "Please refresh the page.",
-    
+
     /*
      * 2.1.0
      */
@@ -112,8 +106,6 @@ return array(
     "warning"               => "Warning",
     "note"                  => "Note",
     "brand_invalid_dept"    => "The action could not be completed in full. The department could not be updated on some tickets due to their brand.",
-    "template_subject_req"  => "The default email template subject field is required.",
-    "template_contents_req" => "The default email template contents field is required.",
 
     /*
      * 2.1.1
@@ -122,11 +114,6 @@ return array(
     "upload_max_size"       => "File must be smaller than :size",
     "upload_wrong_type"     => "File type is not allowed",
 
-    /*
-     * 2.1.2
-     */
-    "field_required"        => "Field is required.",
-    
     /*
      * 2.3.0
      */
@@ -153,5 +140,15 @@ return array(
     "does_look_correct"     => "Does this look correct?",
     "no_revert"             => "No! Revert",
     "attachment_not_found"  => "The attachment was not found.",
+
+    /*
+     * 2.5.0
+     */
+    "account_closed"        => "Your account has been closed. Please contact us if you think this has been done in error.",
+    "leave_record"          => "Leave :record?",
+    "leave_record_warn"     => "This will permanently remove you from the :record.",
+    "success_trashed"       => "Successfully moved the :item to trash!",
+    "error_trashed"         => "Failed trying to move the :item to trash.",
+    "blocked_by_rule"       => "The request was blocked by spam rule ':text'.",
 
 );

@@ -49,7 +49,6 @@ return array(
     "ticket_view"       => "View Tickets",
     "ticket_add"        => "Open Tickets",
     "ticket_edit"       => "Update Tickets",
-    "ticket_delete"     => "Delete Tickets",
     "ticketcustomfield" => "Manage Custom Fields",
 
     // Self-service
@@ -100,5 +99,12 @@ return array(
      */
     // User
     "sociallogin"       => "Manage Social Login",
+
+    /*
+     * 2.5.0
+     */
+    // Ticket
+    "ticket_delete"     => "Delete Tickets Permanently",
+    "ticket_trash"      => "Move Tickets to Trash",
 
 );

@@ -58,7 +58,6 @@ return array(
     "ticket_opened"                     => "Opened new ticket #:rel.",
     "ticket_opened_on_behalf"           => "Opened new ticket #:rel on behalf of :new_value.",
     "ticket_opened_email"               => "Imported email as new ticket #:rel.",
-    "ticket_deleted"                    => "Deleted ticket ':old_value' (#:rel).",
 
     "ticket_followup_set"               => "A follow up has been set up on ticket #:rel.",
     "ticket_followup_updated"           => "The follow up on ticket #:rel has been updated.",
@@ -203,5 +202,16 @@ return array(
     "ticket_unwatching"                 => "No longer watching ticket #:rel.",
     "ticket_watch_operator"             => "Set :new_value to watch ticket #:rel.",
     "ticket_unwatch_operator"           => "Unset :new_value from watching ticket #:rel.",
+
+    /*
+     * 2.5.0
+     */
+    "marked_user_as_confirmed"          => "Confirmed ownership of email address on behalf of user :rel.",
+    "ticket_department_email_updated"   => "Updated the department email on ticket #:rel from :old_value to :new_value.",
+    "ticket_watching_updated"           => "Updated watching operators on ticket #:rel.",
+    "ticket_deleted"                    => "Permanently deleted ticket ':old_value' (#:rel).",
+    "ticket_trashed"                    => "Moved ticket #:rel to trash.",
+    "ticket_restored"                   => "Restored ticket #:rel from trash.",
+    "emptied_ticket_trash"              => "Automatically cleaned the ticket trash of ':old_value' records.",
 
 );

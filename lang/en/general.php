@@ -5,7 +5,6 @@ return array(
     "clear"                     => "Clear",
     "begin"                     => "Begin",
     "documentation"             => "Documentation",
-    "forums"                    => "Community Forums",
     "good"                      => "Good",
     "bad"                       => "Bad",
     "expire"                    => "Expire",
@@ -64,9 +63,6 @@ return array(
     "remove"                    => "Remove",
     "required"                  => "Required",
     "enabled"                   => "Enabled",
-    "modified"                  => "Modified",
-    "change"                    => "Change",
-    "no_change"                 => "No Change",
     "registered"                => "Registered",
     "username"                  => "Username",
     "password"                  => "Password",
@@ -131,7 +127,6 @@ return array(
     "content_sender"            => "Content &amp; Sender",
     "permissions"               => "Permissions",
     "no_permissions_found"      => "No permissions found",
-    "check_uncheck_all"         => "Check / Uncheck All",
     "first"                     => "First",
     "second"                    => "Second",
     "third"                     => "Third",
@@ -155,8 +150,6 @@ return array(
     "due"                       => "Due",
     "overdue"                   => "Overdue",
     "hours_before_overdue"      => "Hours before overdue",
-    "add_rule"                  => "Add Rule",
-    "new"                       => "New",
     "transfer"                  => "Transfer",
     "view_all"                  => "View All",
     "manage"                    => "Manage",
@@ -166,7 +159,6 @@ return array(
     "uninstall"                 => "Uninstall",
     "version"                   => "Version",
 
-    "and"                       => "and",
     "by"                        => "by",
     "record"                    => "record",
     "views"                     => "views",
@@ -189,15 +181,13 @@ return array(
     "day"                       => "Day|Days",
     "month"                     => "Month|Months",
     "year"                      => "Year|Years",
-    "ago"                       => "ago",
-    
+
     "editor"                    => "Editor",
 
     /*
      * 2.0.1
      */
     "download"                  => "Download",
-    "acknowledge"               => "Acknowledge",
 
     /*
      * 2.0.2
@@ -205,7 +195,7 @@ return array(
     "show_details"              => "Show details",
     "hide_details"              => "Hide details",
     "welcome"                   => "Welcome",
-    
+
     /*
      * 2.0.3
      */
@@ -223,7 +213,6 @@ return array(
     /*
      * 2.1.0
      */
-    "recently_viewed"           => "Recently Viewed Tickets",
     "na"                        => 'N/A',
     "total"                     => "Total",
     "disabled"                  => "Disabled",
@@ -238,7 +227,6 @@ return array(
     "end_date"                  => "End Date",
     "submitted_by"              => "Submitted by",
     "every_minutes"             => "Every :minutes",
-    "at_time"                   => "at :time",
 
     /*
      * 2.1.1
@@ -248,7 +236,7 @@ return array(
     "edited"                    => "edited",
     "scheduled_for"             => "Scheduled For",
     "drag_and_drop"             => "Drag and drop your attachments here.",
-    
+
     /*
      * 2.1.2
      */
@@ -273,7 +261,7 @@ return array(
     "posted"                    => "Posted",
     "locked"                    => "Locked",
     "draft"                     => "Draft",
-    
+
     /*
      * 2.2.0
      */
@@ -286,7 +274,7 @@ return array(
     "sunday"                    => "Sunday",
     "inactive"                  => "Inactive",
     "run"                       => "Run",
-    
+
     /*
      * 2.3.0
      */
@@ -311,7 +299,6 @@ return array(
     "provider"                  => "Provider|Providers",
     "export"                    => "Export|Exports",
     "generate"                  => "Generate",
-    "entry"                     => "Entry",
 
     /*
      * 2.4.0
@@ -322,5 +309,15 @@ return array(
     "hook"                      => "Hook",
     "event"                     => "Event|Events",
     "test"                      => "Test",
+
+    /*
+     * 2.5.0
+     */
+    "domain"                    => "Domain|Domains",
+    "move_to_trash"             => "Move to Trash",
+    "trash"                     => "Trash",
+    "trash_desc"                => "Records that have been in the trash for more than :number days will be deleted automatically.",
+    "restore"                   => "Restore",
+    "delete_forever"            => "Delete Forever",
 
 );

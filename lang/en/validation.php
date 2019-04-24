@@ -91,30 +91,26 @@ return array(
      * 2.1.1
      */
     "old_password"              => "The :attribute field is invalid.",
-    
+
     /*
      * 2.2.0
      */
     "required_with_translation" => "The :translation translation for the :attribute field is required when :values is present.",
     "max_translation"           => "The :translation translation for the :attribute field may not be greater than :max characters.",
     "unique_translation"        => "The :translation translation for the :attribute field has already been taken.",
-    
+
     /*
      * 2.3.0
      */
     "required_translation"      => "The :translation translation for the :attribute field is required.",
     "customfield_not_cyclic"    => "The field cannot depend on one of it's children.",
     "distinct"                  => "The :attribute field has a duplicate value.",
-    
+
     /*
      * 2.3.1
      */
     "is_slug"                   => "The slug field can only contain alphanumeric characters, please percent encode any special characters.",
-    "article_type_slug_unique"  => "The slug has already been taken.",
-    "article_tag_slug_unique"   => "The slug has already been taken.",
-    "article_category_slug_unique" => "The slug has already been taken.",
     "article_slug_unique"       => "The slug has already been taken.",
-    "department_exists"         => "The selected department is invalid.",
     "captcha_required"          => "The captcha is required.",
     "ticket_number_format"      => "The ticket number format is invalid.",
 
@@ -162,6 +158,11 @@ return array(
     "string"                    => "The :attribute must be a string.",
     "timezone"                  => "The :attribute must be a valid zone.",
     "uploaded"                  => "The :attribute failed to upload.",
+
+    /*
+     * 2.5.0
+     */
+    "domain"                    => "One or more of the domain names are not valid.",
 
     /*
     |--------------------------------------------------------------------------
