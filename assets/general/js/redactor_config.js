@@ -64,6 +64,25 @@
         pastePlainText: false,
         linebreaks: true,
         linkSize: 255,
+        linkTarget: '_blank',
+        linkifyCallback: function (elements) {
+            $.each(elements,function(i, s) {
+                if (s.tagName.toLowerCase() !== 'a' || s.target !== '') {
+                    return;
+                }
+
+                s.target = $.Redactor.default_opts.linkTarget;
+            });
+
+            setTimeout($.proxy(function() {
+                this.code.sync();
+            }, this), 100);
+        },
+        modalOpenedCallback:function(name, modal) {
+            if (name === 'link' && ! this.observe.isCurrent('a') && $.Redactor.default_opts.linkTarget === '_blank') {
+                modal.find('#redactor-link-blank').prop('checked', 'checked');
+            }
+        },
         imageUpload: laroute.route('core.embed.image'),
         uploadImageFields: {
             "_token": $('meta[name=csrf_token]').prop('content')

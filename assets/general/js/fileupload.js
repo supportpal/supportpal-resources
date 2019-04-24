@@ -100,12 +100,12 @@ function FileUpload(parameters)
             var $this = $(this),
                 that = $this.data('blueimp-fileupload') || $this.data('fileupload'),
                 options = that.options;
-            
+
             // Calculate cumulative size of attachments.
             $.each(data.files, function (index, file) {
                 self.incrementTotalUploadedFileSize(file.size);
             });
-            
+
             // Block upload that exceed the cumulative limit.
             if (typeof options.cumulativeMaxFileSize !== 'undefined'
                 && self.totalUploadedFileSize() > options.cumulativeMaxFileSize
@@ -159,7 +159,7 @@ function FileUpload(parameters)
             // Re-enable the form submit button
             $context.parents('form').find('input[type=submit]').removeAttr('disabled');
         }
-        
+
         // Decrement cumulative file size count.
         $.each(data.files, function (index, file) {
             self.decrementTotalUploadedFileSize(file.size);
@@ -224,7 +224,7 @@ function FileUpload(parameters)
      */
     this.decrementTotalUploadedFileSize = function (size)
     {
-        cumulative_file_size -= size;  
+        cumulative_file_size -= size;
     };
 
     /**
@@ -246,7 +246,7 @@ function FileUpload(parameters)
         ul.find('li:last span.information span.filesize').text('(' + filesize.fileSize() + ')');
         ul.find('li:last').removeClass('hide');
         ul.find('li:last .deleteAttachment').attr('data-size', filesize).hide();
-        
+
         return ul.find('li:last');
     };
 
@@ -337,7 +337,7 @@ function FileUpload(parameters)
                     if ( $message.find('div.attachments ul li').length == 1) {
                         $message.find('div.attachments').hide();
                     }
-                    
+
                     // Decrement cumulative file size.
                     self.decrementTotalUploadedFileSize($(context).data('size'));
                 },
@@ -356,7 +356,7 @@ function FileUpload(parameters)
          * Show a drag and drop box when dragging a file over to give a visual guide. They can actually drop it anywhere
          * in the browser.
          */
-        $(document).bind('dragover', function (e) {
+        $(document).on('dragover', function (e) {
             var dragover = $('.attachment-dragover'),
                 timeout = window.dropZoneTimeout;
 
@@ -377,7 +377,7 @@ function FileUpload(parameters)
             }, 500);
         });
 
-        $(document).bind('drop', function (e) {
+        $(document).on('drop', function (e) {
             $('.attachment-dragover').hide();
         });
     };

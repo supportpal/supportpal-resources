@@ -1,7 +1,7 @@
 function AllowedMethods(parameters)
 {
     "use strict";
-    
+
     // Validate parameters.
     var sameStepRoute = parameters.sameStepRoute,
         nextStepRoute = parameters.nextStepRoute,
@@ -99,9 +99,3 @@ function AllowedMethods(parameters)
             });
     }
 }
-
-$(document).ready(function() {
-    $('button').click(function () {
-        alert($("<div/>").html($(this).next('pre').html()).text());
-    });
-});

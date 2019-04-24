@@ -80,7 +80,7 @@
                 // Add the Bootstrap error class to the control group
                 $elm.addClass('has-error');
             },
-            
+
             unhighlight: function(element, errorClass, validClass) {
                 // If there's multiple inputs in the row, add the class to the input instead of the row
                 // Excluding If it's redactor, codemirror, show/hide button, a checkbox or radio
@@ -94,18 +94,18 @@
 
                 // Remove the Bootstrap error class from the control group
                 $elm.removeClass('has-error');
-                
+
                 // Hide error if it's "pending" (remote validation).
                 var describer = $(element).attr( "aria-describedby" );
                 if (describer) {
                     $row.find('#' + describer.replace(/\s+/g, ", #")).hide();
                 }
             },
-            
+
             success: function (label, element) {
-                //  
+                //
             },
-            
+
             // Custom submit handler.
             submitHandler: function (form) {
                 $(form).find('input[type="submit"], button[type="submit"]').prop('disabled', 'disabled');
@@ -150,7 +150,7 @@
                     var id = $(validator.errorList[0].element).parents('.tabContent').attr('id');
                     // Get name from ID and click on the tab
                     if (typeof id !== 'undefined' && id.substring(0, 3) == 'tab') {
-                        $('.tabs li#' + id.substring(3)).click();
+                        $('.tabs li#' + id.substring(3)).trigger('click');
                     }
                 }
 
@@ -163,7 +163,7 @@
 
             rules: <?php echo json_encode($validator['rules']); ?>
         });
-        
+
         // Element we want to validate might not actually exist.
         if (typeof validator !== 'undefined') {
             // Enable custom submit handler.

@@ -7,39 +7,30 @@
 //              caused by blur.
 // Requires jQuery 1.7+
 //
-;(function($){
+;(function ($) {
     $.fn.extend({
-        donetyping: function(callback,timeout){
+        donetyping: function (callback, timeout) {
             timeout = timeout || 1e3; // 1 second default timeout
             var timeoutReference,
-                doneTyping = function(el) {
-                    if (!timeoutReference) return;
+                doneTyping = function (el) {
+                    if (! timeoutReference) return;
                     timeoutReference = null;
                     if (callback) {
                         callback.call(el);
                     }
                     $(el).trigger('donetyping');
                 };
-            return this.each(function(i,el){
+            return this.each(function (i, el) {
                 var $el = $(el);
-                // Chrome Fix (Use keyup over keypress to detect backspace)
-                // thank you @palerdot
-                // Also added paste to catch when you copy and paste something without typing
-                $el.is(':input') && $el.on('paste keyup keypress',function(e){
-                    // This catches the backspace button in chrome, but also prevents
-                    // the event from triggering too premptively. Without this line,
-                    // using tab/shift+tab will make the focused element fire the callback.
-                    if (e.type=='keyup' && e.keyCode!=8) return;
-
-                    // Check if timeout has been set. If it has, "reset" the clock and
-                    // start over again.
+                // Check keyup event, also added paste to catch when you copy and paste something without typing
+                $el.is(':input') && $el.on('paste keyup', function () {
+                    // Check if timeout has been set. If it has, "reset" the clock and start over again.
                     if (timeoutReference) clearTimeout(timeoutReference);
-                    timeoutReference = setTimeout(function(){
-                        // if we made it here, our timeout has elapsed. Fire the
-                        // callback
+                    timeoutReference = setTimeout(function () {
+                        // if we made it here, our timeout has elapsed. Fire the callback
                         doneTyping(el);
                     }, timeout);
-                }).on('blur',function(){
+                }).on('blur', function () {
                     // If we can, fire the event since we're leaving the field
                     doneTyping(el);
                 });
