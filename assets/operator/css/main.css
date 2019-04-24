@@ -198,6 +198,9 @@ pre:not(.moz-signature) {
 .row .item50 {
     width: 50%;
 }
+.row .item67 {
+    width: 66.67%;
+}
 
 .row .item:last-child {
     padding: 0;
@@ -1728,17 +1731,34 @@ ul.feedbackStats li .number {
 
 /* Ticket Redactor Plugins (Canned Responses / Self-Service) */
 
-#redactor-modal #redactor-modal-body input[type="text"] {
+#redactor-modal.custom-redactor-plugin {
+    height: calc(100% - 40px);
+}
+
+#redactor-modal.custom-redactor-plugin #redactor-modal-body {
+    height: calc(100% - 57px);
+}
+
+#redactor-modal.custom-redactor-plugin #redactor-modal-body input[type="text"] {
     height: 30px;
     padding: 4px 8px;
 }
 
-#redactor-modal section#redactor-modal-cannedResponses {
+#redactor-modal.custom-redactor-plugin section#redactor-modal-cannedResponses,
+#redactor-modal.custom-redactor-plugin section#redactor-modal-ssLink {
     padding: 15px 40px 25px;
+    height: 100%;
+}
+
+#redactor-modal.custom-redactor-plugin section#redactor-modal-cannedResponses {
+    padding: 15px 40px 25px;
+    height: calc(100% - 30px);
 }
 
 #redactor-modal-cannedResponses .tags-column {
-    width: 145px;
+    height: 100%;
+    overflow-y: auto;
+    width: 150px;
 }
 
 #redactor-modal-cannedResponses .tags-column h3 {
@@ -1750,15 +1770,10 @@ ul.feedbackStats li .number {
 }
 
 #cannedResponseTags {
-    height: 230px;
     list-style: none;
     margin: 0;
     overflow-y: auto;
     padding: 0;
-}
-
-#cannedResponseTags.with-language {
-    height: 160px;
 }
 
 #cannedResponseTags li.tag-item {
@@ -1795,11 +1810,12 @@ ul.feedbackStats li .number {
 }
 
 #redactor-modal-cannedResponses .search-column {
-    max-width: 470px;
+    width: calc(100% - 185px);
+    height: 100%;
 }
 
 #redactor-modal-body .manage-link {
-    margin-top: 20px;
+    margin-top: 15px;
     text-align: center;
 }
 
@@ -2145,16 +2161,14 @@ table.dataTable .truncated-text:before {
 ul.redactor-search {
     border: 1px solid #ddd;
     border-top: 0;
-    height: 295px;
     list-style: none;
     margin: 0;
     overflow-y: auto;
     padding: 0;
 }
 
-#selfServiceResults.redactor-search {
-    height: auto;
-    max-height: 295px;
+#cannedResponseResults.redactor-search, #selfServiceResults.redactor-search {
+    height: calc(100% - 30px);
 }
 
 ul.redactor-search li {

@@ -106,10 +106,10 @@
 
             {% if record|default is empty or not record.exists %}
                 <div class="confirmed-option form-row">
-                    {{ form_label('confirmed', Lang.get('user.account_active')) }}
+                    {{ form_label('active', Lang.get('user.account_active')) }}
                     <div class="input-container">
-                        {{ form_check('confirmed', 1, 1, { 'class': 'toggle', 'id': 'toggle_confirmed' }) }}
-                        <label for="toggle_confirmed"></label>
+                        {{ form_check('active', 1, 1, { 'class': 'toggle', 'id': 'toggle_active' }) }}
+                        <label for="toggle_active"></label>
                     </div>
                 </div>
             {% endif %}

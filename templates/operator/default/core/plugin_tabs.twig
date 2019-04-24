@@ -1,0 +1,13 @@
+<ul class="tabs">
+    {% if not isWidgets %}
+        <a href="#" class="active">{{ Lang.choice('core.plugins', 2) }}</a>
+        <a href="{{ route('core.operator.widget.index') }}">
+            {{ Lang.choice('core.widget', 2) }}
+        </a>
+    {% else %}
+        <a href="{{ route('core.operator.plugin.index') }}">
+            {{ Lang.choice('core.plugins', 2) }}
+        </a>
+        <a href="#" class="active">{{ Lang.choice('core.widget', 2) }}</a>
+    {% endif %}
+</ul>

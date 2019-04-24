@@ -74,13 +74,13 @@
 
 {% block scripts_footer %}
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
-    
+
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/queryfiltering.js') }}"></script>
     <script type="text/javascript">
         $(function () {
             $(document).on('click', '.send-button', function () {
                 $.get('{{ route('core.operator.emailqueue.send') }}', { 'id[]': [ $(this).data('id') ] })
-                    .success(function () {
+                    .done(function () {
                         $('.sent-email.box').show(500).delay(5000).hide(500);
                         $('.dataTable').dataTable()._fnAjaxUpdate();
                     })
@@ -92,7 +92,7 @@
                                 message = '<br />' + $('<div/>').text(json.message).html();
                             }
                         } catch (e) {
-                            // Invalid json. 
+                            // Invalid json.
                         }
 
                         swal({
@@ -101,7 +101,7 @@
                             type: 'error'
                         });
                     });
-            }); 
+            });
         });
     </script>
 {% endblock %}

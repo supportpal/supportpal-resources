@@ -70,12 +70,10 @@
                     1,
                     displayNotifications is empty or displayNotifications == 1 ? 1 : 0
                 ) }} {{ Lang.get('user.browser_notifications') }}
-                <a class="preview-browser">({{ Lang.get('general.preview') }})</a>
-            </label><br />
+            </label> <a class="description preview-browser">({{ Lang.get('general.preview') }})</a><br />
             <label>
                 {{ form_radio('opsettings[display_notifications]', 2) }} {{ Lang.get('user.desktop_notifications') }}
-                <a class="preview-desktop">({{ Lang.get('general.preview') }})</a>
-            </label><br />
+            </label> <a class="description preview-desktop">({{ Lang.get('general.preview') }})</a><br />
             <label>
                 {{ form_radio('opsettings[display_notifications]', 0) }} {{ Lang.get('general.none') }}
             </label>

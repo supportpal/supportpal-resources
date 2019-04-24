@@ -279,7 +279,7 @@
             }));
 
             // Load email template
-            $('select[name="load_template"]').change(function() {
+            $('select[name="load_template"]').on('change', function() {
                 if ($(this).val() != '0') {
                     // Fetch email template
                     $.ajax({

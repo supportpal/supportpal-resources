@@ -94,7 +94,7 @@
 
                     var data = { 'address': $('#textEmailLogForm').val() };
                     $.get(laroute.route('core.operator.email.log.retry', { 'id': $(self).data('id') }), data)
-                        .success(function (data) {
+                        .done(function (data) {
                             if (data.status !== 'success') {
                                 swal(Lang.get('messages.error'), data.message, 'error');
                             } else {

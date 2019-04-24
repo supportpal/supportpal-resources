@@ -346,12 +346,12 @@
                 var brandId = redactor.$box.parents('form').find(':input[name="brand_id"]').length
                     ? redactor.$box.parents('form').find(':input[name="brand_id"]').val()
                     : redactor.$box.parents('.form-row').data('brand');
-                
+
                 // Get ticket ID.
                 var ticketId = redactor.$box.parents('form').find(':input[name="ticket_id"]').length
                     ? redactor.$box.parents('form').find(':input[name="ticket_id"]').val()
                     : null;
-                
+
                 // Attempt to get locale.
                 var locale = redactor.$box.parents('.form-container').find(':input[name$="[language]"]').length
                     ? redactor.$box.parents('.form-container').find(':input[name$="[language]"]').val()
@@ -378,7 +378,7 @@
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         try {
-                            var json = jQuery.parseJSON(jqXHR.responseText);
+                            var json = JSON.parse(jqXHR.responseText);
 
                             errorHandler(typeof json.message !== 'undefined' ? json.message : errorThrown);
                         } catch (e) {

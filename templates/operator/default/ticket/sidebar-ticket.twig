@@ -86,8 +86,8 @@
                 {% endif %}
                 <tr>
                     <th>{{ Lang.choice('ticket.channel', 1) }}</th>
-                    <td>
-                        {{ ticket.channel.name }}
+                    <td class="channel-name">
+                        {{ ticket.channel.formatted_name }}
                     </td>
                 </tr>
                 <tr>

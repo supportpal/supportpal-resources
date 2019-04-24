@@ -135,7 +135,7 @@
                 { 'data-item': 11, 'data-operator': 0, 'class': 'hide' }) }}
 
         {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
-                slaplans|default is not empty and slaplans is not null ? slaplans : [ ],
+                slaplans|default is not empty and slaplans is not null ? {0: '-- ' ~ Lang.get('general.none') ~ ' --'} + slaplans : {0: '-- ' ~ Lang.get('general.none') ~ ' --'},
                 condition|default is not empty and condition.item == 12 ? condition.value : null,
                 { 'data-item': 12, 'data-operator': 0, 'class': 'hide' }) }}
 
@@ -512,6 +512,14 @@
                 condition|default is not empty and condition.item == 65 ? condition.value : null,
                 { 'data-item': 65, 'data-operator': 4, 'class': 'hide' }) }}
         <span class="description hide" data-item="65"><br />{{ Lang.get('conditions.exact_search_quotes') }}</span>
+
+        {{ form_select('conditions[' ~ (condition is defined ? (key is defined ? key : condition.id) : '') ~ '][value]',
+                {
+                    0: Lang.get('general.no'),
+                    1: Lang.get('general.yes')
+                },
+                condition|default is not empty and condition.item == 66 ? condition.value : null,
+                { 'data-item': 66, 'data-operator': 0, 'class': 'hide' }) }}
     </td>
     <td width="16">
         <i class="fa fa-times right remove-button"></i>

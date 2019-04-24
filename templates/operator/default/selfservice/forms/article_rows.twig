@@ -38,7 +38,7 @@
     <div class="form-row">
         {{ form_label(elements.text.name, Lang.choice('selfservice.article', 1)) }}
         <div class="input-container">
-            {{ form_redactor(elements.text.name, elements.text.value, attributes) }}
+            {{ form_redactor(elements.text.name, elements.text.value, attributes, Config.get('purifier.settings.selfservice')) }}
     
             {%
                 include 'operator.' ~ template ~ '.core.forms.attachments'

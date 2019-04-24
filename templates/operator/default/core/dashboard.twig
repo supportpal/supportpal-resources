@@ -115,6 +115,7 @@
 
                 // Ability to move widgets around
                 $( ".column" ).sortable({
+                    items: ".portlet",
                     connectWith: ".column",
                     handle: ".portlet-header",
                     cancel: ".portlet-toggle",
@@ -156,15 +157,22 @@
                         title: Lang.get('core.add_remove_widget'),
                         html:  '<form id="showHideWidgets" action="" method="post" style="text-align: left">' +
                                     '{{ csrf_field() }}' +
-                                    {% for widget in widgets %}
-                                    '<label>' +
-                                        '<input type="checkbox" name="widgets[{{ widget.id }}]" value="1" ' +
-                                                {% if widget.user|default is not empty and widget.user.enabled %}'checked' + {% endif %} ' />' +
-                                        '{{ widget.name }}' +
-                                    '</label><br />' +
-                                    {% else %}
-                                        Lang.get('messages.no_results') +
-                                    {% endfor %}
+                                    '<div class="input-group">' +
+                                        '<div class="description">' +
+                                            '<a class="check_all">{{ Lang.get('general.check_all') }}</a>' +
+                                            '&nbsp;|&nbsp;' +
+                                            '<a class="uncheck_all">{{ Lang.get('general.uncheck_all') }}</a>' +
+                                        '</div>' +
+                                        {% for widget in widgets %}
+                                        '<label>' +
+                                            '<input type="checkbox" name="widgets[{{ widget.id }}]" value="1" ' +
+                                                    {% if widget.user|default is not empty and widget.user.enabled %}'checked' + {% endif %} ' />' +
+                                            '{{ widget.name }}' +
+                                        '</label><br />' +
+                                        {% else %}
+                                            Lang.get('messages.no_results') +
+                                        {% endfor %}
+                                    '</div>' +
                                 '</form>',
                         showCancelButton: true,
                         confirmButtonText: Lang.get('general.save'),
@@ -188,7 +196,7 @@
                         );
 
                         $.post(laroute.route('core.operator.widgets.enable'), formData)
-                            .success(function(data) {
+                            .done(function(data) {
                                 // Reload after 3 seconds
                                 setTimeout("window.location.reload(true);", 1000);
 

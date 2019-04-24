@@ -2,7 +2,7 @@ var $select;
 
 $(function() {
     // Handle schedule switching
-    $('input[name="all_hours"]').change(function() {
+    $('input[name="all_hours"]').on('change', function() {
         if ($(this).val() == 0) {
             $('.schedules').show();
             schedules();

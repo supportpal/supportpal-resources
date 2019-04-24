@@ -1,21 +1,26 @@
-<a title="{{ Lang.get('general.add_link') }}" class="add-link right"><i class="fa fa-plus fa-fw"></i></a>
+{% if can_update_ticket(auth_user(), ticket) %}
+    <a title="{{ Lang.get('general.add_link') }}" class="add-link right"><i class="fa fa-plus fa-fw"></i></a>
+{% endif %}
 <i class="fa fa-link"></i> &nbsp; <strong>{{ Lang.get('ticket.linked_tickets') }}</strong> &nbsp;
     <span class="badge">{{ ticket.linked.count() }}</span>
 
 <ul class="recent-tickets linked-tickets">
-    {% for ticket in ticket.linked %}
+    {% for linkedTicket in ticket.linked %}
         <li>
-            <a title="{{ Lang.get('general.unlink') }}" class="unlink right"
-               data-route="{{ route('ticket.operator.linked.unlink') }}" data-id="{{ ticket.id }}">
-                <i class="fa fa-chain-broken fa-fw"></i>
-            </a>
+            {% if can_update_ticket(auth_user(), ticket) %}
+                <a title="{{ Lang.get('general.unlink') }}" class="unlink right"
+                   data-route="{{ route('ticket.operator.linked.unlink') }}" data-id="{{ linkedTicket.id }}">
+                    <i class="fa fa-chain-broken fa-fw"></i>
+                </a>
+            {% endif %}
             <span class="statusIcon" style="background: {{ ticket.status.colour }};"
-                  title="{{ ticket.status.name }}"></span> &nbsp;
-            <a href="{{ route('ticket.operator.ticket.show', [ ticket.id ]) }}" target="_blank">
-                {{ ticket.subject }}
+                  title="{{ linkedTicket.status.name }}"></span> &nbsp;
+            <a href="{{ route('ticket.operator.ticket.show', [ linkedTicket.id ]) }}" target="_blank">
+                {{ linkedTicket.subject }}
             </a>
             <div class="description">
-                {{ ticket.user.formatted_name }} &nbsp;&middot;&nbsp; {{ timeago(ticket.created_at) }}
+                {% if linkedTicket.trashed() %}<i class="fa fa-trash" title="{{ Lang.get('general.trash') }}"></i> &nbsp;&middot;&nbsp; {% endif %}
+                {{ linkedTicket.user.formatted_name }} &nbsp;&middot;&nbsp; {{ timeago(linkedTicket.created_at) }}
             </div>
         </li>
     {% endfor %}

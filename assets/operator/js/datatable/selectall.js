@@ -4,7 +4,7 @@ $(function () {
     $('.dataTable thead th:first').html('<input type="checkbox" name="select-all" />');
 
     // Toggle all checkboxes
-    $('input[name="select-all"]').change(function() {
+    $('input[name="select-all"]').on('change', function() {
         // This is the state, after the checkbox has been changed...
         var is_checked = $(this).is(':checked');
 
@@ -88,15 +88,15 @@ $(function () {
             // Check if we're in mobile view
             if ($(this).parents('.dataTable').hasClass('collapsed')) {
                 // Click on the cell and the row, to ensure we have the right state overall
-                $(this).parent().click();
-                $(this).parent().parent().click();
+                $(this).parent().trigger('click');
+                $(this).parent().parent().trigger('click');
             }
         })
         .on('click', 'td:first-child', function() {
             // Check if we're in mobile view
             if ($(this).parents('.dataTable').hasClass('collapsed')) {
                 // Click on the row to ensure we have the right state overall
-                $(this).parent().click();
+                $(this).parent().trigger('click');
             }
         });
 

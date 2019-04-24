@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    
+
     {{ form_open({'route': [ 'ticket.operator.ticket.processMove', ticket.id ], 'class': 'validate'}) }}
 
         <div class="step1">
@@ -110,7 +110,7 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-    
+
     <script type="text/javascript">
         $(function () {
             var deptXhr, emailXhr,
@@ -149,7 +149,7 @@
                                 }
                             })
                         });
-                        
+
                         // Enable the continue to next step button.
                         $('.step1 .continue-button button').prop('disabled', false);
                     } else {
@@ -245,8 +245,8 @@
 
                 // Disable button.
                 $('.step2 .submit-button input').prop('disabled', true);
-                
-                $('form').submit();
+
+                $('form').trigger('submit');
             });
         });
     </script>

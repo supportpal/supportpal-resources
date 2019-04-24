@@ -138,13 +138,13 @@
         var unlinkRoute = "{{ route('user.operator.user.unlink_account', record.id) }}";
     </script>
     <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/linked_account.js') }}"></script>
-    
+
     <script type="text/javascript">
         $(document).ready(function() {
             // Toggle the password fields depending on whether we're sending a confirmation email
-            $('input[name="send_email"]').click(function() {
+            $('input[name="send_email"]').on('click', function() {
                 $('.password-field').toggle();
-                $('.password-field button.hideShowPassword-toggle').click().click();
+                $('.password-field button.hideShowPassword-toggle').trigger('click').trigger('click');
             });
 
             // Toggle the password fields, depending on how the page loads (when an error occurs, the form resets to
@@ -157,7 +157,7 @@
             callHideShowPassword();
 
             // Generate a new random password
-            $('a#generatePassword').click(function() {
+            $('a#generatePassword').on('click', function() {
                 var password = randomPassword(8);
 
                 if (document.getElementById('password').type == 'text') {
@@ -231,7 +231,7 @@
                     }
 
                     // Handle notifications option showing/hiding
-                    $('select[name="organisation_access_level"]').change();
+                    $('select[name="organisation_access_level"]').trigger('change');
 
                     // Hide view organisation button
                     $('.view-organisation').hide();
@@ -239,7 +239,7 @@
             });
 
             // Show notifications options for managers only
-            $('select[name="organisation_access_level"]').change(function() {
+            $('select[name="organisation_access_level"]').on('change', function() {
                 if ($(this).val() == 1 || ! $(this).is(':visible')) {
                     $('.organisation-notifications').hide().find(':input').prop('disabled', true);
                 } else {
@@ -247,8 +247,66 @@
                 }
             });
 
+            // Send confirmation email
+            $('.confirmation-email').on('click', function() {
+                var $this = $(this);
+                $this.prop('disabled', true);
+
+                $.post(
+                    laroute.route(
+                        'user.operator.user.confirmation_email',
+                        { id: {{ record|default is not empty and record.exists ? record.id : 'null' }} }
+                    ),
+                    { },
+                    function(response) {
+                        if (response.status == 'success') {
+                            $('.action.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.action.fail').show(500).delay(5000).hide(500);
+                        }
+
+                        $this.prop('disabled', false);
+                    },
+                    "json"
+                ).fail(function() {
+                    $('.action.fail').show(500).delay(5000).hide(500);
+                    $this.prop('disabled', false);
+                });
+            });
+
+            // Mark as confirmed
+            $('.mark-confirmed').on('click', function() {
+                var $this = $(this);
+                $this.prop('disabled', true);
+
+                $.post(
+                    laroute.route(
+                        'user.operator.user.mark_confirmed',
+                        { id: {{ record|default is not empty and record.exists ? record.id : 'null' }} }
+                    ),
+                    { },
+                    function(response) {
+                        if (response.status == 'success') {
+                            // Refresh the page.
+                            window.location.reload();
+                        } else {
+                            $('.action.fail').show(500).delay(5000).hide(500);
+                        }
+
+                        $this.prop('disabled', false);
+                    },
+                    "json"
+                ).fail(function() {
+                    $('.action.fail').show(500).delay(5000).hide(500);
+                    $this.prop('disabled', false);
+                });
+            });
+
             // Reset password link
-            $('.reset-password').click(function() {
+            $('.reset-password').on('click', function() {
+                var $this = $(this);
+                $this.prop('disabled', true);
+
                 $.post(
                     laroute.route(
                         'user.operator.user.resetpassword',
@@ -261,10 +319,13 @@
                         } else {
                             $('.action.fail').show(500).delay(5000).hide(500);
                         }
+
+                        $this.prop('disabled', false);
                     },
                     "json"
                 ).fail(function() {
                     $('.action.fail').show(500).delay(5000).hide(500);
+                    $this.prop('disabled', false);
                 });
             });
 
@@ -274,7 +335,7 @@
                     var section = '{{ Lang.choice('user.user', 1) }}',
                         name = $('<div/>').text($('input[name=email]').val()).html(),
                         relations = {{ relations|json_encode|raw }};
-                    
+
                     // Show the alert
                     swal(deleteAlert.getDefaultOpts(section, name, relations), function(isConfirm) {
                         if (isConfirm) {
@@ -285,7 +346,7 @@
                                 + '<input name="_method" type="hidden" value="DELETE" />'
                                 + '<input name="_token" type="hidden" value="' + $('meta[name=csrf_token]').prop('content') + '">'
                             + '</form>'));
-                            $('form.delete').submit();
+                            $('form.delete').trigger('submit');
                         }
                     });
                 });
@@ -501,12 +562,12 @@
                             $(this).hide();
                         } else {
                             $(this).find(':input').prop('disabled', false);
-                            
+
                             var dependsOn = $(this).data('depends-on-option');
                             if (typeof dependsOn === 'number') {
                                 $('option[value="'+dependsOn+'"]:selected').is(':visible') ? $(this).show() : $(this).hide();
                             } else {
-                                $(this).show();                                                
+                                $(this).show();
                             }
                         }
                     });
@@ -520,7 +581,7 @@
                 });
 
                 // Run above code when page loads to remove any fields it shouldn't show for default brand
-                $(':input[name="brand_id"]').change();
+                $(':input[name="brand_id"]').trigger('change');
             {% endif %}
         });
     </script>

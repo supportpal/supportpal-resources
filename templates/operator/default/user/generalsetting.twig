@@ -13,10 +13,22 @@
     {{ form_model(fields, { 'method': 'PUT', 'route': [ 'user.operator.generalsetting.update' ] }) }}
 
         <ul class="tabs">
+            <li id="General">{{ Lang.get('general.general') }}</li>
             <li id="Users" class="active">{{ Lang.choice('user.user', 2) }}</li>
             <li id="Operators">{{ Lang.choice('general.operator', 2) }}</li>
             <li id="Organisations">{{ Lang.choice('user.organisation', 2) }}</li>
         </ul>
+
+        <div id="tabGeneral" class="tabContent hide">
+            <div class="form-row">
+                {{ form_label('toggle_use_gravatar', Lang.get('user.use_gravatar')) }}
+                <div class="input-container">
+                    {{ form_check('use_gravatar', 1, null, { 'class': 'toggle', 'id': 'toggle_use_gravatar' }) }}
+                    <label for="toggle_use_gravatar"></label><br />
+                    <span class="description">{{ Lang.get('user.use_gravatar_desc') }}</span>
+                </div>
+            </div>
+        </div>
 
         <div id="tabUsers" class="tabContent">
             <div class="form-row">

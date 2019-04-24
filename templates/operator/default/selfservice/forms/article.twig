@@ -189,6 +189,15 @@
 
         </div>
 
+        {% if record.exists %}
+        <h2>{{ Lang.get('selfservice.revision_history') }}</h2>
+
+        <div class="form-container open first">
+            {{ revisions.render()|raw }}
+            {{ revisions.script()|raw }}
+        </div>
+        {% endif %}
+
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
         </div>
@@ -228,14 +237,14 @@
                         if (typeof locale === 'undefined') {
                             locale = null;
                         }
-                        
+
                         return $.extend({}, data, { article: '{{ record.id }}', locale: locale });
                     }
                 }
             });
         });
     </script>
-    
+
     <!-- Attachments JS -->
     <script src="{{ asset_rev('resources/assets/general/js/fileupload.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
@@ -259,12 +268,12 @@
         var tagPermission = {% if auth_user().hasPermission('create.selfservicetag') %}1{% else %}0{% endif %};
     </script>
     <script src="{{ asset_rev('resources/assets/operator/js/article.js') }}"></script>
-    
+
     <script src="{{ asset_rev('resources/assets/operator/js/multidimensionaldata.js') }}"></script>
     <script type="text/javascript">
         // List of valid translatable attributes.
         var translatableAttributes = {{ translatableAttributes|json_encode|raw }};
-        
+
         // Redactor options (used by article.js and multidimensionaldata.js).
         var opts = {
             plugins: ['syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize']

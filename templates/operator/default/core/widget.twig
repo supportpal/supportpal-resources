@@ -1,20 +1,18 @@
 {% extends parent_template %}
 
-{% block sidebar %}
-    {% include 'operator.' ~ template ~ '.sidebar-settings' %}
-{% endblock %}
-
 {% block title %}
-    {{ Lang.choice("ticket.channel", 2) }}
+    {{ Lang.choice('core.widget', 2) }}
 {% endblock %}
 
 {% block content %}
 
+    {% include 'operator.' ~ template ~ '.core.plugin_tabs' with { 'isWidgets': true } %}
+
 	<div class="success box delete hide">
-        {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.choice('ticket.channel', 1), 'UTF-8') }) }}
+        {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('core.widget', 1) }) }}
     </div>
     <div class="fail box delete hide">
-        {{ Lang.get('messages.error_deleted', { 'item': mb_strtolower(Lang.choice('ticket.channel', 1), 'UTF-8') }) }}
+        {{ Lang.get('messages.error_deleted', { 'item': Lang.choice('core.widget', 1) }) }}
     </div>
 
     <div class="grid-options options box">
@@ -38,7 +36,7 @@
         </div>
     </div>
 
-	{{ table.setId('ticketChannelTable').render()|raw }}
+	{{ table.render()|raw }}
 	{{ table.script()|raw }}
 
 {% endblock %}
@@ -53,7 +51,7 @@
             oTable.yadcf([
                 {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
                 {column_number : 1, filter_container_id: "filter_status"},
-                {column_number : 2, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text", filter_delay: 500},
+                {column_number : 2, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
             ]);
 
             $(document.body).on('click', '.uninstall-plugable', function() {
@@ -63,7 +61,7 @@
                 // Show the alert
                 swal({
                     title: Lang.get('messages.are_you_sure'),
-                    text: "{{ Lang.get('core.uninstall_plugable_warning', {'plugable': mb_strtolower(Lang.choice('ticket.channel', 1), 'UTF-8')}) }}",
+                    text: "{{ Lang.get('core.uninstall_plugable_warning', {'plugable': mb_strtolower(Lang.choice('core.widget', 1), 'UTF-8')}) }}",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#e74c3c",

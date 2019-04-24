@@ -146,7 +146,7 @@
             });
 
             // Handle click
-            notify.get().click(function (e) {
+            notify.get().on('click', function (e) {
                 // Open the link if one is provided
                 if (typeof route !== 'undefined') {
                     // Prevent the browser from focusing the Notification's tab

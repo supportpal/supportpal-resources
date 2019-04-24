@@ -77,24 +77,11 @@
 
             {% include 'operator.' ~ template ~ '.user.forms.operator_ticket_settings' %}
         </div>
-    
+
         <h2>{{ Lang.get('user.notifications') }}</h2>
         <div class="form-container first">
             {% include 'operator.' ~ template ~ '.user.forms.operator_notifications' %}
-        </div> 
-
-        {% if auth_user().shouldConfirmPassword() %}
-        <h2>{{ Lang.get('user.confirm_password') }}</h2>
-        <div class="form-container first">
-            <div class="form-row">
-                {{ form_label('confirm_password', Lang.get('user.confirm_password')) }}
-                <div class="input-container">
-                    {{ form_password('confirm_password', null, {'size': 30}) }}<br />
-                    <span class="description">{{ Lang.get('user.operator_confirm_password') }}</span>
-                </div>
-            </div>
         </div>
-        {% endif %}
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
@@ -141,7 +128,7 @@
             callHideShowPassword();
 
             // Generate a new random password
-            $('a#generatePassword').click(function() {
+            $('a#generatePassword').on('click', function() {
                 var password = randomPassword(8);
 
                 if (document.getElementById('password').type == 'text') {

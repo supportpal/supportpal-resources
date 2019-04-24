@@ -289,6 +289,10 @@ html {
 		padding-right: 25px;
 	}
 
+	.row .item67 {
+		width: 100%;
+	}
+
 	.row .item25, .row .item33 {
 		width: 50%;
 	}
@@ -460,6 +464,18 @@ html {
 		display: block;
 		float: none;
 		margin-bottom: 15px;
+	}
+
+	#redactor-modal-cannedResponses .search-column {
+		width: 100%;
+	}
+
+	#redactor-modal-body .selfServiceLang {
+		float: none;
+	}
+
+	#redactor-modal-body section#redactor-modal-ssLink {
+		max-height: calc(100% - 30px);
 	}
 
 }

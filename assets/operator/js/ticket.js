@@ -244,7 +244,7 @@ function Ticket(parameters)
             var message = $(response.data.view).replaceAll($('.message.message-' + $form.parents('.message').data('id')));
 
             // Show the edited message (otherwise it's collapsed).
-            message.click();
+            message.trigger('click');
 
             // Register email details.
             self.registerEmailDetails(message.find('.show-email-details'));
@@ -284,7 +284,7 @@ function Ticket(parameters)
             $messageContainer.addClass('loading');
 
             return $.get(laroute.route('ticket.operator.message.showJson', { id: $messageContainer.data('id') }))
-                .success(function (ajax) {
+                .done(function (ajax) {
                     // Load the message in, it should already be sanitized.
                     $text.children('.original')
                         .html(ajax.data.purified_text)
@@ -620,7 +620,7 @@ function Ticket(parameters)
                 } else {
                     // Switch to messages if we're currently on escalation rules
                     if ($('.tabs #EscalationRules').hasClass('active')) {
-                        $('.tabs #Messages').click();
+                        $('.tabs #Messages').trigger('click');
                     }
                     // Hide the tab as no more rules exist
                     $('.tabs #EscalationRules').hide();
@@ -721,19 +721,19 @@ function Ticket(parameters)
     this.forward = function ($messages)
     {
         // Switch to Forward tab.
-        $('.reply-type .option[data-type="2"]').removeClass('fresh').show().click();
+        $('.reply-type .option[data-type="2"]').removeClass('fresh').show().trigger('click');
 
         // Delete any attachments currently tied to the form.
         var deferred = [];
         $('.forward-form .attached-files li:not(.hide) .deleteAttachment').each(function (index, element) {
             deferred.push(forwardFileUpload.deleteNewFile(element, true));
         });
-        
+
         // Load any messages that need to be AJAX loaded.
         $messages.each(function (index, message) {
             deferred.push(ticket.loadMessage($(message)));
         });
-        
+
         // Lock the interface and show a waiting spinner (this may take a while on a large ticket).
         swal({
             title: Lang.get('general.loading'),
@@ -851,10 +851,10 @@ function Ticket(parameters)
             $('<img>').attr("src", $this.data('preview-url')).prependTo($(this));
 
             // Handle image load/error
-            $(this).find('img').bind('load', function() {
+            $(this).find('img').on('load', function() {
                 // Handler for .load() called.
                 $this.find('.fa').remove();
-            }).bind('error', function() {
+            }).on('error', function() {
                 // If 404 or other error
                 // Replace preview link with download link
                 $this.parents('a').removeClass('attachment-preview').attr('href', $this.data('download-url'));
@@ -893,7 +893,7 @@ $(document).ready(function() {
     });
 
     // Reply type
-    $('.reply-type .option').click(function() {
+    $('.reply-type .option').on('click', function() {
         // Change active option
         $('.reply-type .option.active').removeClass('active');
         $(this).addClass('active');
@@ -918,7 +918,7 @@ $(document).ready(function() {
                         $message = $('#tabMessages .message:not(.note, .forward):first');
                     }
 
-                    $message.find('a.forward-from-here').click();
+                    $message.find('a.forward-from-here').trigger('click');
                 }
 
                 break;
@@ -933,11 +933,11 @@ $(document).ready(function() {
     });
 
     // Process take button
-    $('.take-ticket').click(function() {
+    $('.take-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.take'));
     });
     // Process close button
-    $('.close-ticket').click(function() {
+    $('.close-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.close'));
         $(document).ajaxStop(function () {
             // Go back to ticket grid
@@ -945,7 +945,7 @@ $(document).ready(function() {
         });
     });
     // Process lock button
-    $('.lock-ticket').click(function() {
+    $('.lock-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.lock'));
         $(document).ajaxStop(function () {
             // Go back to ticket grid
@@ -953,29 +953,36 @@ $(document).ready(function() {
         });
     });
     // Process unlock button
-    $('.unlock-ticket').click(function() {
+    $('.unlock-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.unlock'));
     });
     // Process watch button
-    $('.watch-ticket').click(function() {
+    $('.watch-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.watch'));
         $('.watch-ticket').hide();
         $('.unwatch-ticket').show();
     });
     // Process unwatch button
-    $('.unwatch-ticket').click(function() {
+    $('.unwatch-ticket').on('click', function() {
         ticketAction(laroute.route('ticket.operator.action.unwatch'));
         $('.watch-ticket').show();
         $('.unwatch-ticket').hide();
     });
 
+    $('.restore-ticket').on('click', function () {
+        restoreTicket();
+    });
+
     // Process delete button
+    $('.delete-forever-ticket').on('click', function () {
+        deleteTicket(false, true);
+    });
     $('.delete-ticket').on('click', function() {
-        deleteTicket(false);
+        deleteTicket(false, false);
     });
     // Process block button
-    $('.block-ticket').click(function() {
-        deleteTicket(true);
+    $('.block-ticket').on('click', function() {
+        deleteTicket(true, false);
     });
 
     // Handle message actions button to show dropdown
@@ -985,7 +992,7 @@ $(document).ready(function() {
         // Don't collapse message if it's currently open
         // However we need to stop the propagation so the dropdown doesn't close itself
         if (! $message.hasClass('collapsible')) {
-            $message.click();
+            $message.trigger('click');
         }
         e.stopPropagation();
 
@@ -1106,14 +1113,14 @@ $(document).ready(function() {
         event.preventDefault();
 
         // Uncollapse messages first
-        $('.collapsed-messages').click();
+        $('.collapsed-messages').trigger('click');
 
         // Fetch the list of messages from this one based on the reply order
         var $messages;
         if (replyOrder == 'ASC') {
-            $messages = $(this).parents('.message').prevUntil('#tabMessages', '.message:not(.note, .forward)').andSelf();
+            $messages = $(this).parents('.message').prevUntil('#tabMessages', '.message:not(.note, .forward)').addBack();
         } else {
-            $messages = $(this).parents('.message').nextUntil('#tabMessages', '.message:not(.note, .forward)').andSelf();
+            $messages = $(this).parents('.message').nextUntil('#tabMessages', '.message:not(.note, .forward)').addBack();
         }
 
         ticket.forward($messages);
@@ -1123,15 +1130,15 @@ $(document).ready(function() {
      * Handle updating the ticket side bar
      */
     var $ticketDetails = $('.ticket-details');
-    $ticketDetails.find('select[name=priority]').change(function() {
+    $ticketDetails.find('select[name=priority]').on('change', function() {
         updateTicket($(this).serializeArray());
     });
 
-    $ticketDetails.find('select[name=department]').change(function() {
+    $ticketDetails.find('select[name=department]').on('change', function() {
         changeDepartment({ department_id: $(this).val() });
     });
 
-    $ticketDetails.find('select[name=status]').change(function() {
+    $ticketDetails.find('select[name=status]').on('change', function() {
         if (typeof closedStatusId !== 'undefined' && $(this).val() == closedStatusId) {
             // If they closed the ticket, we want to handle this differently...
             ticketAction(laroute.route('ticket.operator.action.close'));
@@ -1148,7 +1155,7 @@ $(document).ready(function() {
     });
 
     // Update SLA plan
-    $('select[name="slaplan"]').change(function() {
+    $('select[name="slaplan"]').on('change', function() {
         // Post data
         $.post(
             laroute.route('ticket.operator.ticket.updateSlaPlan', { id: ticketId }),
@@ -1182,10 +1189,10 @@ $(document).ready(function() {
     });
 
     // Update due time
-    $('.edit-duetime').click(function() {
+    $('.edit-duetime').on('click', function() {
         $('.update-duetime').toggle();
     });
-    $('.update-duetime button').click(function() {
+    $('.update-duetime button').on('click', function() {
         var date, time;
 
         // Are we updating or removing?
@@ -1280,7 +1287,7 @@ $(document).ready(function() {
                 // Hide input and show new subject
                 $(context).hide();
                 $('.subject').text($(context).val()).show();
-                
+
                 // Post data to perform action
                 var url = laroute.route('ticket.operator.ticket.updateSubject', { id: ticketId });
                 $.post(url, { subject: $(context).val() })
@@ -1308,7 +1315,7 @@ $(document).ready(function() {
         };
 
     // Show edit input
-    $('.subject').click(function() {
+    $('.subject').on('click', function() {
         var self = this;
         setTimeout(function() {
             var selectedText = "";
@@ -1318,11 +1325,11 @@ $(document).ready(function() {
             if (window.getSelection) {
                 selectedText = window.getSelection().toString();
             }
-            
+
             // If they haven't selected any text, then show the edit form.
             if (selectedText === "") {
                 $(self).hide();
-                $('.edit-subject').show().focus();
+                $('.edit-subject').show().trigger('focus');
             }
         }, 250);
     });
@@ -1366,7 +1373,7 @@ $(document).ready(function() {
     });
 
     // Split checked messages to a new ticket
-    $('.split-ticket-button button').click(function() {
+    $('.split-ticket-button button').on('click', function() {
         var selected = '';
         // Add checked fields to form
         $('input.split-ticket:checked').each(function() {
@@ -1378,7 +1385,7 @@ $(document).ready(function() {
             value: selected.slice(0, -1)
         }).appendTo($(this).parent());
         // Submit form
-        $(this).parent().submit();
+        $(this).parent().trigger('submit');
     });
     /*
      * END Split to new ticket
@@ -1430,7 +1437,7 @@ $(document).ready(function() {
         // Copy URL
         var $temp = $("<input>");
         $('body').append($temp);
-        $temp.val(url).select();
+        $temp.val(url).trigger('select');
         document.execCommand('copy');
         $temp.remove();
     });
@@ -1472,13 +1479,13 @@ $(document).ready(function() {
     });
 
     // Collapse tickets with >5 messages
-    if ($('.message').size() > 5 && ! scrollToMessage) {
+    if ($('.message').length > 5 && ! scrollToMessage) {
         // Staff notes and ticket content regions of the screen
         var regions = [ ".notes-header", ".messages-header" ];
 
         for (var i = 0; i < regions.length; i++) {
             // If this region of the screen has > 5 messages, let's shrink it!
-            if ($(regions[i] + ' ~ .message').size() > 5) {
+            if ($(regions[i] + ' ~ .message').length > 5) {
                 // Build the basic selector
                 var basicSelector = $(regions[i] + ' ~ .message');
                 if (regions[i] == ".notes-header")
@@ -1493,7 +1500,7 @@ $(document).ready(function() {
                 }
 
                 items.wrapAll(
-                    "<div class='collapsed-messages'><span>" + items.size() + " older messages</span></div>"
+                    "<div class='collapsed-messages'><span>" + items.length + " older messages</span></div>"
                 );
             }
         }
@@ -1515,17 +1522,17 @@ $(document).ready(function() {
      * Expand/collapse all messages
      */
     // Show button that allows expanding all if more than 2 messages
-    if ($('.message').size() > 2) {
+    if ($('.message').length > 2) {
         $('.expand-messages').show();
     }
 
     // Expand/collapse all messages on click
     $('.expand-messages, .collapse-messages').on('click', function() {
         if ($(this).hasClass('expand-messages')) {
-            $('.collapsed-messages').click();
-            $('#tabMessages .collapsed').click();
+            $('.collapsed-messages').trigger('click');
+            $('#tabMessages .collapsed').trigger('click');
         } else {
-            $('#tabMessages .collapsible .header').click();
+            $('#tabMessages .collapsible .header').trigger('click');
         }
         $('.expand-messages, .collapse-messages').toggle();
     });
@@ -1568,7 +1575,7 @@ $(document).ready(function() {
             bcc_address: type == '2' ? $form.find('select[name="bcc_address[]"]').val() : null,
             subject: type == '2' ? $form.find('input[name="subject"]').val() : null
         };
-        
+
         // Add attachments to AJAX data.
         $($form.find('input[name^="attachment["]:not(:disabled)').serializeArray()).each(function(index, obj) {
             data[obj.name] = obj.value;
@@ -1665,7 +1672,7 @@ $(document).ready(function() {
      */
 
     // Save draft button
-    $('.save-draft').click(function(e) {
+    $('.save-draft').on('click', function(e) {
         var $form = $(this).parents('form'),
             replyType = $form.find('input[name="reply_type"]').val();
 
@@ -1673,7 +1680,7 @@ $(document).ready(function() {
     });
 
     // Discard draft button
-    $('.discard-draft').click(function() {
+    $('.discard-draft').on('click', function() {
         // Post data to perform action
         var $form = $(this).parents('form'),
             replyType = $form.find('input[name="reply_type"]').val(),
@@ -1681,7 +1688,7 @@ $(document).ready(function() {
 
         // Delete any attachments currently showing
         $form.find('input[name="attachment[]"]:not(:first)').remove();
-        $form.find('.attached-files li:not(.hide) .deleteAttachment').attr('data-silent', true).click();
+        $form.find('.attached-files li:not(.hide) .deleteAttachment').attr('data-silent', true).trigger('click');
 
         $.post(laroute.route('ticket.operator.message.discard'), params, function(response) {
             if (response.status == 'success') {
@@ -1742,7 +1749,7 @@ $(document).ready(function() {
     });
 
     // Hide reply all dropdown if clicking outside the dropdown div
-    $(document).click(function() {
+    $(document).on('click', function() {
         $('.dropdown-container .dropdown:visible').hide();
     });
 
@@ -1755,7 +1762,7 @@ $(document).ready(function() {
     });
 
     // Reply all
-    $('.reply-all .dropdown li').click(function() {
+    $('.reply-all .dropdown li').on('click', function() {
         var value = $(this).data('value');
 
         // Update reply_all input
@@ -1795,6 +1802,11 @@ $(document).ready(function() {
                 return '<div class="item' + (item.unremovable ? ' unremovable' : '') + '">' + escape(item.value) + '</div>';
             },
             option: function(item, escape) {
+                // pollReplies doesn't return full user attributes.
+                if (! item.email) {
+                    return '<div>' + escape(item.value) + '</div>';
+                }
+
                 return '<div>' +
                     '<img class="avatar" src="' + escape(item.avatar_url) + '" width="16" /> &nbsp;' +
                     escape(item.formatted_name) + (item.organisation ? ' (' + escape(item.organisation || '') + ')' : '') +
@@ -1919,7 +1931,7 @@ $(document).ready(function() {
     /**
      * Edit user on ticket
      */
-    $('.edit-user').click(function() {
+    $('.edit-user').on('click', function() {
         $('.update-user').toggle();
     });
     $userSelectize = $('select[name="user"]').selectize({
@@ -1969,7 +1981,7 @@ $(document).ready(function() {
     /**
      * Create new user and update ticket.
      */
-    $('.create-new-user .new-user-toggle').click(function() {
+    $('.create-new-user .new-user-toggle').on('click', function() {
         // Toggle the form
         $('form.new-user-form').toggle();
 
@@ -2183,10 +2195,10 @@ $(document).ready(function() {
             showCancelButton: true,
         });
 
-        $('input[name=linked_search]').donetyping().trigger('donetyping').focus();
+        $('input[name=linked_search]').donetyping().trigger('donetyping').trigger('focus');
 
         // Don't allow hitting enter (reloads the page)
-        $('input[name=linked_search]').keydown(function(event) {
+        $('input[name=linked_search]').on('keydown', function(event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
@@ -2312,7 +2324,7 @@ $(document).ready(function() {
      * Jump to reply
      */
     // Jump to the reply area when clicking the button
-    $('.jump-to-reply button').click(function() {
+    $('.jump-to-reply button').on('click', function() {
         $('html, body').animate({
             scrollTop: $(".reply-header").offset().top - 25
         }, 1000);
@@ -2324,7 +2336,7 @@ $(document).ready(function() {
 
     // It should only show when needed, depending on the ticket replies order
     var scroll = 0;
-    $(window).scroll(function() {
+    $(window).on('scroll', function() {
         // Don't run on first page load
         if (scroll > 0) {
             var $form = $('form.message-form:not(.edit)');
@@ -2365,7 +2377,7 @@ $(document).ready(function() {
     }
 
     // Pretend a scroll to see if we should be showing the jump to reply button straight away or not
-    $(window).scroll();
+    $(window).trigger('scroll');
     /*
      * END Jump to reply
      */
@@ -2400,7 +2412,7 @@ $(document).ready(function() {
 
     // Follow up is active, show the follow up tab.
     $(document).on('click', '.view-followup', function () {
-        $('li#Followup').click();
+        $('li#Followup').trigger('click');
     });
 
     var setDateType = function() {
@@ -2576,8 +2588,12 @@ function updateTicket(data) {
             if (response.message != 'undefined' && response.message == 'ticket_user_updated') {
                 $('.edit-user').text(response.data);
                 $('.update-user').hide();
+
                 // We need to update a lot of details on the page. Quick fix, refresh the page.
                 window.location.reload();
+
+                // Show success message while page loads
+                $('.ticket-update.success').show(500).delay(5000).hide(500);
             }
             // Poll for new replies and updates
             pollReplies();
@@ -2711,8 +2727,8 @@ function changeDepartment(data) {
                 // Update department templates.
                 departmentTemplates = response.data.templates;
                 // Force run that code that checks if we can send the email to user/operators, by mocking events.
-                $('.message-form select[name="to_status"]').change();
-                $('.reply-type .option.active').click();
+                $('.message-form select[name="to_status"]').trigger('change');
+                $('.reply-type .option.active').trigger('click');
 
                 // Refresh follow up tab
                 refreshFollowUpTab();
@@ -2729,55 +2745,78 @@ function changeDepartment(data) {
     });
 }
 
-function deleteTicket(block) {
-    var type, route;
+function restoreTicket() {
+    $.ajax({
+        url: laroute.route('ticket.operator.action.restore'),
+        type: 'POST',
+        data: { ticket: ticketId },
+        dataType: 'json'
+    }).done(function(response) {
+        if (response.status == 'success') {
+            // Reload ticket.
+            window.location.reload();
 
-    var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 1), '', deleteRelations);
-    if (block == true) {
-        type = 'POST';
-        route = laroute.route('ticket.operator.action.block');
-        opts.html = $('<div/>').html(opts.html).append('<span style="text-align: left">'+Lang.get('ticket.block_warning')+'</span>').html();
-    } else {
-        type = 'DELETE';
-        route = laroute.route('ticket.operator.action.destroy');
-    }
-
-    // Show the alert
-    swal(opts, function(isConfirm) {
-        if (isConfirm) {
-            // Disable submit button
-            deleteAlert.disableButtons();
-            // Post destroy data
-            $.ajax({
-                url: route,
-                type: type,
-                data: { ticket: ticketId },
-                success: function(response) {
-                    if (response.status == 'success') {
-                        swal(
-                            Lang.get('messages.deleted'),
-                            Lang.get('messages.success_deleted', { item: Lang.get('general.record') }),
-                            'success'
-                        );
-                        // Go back to ticket grid
-                        window.location.href = ticketGridUrl;
-                    } else {
-                        swal(
-                            Lang.get('messages.error'),
-                            Lang.get('messages.error_deleted', { item: Lang.get('general.record') }),
-                            'error'
-                        );
-                    }
-                }
-            }).fail(function() {
-                swal(
-                    Lang.get('messages.error'),
-                    Lang.get('messages.error_deleted', { item: Lang.get('general.record') }),
-                    'error'
-                );
-            });
+            // Show success message while page loads
+            $('.ticket-update.success').show(500).delay(5000).hide(500);
+        } else {
+            $('.tickets-update.fail').show(500).delay(5000).hide(500);
         }
+    }).fail(function() {
+        $('.tickets-update.fail').show(500).delay(5000).hide(500);
     });
+}
+
+function deleteTicket(block, force) {
+    var type = block ? 'POST' : 'DELETE',
+        route = block ? laroute.route('ticket.operator.action.block') :
+            (force ? laroute.route('ticket.operator.action.destroy') : laroute.route('ticket.operator.action.trash')),
+        successMessage = force ? 'messages.success_deleted' : 'messages.success_trashed',
+        errorMessage = force ? 'messages.error_deleted' : 'messages.error_trashed';
+
+    var ajax = function () {
+        $.ajax({
+            url: route,
+            type: type,
+            data: { ticket: ticketId },
+            success: function(response) {
+                if (response.status == 'success') {
+                    swal(
+                        Lang.get('messages.success'),
+                        Lang.get(successMessage, { item: Lang.get('general.record') }),
+                        'success'
+                    );
+                    // Go back to ticket grid
+                    window.location.href = ticketGridUrl;
+                } else {
+                    swal(
+                        Lang.get('messages.error'),
+                        Lang.get(errorMessage, { item: Lang.get('general.record') }),
+                        'error'
+                    );
+                }
+            }
+        }).fail(function() {
+            swal(
+                Lang.get('messages.error'),
+                Lang.get(errorMessage, { item: Lang.get('general.record') }),
+                'error'
+            );
+        });
+    };
+
+    if (force) {
+        var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 1), '', deleteRelations);
+        swal(opts, function (isConfirm) {
+            if (isConfirm) {
+                // Disable submit button
+                deleteAlert.disableButtons();
+                // Post destroy data
+                ajax();
+            }
+        });
+    } else {
+        ajax();
+    }
 }
 
 function applyMacro(macroId) {
@@ -2842,7 +2881,7 @@ function refreshFollowUpTab() {
 
                 // Handle rules on refreshing tab, this will call code in escalationrule.js
                 $(".rule:first :input").prop('disabled', true);
-                $('.rule').filter(function() { return $(this).css("display") != "none"; }).find('.rule-action select').change();
+                $('.rule').filter(function() { return $(this).css("display") != "none"; }).find('.rule-action select').trigger('change');
             } else {
                 // Show message to refresh
                 $('#tabFollowup').html(Lang.get('messages.please_refresh'));
@@ -2877,7 +2916,7 @@ function pollReplies(allMessages) {
         },
         success: function(response) {
             // If there are notifications, show them
-            if (typeof response.data != 'undefined') {
+            if (response.status == 'success' && typeof response.data != 'undefined' && response.data !== null) {
                 if (response.data.messages.length) {
                     // Add each message
                     $.each(response.data.messages, function (index, value) {
@@ -2890,7 +2929,7 @@ function pollReplies(allMessages) {
                 // Show other operators viewing ticket
                 $('.ticket-viewing').replaceWith(response.data.viewing).show(500);
                 // Depending on view, add margin to top or bottom of content area if visible (code in mobile.js)
-                $(window).resize();
+                $(window).trigger('resize');
 
                 // Show other operator's draft
                 if (response.data.draft !== '') {
@@ -3005,7 +3044,7 @@ function pollReplies(allMessages) {
                 }
 
                 $('#sidebar').trigger('refreshedSidebar');
-                
+
                 // Refresh timeago.
                 if (typeof timeAgo !== 'undefined') {
                     timeAgo.render($('time.timeago'));

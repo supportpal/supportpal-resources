@@ -68,7 +68,7 @@
                             ({{ Lang.get('general.edited') }})
                         </strong>
                     {% endif %}
-                    &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.name}) }}
+                    &nbsp;&middot;&nbsp; {{ Lang.get('ticket.via_channel', {'channel': message.channel.formatted_name}) }}
                     {% set emaillog = message.emaillog.where('type', 1).first() %}
                     {% if emaillog is not null %}
                         <a class="show-email-details description">({{ Lang.get('general.show_details') }})</a>

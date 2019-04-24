@@ -24,16 +24,16 @@
 
         {% if ticket.user.email|default is not empty %}
             <br />
-            <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}<br />
+            <i class="fa fa-envelope fa-fw"></i> &nbsp; {{ ticket.user.email }}
+            {% if not ticket.user.confirmed %}
+                <i class="fa fa-exclamation-circle" aria-hidden="true" title="{{ Lang.get('user.unconfirmed_user_desc') }}" style="color: #f39c12;"></i>
+            {% endif %}<br />
             {% if ticket.user.confirmed %}
-                <i class="fa fa-check-square fa-fw"></i> &nbsp; {{ Lang.get('user.confirmed') }}<br />
                 <i class="fa fa-calendar fa-fw"></i> &nbsp; {{ Lang.get('user.signed_up') }} {{ timeago(ticket.user.created_at) }}<br />
 
                 {% if ticket.user.last_active_at > 0 %}
                     <i class="fa fa-clock-o fa-fw"></i> &nbsp; {{ Lang.get('user.last_active') }} {{ timeago(ticket.user.last_active_at) }}<br />
                 {% endif %}
-            {% else %}
-                <i class="fa fa-square fa-fw"></i> &nbsp; {{ Lang.get('user.unconfirmed') }}<br />
             {% endif %}
         {% endif %}
 
@@ -65,6 +65,7 @@
                     {{ userTicket.subject }}
                 </a>
                 <div class="description">
+                    {% if userTicket.trashed() %}<i class="fa fa-trash" title="{{ Lang.get('general.trash') }}"></i> &nbsp;&middot;&nbsp; {% endif %}
                     {{ userTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(userTicket.created_at) }}
                 </div>
             </li>
@@ -86,6 +87,7 @@
                     {{ organisationTicket.subject }}
                 </a>
                 <div class="description">
+                    {% if organisationTicket.trashed() %}<i class="fa fa-trash" title="{{ Lang.get('general.trash') }}"></i> &nbsp;&middot;&nbsp; {% endif %}
                     {{ organisationTicket.department.name }} &nbsp;&middot;&nbsp; {{ timeago(organisationTicket.created_at) }}
                 </div>
             </li>
@@ -105,6 +107,7 @@
                             {{ otherBrandTicket.subject }}
                         </a>
                         <div class="description">
+                            {% if otherBrandTicket.trashed() %}<i class="fa fa-trash" title="{{ Lang.get('general.trash') }}"></i> &nbsp;&middot;&nbsp; {% endif %}
                             {{ otherBrandTicket.brand.name }} &nbsp;&middot;&nbsp; {{ timeago(otherBrandTicket.created_at) }}
                         </div>
                     </li>

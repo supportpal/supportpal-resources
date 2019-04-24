@@ -126,7 +126,7 @@
     {% if jsValidator|default is not empty %}
         {{ jsValidator|raw }}
     {% endif %}
-    
+
     <script src="{{ asset_rev('resources/assets/operator/js/delete.alert.js') }}"></script>
     <script type="text/javascript">
         deleteAlert.translationKeys.title = 'user.remove_from';
@@ -262,7 +262,7 @@
                     }
                 });
 
-                $('.add-user').click(function() {
+                $('.add-user').on('click', function() {
                     // Update group membership
                     $.ajax({
                         url: laroute.route("user.operator.usergroup.members.update", { id: {{ record.id }} }),
@@ -283,7 +283,7 @@
                 });
 
             });
-            
+
         });
     </script>
     {% endif %}

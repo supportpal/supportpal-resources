@@ -164,6 +164,7 @@
                                             <div class="title">{{ Lang.get('ticket.recent_tickets') }}</div>
                                             {% for recentTicket in recentTickets %}
                                                 <a href="{{ route('ticket.operator.ticket.show', recentTicket.id) }}">
+                                                    {% if recentTicket.trashed() %}<i class="fa fa-trash" title="{{ Lang.get('general.trash') }}" style="color: #333;"></i>{% endif %}
                                                     <span class="statusIcon" style="background: {{ recentTicket.status.colour }};"></span>&nbsp;
                                                     <span class="description">#{{ recentTicket.number }}</span> {{ recentTicket.subject }}
                                                 </a>
@@ -494,12 +495,12 @@
             {% endblock %}
 
             {% set breadcrumb = block('breadcrumb') %}
-            {% if breadcrumb is not empty %}
+            {% if breadcrumb|trim is not empty %}
                 <div class="breadcrumb">{{ breadcrumb|raw }}</div>
             {% endif %}
 
             {% set description = block('description') %}
-            {% if description is not empty %}
+            {% if description|trim is not empty %}
                 <h2 class="description">{{ description|raw }}</h2>
             {% endif %}
 
@@ -583,12 +584,8 @@
 <!-- Collapsible side boxes -->
 <script src="{{ asset_rev('resources/assets/operator/js/sidebox.js') }}"></script>
 
-<!-- Hopscotch - product tours -->
-<script src="{{ asset_rev('app/Widgets/GettingStarted/Views/vendor/hopscotch/js/hopscotch.js') }}"></script>
-
 {% set enabled = Config.get('settings.product_tour_enabled', null) %}
 {% if enabled == '1' or enabled is null %}
-    <link rel="stylesheet" href="{{ asset_rev('app/Widgets/GettingStarted/Views/vendor/hopscotch/css/hopscotch.min.css') }}"  property="stylesheet" />
     <script src="{{ asset_rev('resources/assets/operator/js/producttour.js') }}" type="text/javascript"></script>
 {% endif %}
 
@@ -597,7 +594,7 @@
 <script type="text/javascript">
     var notifications = new SupportPalNotifications({
         type: "{{ Config.get('settings.operator' ~ auth_user().id ~ '.display_notifications') }}",
-        icon: "{{ asset_rev('resources/assets/operator/images/favicon/favicon_space.png') }}",
+        icon: "{{ get_icon('resources/assets/operator/images/favicon/favicon_space.png') }}",
         timeout: 15000
     });
     notifications.poll();

@@ -197,7 +197,7 @@
 
     <!-- Translatable.js dependencies: Selectize -->
     <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/translatable.js') }}"></script>
-    
+
     <!-- Redactor -->
     <script src="{{ asset_rev('resources/assets/libs/editor.min.js') }}"></script>
     <script src="{{ asset_rev('resources/assets/general/js/redactor_config.js') }}"></script>
@@ -228,7 +228,7 @@
             })[0].selectize;
 
             // Toggle type, handle the various options.
-            $('input[name="type"]').click(function() {
+            $('input[name="type"]').on('click', function() {
                 if ($(this).is(':checked')) {
                     if ($(this).val() == 0) {
                         $('.macro-visibility').show();
@@ -263,7 +263,7 @@
                 }
             });
             // Want to disable fields not needed on page load.
-            $('input[name="type"]:checked').click();
+            $('input[name="type"]:checked').trigger('click');
         });
     </script>
 

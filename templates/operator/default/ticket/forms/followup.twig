@@ -80,7 +80,7 @@
             </tbody>
         </table>
 
-        {% if auth_user().hasPermission('update.ticket') %}
+        {% if can_update_ticket(auth_user(), ticket) %}
             <div class="form-row">
                 {{ form_button(Lang.get('general.add_item', {'item': Lang.choice('general.action', 1)}), { 'class': 'add-rule' }) }}
             </div>
@@ -88,7 +88,7 @@
 
     </div>
 
-    {% if auth_user().hasPermission('update.ticket') %}
+    {% if can_update_ticket(auth_user(), ticket) %}
         <div class="form-button">
             {{ form_button(Lang.get('general.save'), { 'class': 'save-followup' }) }}
             <span>&nbsp;&nbsp;</span>

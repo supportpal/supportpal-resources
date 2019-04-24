@@ -224,7 +224,7 @@ jQuery(function($){
         }
     });
     $('.email-support').each(function() {
-        $(this).change();
+        $(this).trigger('change');
     });
 
     $('#emailAccounts')
@@ -266,7 +266,7 @@ jQuery(function($){
     $('input[name="registered_only"]').on('change', function () {
         $('#registeredOnlyTemplate').toggle();
     });
-    
+
     // Convert email template dropdowns to use selectize.
     $('.department-templates').find('select').selectize({
         plugins: ['disableDelete']

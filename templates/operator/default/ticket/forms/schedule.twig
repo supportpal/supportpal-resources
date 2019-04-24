@@ -117,7 +117,7 @@
                 if ($input.val() == 2) {
                     $input.parents('.input-container').find('.custom').show();
                 }
-                $('input[name="business_hours[' + i + '][type]"]').change(function() {
+                $('input[name="business_hours[' + i + '][type]"]').on('change', function() {
                     if ($(this).val() == 2) {
                         $(this).parents('.input-container').find('.custom').show();
                     } else {

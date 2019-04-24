@@ -77,12 +77,12 @@
                 $('input[name=token]').val(randomString(32));
             }
 
-            $('.edit-button').click(function() {
+            $('.edit-button').on('click', function() {
                 $('input[name=token]').prop('readonly', false);
                 $(this).hide();
             })
 
-            $('.regenerate').click(function() {
+            $('.regenerate').on('click', function() {
                 $('input[name=token]').val(randomString(32));
             });
         });

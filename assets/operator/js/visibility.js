@@ -1,4 +1,4 @@
-$(document).on('ready', function () {
+$(function () {
     var $select = $('select[name="groups[]"]').selectize({
         plugins: ['remove_button']
     })[0].selectize;
@@ -8,7 +8,7 @@ $(document).on('ready', function () {
     $('.usergroups').toggle($public.is(":checked"));
 
     // Toggle user groups, as we update the checkbox
-    $public.change(function() {
+    $public.on('change', function() {
         if (this.checked) {
             $('.usergroups').show();
             $('select[name="groups[]"]').prop("disabled", false);

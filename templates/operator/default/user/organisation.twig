@@ -48,7 +48,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             // Filtering
-            $('.update-filtering').click(function() {
+            $('.update-filtering').on('click', function() {
                 $('.dataTable').on('preXhr.dt', function ( e, settings, data ) {
                     // Add conditions to parameters
                     var conditions = $(".conditiongroup").serializeArray();

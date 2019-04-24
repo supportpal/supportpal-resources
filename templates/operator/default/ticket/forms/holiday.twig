@@ -106,7 +106,7 @@
             {% else %}
                 fillDays();
             {% endif %}
-            $('select[name="month"], select[name="year"]').change(function() {
+            $('select[name="month"], select[name="year"]').on('change', function() {
                 fillDays();
             });
         });

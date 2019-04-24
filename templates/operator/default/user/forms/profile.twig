@@ -45,19 +45,49 @@
                 {% set emailAttributes = emailAttributes|merge({ 'readonly': 'readonly' }) %}
             {% endif %}
             {{ form_email('email', record.email, emailAttributes) }}
+            {% if record.exists and managing|default is not empty and managing and (operator is not defined or not operator) %}
+                {% if record.confirmed %}
+                    <br />
+                    <span class="description">{{ Lang.get('user.changing_email_desc') }}</span>
+                {% elseif record.password is empty %}
+                    <div style="margin-top: 10px;">
+                        <strong style="color: #c0392b;">{{ Lang.get('user.unconfirmed') }}</strong> - {{ Lang.get('user.unregistered_user_desc') }}
+                    </div>
+                {% else %}
+                    <div style="margin: 10px 0;">
+                        <strong style="color: #f39c12;">{{ Lang.get('user.unconfirmed') }}</strong> - {{ Lang.get('user.unconfirmed_user_desc') }}
+                    </div>
+                    <div class="button-group">
+                        {{ form_button('<i class="fa fa-paper-plane"></i>&nbsp; ' ~ Lang.get('user.send_confirmation_email'), { 'class': 'confirmation-email' }) }}<!--
+                            -->{{ form_button('<i class="fa fa-check-square"></i>&nbsp; ' ~ Lang.get('user.mark_as_confirmed'), { 'class': 'mark-confirmed' }) }}
+                    </div>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 
-    {% if not record.exists and managing|default is not empty and managing and (operator is not defined or not operator) %}
+    {% if managing|default is not empty and managing and ((operator is defined and operator) or (record.exists and record.confirmed)) %}
+        <div class="form-row">
+            {{ form_label('active', Lang.get('user.account_active')) }}
+            <div class="input-container">
+                {{ form_check('active', 1, record.active|default is not empty ? record.active : 1, { 'class': 'toggle', 'id': 'toggle_active' }) }}
+                <label for="toggle_active"></label>
+                <br />
+                <span class="description">{{ Lang.get('user.account_active_desc') }}</span>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if (not record.exists or record.password is empty) and managing|default is not empty and managing and (operator is not defined or not operator) %}
     <div class="form-row">
         <div class="input-container">
-            {{ form_checkbox('send_email', 1, true) }} {{ Lang.get('user.send_confirmation_email') }}
+            {{ form_checkbox('send_email', 1, not record.exists) }} {{ Lang.get('user.send_confirmation_email') }}
         </div>
     </div>
     {% endif %}
 
     {% if showPassword is not defined or showPassword %}
-    <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
+    <div class="form-row password-field" {% if (not record.exists or record.password is empty) and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password', Lang.get('general.password')) }}
         <div class="input-container">
             {{ form_password('password', { 'autocomplete': 'new-password' }) }}
@@ -67,7 +97,7 @@
         </div>
     </div>
 
-    <div class="form-row password-field" {% if not record.exists and (operator is not defined or not operator) %}style="display: none"{% endif %}>
+    <div class="form-row password-field" {% if (not record.exists or record.password is empty) and (operator is not defined or not operator) %}style="display: none"{% endif %}>
         {{ form_label('password_confirmation', Lang.get('user.confirm_password')) }}
         <div class="input-container">
             {{ form_password('password_confirmation', { 'autocomplete': 'new-password' }) }}
@@ -75,7 +105,7 @@
     </div>
     {% endif %}
 
-    {% if record.exists and record.confirmed and managing|default is not empty and managing and (operator is not defined or not operator) %}
+    {% if record.exists and record.confirmed and record.password is not empty and managing|default is not empty and managing and (operator is not defined or not operator) %}
     <div class="form-row">
         <div class="input-container">
             {{ form_button('<i class="fa fa-paper-plane"></i>&nbsp; ' ~ Lang.get('user.send_password_reset'), { 'class': 'reset-password' }) }}
@@ -144,18 +174,6 @@
                 {% endif %}
             </div>
         </div>
-    {% endif %}
-
-    {% if managing|default is not empty and managing and ((operator is defined and operator) or record.exists) %}
-    <div class="form-row">
-        {{ form_label('confirmed', Lang.get('user.account_active')) }}
-        <div class="input-container">
-            {{ form_check('confirmed', 1, record.confirmed|default is not empty ? record.confirmed : 1, { 'class': 'toggle', 'id': 'toggle_confirmed' }) }}
-            <label for="toggle_confirmed"></label>
-            <br />
-            <span class="description">{{ Lang.get('user.account_active_desc') }}</span>
-        </div>
-    </div>
     {% endif %}
 
     {% if managing|default is not empty and managing and (operator|default is empty or not operator) %}

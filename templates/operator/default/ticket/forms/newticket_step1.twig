@@ -80,12 +80,8 @@
                             {% endif %}
 
                             <div class="existing-user" id="existing-user">
-                                <select name="user">
-                                    {% if user is not empty %}
-                                        <option value="{{ user.id }}" data-data="{{ user|json_encode(constant('JSON_FORCE_OBJECT')) }}" selected="selected">
-                                            {{ user.formatted_name }}
-                                        </option>
-                                    {% endif %}
+                                <select name="user" data-default-opt="{{ user|json_encode(constant('JSON_FORCE_OBJECT')) }}">
+                                    <option></option>
                                 </select>
                             </div>
 

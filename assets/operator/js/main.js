@@ -1,8 +1,37 @@
 $(document).ready(function () {
+    //
+    // jQuery print event callback helpers.
+    //   - https://gist.github.com/shaliko/4110822#gistcomment-1543771
+    //   - https://www.tjvantoll.com/2012/06/15/detecting-print-requests-with-javascript/
+    $.fn.beforeprint = function (callback) {
+        return $(this).each(function () {
+            if (! $.isWindow(this)) {
+                return;
+            }
+            if (this.onbeforeprint !== undefined) {
+                $(this).on('beforeprint', callback);
+            } else if (this.matchMedia) {
+                this.matchMedia('print').addListener(callback);
+            }
+        });
+    };
+    $.fn.afterprint = function (callback) {
+        return $(this).each(function () {
+            if (! $.isWindow(this)) {
+                return;
+            }
+            if (this.onafterprint !== undefined) {
+                $(this).on('afterprint', callback);
+            } else if (this.matchMedia) {
+                $(this).one('mouseover', callback); // https://stackoverflow.com/a/15662720/2653593
+            }
+        });
+    };
+
     // Preserves the mouse-over on top-level menu elements when hovering over children
     // Only do this on desktop view
     $("#nav ul").each(function() {
-        $(this).hover(function() {
+        $(this).on('hover', function() {
             if ($(window).width() > 1080) {
                 $(this).parent().find("a").slice(0,1).addClass("activeParent");
             }
@@ -30,19 +59,19 @@ $(document).ready(function () {
     });
 
     // Search - Don't submit if it's empty
-    $('form[name=search_header]').submit(function(e) {
+    $('form[name=search_header]').on('submit', function(e) {
         if ($(this).find('input[name=query]').val() == '') {
             e.preventDefault();
         }
     });
-    
+
     // Check / Uncheck all checkboxes in an input group.
-    $(document).on('click', 'button.check_all', function (e) {
+    $(document).on('click', 'a.check_all, button.check_all', function (e) {
         e.preventDefault();
 
         $(this).parents('.input-group').find('input[type="checkbox"]').prop('checked', true);
     });
-    $(document).on('click', 'button.uncheck_all', function (e) {
+    $(document).on('click', 'a.uncheck_all, button.uncheck_all', function (e) {
         e.preventDefault();
 
         $(this).parents('.input-group').find('input[type="checkbox"]').prop('checked', false);
@@ -80,7 +109,7 @@ $(document).ready(function () {
     }
 
     // Smooth scrolling for anchors
-    $(document.body).on('click', 'a[href^=#]', function(event) {
+    $(document.body).on('click', 'a[href^="#"]', function(event) {
         event.preventDefault();
 
         // Check if we have a name with an underscore (used in comments)
@@ -140,7 +169,7 @@ $(document).ready(function () {
             return false;
         } else if (xhr.status == 403) {
             // Ensure this is a session expired message (VerifyCsrfToken middleware)
-            var json = $.parseJSON(xhr.responseText);
+            var json = JSON.parse(xhr.responseText);
             if (json.message == Lang.get('messages.session_expired')) {
                 // Show error and scroll to it
                 if (!$('.session-error').is(':visible')) {
@@ -154,27 +183,52 @@ $(document).ready(function () {
     });
 
     // Scrolling for sidebar on desktop
-    if (typeof $.fn.overlayScrollbars !== 'undefined' && $('#sidebar').length) {
-        $('#sidebar').overlayScrollbars({
-            overflowBehavior: {
-                x: 'hidden'
-            },
-            scrollbars: {
-                autoHide: 'scroll'
-            },
-            callbacks: {
-                onUpdated: function (eventArgs) {
-                    // if mobile view, destroy
-                    if ($(window).width() < 1080 || $(window).height() < 720) {
-                        $('#sidebar').overlayScrollbars().destroy();
+    var $sidebar = $('#sidebar');
+    var isMobile = function () {
+        return $(window).width() < 1080 || $(window).height() < 720;
+    };
+    if (typeof $.fn.overlayScrollbars !== 'undefined' && $sidebar.length && ! isMobile()) {
+        /**
+         * Initialise overlay scrollbars on the element.
+         *
+         * @param $elem
+         * @returns {jQuery|*}
+         */
+        var initOverlayScrollars = function ($elem) {
+            return $elem.overlayScrollbars({
+                overflowBehavior: {
+                    x: 'hidden'
+                },
+                scrollbars: {
+                    autoHide: 'scroll'
+                },
+                callbacks: {
+                    onUpdated: function (e) {
+                        if (isMobile()) {
+                            this.destroy();
+                        }
                     }
                 }
-            }
-        });
+            });
+        };
 
-        // Run update callback on load
-        $('#sidebar').overlayScrollbars().update();
+        /**
+         * Destroy the overlay scrollbars instance.
+         */
+        var destroyOverlayScrollbars = function () {
+            if (typeof $sidebar.overlayScrollbars() !== 'undefined') {
+                $sidebar.overlayScrollbars().destroy();
+            }
+        };
+
+        // Initialise overlay scrollbars on the sidebar.
+        initOverlayScrollars($sidebar);
+
+        // Destroy and reinitialise overlay scrollbars on print event otherwise overflow content is hidden.
+        $(window).beforeprint(destroyOverlayScrollbars)
+            .afterprint(initOverlayScrollars.bind(null, $sidebar));
     }
+
 });
 
 /**
@@ -186,16 +240,18 @@ $(document).ready(function () {
  * @returns {number}
  */
 function addNewItem(className, container) {
-    // Clone the department e-mail form
-    var newElem = $(className +':first').clone().toggle();
+    // Clone the element
+    var newElem = $(className + ':first').clone();
+
     // Clear the input values from the cloned DOM
     newElem.removeClass('first');
+
     // Update the index.. god damn you Laravel
     // Longwinded but ensures a unique key
     // Find the highest index first and add one
     var re = /^\w+\[(\d+)?]\[\w+]?$/;
     var m, index = 0;
-    $(className + ' :input[name$="[id]"]').each(function() {
+    $(className + ' :input[name$="[id]"]').each(function () {
         if ((m = re.exec($(this).attr('name'))) !== null) {
             if (typeof m[1] != 'undefined') {
                 if ((m = parseInt(m[1])) >= index) {
@@ -204,16 +260,18 @@ function addNewItem(className, container) {
             }
         }
     });
+
     // Update all the indexes in the new element
-    newElem.find(':input, label').each(function(){
+    newElem.find(':input, label').each(function () {
         var elem = $(this);
         elem.prop('disabled', false);
-        [ 'name', 'for', 'id' ].map( function(attribute) {
+        [ 'name', 'for', 'id' ].map(function (attribute) {
             var attr = elem.attr(attribute);
             if (/^\w+\[(\d+)?](\[[\w:-]+])*(\[\])?$/g.test(attr))
                 elem.attr(attribute, attr.replace(/\[(\d+)?]/, '[' + index + ']'));
         });
     });
+
     // Where do we want to put it?
     if (typeof container !== 'undefined') {
         // Append cloned DOM to the end of the parent container
@@ -222,8 +280,12 @@ function addNewItem(className, container) {
         // Append cloned DOM to the end of the list
         $(className + ':last').after(newElem);
     }
+
+    // Make it visible
+    newElem.show();
+
     // Auto select first option of dropdowns - fix for firefox
-    newElem.find('select').each(function() {
+    newElem.find('select').each(function () {
         $(this).find('option:first').prop('selected', 'selected');
     });
 
@@ -308,13 +370,13 @@ function emailSelectizeConfig(plugins)
             'message': Lang.get('general.show_count_more')
         }
     };
-    
+
     for (var name in config) {
         if (config.hasOwnProperty(name) && plugins.indexOf(name) === -1) {
             delete config[name];
         }
     }
-    
+
     return {
         plugins: config,
         delimiter: ',',

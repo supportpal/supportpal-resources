@@ -67,7 +67,19 @@ $(document).ready(function() {
         });
 
         // Enable user search
-        var userSearch = $("select[name='user']").selectize({
+        var $userSearch = $("select[name='user']"),
+            setDefaultOpt = function () {
+                var defaultOpt = $userSearch.data('default-opt'),
+                    brand_id = $brand.length ? $brand[0].selectize.getValue() : null;
+
+                if ((typeof defaultOpt === "object" && defaultOpt !== null)
+                    && (! $brand.length || defaultOpt.brand_id == brand_id)
+                ) {
+                    this.addOption(defaultOpt);
+                    this.addItem(defaultOpt.id);
+                }
+            },
+            userSearch = $userSearch.selectize({
                 valueField: 'id',
                 labelField: 'formatted_name',
                 searchField: [ 'formatted_name', 'email' ],
@@ -107,7 +119,10 @@ $(document).ready(function() {
                             callback(res.data);
                         }
                     });
-                }
+                },
+                onInitialize: setDefaultOpt,
+                onOptionClear: setDefaultOpt,
+                onClear: setDefaultOpt,
             });
 
         // Selecting organisation for new user form.
@@ -147,7 +162,7 @@ $(document).ready(function() {
         });
 
         // Handle ticket type switching
-        $('input[name="internal"]').change(function() {
+        $('input[name="internal"]').on('change', function() {
             if ($(this).val() == 1) {
                 $('.user-ticket').hide();
                 $('.user-ticket').find(':input:not([name="user_type"])').prop('disabled', true);
@@ -163,7 +178,7 @@ $(document).ready(function() {
         });
 
         // Handle ticket type switching
-        $('input[name="user_type"]').change(function() {
+        $('input[name="user_type"]').on('change', function() {
             if ($(this).val() == '0') {
                 $('.existing-user').show();
                 $('.new-user').hide();
@@ -177,7 +192,7 @@ $(document).ready(function() {
         });
 
         // Run the change events on load to ensure right fields are showing/enabled
-        $('input[name="internal"]:checked, input[name="user_type"]:checked').change();
+        $('input[name="internal"]:checked, input[name="user_type"]:checked').trigger('change');
 
         // If the brand already has a value, fetch the relevant departments. Usually happens on going back from step 2.
         if ($brand.length && $brand[0].selectize.getValue() !== '' && $department[0].selectize.getValue() === '') {

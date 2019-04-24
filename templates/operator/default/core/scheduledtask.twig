@@ -75,7 +75,7 @@
         function runTask(route, icon) {
 		    // Post email data
 		    $.post(route)
-                .success(function(response) {
+                .done(function(response) {
                     if (response.status == 'success') {
                         $('.task-run.success').show(500).delay(5000).hide(500);
                     } else {

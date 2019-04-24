@@ -42,7 +42,7 @@ $(document).ready(function() {
     $('.datepicker').pikaday({
         format: $('meta[name=date_format]').prop('content'),
         onSelect: function() {
-            $('.datepicker:first').change();
+            $('.datepicker:first').trigger('change');
         }
     });
 });

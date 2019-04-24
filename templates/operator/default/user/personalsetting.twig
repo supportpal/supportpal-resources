@@ -182,7 +182,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('button.twofa-verify').click(function() {
+            $('button.twofa-verify').on('click', function() {
                 var code = $('input[name="twofa_verify"]').val();
                 var enable = {{ record.twofa_enabled }};
                 $.ajax({
@@ -206,29 +206,6 @@
                         $('.twofa-status.fail').show(500).delay(5000).hide(500);
                     }
                 });
-            });
-
-            $('input[name="opsettings[display_notifications]"]').on('change', function() {
-                if ($(this).val() == 2) {
-                    // Get permission
-                    PNotify.desktop.permission();
-                }
-            });
-
-            // Show example browser notification
-            $('.preview-browser').on('click', function() {
-                notifications.showBrowserNotification(
-                    Lang.get('notification.new_ticket'),
-                    Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' })
-                );
-            });
-
-            // Show example desktop notification
-            $('.preview-desktop').on('click', function() {
-                notifications.showDesktopNotification(
-                    Lang.get('notification.new_ticket'),
-                    Lang.get('notification.new_ticket_text', { 'item': 'ABC-1234', 'name': 'Joe Bloggs' })
-                );
             });
         });
     </script>

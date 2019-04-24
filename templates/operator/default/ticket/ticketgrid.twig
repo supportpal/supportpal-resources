@@ -14,6 +14,12 @@
     {% endif %}
 {% endblock %}
 
+{% block description %}
+    {% if description|default is not empty %}
+        {{ description }}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 
     {% if record|default is not empty %}
@@ -31,6 +37,12 @@
     </div>
     <div class="fail box tickets-update hide">
         {{ Lang.get('messages.error_updated', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
+    </div>
+    <div class="success box tickets-trash hide">
+        {{ Lang.get('messages.success_trashed', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
+    </div>
+    <div class="fail box tickets-trash hide">
+        {{ Lang.get('messages.error_trashed', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
     </div>
     <div class="success box tickets-delete hide">
         {{ Lang.get('messages.success_deleted', { 'item': mb_strtolower(Lang.get('ticket.tickets'), 'UTF-8') }) }}
@@ -176,7 +188,7 @@
     {% if not customSearch and record is not defined %}
         <script type="text/javascript" src="{{ asset_rev('resources/assets/operator/js/sidebar.js') }}"></script>
     {% endif %}
-    
+
     <script type="text/javascript">
         // Schedule first grid refresh in 60 seconds.
         var gridTimeout = setTimeout(function() {
@@ -343,7 +355,7 @@
                         // Cancel button was pressed. Clear any uploaded attachments
                         $('input[name="attachment[]"]:not(:first)').remove();
                         // Remove the uploads from the file system and the database
-                        $('.attached-files li:not(.hide) .deleteAttachment').click();
+                        $('.attached-files li:not(.hide) .deleteAttachment').trigger('click');
                     }
                 });
                 $('textarea').redactor($.extend($.Redactor.default_opts, {
@@ -418,19 +430,25 @@
             });
             // Process merge button
             $tfoot.on('click', '.merge-ticket', function() {
-                ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.merge'));
+                mergeTickets({ ticket: getSelectedRows() });
             });
             // Process unmerge button
             $tfoot.on('click', '.unmerge-ticket', function() {
                 ticketAction({ ticket: getSelectedRows() }, laroute.route('ticket.operator.action.unmerge'));
             });
+            $tfoot.on('click', '.restore-ticket', function() {
+                restoreTicket(getSelectedRows());
+            });
             // Process delete button
             $tfoot.on('click', '.delete-ticket', function() {
-                deleteTicket(getSelectedRows());
+                deleteTicket(getSelectedRows(), false);
+            });
+            $tfoot.on('click', '.delete-forever-ticket', function() {
+                deleteTicket(getSelectedRows(), false, true);
             });
             // Process block button
             $tfoot.on('click', '.block-ticket', function() {
-                deleteTicket(getSelectedRows(), true);
+                deleteTicket(getSelectedRows(), true, false);
             });
 
             // Process department change
@@ -481,11 +499,11 @@
                 }
             });
 
-            $('.adjust-columns').click(function() {
+            $('.adjust-columns').on('click', function() {
                 $('.column-options').toggle();
             });
 
-            $('select[name="grid_ordering"],select[name="grid_ordering_direction"]').change(function() {
+            $('select[name="grid_ordering"],select[name="grid_ordering_direction"]').on('change', function() {
                 // Post updated data
                 $.post(
                     laroute.route('ticket.operator.ticket.saveOrdering'),
@@ -553,6 +571,48 @@
             });
         }
 
+        function mergeTickets(data) {
+            // Need at least two tickets.
+            if (data.ticket.split(',').length < 2) {
+                $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                return;
+            }
+
+            swal({
+                title: "{{ Lang.get('ticket.merge_tickets') }}",
+                html: "{{ Lang.get('ticket.merge_tickets_confirm') }}<br /><br />" + ticketList(data.ticket)[0].outerHTML,
+                confirmButtonText: '{{ Lang.get('ticket.merge') }}',
+                showCancelButton: true,
+                closeOnConfirm: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    swal.disableButtons();
+
+                    // Delete record and reload table if successful
+                    $.ajax({
+                        url: laroute.route('ticket.operator.action.merge'),
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json'
+                    }).done(function(response) {
+                        if (response.status == 'success') {
+                            $('.tickets-update.success').show(500).delay(5000).hide(500);
+                        } else {
+                            $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                        }
+                    }).fail(function() {
+                        $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                    }).always(function() {
+                        // Close modal
+                        swal.closeModal();
+
+                        // Reload table
+                        refreshGrid();
+                    });
+                }
+            });
+        }
+
         function assignOperator(data, operator, unassign) {
             // Get route depending if assigning or unassigning operator
             var route;
@@ -592,46 +652,112 @@
             });
         }
 
-        function deleteTicket(data, block) {
+        function restoreTicket(data) {
+            $.ajax({
+                url: laroute.route('ticket.operator.action.restore'),
+                type: 'POST',
+                data: { 'ticket': data },
+                dataType: 'json'
+            }).done(function(response) {
+                if (response.status == 'success') {
+                    $('.tickets-update.success').show(500).delay(5000).hide(500);
+                    refreshGrid();
+                } else {
+                    $('.tickets-update.fail').show(500).delay(5000).hide(500);
+                }
+            }).fail(function() {
+                $('.tickets-update.fail').show(500).delay(5000).hide(500);
+            });
+        }
+
+        function deleteTicket(data, block, force) {
             // Are we also blocking?
             block = typeof block !== 'undefined' ? block : false;
 
-            var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 2), '', {{ deleteRelations|json_encode|raw }});
+            var type = block ? 'POST' : 'DELETE',
+                route = block ? laroute.route('ticket.operator.action.block') :
+                    (force ? laroute.route('ticket.operator.action.destroy') : laroute.route('ticket.operator.action.trash')),
+                messageDiv = force ? '.tickets-delete' : '.tickets-trash';
 
-            // Set the URL
-            var url = laroute.route('ticket.operator.action.destroy');
-            if (block) {
-                url = laroute.route('ticket.operator.action.block');
-                opts.html = $('<div/>').html(opts.html).append('<span style="text-align: left">'+Lang.get('ticket.block_warning')+'</span>').html();
+            var ajax = function () {
+                return $.ajax({
+                    url: route,
+                    type: type,
+                    data: { 'ticket': data },
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $(messageDiv + '.success').show(500).delay(5000).hide(500);
+                    } else {
+                        $(messageDiv + '.fail').show(500).delay(5000).hide(500);
+                    }
+                }).fail(function() {
+                    $(messageDiv + '.fail').show(500).delay(5000).hide(500);
+                }).always(function() {
+                    // Reload table
+                    refreshGrid();
+                });
+            };
+
+            if (force) {
+                var opts = deleteAlert.getDefaultOpts(Lang.choice('ticket.ticket', 2), '', {{ deleteRelations|json_encode|raw }});
+
+                // Add list of tickets we're deleting.
+                opts.html = opts.html += "<br />" + ticketList(data)[0].outerHTML;
+
+                swal(opts, function (isConfirm) {
+                    if (isConfirm) {
+                        // Disable submit button
+                        deleteAlert.disableButtons();
+
+                        // Delete record and reload table if successful
+                        ajax().always(function () {
+                            swal.closeModal();
+                        });
+                    }
+                });
+            } else {
+                ajax();
             }
+        }
 
-            // Show the alert
-            swal(opts, function(isConfirm) {
-                if (isConfirm) {
-                    // Disable submit button
-                    deleteAlert.disableButtons();
-                    // Delete record and reload table if successful
-                    $.ajax({
-                        url: url,
-                        type: (block ? 'POST' : 'DELETE'),
-                        data: { 'ticket': data },
-                        dataType: 'json'
-                    }).done(function(response) {
-                        if (response.status == 'success') {
-                            $('.tickets-delete.success').show(500).delay(5000).hide(500);
-                        } else {
-                            $('.tickets-delete.fail').show(500).delay(5000).hide(500);
-                        }
-                    }).fail(function() {
-                        $('.tickets-delete.fail').show(500).delay(5000).hide(500);
-                    }).always(function() {
-                        // Close alert
-                        swal.closeModal();
-                        // Reload table
-                        refreshGrid();
-                    });
+        /*
+         * Build a list of tickets we'll be updating.
+         */
+        function ticketList(data) {
+            var ticketList = $('<ul />')
+                .css('border', '1px solid #ddd')
+                .css('list-style-type', 'none')
+                .css('margin', 0)
+                .css('max-height', '200px')
+                .css('overflow-y', 'auto')
+                .css('padding', '0')
+                .css('text-align', 'left');
+
+            // Add each ticket to list.
+            $.each(data.split(','), function(index, value) {
+                var $tr = $('#ticketGridTable tr#' + value),
+                    $li = $('<li />').css('padding', '2px 8px');
+
+                if (index >= 1) {
+                    $li.css('border-top', '1px solid #eee')
                 }
+
+                $li.append(
+                    $('<a />').append('#' + $tr.data('number') + ' - ' + $tr.data('subject'))
+                        .prop('href', $tr.data('view_url'))
+                        .prop('target', '_blank')
+                )
+                    .append('&nbsp; (')
+                    .append($('<img />').prop('src', $tr.data('user').avatar_url)
+                        .prop('class', 'avatar')
+                        .prop('width', 18))
+                    .append('&nbsp;' + $tr.data('user').formatted_name)
+                    .append(')')
+                    .appendTo(ticketList);
             });
+
+            return ticketList;
         }
 
         /*

@@ -3,7 +3,7 @@ $(function () {
     // Reference to the current open modal.
     // We use this to close any modals that are already open (only one modal open at a time).
     var $currentModal;
-    
+
     // Open Modal when clicking input box.
     $(document).on('click', '.translatable input.default, .translatable i.fa-globe', function (e) {
         open($(this).siblings('.translatable-modal'));
@@ -11,7 +11,7 @@ $(function () {
         // Prevent propagation - this prevents clashes with global click event to close the modal.
         e.stopPropagation();
     });
-    
+
     // Close Modal.
     $(document).on('click', '.translatable-modal .close', function (e) {
         close($(this).parents('.translatable-modal'));
@@ -27,7 +27,7 @@ $(function () {
             if (!target) {
                 return;
             }
-            
+
             // Is it the selectize or last translation option if selectize is not there
             if ($(target).parent('.selectize-input').length
                 || ($(this).find('.options').length && $(target).parents('.translation').is(':last-child'))
@@ -37,13 +37,13 @@ $(function () {
             }
         }
     });
-    
+
     // Delete a translation.
     $(document).on('click', '.remove-translation', function (e) {
         var $modal = $(this).parents('.translatable-modal'),
             $translation = $(this).parents('div.translation'),
             locale = $translation.data('locale');
-        
+
         // Hide translation.
         if ($translation.parent().hasClass('existing-translations')) {
             // Delete existing translation.
@@ -59,21 +59,21 @@ $(function () {
             $translation.find(':input').prop('disabled', 'disabled');
             $translation.hide();
         }
-        
+
         // If there's no translation's left, show "No existing translations".
         if ($modal.find('.existing-translations .translation').length === 0 &&
             $modal.find('.missing-translations .translation:visible').length === 0
         ) {
             $modal.find('.no-translations').show();
         }
-        
+
         // Build option and add it to the dropdown.
         var selectize = $modal.find('select[name="translation"]')[0].selectize;
         selectize.addOption({
             value: $translation.data('locale'),
             text: $translation.data('display-name')
         });
-        
+
         selectize.refreshOptions(false);
 
         // Ensure selectize is showing.
@@ -81,9 +81,9 @@ $(function () {
     });
 
     // If the user clicks outside of the modal, close it.
-    $(window).click(function() {
+    $(window).on('click', function() {
         var $visibleModal = $('.translatable-modal:visible');
-        
+
         // Hide modal if visible.
         if ($visibleModal.length !== 0) {
             close($visibleModal);
@@ -106,7 +106,7 @@ $(function () {
         if ($($currentModal).length === 1 && $currentModal.get(0) !== $modal.get(0)) {
             $currentModal.hide();
         }
-        
+
         // Initialise selectize.
         registerSelectize( $modal.find('select[name="translation"]') );
 
@@ -161,7 +161,7 @@ $(function () {
                 }
 
                 // Focus the input box.
-                $translation.find('input:first').focus();
+                $translation.find('input:first').trigger('focus');
             }
         });
     }

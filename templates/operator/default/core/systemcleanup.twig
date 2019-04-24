@@ -67,7 +67,7 @@
                         </label>
                     </div>
                     <div class="fail box bottombox">
-                        {{ Lang.get('core.record_delete_relations', {relations: ticketRelations|join(', ')}) }}
+                        {{ Lang.get('core.record_trash_relations', {number: Config.get('app.empty_ticket_trash', 30), relations: ticketRelations|join(', ')}) }}
                     </div>
                 </div>
             </div>

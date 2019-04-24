@@ -21,6 +21,7 @@
     #sidebar {
         border: 0;
         float: right;
+        height: auto;
         margin-left: 25px;
         position: static;
         width: 220px !important;

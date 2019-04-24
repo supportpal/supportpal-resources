@@ -7,7 +7,7 @@
 var SupportPalSlugGenerator = function (parameters)
 {
     "use strict";
-    
+
     // Make sure the required parameters exist.
     if (! parameters.hasOwnProperty('route') || ! parameters.route.hasOwnProperty('url')) {
         throw Error('InvalidArgumentException. Missing argument: \'route.url\'.');
@@ -26,7 +26,7 @@ var SupportPalSlugGenerator = function (parameters)
      * @type {route.parameters}
      */
     var customParameters = parameters.route.parameters;
-    
+
     /**
      * Set a new slug.
      *
@@ -38,25 +38,25 @@ var SupportPalSlugGenerator = function (parameters)
     var makeSlug = function ($slug, value, preventDuplicate, alwaysCallback)
     {
         var $slugText = $slug.find('.slug-text'),
-            parameters = customParameters || {}; 
+            parameters = customParameters || {};
         if (typeof parameters === 'function') {
             parameters = parameters($slug);
         }
 
         // Get the slug for the given name.
         $.get(route, $.extend({}, {value: value, prevent_duplicate: preventDuplicate|0}, parameters))
-            .success(function (json) {
+            .done(function (json) {
                 $slugText.text(json.data);
                 $slug.find(':input').val(json.data);
                 $slug.find('.slug-uri').contents().unwrap();
-                
+
                 var default_frontend_locale = $('meta[name="default_frontend_locale"]').prop('content'),
                     locale = $slug.parents('.form-container').find('input[name="locale"][type="hidden"]').val(),
                     $brandUri = $slug.find('.brand-uri'),
                     regex = new RegExp("\/" + default_frontend_locale + "$", "");
-                
+
                 $brandUri.text($brandUri.text().replace(regex, "/" + (typeof locale === 'undefined' ? default_frontend_locale : locale)));
-                
+
                 $slug.show();
             })
             .fail(function (jqXHR, textStatus, errorThrown) {

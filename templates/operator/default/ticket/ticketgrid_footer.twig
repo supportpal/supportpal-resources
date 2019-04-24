@@ -1,5 +1,5 @@
 <tr>
-    {% if (auth_user().hasPermission('update.ticket|delete.ticket')) %}
+    {% if (auth_user().hasPermission('update.ticket|delete.ticket_trash')) %}
     <td id="toolbar" class="ticket-options" colspan="{{ totalColumns }}">
         <div class="processing hide">
             <div>{{ Lang.get('general.processing') }}...</div>
@@ -24,11 +24,11 @@
                 --><button class="unmerge-ticket" disabled="disabled"><i class="fa fa-expand"></i> {{ Lang.get('ticket.unmerge') }}</button>
             </span>
         {% endif %}
-        {% if (auth_user().hasPermission('delete.ticket')) %}
+        {% if (auth_user().hasPermission('delete.ticket_trash')) %}
             &nbsp;
             <span class="button-group">
-                <button class="delete-ticket" disabled="disabled"><i class="fa fa-times"></i> {{ Lang.get('general.delete') }}</button><!--
-                --><button class="block-ticket" disabled="disabled"><i class="fa fa-ban"></i> {{ Lang.get('ticket.delete_and_block') }}</button>
+                <button class="delete-ticket" disabled="disabled"><i class="fa fa-trash"></i> {{ Lang.get('general.move_to_trash') }}</button><!--
+                --><button class="block-ticket" disabled="disabled"><i class="fa fa-ban"></i> {{ Lang.get('ticket.block_user') }}</button>
             </span>
         {% endif %}
         {% if (auth_user().hasPermission('update.ticket')) %}

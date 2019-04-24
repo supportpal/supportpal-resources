@@ -251,8 +251,9 @@
 
         var redactor_config = {
             plugins: [
-                'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize', 'cannedResponses',
-                {% if isModuleEnabled('Selfservice') %}'ssLink'{% endif %}
+                'syntax', 'imagemanager', 'table', 'video', 'fontcolor', 'fontfamily', 'fontsize',
+                {% if isModuleEnabled('Selfservice') %}'ssLink', {% endif %}
+                'cannedResponses',
             ]
         };
 

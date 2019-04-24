@@ -40,10 +40,10 @@ $(function() {
     });
 
     // Mock a change on the status to have it run the above code
-    $('.message-form select[name="to_status"]').change();
+    $('.message-form select[name="to_status"]').trigger('change');
 
     // Check if 'send email to operator(s)' should show based on ticket message type
-    $('.reply-type .option').click(function() {
+    $('.reply-type .option').on('click', function() {
         if ($(this).data('type') == 0) {
             handleEmailCheckbox(departmentTemplates.operator_operator_ticket_reply, 'operator_reply');
         } else {
@@ -58,7 +58,7 @@ $(function() {
     });
 
     // Add a new canned response
-    $('input[name=add_canned]').change(function() {
+    $('input[name=add_canned]').on('change', function() {
         var $table = $(this).parents('.option').find('.cannedTr');
 
         this.checked ? $table.show() : $table.hide();
@@ -74,11 +74,13 @@ $(function() {
         // Add a search icon
         $this.addClass('ui-autocomplete-loading');
 
+        $(document).find('#cannedResponseTags a').addClass('disabled');
+
         // Fire the AJAX
         $.get(laroute.route('ticket.operator.cannedresponse.search',
             {
                 term: $this.val(),
-                tag: $('input[name=cannedResponseTag]').val(),
+                tags: Object.keys(selectedTags).join(','),
                 order: $('select[name=cannedResponseOrder]').val(),
                 locale: $('select[name=cannedResponseLang]').val(),
                 start: 0,
@@ -97,6 +99,7 @@ $(function() {
             })
             .always(function () {
                 $this.removeClass('ui-autocomplete-loading');
+                $(document).find('#cannedResponseTags a').removeClass('disabled');
             });
     });
 
@@ -114,7 +117,7 @@ $(function() {
         $.get(laroute.route('ticket.operator.cannedresponse.search',
             {
                 term: $('input[name=cannedResponseSearch]').val(),
-                tag: $('input[name=cannedResponseTag]').val(),
+                tags: Object.keys(selectedTags).join(','),
                 order: $('select[name=cannedResponseOrder]').val(),
                 locale: $('select[name=cannedResponseLang]').val(),
                 start: $list.children('li.response-item').length,
@@ -146,19 +149,28 @@ $(function() {
         $('input[name=cannedResponseSearch]').trigger('donetyping');
     });
 
+    // Clear all selected tags
+    var selectedTags = {};
+    $(document).on('click', '#redactor-modal-cannedResponses .clear-selected', function() {
+        $('li.tag-item a.active').removeClass('active');
+        selectedTags = {};
+        $('.clear-selected').hide();
+        $('input[name=cannedResponseSearch]').trigger('donetyping');
+    });
+
     // Select/deselect tag
-    $(document).on('click', 'li.tag-item a, #redactor-modal-cannedResponses .clear-selected', function() {
-        if ($(this).hasClass('clear-selected') || $('input[name=cannedResponseTag]').val() == $(this).data('id')) {
-            // We want to remove the selected tag, remove active status
-            $('li.tag-item a.active').removeClass('active');
-            $('input[name=cannedResponseTag]').val(0);
-            $('.clear-selected').hide();
-        } else {
-            // Selecting a tag, make it active
-            $('input[name=cannedResponseTag]').val($(this).data('id'));
-            $(this).addClass('active');
-            $('.clear-selected').show();
+    $(document).on('click', 'li.tag-item a', function() {
+        if ($(this).hasClass('disabled')) {
+            return false;
         }
+
+        var tagId = $(this).data('id');
+
+        // Select / deselect the tag.
+        selectedTags.hasOwnProperty(tagId) ? delete selectedTags[tagId] : selectedTags[tagId] = 1;
+
+        $(this).toggleClass('active');
+        $('.clear-selected').toggle(Object.keys(selectedTags).length !== 0);
         $('input[name=cannedResponseSearch]').trigger('donetyping');
     });
 
@@ -195,7 +207,6 @@ $(function() {
                                 + '<select name="cannedResponseLang">' + languageOptions + '</select>' : '')
                             + '<span class="clear-selected description right hide">' + Lang.get('general.clear_selected') + '</span>'
                             + '<h3>' + Lang.choice('ticket.tag', 2) + '</h3>'
-                            + '<input name="cannedResponseTag" type="hidden" value="0" />'
                             + '<ul id="cannedResponseTags"' + (languageCount > 1 ? ' class="with-language"' : '') + '>'
                                 + '<li class="description"><i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('ticket.loading_tags') + '...</li>'
                             + '</ul>'
@@ -222,7 +233,7 @@ $(function() {
             {
                 this.modal.addTemplate('cannedResponses', this.cannedResponses.getTemplate());
 
-                this.modal.load('cannedResponses', Lang.choice('ticket.cannedresponse', 2), 720);
+                this.modal.load('cannedResponses', Lang.choice('ticket.cannedresponse', 2), $(document).width() / 1.2);
 
                 $(document).off('click.cannedresponse')
                         .on('click.cannedresponse', '#cannedResponseResults li a', this.cannedResponses.insert);
@@ -230,7 +241,9 @@ $(function() {
                 this.selection.save();
                 this.modal.show();
 
-                $('input[name=cannedResponseSearch]').donetyping().trigger('donetyping').focus();
+                this.$modal.addClass('custom-redactor-plugin');
+
+                $('input[name=cannedResponseSearch]').donetyping().trigger('donetyping').trigger('focus');
             },
             insert: function(e)
             {
@@ -348,23 +361,25 @@ $(function() {
             {
                 var button = this.button.add('ssLink', Lang.get('ticket.add_selfservice_link'));
                 this.button.addCallback(button, this.ssLink.show);
-     
+
                 // make your added button as Font Awesome's icon
                 this.button.setAwesome('ssLink', 'fa-external-link');
             },
             show: function()
             {
                 this.modal.addTemplate('ssLink', this.ssLink.getTemplate());
-     
-                this.modal.load('ssLink', Lang.get('ticket.add_selfservice_link'), 720);
-                
+
+                this.modal.load('ssLink', Lang.get('ticket.add_selfservice_link'), $(document).width() / 1.2);
+
                 $(document).off('click.selfservice')
                         .on('click.selfservice', '#selfServiceResults li a', this.ssLink.insert);
-     
+
                 this.selection.save();
                 this.modal.show();
 
-                $('input[name=selfServiceSearch]').donetyping().focus();
+                this.$modal.addClass('custom-redactor-plugin');
+
+                $('input[name=selfServiceSearch]').donetyping().trigger('focus');
             },
             insert: function(e)
             {
@@ -391,71 +406,72 @@ $(function() {
         };
     };
 
-});
+    function addResponsesToList(data, $list) {
+        if (typeof data.data.results == "undefined" ||
+            (data.data.results.length === 0 && $list.children('.response-item').length === 0)) {
+            // No results were found
+            $list.append('<li class="no-results description">' + Lang.get('messages.no_results') + '</li>');
+        } else {
+            $.each(data.data.results, function (key, item) {
+                // Add tags if they exist
+                var $tags = $('<span>');
+                if (item.tags.length) {
+                    $.each(item.tags, function (key, tag) {
+                        $tags.append('<span class="tag">' + tag.name + '</span>');
+                    });
+                }
 
-function addResponsesToList(data, $list) {
-    if (typeof data.data.results == "undefined" ||
-        (data.data.results.length === 0 && $list.children('.response-item').length === 0)) {
-        // No results were found
-        $list.append('<li class="no-results description">' + Lang.get('messages.no_results') + '</li>');
-    } else {
-        $.each(data.data.results, function (key, item) {
-            // Add tags if they exist
-            var $tags = $('<span>');
-            if (item.tags.length) {
-                $.each(item.tags, function (key, tag) {
-                    $tags.append('<span class="tag">' + tag.name + '</span>');
+                // Add each result to the list
+                $list.append('<li class="response-item"><a data-id="' + item.id + '">'
+                    + '<span class="title">' + item.name + '</span>'
+                    + '&nbsp;&nbsp;' + $tags.html()
+                    + '<div class="description">' + $("<p>").html(item.text).text()
+                    + '</div></a></li>');
+            });
+        }
+
+        // Handle tags if they're included in results
+        if (typeof data.data.tags != "undefined") {
+            $('#cannedResponseTags').empty();
+            if (data.data.tags.length === 0) {
+                // No results were found
+                $('#cannedResponseTags').append('<li class="no-results description">' + Lang.get('messages.no_results') + '</li>');
+            } else {
+                // Add each tag
+                $.each(data.data.tags, function (key, item) {
+                    $('#cannedResponseTags').append('<li class="tag-item"><a data-id="' + item.id + '">'
+                        + item.name + '<span class="badge">' + item.count + '</span>'
+                        + '</a></li>');
+                });
+
+                // Highlight selected tags if exists
+                $.each(selectedTags, function (key, value) {
+                    $('.tag-item a[data-id=' + key + ']').addClass('active');
                 });
             }
-
-            // Add each result to the list
-            $list.append('<li class="response-item"><a data-id="' + item.id + '">'
-                + '<span class="title">' + item.name + '</span>'
-                + '&nbsp;&nbsp;' + $tags.html()
-                + '<div class="description">' + $("<p>").html(item.text).text()
-                + '</div></a></li>');
-        });
-    }
-
-    // Handle tags if they're included in results
-    if (typeof data.data.tags != "undefined") {
-        $('#cannedResponseTags').empty();
-        if (data.data.tags.length === 0) {
-            // No results were found
-            $('#cannedResponseTags').append('<li class="no-results description">' + Lang.get('messages.no_results') + '</li>');
-        } else {
-            // Add each tag
-            $.each(data.data.tags, function (key, item) {
-                $('#cannedResponseTags').append('<li class="tag-item"><a data-id="' + item.id + '">'
-                    + item.name + '<span class="badge">' + item.count + '</span>'
-                    + '</a></li>');
-            });
-
-            // Highlight selected tag if exists
-            $('.tag-item a[data-id=' + $('input[name=cannedResponseTag]').val() + ']').addClass('active');
         }
-    }
 
-    // Show load more button if more items than what is showing
-    if (data.count > $list.children('.response-item').length) {
-        $list.append('<li style="padding: 10px; text-align: center;"><button class="load-more">'
-            + Lang.get('general.load_more') + '</button></li>');
-    }
-
-    return $list;
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1);
+        // Show load more button if more items than what is showing
+        if (data.count > $list.children('.response-item').length) {
+            $list.append('<li style="padding: 10px; text-align: center;"><button class="load-more">'
+                + Lang.get('general.load_more') + '</button></li>');
         }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length,c.length);
-        }
+
+        return $list;
     }
-    return "";
-}
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length,c.length);
+            }
+        }
+        return "";
+    }
+});

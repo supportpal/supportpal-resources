@@ -96,9 +96,9 @@
     <script type="text/javascript">
         $(document).ready(function() {
             // Handle forgotten click
-            $('.license-key').bind('click', function() {
+            $('.license-key').on('click', function() {
                 $('.license-key, .enter-license').toggle();
-                $('.enter-license input[type=text]').focus();
+                $('.enter-license input[type=text]').trigger('focus');
             });
 
             // Handle retry event.
@@ -113,7 +113,7 @@
 
                 // Force a call home to validate the license.
                 $.get('{{ route('core.operator.license.check') }}')
-                    .success(function (data) {
+                    .done(function (data) {
                         if (data.status == 'success') {
                             swal({
                                 type: 'success',

@@ -1,0 +1,22 @@
+<tr>
+    <td id="toolbar" class="ticket-options" colspan="{{ totalColumns }}">
+        <div class="processing hide">
+            <div>{{ Lang.get('general.processing') }}...</div>
+        </div>
+        {% if (auth_user().hasPermission('update.ticket')) %}
+            <span class="button-group">
+                <button class="restore-ticket" disabled="disabled">
+                    <i class="fa fa-undo"></i> {{ Lang.get('general.restore') }}
+                </button>
+            </span>
+            &nbsp;
+        {% endif %}
+        {% if (auth_user().hasPermission('delete.ticket')) %}
+            <span class="button-group">
+                <button class="delete-forever-ticket" disabled="disabled">
+                    <i class="fa fa-trash"></i> {{ Lang.get('general.delete_forever') }}
+                </button>
+            </span>
+        {% endif %}
+    </td>
+</tr>

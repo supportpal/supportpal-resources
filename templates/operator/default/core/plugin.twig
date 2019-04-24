@@ -6,6 +6,8 @@
 
 {% block content %}
 
+    {% include 'operator.' ~ template ~ '.core.plugin_tabs' with { 'isWidgets': false } %}
+
 	<div class="success box delete hide">
         {{ Lang.get('messages.success_deleted', { 'item': Lang.choice('core.plugins', 1) }) }}
     </div>
@@ -20,8 +22,12 @@
 
         <div class="filters hide">
             <div>
-                <label>{{ Lang.choice('core.plugins', 1) }}:</label>
-                <div id="filter_plugin"></div>
+                <label>{{ Lang.get('general.name') }}:</label>
+                <div id="filter_name"></div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('general.status', 1) }}:</label>
+                <div id="filter_status"></div>
             </div>
             <div>
                 <label>{{ Lang.get('general.description') }}:</label>
@@ -43,18 +49,19 @@
              * Initialise the filters
              */
             oTable.yadcf([
-                {column_number : 0, column_data_type: "text", filter_container_id: "filter_plugin", filter_type: "text", filter_delay: 500},
-                {column_number : 1, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
+                {column_number : 0, column_data_type: "text", filter_container_id: "filter_name", filter_type: "text", filter_delay: 500},
+                {column_number : 1, filter_container_id: "filter_status"},
+                {column_number : 2, column_data_type: "text", filter_container_id: "filter_description", filter_type: "text", filter_delay: 500}
             ]);
 
-            $(document.body).on('click', '.uninstall-plugin', function() {
+            $(document.body).on('click', '.uninstall-plugable', function() {
                 // Get URL
                 var url = $(this).data('link');
 
                 // Show the alert
                 swal({
                     title: Lang.get('messages.are_you_sure'),
-                    text: Lang.get('core.uninstall_plugin_warning'),
+                    text: "{{ Lang.get('core.uninstall_plugable_warning', {'plugable': mb_strtolower(Lang.choice('core.plugins', 1), 'UTF-8')}) }}",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#e74c3c",
@@ -68,7 +75,7 @@
                         window.location.href = url;
                     }
                 });
-            })
+            });
         });
     </script>
 {% endblock %}

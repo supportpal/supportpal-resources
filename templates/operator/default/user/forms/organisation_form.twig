@@ -76,10 +76,24 @@
                 </div>
             </div>
 
-            <div class="form-row form-customfields">
+            <div class="form-row form-full">
                 {{ form_label('notes', Lang.choice('general.note', 2)) }}
                 <div class="input-container">
                     {{ form_redactor('notes') }}
+                </div>
+            </div>
+
+            <div class="form-row form-full">
+                {{ form_label('domain', Lang.choice('general.domain', 2)) }}
+                <div class="input-container">
+                    <select name="domain[]" multiple="multiple">
+                        {% for domain in record.domains %}
+                            <option selected="selected" data-data='{{ domain|json_encode(constant('JSON_FORCE_OBJECT')) }}' value='{{ domain.domain }}'>
+                                {{ domain.domain }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="description">{{ Lang.get('user.organisation_domain_desc') }}</div>
                 </div>
             </div>
 
@@ -157,8 +171,23 @@
                 });
 
                 // Run above code when page loads to remove any fields it shouldn't show for default brand
-                $(':input[name="brand_id"]').change();
+                $(':input[name="brand_id"]').trigger('change');
             {% endif %}
+
+            /**
+             * Add domains for organisation.
+             */
+            $('select[name="domain[]"]').selectize({
+                plugins: ['remove_button'],
+                valueField: 'domain',
+                labelField: 'domain',
+                searchField: [ 'domain' ],
+                create: true,
+                createFilter: function(input) {
+                    return input.length <= 191;
+                },
+                maxItems: null,
+            });
         });
     </script>
 {% endblock %}

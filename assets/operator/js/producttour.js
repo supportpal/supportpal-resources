@@ -5,7 +5,7 @@ var tour = {
         prevBtn: Lang.get('general.back'),
         doneBtn: Lang.get('general.dismiss')
     },
-    onEnd: function() {
+    onEnd: function () {
         $.post(laroute.route('core.operator.product_tour.toggle'));
     },
     steps: [
@@ -29,7 +29,7 @@ var tour = {
             target: 'settingsNavigation',
             placement: 'bottom',
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('core.operator.setting');
             }
         },
@@ -42,7 +42,7 @@ var tour = {
             xOffset: '20px',
             yOffset: '-22px',
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('core.operator.brand.edit', { brand: 1 });
             }
         },
@@ -53,7 +53,7 @@ var tour = {
             placement: 'right',
             xOffset: '10px',
             yOffset: '-15px',
-            onNext: function() {
+            onNext: function () {
                 $('#Email').trigger('click');
             }
         },
@@ -65,14 +65,14 @@ var tour = {
             xOffset: '10px',
             yOffset: '-15px',
             showPrevButton: true,
-            onNext: function() {
+            onNext: function () {
                 $('#generalSettingsBox').trigger('click');
                 $('#ticketSettingsBox').trigger('click');
             },
-            onShow: function() {
+            onShow: function () {
                 $('#Email').trigger('click');
             },
-            onPrev: function() {
+            onPrev: function () {
                 $('#General').trigger('click');
             }
         },
@@ -85,7 +85,7 @@ var tour = {
             xOffset: '20px',
             yOffset: '-22px',
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('ticket.operator.department.edit', { department: 0 });
             }
         },
@@ -95,7 +95,7 @@ var tour = {
             target: 'departmentSettings',
             placement: 'top',
             showPrevButton: false,
-            onShow: function() {
+            onShow: function () {
                 $('#departmentSettings').find('.input-container').trigger('click');
             }
         },
@@ -112,7 +112,7 @@ var tour = {
             target: 'department-templates',
             placement: 'top',
             showPrevButton: true,
-            onNext: function() {
+            onNext: function () {
                 $('#ticketSettingsBox').trigger('click');
                 $('#generalSettingsBox').trigger('click');
             }
@@ -126,7 +126,7 @@ var tour = {
             yOffset: '-18px',
             showPrevButton: true,
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('core.operator.scheduledtask.index');
             }
         },
@@ -143,7 +143,7 @@ var tour = {
             target: 'scheduledTaskCron',
             placement: 'top',
             showPrevButton: false,
-            onNext: function() {
+            onNext: function () {
                 $('#generalSettingsBox').trigger('click');
                 $('#ticketSettingsBox').trigger('click');
             }
@@ -157,7 +157,7 @@ var tour = {
             yOffset: '-22px',
             showPrevButton: true,
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('ticket.operator.channel.index');
             }
         },
@@ -167,11 +167,18 @@ var tour = {
             target: 'ticketChannelTable',
             placement: 'top',
             showPrevButton: false,
-            onShow: function() {
-                $('#Facebook').focus().effect("highlight", {color: 'rgba(59, 145, 206, 0.57)'}, 3000);
-                $('#Twitter').focus().effect("highlight", {color: 'rgba(59, 145, 206, 0.57)'}, 3000);
-            },
-            onNext: function() {
+            multipage: true,
+            onNext: function () {
+                window.location = laroute.route('ticket.channel.web.settings');
+            }
+        },
+        {
+            title: Lang.get('ticket.web_settings'),
+            content: Lang.get('core.web_settings_desc'),
+            target: 'unauthenticated_users_desc',
+            placement: 'bottom',
+            showPrevButton: false,
+            onNext: function () {
                 // Show the Users drop down in the header
                 $('#userHeaderDropdown').addClass('hover');
             }
@@ -196,7 +203,7 @@ var tour = {
             target: 'manageOperatorSetting',
             placement: 'right',
             yOffset: '-13px',
-            onNext: function() {
+            onNext: function () {
                 // Open the Tickets drop down in the header
                 $('#ticketHeaderDropdown').addClass('hover');
                 // Hide the users drop down in the header
@@ -211,7 +218,7 @@ var tour = {
             xOffset: '100px',
             yOffset: '40px',
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('ticket.operator.ticket');
             }
         },
@@ -227,7 +234,7 @@ var tour = {
             target: 'gridFooter',
             placement: 'top',
             multipage: true,
-            onNext: function() {
+            onNext: function () {
                 window.location = laroute.route('core.operator.dashboard');
             }
         },
@@ -242,22 +249,17 @@ var tour = {
 
 // If we've started a tour, resume it
 if (hopscotch.getState() !== null && hopscotch.getState().match(/:0$/) === null) {
-
     // Get the current page URL
     currentUrl = [location.protocol, '//', location.host, location.pathname].join('');
 
     // If this is the dashboard, we need to wait for the AJAX to complete...
     // hopscotch only waits for document.ready to fire - AJAX completes after this
     if (currentUrl == laroute.route('core.operator.dashboard')) {
-
-        $('#widgets').on('widgetsLoaded', function(e) {
+        $('#widgets').on('widgetsLoaded', function (e) {
             hopscotch.startTour(tour);
         });
-    }
-
-    // For all other pages, start the tour when document.ready is fired
-    else {
-
+    } else {
+        // For all other pages, start the tour when document.ready is fired
         hopscotch.startTour(tour);
     }
 }

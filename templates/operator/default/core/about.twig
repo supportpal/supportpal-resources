@@ -163,9 +163,11 @@
         <div class="form-row">
             <label>{{ Lang.get('core.installed_version') }}</label>
             <div class="input-container">
-                {{ ADVER['installed'] }}
-                {% if ADVER['update'] %}
-                    &nbsp; <strong style="color: #e74c3c;">{{ ADVER['update'] }}</strong>
+                {{ version.using() }}
+                {% if version.isUpgradeAvailable() %}
+                    &nbsp; <strong style="color: #e74c3c;">{{ Lang.get('Licensing::license.update') }}</strong>
+                {% elseif version.isPreRelease() %}
+                    &nbsp; <strong style="color: #e74c3c;">{{ Lang.get('Licensing::license.pre_release') }}</strong>
                 {% endif %}
             </div>
         </div>
@@ -173,7 +175,7 @@
         <div class="form-row">
             <label>{{ Lang.get('core.available_version') }}</label>
             <div class="input-container">
-                {{ ADVER['current'] }}
+                {{ version.latest() }}
             </div>
         </div>
 
@@ -184,7 +186,7 @@
 {% block scripts_footer %}
     <script type="text/javascript">
         $(function () {
-            $('#spanLicenseUpdate').click(function () {
+            $('#spanLicenseUpdate').on('click', function () {
 
                 swal({
                     title: Lang.get('core.change_license'),
@@ -199,7 +201,7 @@
                     $.post(laroute.route('core.operator.about.update'),
                             {licenseCode: $("#textLicenseForm").val()})
 
-                            .success(function (data) {
+                            .done(function (data) {
                                 swal(
                                     Lang.get('messages.success'),
                                     Lang.get('messages.success_updated', { 'item': Lang.get('core.license_code') }),

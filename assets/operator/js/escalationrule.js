@@ -44,11 +44,11 @@ $(function() {
     $(document).on('click', 'label.email-user', function() {
         $(this).parent().find('label.exclude-cc').toggle($(this).find(':input').is(':checked'));
     });
-    
+
     // Web hooks.
     $(document).on('click', '.er-wh-toggle-headers', function (e) {
         e.preventDefault();
-        
+
         $(this).next().toggle();
         $(this).next().find('textarea.codemirror').each(function () {
             codeMirror($(this));
@@ -56,13 +56,13 @@ $(function() {
     });
     $(document).on('change', 'select.er-wh-method', function () {
         var $wrapper = $(this).parents('tr').find('.er-wh-content');
-        
+
         // Only show content for options listed below.
         $wrapper.toggle($.inArray($(this).val(), ['POST','PUT','PATCH']) !== -1);
     });
     $(document).on('click', '.test-webhook', function (e) {
         e.preventDefault();
-        
+
         var route = $(this).data('route'),
             $action = $(this).parents('.action'),
             getCodeMirror = function ($element) {
@@ -70,7 +70,7 @@ $(function() {
                 if ($codemirror.length) {
                     return $codemirror[0].CodeMirror.getValue();
                 }
-                
+
                 return '';
             },
             data = {
@@ -85,9 +85,9 @@ $(function() {
         $action.find('.test-webhook-response')
             .removeClass('text-success text-fail')
             .html('<i class="fa fa-spinner fa-pulse fa-fw"></i> ' + Lang.get('general.loading') + '...');
-        
+
         $.post(route, data)
-            .success(function (data) {
+            .done(function (data) {
                 $action.find('.test-webhook-response')
                     .removeClass('text-success text-fail')
                     .addClass(data.status === 'success' ? 'text-success' : 'text-fail')
@@ -111,7 +111,7 @@ $(function() {
         $('.rule:last .rule-value .action:not(:first)').hide()
             .find(':input').prop('disabled', true);
 
-        $('.rule:last .rule-action select').change();
+        $('.rule:last .rule-action select').trigger('change');
 
         // Refresh the sortable option.
         $("#sortable").sortable("refresh");
@@ -158,8 +158,8 @@ $(function() {
 
         // Redactor
         element.redactor($.extend($.Redactor.default_opts, opts));
-        
-        // Save that this element has been initialised, as redactor keeps duplicating 
+
+        // Save that this element has been initialised, as redactor keeps duplicating
         element.data('init', true);
     }
 
@@ -197,7 +197,7 @@ $(function() {
         if ($dropdown.val() == '13') {
             initCustomFields($tr, $dropdown.parents('tr').find('.value-id').val());
         }
-        
+
         // Pikaday if needed
         if ($tr.find('.datepicker').is(':visible')) {
             $tr.find('.datepicker').pikaday({ format: $('meta[name=date_format]').prop('content') });
@@ -213,7 +213,7 @@ $(function() {
         $action.find('textarea.codemirror:visible').each(function () {
             codeMirror($(this));
         });
-        
+
         // Initialise selectize, we have to do this on a per instance basis as the configuration / events is too complex
         // to do dynamically.
         $action.find('select[name$="[value_text][to][]"], select[name$="[value_text][cc][]"], select[name$="[value_text][bcc][]"]').each(function () {

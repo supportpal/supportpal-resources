@@ -25,6 +25,11 @@
                         </a>
                     </li>
                 {% endfor %}
+                <li>
+                    <a href="{{ route('ticket.operator.trashed_tickets') }}" {% if Route.currentRouteName() == 'ticket.operator.trashed_tickets' %}style="font-weight: bold;"{% endif %}>
+                        <i class="fa fa-trash"></i>&nbsp; {{ Lang.get('general.trash') }}
+                    </a>
+                </li>
             </ul>
         </div>
     {% endif %}
@@ -72,8 +77,6 @@
                         </div>
                     </a>
                 </li>
-            {% else %}
-                {{ Lang.get('general.none') }}
             {% endfor %}
         </ul>
     </div>

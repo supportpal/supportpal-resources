@@ -22,7 +22,7 @@ Filtering.getUniqueGroupId = function () {
 };
 
 /**
- * Remove any condition items that have an empty value dropdown. 
+ * Remove any condition items that have an empty value dropdown.
  *
  * @param context
  */
@@ -125,7 +125,7 @@ Filtering.initialise = function () {
         })
         .get()
         .reverse();
-    
+
     // Insert the custom field conditions.
     $(customFields).each(function (index, value) {
         var condition = parseInt(value.item);
@@ -172,7 +172,7 @@ Filtering.initialise = function () {
     // Disable items in first (hidden) row
     $(".conditiongroup:first:not(:visible) :input, .condition:first :input").prop('disabled', true);
     $('.conditiongroup .add-condition, .conditiongroup-buttons button').prop('disabled', false);
-    
+
     // If we have default conditions, show them.
     if ($('.condition:not(.hide)').length) {
         $('.conditiongroup .settings').show();
@@ -198,12 +198,12 @@ Filtering.initialise = function () {
 
 $(function() {
     // Toggle filtering
-    $('.toggle-filtering').click(function() {
+    $('.toggle-filtering').on('click', function() {
         $('.conditiongroup').toggle();
 
         // If we're toggling to show and it's currently empty, insert new condition
         if ($('.conditiongroup').is(':visible') && ! $('.conditiongroup .condition:visible').length) {
-            $('.conditiongroup .add-condition').click();
+            $('.conditiongroup .add-condition').trigger('click');
         }
     });
 
@@ -215,7 +215,7 @@ $(function() {
     $(document.body).on('change', '.condition-item select', function() {
         Filtering.showCondition(this);
     });
-    
+
     /**
      * Add Condition Group.
      */
@@ -247,7 +247,7 @@ $(function() {
             $('.plan-conditiongroup-type').hide();
         }
     });
-    
+
     /**
      * Remove Condition Group.
      */
@@ -271,13 +271,13 @@ $(function() {
         var $this = $(this).parents('.conditiongroup'),
             index = $this.find('.condition-group-id:first').val(); // Take the first ID in the group container - this should be correct
         $this.find('.condition-group-id').val(index);              // as adding a group should set this value
-        
+
         // Show table
         $this.find('.settings').show();
-        
+
         // Disable and hide fields that are not needed now
         $this.find('.condition:last .condition-value :input, .condition:last .condition-operator :input').prop('disabled', true).hide();
-        
+
         // Show the right condition options and values
         var selected = $this.find('.condition:last .condition-item select').val();
         $this.find('.condition:last .condition-value :input[data-item="' + selected +'"]').prop('disabled', false).show();
@@ -307,10 +307,10 @@ $(function() {
         } else {
             $(this).parents('.conditiongroup').find('.conditiongroup-type, .condition .remove-button').hide();
         }
-        
+
         // Remove the condition row
         $(this).parents('.condition').remove();
-        
+
         // Hide table if no conditions left
         if ($('.condition:visible').length === 0) {
             $('.conditiongroup .settings').hide();

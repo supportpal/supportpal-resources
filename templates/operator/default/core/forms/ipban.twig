@@ -99,7 +99,7 @@
                 $('.expiry').hide();
             }
 
-            $('input[name="type"]').change(function() {
+            $('input[name="type"]').on('change', function() {
                 if (this.checked) {
                     $('.expiry').hide();
                 } else {

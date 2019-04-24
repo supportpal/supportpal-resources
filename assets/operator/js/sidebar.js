@@ -6,7 +6,7 @@
 var sideBar = (function ()
 {
     "use strict";
-    
+
     var storageName = 'sidebarData',
         storageExpiry = 3600000;
 
@@ -94,7 +94,7 @@ var sideBar = (function ()
             $item.text(value > 999 ? '999+' : value).show();
         }
     };
-    
+
     /*
      * Initialise sidebar.
      */
@@ -122,7 +122,7 @@ var sideBar = (function ()
         refresh: function ()
         {
             $.get(laroute.route('ticket.operator.ticket.sidebar'))
-                .success(function (response) {
+                .done(function (response) {
                     if (response.status == 'success') {
                         // Update the sidebar
                         updateSidebar(response.data);

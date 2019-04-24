@@ -19,7 +19,7 @@ $(document).ready(function() {
                 $container = $tab.find('.section-items');
 
             // Clone the DOM element.
-            var newElem = $tab.find('.section-item:first').clone().toggle();
+            var newElem = $tab.find('.section-item:first').clone();
 
             // Show the remove button.
             newElem.find('button.remove-button').removeClass('hide');
@@ -39,7 +39,7 @@ $(document).ready(function() {
             if (newElem.find('textarea:not(.not-redactor)').length > 0) {
                 newElem.find('textarea:not(.not-redactor)').redactor($.extend($.Redactor.default_opts, opts));
             }
-            
+
             // Initialise file upload.
             if (typeof FileUpload !== 'undefined' && newElem.find('.fileupload').length > 0) {
                 var settings = {
@@ -49,17 +49,18 @@ $(document).ready(function() {
                     inputName = newElem.find('.attachment-details')
                         .find('input[type=hidden]')
                         .prop('name').replace('[]', '');
-                
+
                 // Fall back to default inputName, if we can't find an element...
                 if (inputName.length !== 0) {
                     settings.inputName = inputName;
                 }
-                
+
                 new FileUpload(settings);
             }
 
-            // Append new element to the DOM.
+            // Append new element to the DOM and make it visible.
             $container.append(newElem);
+            newElem.show();
 
             // Clear the selected value silently (don't fire onChange event).
             this.removeOption(value, true);
@@ -68,7 +69,7 @@ $(document).ready(function() {
             this.$control_input.css({"opacity": "1", "position": "relative", "left": "0px", "z-index": "-1"});
 
             // Focus and scroll to new element.
-            $container.find('.section-item:last :input:first').focus();
+            $container.find('.section-item:last :input:first').trigger('focus');
             $('html, body').animate({
                 scrollTop: $container.find('.section-item:last label:first').offset().top - 55
             }, 500);
@@ -77,7 +78,7 @@ $(document).ready(function() {
             if (Object.keys(this.options).length === 0) {
                 this.$input.parents('.form-container').hide();
             }
-            
+
             // Trigger DOM event.
             $container.trigger('multidimensionaldata:added', [ newElem ]);
         }
