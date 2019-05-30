@@ -84,8 +84,9 @@ $(function() {
                 order: $('select[name=cannedResponseOrder]').val(),
                 locale: $('select[name=cannedResponseLang]').val(),
                 start: 0,
-                ticket_id: ticketId,
-                user_id: userId
+                ticket_id: typeof ticketId !== 'undefined' ? ticketId : null,
+                user_id: typeof userId !== 'undefined' ? userId : null,
+                brand_id: typeof brandId !== 'undefined' ? brandId : null
             }))
             .done(function (data) {
                 // In case it's searched two requests at once (rare)
@@ -121,8 +122,9 @@ $(function() {
                 order: $('select[name=cannedResponseOrder]').val(),
                 locale: $('select[name=cannedResponseLang]').val(),
                 start: $list.children('li.response-item').length,
-                ticket_id: ticketId,
-                user_id: userId
+                ticket_id: typeof ticketId !== 'undefined' ? ticketId : null,
+                user_id: typeof userId !== 'undefined' ? userId : null,
+                brand_id: typeof brandId !== 'undefined' ? brandId : null
             }))
             .done(function (data) {
                 // Add responses to list
@@ -265,6 +267,7 @@ $(function() {
                     {
                         ticket_id: typeof ticketId !== 'undefined' ? ticketId : null,
                         user_id: typeof userId !== 'undefined' ? userId : null,
+                        brand_id: typeof brandId !== 'undefined' ? brandId : null,
                         locale: $('select[name=cannedResponseLang]').val()
                     },
                 function(response) {

@@ -8,6 +8,8 @@
                         <input type="hidden" name="brand_id" value="{{ record.brand_id }}" />
                     </div>
                 </div>
+            {% else %}
+                <input type="hidden" name="brand_id" value="{{ Config.get('settings.default_brand') }}" />
             {% endif %}
         {% else %}
             {% if brand_count() > 1 %}

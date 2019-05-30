@@ -345,8 +345,9 @@ function Ticket(parameters)
             $message.toggleClass('collapsible collapsed').find('.text').children('.original, .trimmed').toggle();
         }
 
-        // Scroll to the right position, offset based on what is showing.
-        var position = $message.offset().top - $('.ticket-viewing:visible').outerHeight();
+        // Scroll to the right position, offset based on what is showing. If no other operator viewing, ticket-viewing
+        // outerHeight may be undefined so need to force it to 0.
+        var position = $message.offset().top - ($('.ticket-viewing:visible').outerHeight() || 0);
         if ($(window).height() > 720) {
             position = position - $('#header').outerHeight() - $('.quick-actions').outerHeight();
         }

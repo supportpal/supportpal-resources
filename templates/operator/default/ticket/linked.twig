@@ -13,7 +13,7 @@
                     <i class="fa fa-chain-broken fa-fw"></i>
                 </a>
             {% endif %}
-            <span class="statusIcon" style="background: {{ ticket.status.colour }};"
+            <span class="statusIcon" style="background: {{ linkedTicket.status.colour }};"
                   title="{{ linkedTicket.status.name }}"></span> &nbsp;
             <a href="{{ route('ticket.operator.ticket.show', [ linkedTicket.id ]) }}" target="_blank">
                 {{ linkedTicket.subject }}

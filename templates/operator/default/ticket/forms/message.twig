@@ -1,5 +1,7 @@
 {% if not ticket.channel.enabled %}
     <div class="fail box">{{ Lang.get('ticket.channel_deactivated') }}</div>
+{% elseif ChannelFactory.getChannel(ticket.channel.name).requiresAccount and (not ticket.account or not ticket.account.active) %}
+    <div class="fail box">{{ Lang.get('ticket.channel_account_removed') }}</div>
 {% else %}
     <div class="reply-type">
         <div class="option active" data-type="0">

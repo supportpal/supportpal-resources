@@ -110,7 +110,7 @@
                 {% endif %}
 
                 // Disable the grid options (buttons)
-                $('.grid-options :input').prop('disabled', true);
+                $('.grid-options :input:visible').prop('disabled', true);
 
                 // Update group membership
                 $.ajax({
@@ -126,10 +126,10 @@
                 }).fail(function() {
                     $('.update.fail').show(500).delay(5000).hide(500);
                 }).always(function() {
+                    // Re-enable the grid options (buttons)
+                    $('.grid-options :input:visible').prop('disabled', false);
                     // Reload table
                     $('.dataTable').dataTable()._fnAjaxUpdate();
-                    // Re-enable the grid options (buttons)
-                    $('.grid-options :input').prop('disabled', false);
                 });
 
                 // Reset the dropdown to its initial state
@@ -154,7 +154,7 @@
                     // Disable submit button
                     deleteAlert.disableButtons();
                     // Disable the grid options (buttons)
-                    $('.grid-options :input').prop('disabled', true);
+                    $('.grid-options :input:visible').prop('disabled', true);
                     // Delete record and reload table if successful
                     $.ajax({
                         url: url,
@@ -172,10 +172,10 @@
                     }).always(function() {
                         // Close alert
                         swal.closeModal();
+                        // Re-enable the grid options (buttons)
+                        $('.grid-options :input:visible').prop('disabled', false);
                         // Reload table
                         $('.dataTable').dataTable()._fnAjaxUpdate();
-                        // Re-enable the grid options (buttons)
-                        $('.grid-options :input').prop('disabled', false);
                     });
                 }
             });
