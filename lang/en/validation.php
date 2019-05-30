@@ -79,7 +79,6 @@ return array(
     "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
     "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
-    "twig_lint"                 => "The :attribute must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html",
 
     /*
      * 2.1.0
@@ -165,6 +164,11 @@ return array(
     "domain"                    => "One or more of the domain names are not valid.",
 
     /*
+     * 2.5.1
+     */
+    "valid_twig"                => "The :attribute is invalid. Please use the 'Preview' button for error details.",
+
+    /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------
@@ -188,19 +192,6 @@ return array(
         ),
         "brand.*" => array(
             "exists" => "The selected brand is invalid.",
-        ),
-        "signature.*.*.contents" => array(
-            "twig_lint" => "Each signature must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
-        ),
-        "template.*.*.subject" => array(
-            "required" => "The subject field is required for each email.",
-            "min" => "Each subject field must be greater than 1 character.",
-            "max" => "Each subject field must be less than 255 characters.",
-        ),
-        "template.*.*.contents" => array(
-            "required" => "The contents field is required for each email.",
-            "min" => "Each contents field must be greater than 1 character.",
-            "twig_lint" => "Each contents field must be valid twig syntax, please check http://twig.sensiolabs.org/doc/templates.html"
         ),
     ),
 

@@ -525,4 +525,9 @@ return array(
     "merge_tickets"             => "Merge Tickets",
     "merge_tickets_confirm"     => "Please confirm you'd like to merge the following tickets:",
 
+    /*
+     * 2.5.1
+     */
+    "channel_account_removed"   => "The ticket channel account has been deactivated or removed, a reply cannot be posted.",
+
 );
