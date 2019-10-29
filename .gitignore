@@ -1,0 +1,12 @@
+/node_modules
+.idea
+_MACOSX
+/bootstrap/compiled.php
+/vendor
+composer.phar
+.DS_Store
+Thumbs.db
+_ide_helper.php
+.phpstorm.meta.php
+_ide_helper_models.php
+.env
