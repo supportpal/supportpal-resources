@@ -94,7 +94,7 @@ return array(
     "post_rating"               => "Rate Articles",
     "post_rating_desc"          => "If articles can be rated by anyone or registered users only.",
     "show_rating"               => "Show Ratings",
-    "show_rating_desc"          => "Show article rating to everyone (public) or registered users only.",
+    "show_rating_desc"          => "Show article rating to anyone (public) or registered users only.",
 
     /*
      * 2.0.3

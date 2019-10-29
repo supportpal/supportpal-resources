@@ -426,7 +426,6 @@ return array(
     "new_ticket_note"           => "New Ticket Note",
     "email_template_desc"       => "You may select an email template other than the default to be sent to the user or operators for any of the actions below. This template will become the default for this department only.",
     "create_new_user"           => "Create new user",
-    "convert_user_ticket_desc"  => "The ticket will be converted from an internal to a user ticket.",
     "user_reply_internal_ticket" => "Not an operator. Only operators can reply to internal tickets.",
     "enter_email_address"       => "Enter email address...",
     "email_user_frontend"       => "Email Users on Tickets Opened at Frontend",
@@ -529,5 +528,16 @@ return array(
      * 2.5.1
      */
     "channel_account_removed"   => "The ticket channel account has been deactivated or removed, a reply cannot be posted.",
+
+    /*
+     * 2.6.0
+     */
+    "follow_ups"                => "Follow Ups",
+    "follow_up_multiple_active" => "Multiple <a class='view-followup' style='text-decoration: underline;'>follow ups</a> are currently active on this ticket and the next scheduled will run <strong>:time</strong>.",
+    "follow_up_no_actions"      => "The follow up has no actions set, please confirm if you'd like to continue.",
+    "status_after_running"      => "Status After Running",
+    "older_messages"            => ":count older messages",
+    "holiday_single_day"        => "Single Day",
+    "holiday_date_range"        => "Date Range",
 
 );

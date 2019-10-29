@@ -57,7 +57,6 @@ return array(
     // Spam Rules & Filtering
     "spam_rule"                 => "Spam Rule|Spam Rules",
     "containing_text"           => "Containing Text",
-    "containing_text_desc"      => "Please enter a string (particular word to ban or email address), all strings are case-insensitive. <br />The string can also take advantage of <a href='http://www.regular-expressions.info/'>regular expressions</a>, an example of this would be: 's.{1,}p.{1,}a.{1,}m'. You do not need to worry about delimiters.",
     "filter_new_message"        => "New Ticket Message (from User)",
     "filter_new_comment"        => "New Self-Service Comment (from User)",
     "filter_user_login"         => "User Login",
@@ -414,5 +413,11 @@ return array(
     "record_trash_relations"    => "The records will be moved to the trash and then permanently deleted after :number days along with the following related data: :relations. This will impact reports.",
     "uninstall_plugable_warning" => "Uninstalling the :plugable will delete all associated files and data. We recommend to deactivate the :plugable instead.",
     "web_settings_desc"         => "The web channel settings apply to the frontend. By default tickets can be accessed by anyone who knows a unique ticket URL. You may wish to disable this and require users to login before they can access ticket information.",
+
+    /*
+     * 2.6.0
+     */
+    "containing_text_desc"      => "Please enter a string (particular word to ban or email address), all strings are case-insensitive.",
+    "spam_is_regex_desc"        => "Rules can take advantage of regular expressions; if you intend to do so please enable this setting. You do not need to include delimiters.",
 
 );

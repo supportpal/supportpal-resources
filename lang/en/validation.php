@@ -71,19 +71,16 @@ return array(
     ),
     "unique"                    => "The :attribute has already been taken.",
     "url"                       => "The :attribute format is invalid.",
-    "timezone"                  => "The :attribute must be a valid zone.",
     "template_exists"           => "The selected :attribute is invalid.",
     "is_valid_captcha"          => "The captcha code entered was invalid or incorrect, please try again.",
     "user_password_length"      => "The password must be equal to or longer than :user_password_length characters.",
     "operator_password_length"  => "The password must be equal to or longer than :operator_password_length characters.",
-    "json"                      => "The :attribute must be valid JSON.",
     "user_password_strength"    => "The :attribute must contain: :user_password_strength.",
     "operator_password_strength" => "The :attribute must contain: :operator_password_strength.",
 
     /*
      * 2.1.0
      */
-    "in_array"                  => "The :attribute field does not exist in :other.",
     "logo"                      => "The logo must point to a valid image file (direct URL or relative file path to base directory).",
 
     /*
@@ -102,8 +99,7 @@ return array(
      * 2.3.0
      */
     "required_translation"      => "The :translation translation for the :attribute field is required.",
-    "customfield_not_cyclic"    => "The field cannot depend on one of it's children.",
-    "distinct"                  => "The :attribute field has a duplicate value.",
+    "customfield_not_cyclic"    => "The field cannot depend on one of its children.",
 
     /*
      * 2.3.1

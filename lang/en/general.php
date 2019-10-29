@@ -110,7 +110,6 @@ return array(
     "reply"                     => "Reply",
     "filter_results"            => "Filter Results",
     "anyone"                    => "Anyone",
-    "everyone"                  => "Everyone",
     "text"                      => "Text",
     "attachment"                => "Attachment|Attachments",
     "add_attachment"            => "Add Attachment",
@@ -319,5 +318,10 @@ return array(
     "trash_desc"                => "Records that have been in the trash for more than :number days will be deleted automatically.",
     "restore"                   => "Restore",
     "delete_forever"            => "Delete Forever",
+
+    /*
+     * 2.6.0
+     */
+    "remove_all"                => "Remove All",
 
 );

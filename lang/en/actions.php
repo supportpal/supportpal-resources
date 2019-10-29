@@ -17,7 +17,7 @@ return array(
     "update_department"         => "Update department",
     "update_priority"           => "Update priority",
     "update_status"             => "Update status",
-    
+
     /*
      * 2.0.3
      */
@@ -57,7 +57,7 @@ return array(
      * 2.3.1
      */
     "exclude_cc"                => "Exclude CC email addresses",
-    
+
     /*
      * 2.4.0
      */
@@ -72,5 +72,10 @@ return array(
      */
     "move_to_trash"             => "Move ticket to trash",
     "block_user"                => "Block user",
+
+    /*
+     * 2.6.0
+     */
+    "clear_due_time"            => "Clear due time",
 
 );
