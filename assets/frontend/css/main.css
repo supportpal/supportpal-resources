@@ -1743,3 +1743,38 @@ iframe[src="about:blank"] {
 #recaptcha_table {
     background: #fff;
 }
+
+/* Filters */
+
+.filters {
+    border-collapse: collapse;
+}
+
+.filters > div {
+    border-top: 8px solid transparent;
+    display: table-row;
+}
+
+.filters label, .filters div div {
+    display: table-cell;
+}
+
+.filters label {
+    padding-right: 10px;
+    text-align: right;
+}
+
+.filters div input {
+    border-radius: 0;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    line-height: 1.4em;
+}
+
+.filters div button {
+    border-radius: 0;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-left: 0;
+    padding: 1px 8px 3px 8px;
+}

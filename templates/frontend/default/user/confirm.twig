@@ -1,20 +1,27 @@
 {% extends parent_template %}
 
-{% block title %}{{ Lang.get('user.register') }}{% endblock %}
+{% block title %}{{ Lang.get('user.confirmation') }}{% endblock %}
 
 {% block breadcrumb %}
 	{{ parent() }}
-	{{ Lang.get('user.register') }}
+	{{ Lang.get('user.confirmation') }}
 {% endblock %}
 
 {% block content %}
 
     {% if error is not defined %}
-		<div class="success box">{{ Lang.get('messages.success') }}</div>
-        {{ Lang.get('user.thank_you_confirm', { 'route': route('user.login') })|raw }}
+		<div class="success box" style="margin-bottom: 0;">
+			<strong>{{ Lang.get('messages.success') }}</strong><br />
+			{{ Lang.get('user.thank_you_confirm') }}
+			{% if not auth_check() %}
+				{{ Lang.get('user.continue_to_login', {'route': route('user.login')})|raw }}
+			{% endif %}
+		</div>
 	{% else %}
-		<div class="fail box">{{ Lang.get('messages.error') }}</div>
-		{{ error }}
+		<div class="fail box" style="margin-bottom: 0;">
+			<strong>{{ Lang.get('messages.error') }}</strong><br />
+			{{ error }}
+		</div>
 	{% endif %}
 
 {% endblock %}

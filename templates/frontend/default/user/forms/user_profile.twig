@@ -23,6 +23,12 @@
         </div>
     </div>
 
+    {% if emailChange %}
+        <div class="warning box">
+            {{ Lang.get('user.updating_email_address', {'email': emailChange.new_email}) }}
+        </div>
+    {% endif %}
+
     {% if not record.exists or (auth_user().password is not empty and not auth_user().loggedInViaSSO()) %}
         <div class="form-row">
             {{ form_label('password', Lang.get('general.password')) }}

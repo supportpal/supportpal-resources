@@ -16,7 +16,17 @@
     {{ form_open({ 'route': [ 'ticket.frontend.ticket.storeStep3' ], 'class': 'validate' }) }}
 
         {% if not auth_check() %}
-            {{ form_hidden('email', email) }}
+            {{ form_hidden('email', guest_user.email) }}
+
+            {% if guest_user.firstname is not empty %}
+                {{ form_hidden('firstname', guest_user.firstname) }}
+            {% endif %}
+            {% if guest_user.lastname is not empty %}
+                {{ form_hidden('lastname', guest_user.lastname) }}
+            {% endif %}
+            {% if guest_user.organisation is not empty %}
+                {{ form_hidden('organisation', guest_user.organisation) }}
+            {% endif %}
         {% endif %}
 
         <h2>{{ Lang.get('ticket.enter_ticket_details') }}</h2>
@@ -139,9 +149,7 @@
 
         </div>
 
-        {% if Config.get('settings.captcha_type') != 0
-            and (Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1))
-        %}
+        {% if showCaptcha %}
             {{ Captcha.getHtml() }}
         {% endif %}
 
@@ -180,9 +188,7 @@
     <!-- Custom fields -->
     <script src="{{ asset_rev('resources/assets/general/js/customfields.js') }}"></script>
 
-    {% if Config.get('settings.captcha_type') != 0
-        and (Config.get('channel.web.settings.show_captcha') == 2 or (not auth_check() and Config.get('channel.web.settings.show_captcha') == 1))
-    %}
+    {% if showCaptcha %}
         {{ Captcha.getJs() }}
     {% endif %}
 

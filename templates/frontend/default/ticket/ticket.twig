@@ -1,6 +1,7 @@
 {% extends parent_template %}
 
 {% block meta %}
+    <meta name="robots" content="noindex" />
     {% if download %}
         <meta http-equiv="refresh" content="2;{{ download.direct_frontend_url }}" />
     {% endif %}
@@ -140,9 +141,8 @@
         <hr />
     {% endif %}
 
-    {% set descReplyOrder = Config.get('settings.ticket_reply_order') == 1 %}
-    <div class="{% if descReplyOrder %}reverse-order{% endif %} {% if ticket.locked == 1 %}locked-ticket{% endif %}">
-        {% if not descReplyOrder %}
+    <div class="{% if ticket.user.isDescendingReplyOrder() %}reverse-order{% endif %} {% if ticket.locked == 1 %}locked-ticket{% endif %}">
+        {% if ticket.user.isAscendingReplyOrder() %}
             {% include 'frontend.' ~ template ~ '.ticket.ticket_messages' %}
         {% endif %}
 
@@ -158,7 +158,7 @@
             </div>
         {% endif %}
 
-        {% if descReplyOrder %}
+        {% if ticket.user.isDescendingReplyOrder() %}
             {% include 'frontend.' ~ template ~ '.ticket.ticket_messages' %}
         {% endif %}
     </div>
@@ -197,7 +197,7 @@
     <script type="text/javascript">
         var ticketNumber = "{{ ticket.number }}",
             closedStatusId = "{{ Config.get('settings.default_resolved_status') }}",
-            descReplyOrder = {% if Config.get('settings.ticket_reply_order') == 1 %}true{% else %}false{% endif %};
+            descReplyOrder = {% if ticket.user.isDescendingReplyOrder() %}true{% else %}false{% endif %};
     </script>
 
     <script src="{{ asset_rev('resources/assets/frontend/js/ticket.js') }}"></script>

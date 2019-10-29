@@ -48,8 +48,8 @@
                         <span>{{ Lang.get('general.or') }}</span>
                     </div>
 
-                    <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login') }}';"
-                        value="{{ Lang.get('user.login_via', {'provider': Lang.get('user.idp')}) }}" />
+                    <input type="button" class="saml" onclick="location.href='{{ route('frontend.saml_login', {'intended': intended_url is not null ? intended_url : ''}) }}';"
+                           value="{{ Lang.get('user.login_via', {'provider': Config.get('saml.guards.' ~ SamlAuth.frontendGuard(current_brand(false)) ~ '.idp.name', Lang.get('user.idp'))}) }}" />
                 {% endif %}
 
                 {% if not socialite_providers.isEmpty() %}

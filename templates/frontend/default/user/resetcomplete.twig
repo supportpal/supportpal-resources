@@ -10,7 +10,10 @@
 {% block content %}
 
     {% if reset_success|default is not empty and reset_success %}
-        {{ Lang.get('user.success_pass_reset', { 'route': route('user.login') })|raw }}
+		{{ Lang.get('user.password_reset_success') }}
+		{% if not auth_check() %}
+			{{ Lang.get('user.continue_to_login', {'route': route('user.login')})|raw }}
+		{% endif %}
 	{% endif %}
 
 {% endblock %}

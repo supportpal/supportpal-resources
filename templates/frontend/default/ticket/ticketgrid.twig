@@ -9,11 +9,58 @@
 
 {% block content %}
 
-    <a href="{{ route('ticket.frontend.ticket.createStep1') }}" class="button">
-        {{ Lang.get('ticket.open_new') }}
-    </a>
+    <div class="options box">
+        <a href="{{ route('ticket.frontend.ticket.createStep1') }}">
+            <i class="fa fa-plus"></i>&nbsp;
+            {{ Lang.get("ticket.open_new") }}
+        </a>&nbsp;&nbsp;&nbsp;
+        <a class="filter-results">
+            <i class="fa fa-filter"></i>&nbsp; {{ Lang.get('general.filter_results') }}
+        </a>
 
-    <br /><br />
+        <div class="filters hide">
+            <div>
+                <label>{{ Lang.get('general.number') }}:</label>
+                <div>
+                    {{ form_text('sSearch_0', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            <div>
+                <label>{{ Lang.get('general.subject') }}:</label>
+                <div>
+                    {{ form_text('sSearch_1', null, { 'placeholder': Lang.get('general.type_to_filter') }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('ticket.department', 1) }}:</label>
+                <div>
+                    {{ form_select('sSearch_2', {'-1': Lang.get('general.select_value')} + departments.pluck('name', 'id').all()) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            <div>
+                <label>{{ Lang.choice('general.status', 1) }}:</label>
+                <div>
+                    {{ form_select('sSearch_3', {'-1': Lang.get('general.select_value')} + statuses.pluck('name', 'id').all()) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+        	<div>
+                <label>{{ Lang.get('ticket.submitted') }}:</label>
+                <div>
+                    {{ form_text('sSearch_5_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    &nbsp;{{ Lang.get('general.to') }}&nbsp;
+                    {{ form_text('sSearch_5_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+            <div>
+                <label>{{ Lang.get('ticket.last_reply') }}:</label>
+                <div>
+                    {{ form_text('sSearch_6_start', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.start_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                    &nbsp;{{ Lang.get('general.to') }}&nbsp;
+                    {{ form_text('sSearch_6_end', null, { 'class': 'datepicker', 'placeholder': '&#xf073; &nbsp;' ~ Lang.get('general.end_date'), 'size': 14 }) }}{{ form_button('x', { 'class': 'reset-filter' }) }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 	{{ table.render()|raw }}
 	{{ table.script()|raw }}
@@ -21,12 +68,18 @@
 {% endblock %}
 
 {% block scripts_footer %}
+    <script type="text/javascript" src="{{ asset_rev('resources/assets/general/js/queryfiltering.js') }}"></script>
     <link href="{{ asset_rev('resources/assets/frontend/css/datatables.css') }}" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
         $(document).ready(function() {
             $.extend($.fn.dataTable.defaults, {
                 responsive: true
+            });
+
+            // Toggle show/hide of the filters area
+            $('.filter-results').on('click', function() {
+                $('.filters').toggle();
             });
         });
     </script>

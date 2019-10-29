@@ -97,7 +97,7 @@
 
     {% if isModuleEnabled('Ticket') %}
         <li>
-            <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep1' %}class="current"{% endif %}>
+            <a href="{{ route('ticket.frontend.ticket.createStep1') }}" {% if route starts with 'ticket.frontend.ticket.createStep' %}class="current"{% endif %}>
                 {{ Lang.get('core.submit_ticket') }}
             </a>
         </li>
