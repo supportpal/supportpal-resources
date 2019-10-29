@@ -220,6 +220,14 @@ span.success {
     color: #f39c12;
 }
 
+.warning, .note {
+    background: #fcf9e5;
+    border-left: 2px solid #f7df7a;
+}
+.warning .fa.left, .note .fa.left {
+    color: #f39c12;
+}
+
 /* Tables */
 
 table {
@@ -281,10 +289,10 @@ input, textarea, select {
 }
 
 input:focus, select:focus, textarea:focus {
-    border: solid 1px #0f90c4;
-    -webkit-box-shadow: 0 0 6px rgba(6,152,255,.35);
-    -moz-box-shadow: 0 0 6px rgba(6,152,255,.35);
-    box-shadow: 0 0 6px rgba(6,152,255,.35);
+    border: solid 1px #2d98da;
+    -webkit-box-shadow: 0 0 6px rgba(45, 152, 218, .25);
+    -moz-box-shadow: 0 0 6px rgba(45, 152, 218, .25);
+    box-shadow: 0 0 6px rgba(45, 152, 218, .25);
     outline: none;
 }
 
