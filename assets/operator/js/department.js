@@ -238,13 +238,12 @@ jQuery(function($){
         })
         // Validate email download details
         .on('click', '.validate-email', function() {
-            var data = $(this).parents('.departmentEmail').find(':input').map(function() {
-                // Only if it has a name attribute
-                if ($(this).is("[name]")) {
-                    var name = $(this).attr('name').slice(0, -1).split('[').pop();
-                    return { name: name, value: $(this).val() };
-                }
-            }).get();
+            var data = $(this).parents('.departmentEmail').find(':input').serializeArray().map(function(value, key) {
+                value.name = value.name.replace(/.*\[(\w+)]/mg, '$1');
+
+                return value;
+            });
+
             validateEmail(data, $(this).parent());
         })
         // Handle appending --address to piping command when using consume all.

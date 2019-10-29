@@ -38,7 +38,7 @@
             {% endif %}
 
             <div class="form-row form-full">
-                {{ form_label('to[]', Lang.get('general.to')|capitalize) }}
+                {{ form_label('to[]', Lang.get('ticket.to')) }}
                 <div class="input-container">
                     {% if record|default is not empty %}
                         {{ record.formatted_name }} {{ '<' ~ record.email ~ '>' }}

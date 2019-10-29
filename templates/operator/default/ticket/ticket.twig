@@ -127,9 +127,13 @@
         </div>
     {% endif %}
 
-    <div class="warning box followup-warning {% if ticket.followup is empty %}hide{% endif %}">
+    <div class="warning box followup-warning {% if ticket.followups is empty %}hide{% endif %}">
         <i class="fa fa-clock-o"></i>&nbsp;
-        <span>{{ Lang.get('ticket.follow_up_active', {'time': (ticket.followup.time > "now"|date('U') ? timeago(ticket.followup.time) : Lang.get('general.shortly'))})|raw }}</span>
+        <span>
+            {{ Lang.get(ticket.followups.count() > 1 ? 'ticket.follow_up_multiple_active' : 'ticket.follow_up_active',
+                {'time': (ticket.followups.first().time > "now"|date('U') ? timeago(ticket.followups.first().time) : Lang.get('general.shortly'))})|raw
+            }}
+        </span>
     </div>
 
     {% if feedback|default is not empty and feedback.rating|default is not empty %}
@@ -151,7 +155,7 @@
             {{ Lang.get('ticket.escalation_rule') }}
         </li>
         {% if can_update_ticket(auth_user(), ticket) or ticket.followup is not empty %}
-            <li id="Followup">{{ Lang.get('ticket.follow_up') }}</li>
+            <li id="Followup">{{ Lang.get('ticket.follow_ups') }}</li>
         {% endif %}
 
         {{ View.fireHook('operator.ticket_tab') }}
@@ -164,10 +168,7 @@
     </ul>
 
     <div id="tabMessages" class="tabContent">
-        {% if Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 2
-                or (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 0
-                    and Config.get('settings.ticket_reply_order') == 1)
-        %}
+        {% if auth_user().isDescendingReplyOrder() %}
             {% if can_update_ticket(auth_user(), ticket) %}
 
                 <h2 class="reply-header">{{ Lang.get('ticket.add_reply') }}</h2>
@@ -193,7 +194,12 @@
 
             {% for message in messages %}
                 {% if message.type == 1 %}
-                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message } %}
+                    {% if (loop.first and auth_user().isDescendingReplyOrder()) or (loop.last and auth_user().isAscendingReplyOrder()) %}
+                        {% set unread = true %}
+                    {% else %}
+                        {% set unread = not lastViewed or lastViewed < message.created_at %}
+                    {% endif %}
+                    {% include 'operator.' ~ template ~ '.ticket.message' with { 'message' : message, 'unread': unread } %}
                 {% endif %}
             {% endfor %}
 
@@ -205,15 +211,17 @@
 
         {% for message in messages %}
             {% if (Config.get('settings.ticket_notes_position') != 1 or message.type != 1) %}
-                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message } %}
+                {% if (loop.first and auth_user().isDescendingReplyOrder()) or (loop.last and auth_user().isAscendingReplyOrder()) %}
+                    {% set unread = true %}
+                {% else %}
+                    {% set unread = not lastViewed or lastViewed < message.created_at %}
+                {% endif %}
+                {% include 'operator.' ~ template ~ '.ticket.message' with { 'message': message, 'unread': unread } %}
             {% endif %}
         {% endfor %}
 
 
-        {% if (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 1
-            or (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 0
-                    and Config.get('settings.ticket_reply_order') == 0))
-        %}
+        {% if auth_user().isAscendingReplyOrder() %}
 
             {{ View.fireHook('operator.ticket_messages') }}
 
@@ -333,14 +341,7 @@
                     + "{{ Purifier.clean(signature)|e('js') }}";
         {% endif %}
 
-        var replyOrder;
-        {% if (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 1 or
-            (Config.get('settings.operator' ~ auth_user().id ~ '.ticket_reply_order') == 0 and Config.get('settings.ticket_reply_order') == 0))
-        %}
-            replyOrder = 'ASC';
-        {% else %}
-            replyOrder = 'DESC';
-        {% endif %}
+        var replyOrder = '{{ auth_user().isAscendingReplyOrder() ? 'ASC' : 'DESC' }}';
         var notesPosition = {{ Config.get('settings.ticket_notes_position') }};
 
         var tagPermission = {% if auth_user().hasPermission('create.tickettag') %}1{% else %}0{% endif %},

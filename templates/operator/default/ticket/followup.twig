@@ -1,0 +1,19 @@
+{% if followup|default is empty %}
+    <div class="followup-table">
+        {% if can_update_ticket(auth_user(), ticket) %}
+            <div class="grid-options options box">
+                <a class="add-followup">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ Lang.get('general.add_item', {'item': Lang.get('ticket.follow_up')}) }}
+                </a>
+            </div>
+        {% endif %}
+
+        {{ followups.render()|raw }}
+        {{ followups.script()|raw }}
+    </div>
+{% endif %}
+
+{% if can_update_ticket(auth_user(), ticket) %}
+    {% include 'operator.' ~ template ~ '.ticket.forms.followup' %}
+{% endif %}

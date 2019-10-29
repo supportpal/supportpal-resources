@@ -1,6 +1,6 @@
-<span class="trimmed">{{ message.excerpt }}</span>
+<span class="trimmed" {% if unread %}style="display: none"{% endif %}>{{ message.excerpt }}</span>
 
-<span class="original {% if message.show_more is empty %}loaded{% endif %}{% if message.clipped %} clipped{% endif %}" style="display:none;">
+<span class="original {% if message.show_more is empty %}loaded{% endif %}{% if message.clipped %} clipped{% endif %}" {% if not unread %}style="display: none"{% endif %}>
     {% if message.show_more is empty %}
         {{ message.purified_text|raw }}
     {% endif %}

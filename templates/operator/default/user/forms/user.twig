@@ -112,7 +112,7 @@
 
         <div class="form-button">
             {{ form_submit(Lang.choice('general.submit', 1)) }}
-            {% if record.exists and not operator %}
+            {% if record.exists and not operator and auth_user().hasPermission('delete.user') %}
                 <button class="delete-user" type="button">{{ Lang.get('general.delete', {'item': Lang.choice('user.user', 1)}) }}</button>
             {% endif %}
         </div>

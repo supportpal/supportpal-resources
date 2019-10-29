@@ -1449,14 +1449,6 @@ $(document).ready(function() {
     /*
      * Toggle long tickets (>5 messages)
      */
-    var selector = replyOrder == 'ASC' ? ":last" : ":first";
-
-    // Remove the collapsed class from the first/last message (depending on the reply order).
-    $('.notes-header').nextUntil('.messages-header' + selector, '.message' + selector)
-        .add($('.messages-header ~ .message' + selector))
-        .toggleClass('collapsible collapsed')
-        .find('.text')
-        .children('.original, .trimmed').toggle();
 
     // Remove expandable from visible messages.
     $('.collapsible').each(function () {
@@ -1479,29 +1471,29 @@ $(document).ready(function() {
         $this.toggleClass('collapsible collapsed');
     });
 
-    // Collapse tickets with >5 messages
-    if ($('.message').length > 5 && ! scrollToMessage) {
+    // Collapse tickets with more than 2 collapsed messages
+    if ($('.message.collapsed').length > 2 && ! scrollToMessage) {
         // Staff notes and ticket content regions of the screen
         var regions = [ ".notes-header", ".messages-header" ];
 
         for (var i = 0; i < regions.length; i++) {
-            // If this region of the screen has > 5 messages, let's shrink it!
-            if ($(regions[i] + ' ~ .message').length > 5) {
-                // Build the basic selector
-                var basicSelector = $(regions[i] + ' ~ .message');
-                if (regions[i] == ".notes-header")
-                    basicSelector = $(regions[i]).nextUntil('.messages-header', '.message');
+            // Build the basic selector
+            var basicSelector = $(regions[i] + ' ~ .message.collapsed');
+            if (regions[i] == ".notes-header")
+                basicSelector = $(regions[i]).nextUntil('.messages-header', '.message.collapsed');
 
+            // If this region of the screen has more than 2 collapsed messages, let's shrink it!
+            if (basicSelector.length > 2) {
                 // Group the middle section of messages and hide them
                 var items;
                 if (replyOrder == 'ASC') {
-                    items = basicSelector.not(':first').not(':last').not(':eq(-1)');
+                    items = basicSelector.not(':first').not(':eq(-1)');
                 } else {
-                    items = basicSelector.not(':first').not(':last').not(':eq(0)');
+                    items = basicSelector.not(':last').not(':eq(0)');
                 }
 
                 items.wrapAll(
-                    "<div class='collapsed-messages'><span>" + items.length + " older messages</span></div>"
+                    "<div class='collapsed-messages'><span>" + Lang.get('ticket.older_messages', {'count': items.length}) + "</span></div>"
                 );
             }
         }
@@ -2428,64 +2420,119 @@ $(document).ready(function() {
 
     $(document).on('change', 'input[name="date_type"]', setDateType);
 
-    $(document).on('click', '.save-followup', function() {
-        var data = $('.followup-form').serializeArray();
-        data.push({ name: 'ticket', value: ticketId });
+    // Show add follow up form.
+    $(document).on('click', '.add-followup', function () {
+        $('form.followup-form').show();
+        $('.followup-table').hide();
+    });
 
-        // Post updated data
-        $.ajax({
-            url: $('.followup-form').data('uri'),
-            type: $('.followup-form').data('method'),
-            data: data,
-            dataType: 'json'
-        }).done(function(response) {
-            if (response.status == 'success') {
-                $('.ticket-update.success').show(500).delay(5000).hide(500);
-                // Add delete button
-                $('.delete-followup').show();
-                // Hide status/SLA options
-                $('.followup-status, .followup-sla').hide();
-                // Show warning message
-                $('.followup-warning').show().find('span').html(response.message);
-                // Change route - so it does update from now on
-                $('.followup-form').data('uri', laroute.route('ticket.operator.followup.update', { 'followup': ticketId }));
-                $('.followup-form').data('method','PUT');
-            } else {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
-            }
-        }).fail(function() {
-            $('.ticket-update.fail').show(500).delay(5000).hide(500);
-        });
+    $(document).on('click', '.cancel-followup', function() {
+        refreshFollowUpTab();
+    });
+
+    $(document).on('click', '.edit-followup', function() {
+        // Reload follow up tab with edit form
+        refreshFollowUpTab($(this).data('id'));
+    });
+
+    $(document).on('click', '.save-followup', function() {
+        var $button = $(this),
+            saveFollowUp = function ($button) {
+                // Disable button
+                $button.prop('disabled', true);
+
+                var data = $('.followup-form').serializeArray();
+                data.push({ name: 'ticket', value: ticketId });
+
+                // Post updated data
+                return $.ajax({
+                    url: $('.followup-form').data('uri'),
+                    type: $('.followup-form').data('method'),
+                    data: data,
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.ticket-update.success').show(500).delay(5000).hide(500);
+
+                        // Show warning message
+                        $('.followup-warning').show().find('span').html(response.message);
+
+                        // Reload follow up tab
+                        refreshFollowUpTab();
+                    } else {
+                        $('.ticket-update.fail').show(500).delay(5000).hide(500);
+
+                        // Re-enable button
+                        $(this).prop('disabled', false);
+                    }
+
+                    return response;
+                }).fail(function() {
+                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
+
+                    // Re-enable button
+                    $button.prop('disabled', false);
+                });
+            };
+
+        if ($('table.rule-table tr.rule:visible').length === 0) {
+            // Show the alert
+            swal({
+                title: Lang.get('messages.are_you_sure'),
+                html: Lang.get('ticket.follow_up_no_actions'),
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#e74c3c",
+                confirmButtonText: Lang.get('messages.yes_im_sure'),
+                showLoaderOnConfirm: true,
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    swal.disableButtons();
+                    saveFollowUp($button);
+                }
+            });
+        } else {
+            saveFollowUp($button);
+        }
     });
 
     $(document).on('click', '.delete-followup', function() {
-        // Post delete data
-        $.ajax({
-            url: laroute.route('ticket.operator.followup.destroy', { 'followup': ticketId }),
-            type: 'DELETE',
-            dataType: 'json'
-        }).done(function(response) {
-            if (response.status == 'success') {
-                $('.ticket-update.success').show(500).delay(5000).hide(500);
-                // Hide delete button
-                $('.delete-followup').hide();
-                // Show status/SLA options
-                $('.followup-status, .followup-sla').show();
-                // Remove all current actions
-                $('tr.rule:visible').remove();
-                // Reset all form values
-                $('.followup-form').trigger("reset");
-                setDateType.call($('input[name="date_type"]:checked'));
-                // Hide warning message
-                $('.followup-warning').hide();
-                // Change route - so it does save from now on
-                $('.followup-form').data('uri', laroute.route('ticket.operator.followup.store'));
-                $('.followup-form').data('method', 'POST');
-            } else {
-                $('.ticket-update.fail').show(500).delay(5000).hide(500);
+        var $followUp = $(this).data('id');
+
+        // Show the alert
+        swal(deleteAlert.getDefaultOpts(Lang.get('ticket.follow_up')), function(isConfirm) {
+            if (isConfirm) {
+                // Disable submit button
+                deleteAlert.disableButtons();
+
+                // Post delete data
+                $.ajax({
+                    url: laroute.route('ticket.operator.followup.destroy', {'followup': $followUp}),
+                    type: 'DELETE',
+                    dataType: 'json'
+                }).done(function(response) {
+                    if (response.status == 'success') {
+                        $('.ticket-update.success').show(500).delay(5000).hide(500);
+
+                        // Update warning message or hide it if no more follow ups.
+                        if (response.message != null && response.message.length > 0) {
+                            $('.followup-warning').show().find('span').html(response.message);
+                        } else {
+                            $('.followup-warning').hide();
+                        }
+
+                        // Reload table
+                        $('#tabFollowup .dataTable').dataTable().api().ajax.reload();
+                    } else {
+                        $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                    }
+                }).fail(function() {
+                    $('.ticket-update.fail').show(500).delay(5000).hide(500);
+                }).always(function() {
+                    // Close alert
+                    swal.closeModal();
+                });
             }
-        }).fail(function() {
-            $('.ticket-update.fail').show(500).delay(5000).hide(500);
         });
     });
 });
@@ -2850,13 +2897,16 @@ function applyMacro(macroId) {
     });
 }
 
-function refreshFollowUpTab() {
+function refreshFollowUpTab(edit) {
+    // If we want to edit a follow up.
+    edit = (typeof edit === 'undefined') ? 0 : edit;
+
     // Show loading icon
     $('#tabFollowup').html('<i class="fa fa-spinner fa-pulse fa-fw"></i>');
 
     // Fetch view
     $.get(
-        laroute.route('ticket.operator.followup.render', { id: ticketId }), { },
+        laroute.route('ticket.operator.followup.render', {id: ticketId, edit: edit}), { },
         function(response) {
             if (response.status == 'success') {
                 // Update form

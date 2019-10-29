@@ -17,6 +17,7 @@ $(function() {
     $('.validate-smtp').on('click', function () {
         // Get data
         var data = {
+            brand_id: document.getElementsByName('brand_id')[0].value,
             smtp_host: document.getElementsByName('smtp_host')[0].value,
             smtp_port: document.getElementsByName('smtp_port')[0].value,
             smtp_encryption: $("[name='smtp_encryption']").val(),

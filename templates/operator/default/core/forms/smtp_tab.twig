@@ -1,4 +1,6 @@
 <div id="smtp" {% if email_method != 'smtp' %}style="display: none"{% endif %}>
+    <input type="hidden" name="brand_id" value="{{ record.id }}" />
+
     <div class="form-row">
         {{ form_label('smtp_host', Lang.get('core.smtp_host')) }}
         <div class="input-container">

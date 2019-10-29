@@ -36,11 +36,20 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                {{ form_label('is_regex', Lang.get('general.regex')) }}
+                <div class="input-container">
+                    {{ form_check('is_regex', 1, record.is_regex, { 'class': 'toggle', 'id': 'toggle_regex' }) }}
+                    <label for="toggle_regex"></label><br />
+                    <span class="description">{{ Lang.get('core.spam_is_regex_desc') }}</span>
+                </div>
+            </div>
+
             <div class="form-row form-full">
                 {{ form_label('text', Lang.get('core.containing_text')) }}
                 <div class="input-container">
                     {{ form_text('text') }}<br />
-                    <span class="description">{{ Lang.get('core.containing_text_desc')|raw }}</span>
+                    <span class="description">{{ Lang.get('core.containing_text_desc') }}</span>
                 </div>
             </div>
 

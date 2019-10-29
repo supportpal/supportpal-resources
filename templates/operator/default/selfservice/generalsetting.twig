@@ -86,7 +86,7 @@
             <div class="form-row">
                 {{ form_label('rating_show', Lang.get('selfservice.show_rating')) }}
                 <div class="input-container">
-                    {{ form_select('rating_show', { 0: Lang.get('general.everyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
+                    {{ form_select('rating_show', { 0: Lang.get('general.anyone'), 1: Lang.get('selfservice.registered_users') }) }}<br />
                     <span class="description">{{ Lang.get('selfservice.show_rating_desc') }}</span>
                 </div>
             </div>

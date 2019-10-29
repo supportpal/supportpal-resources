@@ -65,7 +65,7 @@
             }}
         </div>
     </div>
-    
+
     <div class="remote-piping {% if i is not defined or (email is defined and email.type == 3) %}hide{% endif %}">
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][consume_all]', Lang.get('ticket.consume_all')) }}
@@ -212,15 +212,32 @@
         <div class="form-row">
             {{ form_label('emails[' ~ (i is defined ? i : '') ~ '][encryption]', Lang.get('ticket.encryption')) }}
             <div class="input-container">
-                {# Using no encryption before version 2.3.1 was set as -1, so we need to keep that value for backwards compatibility #}
-                {{
-                    form_select(
-                        'emails[' ~ (i is defined ? i : '') ~ '][encryption]',
-                        {(email|default is not empty and email.encryption == '-1' ? '-1' : 0): Lang.get('general.none'), '1': 'SSL', '2': 'TLS'},
-                        email|default is not empty ? email.encryption : '',
-                        hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []
-                    )
-                }}<br />
+                {# BC prior to 2.3.1 and 2.6.0 #}
+                {% if email.encryption == '-1' or email.encryption == '2' %}
+                    {# Using no encryption before version 2.3.1 was set as -1, so we need to keep that value for backwards compatibility #}
+                    {{
+                        form_select(
+                            'emails[' ~ (i is defined ? i : '') ~ '][encryption]',
+                            {(email|default is not empty and email.encryption == '-1' ? '-1' : 0): Lang.get('general.none'), '1': 'SSL / TLS', '2': 'STARTTLS (TLS 1.0)'},
+                            email|default is not empty ? email.encryption : '',
+                            hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []
+                        )
+                    }}
+                {% else %}
+                    {{
+                        form_check(
+                            'emails[' ~ (i is defined ? i : '') ~ '][encryption]',
+                            1,
+                            email|default is not empty and email.encryption == "1" ? true : null,
+                            {
+                                'class': 'toggle',
+                                'id': 'toggle_emails[' ~ (i is defined ? i : '') ~ '][encryption]'
+                            }|merge((hide|default is not empty or email is empty ? { 'disabled': 'disabled' } : []))
+                        )
+                    }}
+                    <label for="toggle_emails{{ '[' ~ (i is defined ? i : '') ~ '][encryption]' }}"></label>
+                {% endif %}
+                <br />
                 <span class="description">{{ Lang.get('ticket.department_encryption') }}</span>
             </div>
         </div>

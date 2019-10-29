@@ -28,29 +28,57 @@
         </div>
 
         <div class="form-row">
-            {{ form_label('month', Lang.choice('general.month', 1) ~ '/' ~ Lang.choice('general.year', 1)) }}
             <div class="input-container">
-                {{ form_selectMonth('month') }} &nbsp;
-                {{ form_select('year', { '': '' } + years) }}<br />
-                <span class="description">{{ Lang.get('ticket.holiday_month_year_desc') }}</span>
+                <span class="input-group">
+                    <label>
+                        {{ form_radio('type', 0, record|default is empty or not record.exists ? true : record.number_of_days == 1) }}
+                        {{ Lang.get('ticket.holiday_single_day') }}
+                    </label>
+                    &nbsp;
+                    <label>
+                        {{ form_radio('type', 1, record|default is not empty and record.exists and record.number_of_days > 1) }}
+                        {{ Lang.get('ticket.holiday_date_range') }}
+                    </label>
+                </span>
             </div>
         </div>
 
-        <div class="form-row">
-            {{ form_label('day', Lang.choice('general.day', 1)) }}
+        <div class="single-day {% if record|default is not empty and record.exists and record.number_of_days > 1 %}hide{% endif %}">
+            <div class="form-row">
+                {{ form_label('month', Lang.choice('general.month', 1) ~ '/' ~ Lang.choice('general.year', 1)) }}
+                <div class="input-container">
+                    {{ form_selectMonth('month') }} &nbsp;
+                    {{ form_select('year', { '': '' } + years) }}<br />
+                    <span class="description">{{ Lang.get('ticket.holiday_month_year_desc') }}</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                {{ form_label('day', Lang.choice('general.day', 1)) }}
+                <div class="input-container">
+                    {{ form_select('day') }}&nbsp; {{ Lang.get('ticket.holiday_or_on_the') }} &nbsp;
+                    {{ form_select('order',
+                        {
+                            '': '',
+                            '1': Lang.get('general.first'),
+                            '2': Lang.get('general.second'),
+                            '3': Lang.get('general.third'),
+                            '4': Lang.get('general.forth'),
+                            '5': Lang.get('general.last')
+                        })
+                    }} &nbsp;
+                    {{ form_select('weekday', {'': ''} + weekdays()) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row date-range {% if record|default is empty or not record.exists or record.number_of_days == 1 %}hide{% endif %}">
             <div class="input-container">
-                {{ form_select('day') }}&nbsp; {{ Lang.get('ticket.holiday_or_on_the') }} &nbsp;
-                {{ form_select('order',
-                    {
-                        '': '',
-                        '1': Lang.get('general.first'),
-                        '2': Lang.get('general.second'),
-                        '3': Lang.get('general.third'),
-                        '4': Lang.get('general.forth'),
-                        '5': Lang.get('general.last')
-                    })
-                }} &nbsp;
-                {{ form_select('weekday', {'': ''} + weekdays()) }}
+                {{ form_text('start_date', record.start_date|date(Config.get('settings.date_format')),
+                    { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
+                &nbsp;{{ Lang.get('general.to') }}&nbsp;
+                {{ form_text('end_date', record.end_date|date(Config.get('settings.date_format')),
+                    { 'class': 'datepicker', 'placeholder': '&#xf073;', 'size': 12 }) }}
             </div>
         </div>
 
@@ -101,6 +129,9 @@
         }
 
         $(function() {
+            // Date picker
+            callPikaday();
+
             {% if record|default is not empty and record.exists and record.day|default is not empty %}
                 fillDays({{ record.day }});
             {% else %}
@@ -108,6 +139,16 @@
             {% endif %}
             $('select[name="month"], select[name="year"]').on('change', function() {
                 fillDays();
+            });
+
+            $('input[name="type"]').on('click', function () {
+                if ($(this).val() == 0) {
+                    $('.single-day').show().find(':input').prop('disabled', false);
+                    $('.date-range').hide().find(':input').prop('disabled', true);
+                } else {
+                    $('.single-day').hide().find(':input').prop('disabled', true);
+                    $('.date-range').show().find(':input').prop('disabled', false);
+                }
             });
         });
     </script>
