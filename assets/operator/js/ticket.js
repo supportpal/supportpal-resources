@@ -777,11 +777,11 @@ function Ticket(parameters)
                 });
 
                 messages.push(
-                    '<strong>' + Lang.get('ticket.from') + ':</strong> ' + $message.find('.name').html().trim() + '<br />'
-                    + '<strong>' + Lang.get('customfield.date') + ':</strong> ' + $message.find('time').prop('title') + '<br />'
-                    + '<strong>' + Lang.get('ticket.subject') + ':</strong> ' + subject + '<br />'
+                    '<strong>' + Lang.get('ticket.from') + ':</strong> ' + he.encode($message.find('.name').html().trim()) + '<br />'
+                    + '<strong>' + Lang.get('customfield.date') + ':</strong> ' + he.encode($message.find('time').prop('title')) + '<br />'
+                    + '<strong>' + Lang.get('ticket.subject') + ':</strong> ' + he.encode(subject) + '<br />'
                     + (message_attachments.length > 0
-                    ? '<strong>' + Lang.choice('general.attachment', 2) + ':</strong> ' + message_attachments.join(', ') + '<br />'
+                    ? '<strong>' + Lang.choice('general.attachment', 2) + ':</strong> ' + he.encode(message_attachments.join(', ')) + '<br />'
                     : '')
                     + '<br />'
                     + $message.find('.text .original').html().trim()

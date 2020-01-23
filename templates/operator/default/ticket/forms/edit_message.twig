@@ -3,7 +3,7 @@
     {{ form_hidden('ticket_id', ticket.id) }}
 
     {# If show_more is true, we will AJAX load the full text in later, but the textarea must still exist for JS #}
-    {{ form_textarea('text', message.show_more is empty ? message.purified_text : '') }}
+    {{ form_redactor('text', message.show_more is empty ? message.purified_text : '') }}
 
     <br />
 

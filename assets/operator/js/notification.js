@@ -137,7 +137,9 @@
 
             var notify = new PNotify({
                 title: title,
+                title_escape: true,
                 text: $('<p>' + text + '</p>').text(),
+                text_escape: true,
                 desktop: {
                     desktop: true,
                     icon: this._notificationIcon,
