@@ -7,7 +7,7 @@ $('.text-shorten').each(function () {
     if ($(this).text().length > $limit) {
         // Replace contents with preview, ellipsis and show more link, and then the full text hidden.
         $(this).html('<span class="text-preview">'
-                + $(this).text().substr(0, $limit) + '... '
+                + he.encode($(this).text().substr(0, $limit)) + '... '
                 + '<a class="description">' + Lang.get('general.show_more') + '</a>'
             + '</span>'
             + '<span class="hide">' + $(this).html() + '</span>');
