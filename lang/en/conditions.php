@@ -86,4 +86,11 @@ return array(
      */
     "user_email_confirmed"              => "User email confirmed",
 
+    /*
+     * 3.0.0
+     */
+    "user_2fa_enabled"                  => "User 2FA enabled",
+    "article_type"                      => "Article type",
+    "article_brand"                     => "Article brand",
+
 );

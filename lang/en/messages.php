@@ -41,9 +41,6 @@ return array(
     "success_action"        => "Successfully performed the action!",
     "error_action"          => "Failed to perform the action.",
 
-    "success_sending"       => "Successfully sent the :item!",
-    "error_sending"         => "Failed trying to send the :item.",
-
     "error_embed_image"     => "Failed trying to upload the image.",
 
     "unauthorised"          => "Unauthorised",
@@ -150,5 +147,11 @@ return array(
     "success_trashed"       => "Successfully moved the :item to trash!",
     "error_trashed"         => "Failed trying to move the :item to trash.",
     "blocked_by_rule"       => "The request was blocked by spam rule ':text'.",
+
+    /*
+     * 3.0.0
+     */
+    "popup_blocked"         => "Your browser is blocking popup windows. Please enable popups and redirects on this website in order to use the preview feature.",
+    "error_editing_message" => "There was an error while trying to edit this message.",
 
 );

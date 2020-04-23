@@ -3,21 +3,21 @@
 return array(
 
     /*
-	|--------------------------------------------------------------------------
-	| Validation Language Lines
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines contain the default error messages used by
-	| the validator class. Some of these rules have multiple versions such
-	| as the size rules. Feel free to tweak each of these messages here.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Validation Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines contain the default error messages used by
+    | the validator class. Some of these rules have multiple versions such
+    | as the size rules. Feel free to tweak each of these messages here.
+    |
+    */
 
     "accepted"                  => "The :attribute must be accepted.",
     "active_url"                => "The :attribute is not a valid URL.",
     "after"                     => "The :attribute must be a date after :date.",
     "alpha"                     => "The :attribute may only contain letters.",
-    "alpha_dash"                => "The :attribute may only contain letters, numbers, and dashes.",
+    "alpha_dash"                => "The :attribute may only contain letters, numbers, dashes and underscores.",
     "alpha_num"                 => "The :attribute may only contain letters and numbers.",
     "array"                     => "The :attribute must be an array.",
     "before"                    => "The :attribute must be a date before :date.",
@@ -115,7 +115,7 @@ return array(
     "after_or_equal"            => "The :attribute must be a date after or equal to :date.",
     "before_or_equal"           => "The :attribute must be a date before or equal to :date.",
     "dimensions"                => "The :attribute has invalid image dimensions.",
-    "distinct"                  => 'The :attribute field has a duplicate value.',
+    "distinct"                  => "The :attribute field has a duplicate value.",
     "file"                      => "The :attribute must be a file.",
     "filled"                    => "The :attribute field must have a value.",
     "gt"                        => array(
@@ -165,6 +165,12 @@ return array(
     "valid_twig"                => "The :attribute is invalid. Please use the 'Preview' button for error details.",
 
     /*
+     * 3.0.0
+     */
+    "embed_image"               => "The :attribute must be a file of type: jpeg, png, or gif.",
+    "starts_with"               => "The :attribute must start with one of the following: :values.",
+
+    /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
     |--------------------------------------------------------------------------
@@ -183,7 +189,7 @@ return array(
             "required" => "One or more self-service types must be selected.",
         ),
         "category.*.categories" => array(
-            'required' => "One or more categories are required when a self-service type has been selected.",
+            "required" => "One or more categories are required when a self-service type has been selected.",
             "exists"   => "One or more of the selected categories is invalid.",
         ),
         "brand.*" => array(
@@ -192,15 +198,15 @@ return array(
     ),
 
     /*
-	|--------------------------------------------------------------------------
-	| Custom Validation Attributes
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines are used to swap attribute place-holders
-	| with something more reader friendly such as Email Address instead
-	| of "email". This simply helps us make messages a little cleaner.
-	|
-	*/
+    |--------------------------------------------------------------------------
+    | Custom Validation Attributes
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used to swap attribute place-holders
+    | with something more reader friendly such as Email Address instead
+    | of "email". This simply helps us make messages a little cleaner.
+    |
+    */
 
     "attributes" => array(),
 

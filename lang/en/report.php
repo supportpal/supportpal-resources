@@ -56,8 +56,6 @@ return array(
     "2-4_day"                   => "2-4 Days",
     "4-7_day"                   => "4-7 Days",
     "7_plus_day"                => "7+ Days",
-    "user_feedback"             => "User Feedback",
-    "user_feedback_desc"        => "The feedback provided by users about tickets in a given time period.",
     "user_by_country"           => "Users By Country",
     "user_by_country_desc"      => "This report shows the number of users per country, only includes users who have set a country.",
     "user_count"                => "User Count",
@@ -94,5 +92,18 @@ return array(
      * 2.5.0
      */
     "total_users_desc"          => "This report shows how many users there are in the system, split by how many have confirmed ownership of their email address.",
+
+    /*
+     * 3.0.0
+     */
+    "user_feedback"             => "Feedback",
+    "user_feedback_desc"        => "The written feedback provided by users when answering feedback forms.",
+    "user_feedback_ratings"     => "Feedback Ratings",
+    "user_feedback_ratings_desc" => "The total number of times each feedback rating has been given.",
+    "user_feedback_response_rate" => "Feedback Response Rate",
+    "user_feedback_response_rate_desc" => "The total number of times feedback requests have been responded to.",
+    "responses"                 => "Responses",
+    "answered"                  => "Answered",
+    "unanswered"                => "Unanswered",
 
 );

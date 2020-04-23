@@ -3,9 +3,7 @@
 return array(
 
     "popular_items"             => "Popular Items",
-    "type_popular_items"        => ":type: Popular",
     "latest_items"              => "Latest Items",
-    "type_latest_items"         => ":type: Latest",
 
     "selfservice"               => "Self-Service",
     "article"                   => "Article|Articles",
@@ -15,7 +13,6 @@ return array(
     "type"                      => "Type|Types",
 
     "frontend_icon"             => "Frontend Icon",
-    "frontend_icon_desc"        => "Select a default icon to display on the frontend. Alternatively, upload your own icon:",
 
     "no_categories"             => ":type currently has no categories. Please create one before adding an article.",
     "no_categories_frontend"    => "There are no categories to display.",
@@ -53,7 +50,6 @@ return array(
     "comment_rated_error"       => "The comment could not be rated.",
 
     "article_find_useful"       => "Did you find this article useful?",
-    "article_found_useful"      => "people found this article useful.",
     "article_rated_success"     => "The article was successfully rated.",
     "article_rated_error"       => "The article could not be rated.",
 
@@ -93,8 +89,6 @@ return array(
     "enable_ratings_desc"       => "Allow users to rate articles.",
     "post_rating"               => "Rate Articles",
     "post_rating_desc"          => "If articles can be rated by anyone or registered users only.",
-    "show_rating"               => "Show Ratings",
-    "show_rating_desc"          => "Show article rating to anyone (public) or registered users only.",
 
     /*
      * 2.0.3
@@ -150,5 +144,13 @@ return array(
      * 2.5.0
      */
     "revision_history"          => "Revision History",
+
+    /*
+     * 3.0.0
+     */
+    "type_protected_desc"       => "Toggle to only show content in this type to logged in users.",
+    "article_feedback"          => "Article Feedback",
+    "thank_you_for_feedback"    => "Thank you for your feedback on this article.",
+    "frontend_icon_desc"        => "Select a <a href='https://fontawesome.com/icons' target='_blank'>FontAwesome</a> regular icon to display on the frontend for your type, you can also search for a custom icon not included in the list (starting with 'fa-').",
 
 );

@@ -23,7 +23,6 @@ return array(
     "due_time"                  => "Due Time",
     "created_time"              => "Created Time",
     "submitted"                 => "Submitted",
-    "add_reply"                 => "Add Reply",
     "ticket_reply"              => "Ticket Reply",
     "ticket_note"               => "Ticket Note",
     "ticket_type"               => "Ticket Type",
@@ -60,7 +59,6 @@ return array(
     "department_applicable"     => "Applicable Departments",
     "department_applicable_desc" => "The departments in which the priority will be available for users to select. Only applies to the frontend, all priorities will be available to operators for all departments.",
 
-    "due_to_be_sent"            => "Due to be sent",
     "send_now"                  => "Send now",
 
     "tag"                       => "Tag|Tags",
@@ -70,10 +68,6 @@ return array(
 
     // Recent activity
     "recent_activity"           => "Recent Activity",
-    "no_recent_activity"        => "No recent activity",
-
-    // Active operators
-    "active_operators"          => "Active Operators",
 
     "ticket_number"             => "Ticket Number",
     "ticket_format"             => "Ticket Number Format",
@@ -134,12 +128,7 @@ return array(
     "form_conditions"           => "Form Conditions",
     "form_conditions_desc"      => "Define the ticket conditions for which newly resolved tickets are checked to see if they fall under this form. If a resolved ticket fits multiple forms, it will be selected on the form priority, which can be modified by going to the list of forms and reordering.",
     "form_fields"               => "Form Fields",
-    "response_rate"             => "Response Rate",
-    "sent_forms"                => "Sent Feedback Forms",
     "rating"                    => "Rating",
-    "good_ratings"              => "Good Ratings",
-    "bad_ratings"               => "Bad Ratings",
-    "customer_satisfaction"     => "Customer Satisfaction",
     "feedback_desc"             => "Thank you for contacting us and we hope we have resolved your query. Please could you rate your experience below.",
     "good_satisfied"            => "Good, I'm satisfied",
     "bad_not_satisfied"         => "Bad, I'm unsatisfied",
@@ -162,12 +151,10 @@ return array(
     // Filters
     "filter"                    => "Filter|Filters",
     "filter_condition"          => "Filter Conditions",
-    "filter_condition_desc"     => "Define the ticket conditions for which tickets are listed under this filter.",
+    "filter_condition_desc"     => "Define the conditions for which tickets are listed under this filter.",
 
     // Macros
     "macro"                     => "Macro|Macros",
-    "macro_type"                => "Macro Type",
-    "macro_type_desc"           => "By default the macro has to be manually called in the ticket view. It can be set to be an automatic macro that is checked and actioned when new tickets come in or on all tickets via a scheduled task, in either case the conditions will be checked and if true then the actions will be performed automatically. A macro can only run once on a ticket automatically, there is no limit for running it manually.",
     "macro_condition"           => "Macro Conditions",
     "macro_action"              => "Macro Actions",
     "macro_action_desc"         => "Define actions that are performed out when a macro is carried out. Please ensure actions are valid for the department the ticket is in or else they will be ignored.",
@@ -175,7 +162,6 @@ return array(
     "from"                      => "From",
     "to"                        => "To",
     "cc"                        => "CC",
-    "cc_desc"                   => "You can CC other people on to this ticket by entering email addresses above.",
 
     "allowed_files"             => "Allowed Attachment File Types",
 
@@ -281,7 +267,6 @@ return array(
     "default_priority_desc"     => "The default priority set on all incoming tickets via this channel.",
     "verbose_email_log"         => "Verbose Email Log",
 
-    "adjust_columns"            => "Adjust Columns",
     "last_reply"                => "Last Reply",
     "opened_at"                 => "Opened At",
 
@@ -302,8 +287,6 @@ return array(
     "unmerge"                   => "Unmerge",
     "close_and_lock"            => "Close & Lock",
 
-    "block_warning"             => "The user's email will also be blocked and no longer able to open tickets.",
-
     "mass_reply"                => "Mass Reply",
 
     "due_today"                 => "Due Today",
@@ -311,7 +294,6 @@ return array(
     "unassigned"                => "Unassigned",
 
     "pause_duetime_desc"        => "If there is an active SLA plan on this ticket, pause the remaining due time until after the follow up date. The due time will only start again once a reply or note has been added to the ticket (including from the follow up).",
-    "delete_follow_up"          => "Delete Follow Up",
 
     "add_cc"                    => "Add CC",
     "reply_above_line"          => "Please reply above this line",
@@ -377,10 +359,8 @@ return array(
     "ticket_other_brands"       => "Tickets in Other Brands",
     "add_for_department"        => "Add for department...",
     "record_order"              => "Drag the rows to change the order of records.",
-    "ticket_token"              => "Ticket Token",
     "reply_all"                 => "Reply All",
     "reply_without_cc"          => "Reply (without CC)",
-    "open_new_for_user"         => "Open New Ticket For User",
     "email_accounts"            => "Email Accounts",
     "add_another_email"         => "Add Another Email Address",
     "follow_up_date"            => "Follow Up Date",
@@ -456,7 +436,6 @@ return array(
     "delete_message"            => "Delete message",
     "linked_tickets"            => "Linked Tickets",
     "add_linked_ticket"         => "Add Linked Ticket",
-    "add_linked_ticket_desc"    => "Search by ticket number or subject:",
     "create_linked_ticket"      => "Create linked ticket",
     "copy_link"                 => "Copy link",
     "forward_message"           => "Forward this message",
@@ -484,7 +463,7 @@ return array(
     "department_email"          => "Department Email",
     "select_a_department_email" => "Select a department email...",
     "record_public_desc"        => "Toggle to only let the :record be accessible by yourself.",
-    "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups, leave blank to make visible to all operators.",
+    "record_group_desc"         => "If you wish to make the :record visible to only certain operator groups. Leave blank to make visible to all operators.",
     "ticket_format_desc"        => "Can contain alphanumeric characters and special characters <code>-_.+!*,</code><br />The following variables may also be used: %S for a sequential number | %N for a random number | %L for a random letter<br />Use {number} to repeat <strong>only</strong> after %N or %L, e.g. %N{4} equates to 4 random numbers, %L{3} equates to 3 random letters<br />The following <a href='http://php.net/manual/en/function.date.php' target='_blank'>PHP Date</a> Parameters prefixed with % Y,y,m,d,j,g,G,h,H,i,s",
 
     /*
@@ -522,7 +501,6 @@ return array(
     "belonging_to"              => "(Belonging to :name)",
     "block_user"                => "Block User",
     "merge_tickets"             => "Merge Tickets",
-    "merge_tickets_confirm"     => "Please confirm you'd like to merge the following tickets:",
 
     /*
      * 2.5.1
@@ -539,5 +517,14 @@ return array(
     "older_messages"            => ":count older messages",
     "holiday_single_day"        => "Single Day",
     "holiday_date_range"        => "Date Range",
+
+    /*
+     * 3.0.0
+     */
+    "merge_tickets_into"        => "Select ticket to merge into",
+    "search_number_or_subject"  => "Search by ticket number or subject",
+    "im_not_sure"               => "I'm not sure",
+    "auto_reply_detected"       => "Auto-reply detected - no notification will be sent to the user(s).",
+    "cc_desc"                   => "You can CC other people on to this ticket by entering email addresses here.",
 
 );

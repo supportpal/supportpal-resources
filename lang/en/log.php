@@ -40,8 +40,6 @@ return array(
     "organisation_profile_updated"      => "Updated profile of organisation :rel.",
     "organisation_owner_updated"        => "Transferred organisation :rel ownership to :new_value.",
 
-    "user_emailed"                      => "Sent an email to :rel.",
-
     "mass_email_queued"                 => "Queued :new_value emails in batches to be sent.",
     "mass_email_sent"                   => "Sent :new_value emails in queue.",
 
@@ -99,22 +97,10 @@ return array(
     "ticket_split_from"                 => "Messages split from old ticket #:rel to new ticket #:new_value.",
     "ticket_split_to"                   => "Messages split from old ticket #:old_value to new ticket #:rel.",
 
-    "ticket_email_user"                 => "Sent email to user.",
-    "ticket_email_operators"            => "Sent email to operators.",
-
-    "ticket_feedback_dequeued"          => "Removed feedback form request for ticket #:rel from queue.",
-    "ticket_feedback_form_sent"         => "Sent feedback form request for ticket #:rel.",
-
     "ticket_attachment_saved"           => "Added attachment to ticket #:rel.",
     "ticket_attachment_deleted"         => "Deleted attachment from ticket #:rel.",
 
     "ticket_throttled"                  => "Rejected new ticket from :rel due to throttling.",
-
-    /*
-     * 2.0.2
-     */
-    "ticket_email_operator_group"       => "Sent email to operator group :new_value.",
-    "ticket_email_user_group"           => "Sent email to user group :new_value.",
 
     /*
      * 2.0.3
@@ -133,11 +119,6 @@ return array(
     "ticket_added_cc"                   => "Email(s) :new_value added to CC address list for ticket #:rel.",
     "ticket_removed_cc"                 => "Email(s) :old_value removed from CC address list for ticket #:rel.",
     "invalid_department_brand"          => "Failed to set department to ':new_value' on ticket #:rel, department does not belong to ticket brand.",
-
-    /*
-     * 2.1.1
-     */
-    "ticket_message_updated"            => "Updated message :message_id in ticket #:rel.",
 
     /*
      * 2.1.2
@@ -216,5 +197,10 @@ return array(
     "ticket_followup_set"               => "A new follow up has been set up on ticket #:rel.",
     "ticket_followup_updated"           => "A follow up on ticket #:rel has been updated.",
     "ticket_followup_deleted"           => "A follow up on ticket #:rel has been deleted.",
+
+    /*
+     * 3.0.0
+     */
+    "selfservice_article_neutral"       => "Neutrally rated article :rel.",
 
 );

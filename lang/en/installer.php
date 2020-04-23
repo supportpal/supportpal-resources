@@ -7,8 +7,7 @@ return array(
 
     // Index
     "supportpal_installer"      => "SupportPal Installer",
-    "index_desc"                => "Thank you for choosing SupportPal. Please verify the installation type below is correct and then continue.",
-    "select_language"           => "Select Language:",
+    "select_language"           => "Select Language",
     "install_type"              => "Installation Type",
     "install"                   => "Fresh Install",
     "upgrade"                   => "Upgrade Existing Installation",
@@ -150,5 +149,8 @@ return array(
      * 2.6.0
      */
     "database_config_exists"    => "The database configuration file already exists. If you are sure the application is not already installed, please delete /config/:environment/database.php and start again.",
+    "index_desc"                => "Thank you for choosing SupportPal. Please verify the installation type below is correct and then click continue.",
+    "license_valid"             => "License Valid",
+    "registered_to"             => "Registered To",
 
 );

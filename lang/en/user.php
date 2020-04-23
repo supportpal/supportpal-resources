@@ -4,7 +4,7 @@ return array(
 
     "user"                          => "User|Users",
     "user_details"                  => "User Details",
-    "add_user"                      => "Add user",
+    "add_user"                      => "Add User",
     "account_active"                => "Account Active",
     "account_active_desc"           => "Toggle to enable and disable access to authenticated sections.",
 
@@ -47,9 +47,7 @@ return array(
 
     "forgot_password"               => "Forgot password?",
     "reset_password"                => "Reset Password",
-    "password_reset_complete"       => "Reset Complete",
     "set_password"                  => "Set a password",
-    "only_enter_to_change"          => "Only enter to change",
     "please_set_password"           => "Please set your new password below.",
     "missing_email_or_reset"        => "Missing email address or reset token.",
 
@@ -90,7 +88,6 @@ return array(
     "ldap_rdn"                      => "LDAP RDN or DN",
     "ldap_rdn_desc"                 => "The distinguished name for the LDAP username, for example: cn=Sample User,ou=people,dc=example,dc=com",
     "ldap_details"                  => "LDAP Details",
-    "ldap_extension_missing"        => "The php-ldap extension is not currently loaded. Users will not be able to login via LDAP.",
 
     "operator_details"              => "Operator Details",
 
@@ -145,7 +142,6 @@ return array(
     "display_notifications_desc"    => "The system will notify you when new tickets or replies are created, or when other operators login. You can choose between desktop notifications or in-browser notifications, or disabling it completely.",
     "desktop_notifications"         => "Desktop Notifications",
     "browser_notifications"         => "Browser Notifications",
-    "operator_template"             => "Operator Template",
 
     "search_for_user"               => "Search for user...",
     "select_operator"               => "Select an operator...",
@@ -239,7 +235,6 @@ return array(
      * 2.1.2
      */
     "search_for_user_operator"      => "Search for user/operator...",
-    "two_fa_personal_settings"      => "The operator can enable 2FA in their personal settings.",
 
     /*
      * 2.2.0
@@ -270,7 +265,6 @@ return array(
     "twitter_consumer_secret"       => "Consumer Secret",
     "twitter_redirect_url"          => "The following URL <strong>must</strong> be entered for the Twitter Application 'Callback URL':",
     "login_via"                     => "Log in via :provider",
-    "register_with"                 => "Register with :provider",
     "idp"                           => "IdP",
     "social_linking_login"          => "Please log in to complete linking of your social account.",
     "social_linking_register"       => "Please fill in the details below to complete registration of your account. Your social account will be automatically linked.",
@@ -296,7 +290,7 @@ return array(
     /*
      * 2.5.0
      */
-    "organisation_domain_desc"      => "Enter each domain owned the organisation. Users who register with an email address which belongs to one of those domains will be automatically added to the organisation. We recommend to verify the user is genuinely part of the organisation if they have not confirmed ownership of their email address.",
+    "organisation_domain_desc"      => "Enter each domain owned by the organisation. Users who register with an email address which belongs to one of those domains will be automatically added to the organisation. We recommend to verify the user is genuinely part of the organisation if they have not confirmed ownership of their email address.",
     "changing_email_desc"           => "Changing the email address will require the user to confirm ownership of their email address when they next login.",
     "unconfirmed_user_desc"         => "User has not confirmed ownership of this email address.",
     "unregistered_user_desc"        => "This account was created automatically without a password. You can send a confirmation email to let them set up their own account or set a password for them below.",
@@ -310,7 +304,7 @@ return array(
     "register_confirm_desc"         => "Thank you for confirming ownership of your email, please enter a password below to finish your account set up.",
     "thank_you_confirm"             => "Thank you for confirming ownership of your email address.",
     "use_gravatar"                  => "Use Gravatar",
-    "use_gravatar_desc"             => "Gravatar is a service which offers a globally recognised avatar to it's registered users. The help desk will automatically send a request to secure.gravatar.com with an MD5 hash of each user email address to assist in displaying an avatar. The MD5 hash may also be publicly visible in the frontend HTML. We recommend to update your privacy policy if enabling this feature.",
+    "use_gravatar_desc"             => "Gravatar is a service which offers a globally recognised avatar to its registered users. The help desk will automatically send a request to secure.gravatar.com with an MD5 hash of each user email address to assist in displaying an avatar. The MD5 hash may also be publicly visible in the frontend HTML. We recommend to update your privacy policy if enabling this feature.",
 
     /*
      * 2.6.0
@@ -321,5 +315,16 @@ return array(
     "continue_to_login"             => "Please continue to <a href=':route'>login</a>.",
     "reset_request_desc"            => "If a matching account was found, an email will be sent to you shortly to allow you to reset your password.",
     "password_reset_error"          => "The link may have expired. If your link isn't working for any reason, please request a new one.",
+
+    /*
+     * 3.0.0
+     */
+    "ldap_linked_error"             => "Account is linked to an LDAP service. Please log in using your LDAP username and password.",
+    "operator_message"              => "Operator Messages",
+    "force_two_fa"                  => "Force 2FA",
+    "force_two_fa_desc"             => "Force two-factor authentication (2FA) on all accounts. Any account without 2FA enabled will be taken through the steps to set it up when they next login.",
+    "two_fa_required"               => "Two-factor authentication (2FA) is required. Please follow the information below to proceed.",
+    "two_fa_successfully_enabled"   => "Two-factor authentication (2FA) has been successfully enabled, please complete your login again.",
+    "two_fa_user_enable"            => "The user can enable 2FA on their account in their settings.",
 
 );
